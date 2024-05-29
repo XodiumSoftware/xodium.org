@@ -34,7 +34,7 @@ jobs:
         name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "./.pages"
+          path: "./pages"
 
       - id: deployment
         name: Deploy to GitHub Pages
