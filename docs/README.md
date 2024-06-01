@@ -2,12 +2,7 @@
 description: >-
   Below are the shortcuts to each of our projects wikis, feel free to check them
   out.
-cover: .gitbook/assets/bg.webp
-coverY: 0
 layout:
-  cover:
-    visible: true
-    size: full
   title:
     visible: true
   description:
@@ -22,4 +17,4 @@ layout:
 
 # 👋 Welcome!
 
-<table data-column-title-hidden data-view="cards" data-full-width="true"><thead><tr><th></th><th data-hidden data-card-cover data-type="files"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td></td><td><a href=".gitbook/assets/bg.webp">bg.webp</a></td><td><a href="https://app.gitbook.com/o/nxgvFbXjlsDPC5scaTIk/s/PDVNyx0N9viniBcAkQWy/">Dardania</a></td></tr><tr><td></td><td><a href=".gitbook/assets/bg.webp">bg.webp</a></td><td><a href="https://app.gitbook.com/o/nxgvFbXjlsDPC5scaTIk/s/ZqIX3bi71c75FawWsA2t/">Dalmatia</a></td></tr><tr><td></td><td><a href=".gitbook/assets/bg.webp">bg.webp</a></td><td><a href="https://app.gitbook.com/o/nxgvFbXjlsDPC5scaTIk/s/e1O9xLb0ed5IfLBEj0T9/">IllyriaMC</a></td></tr></tbody></table>
+<table data-column-title-hidden data-view="cards" data-full-width="true"><thead><tr><th></th><th data-hidden data-card-cover data-type="files"></th><th data-hidden data-card-target data-type="content-ref"></th></tr></thead><tbody><tr><td><strong>Dardania</strong></td><td><a href=".gitbook/assets/placeholder.svg">placeholder.svg</a></td><td><a href="https://app.gitbook.com/o/nxgvFbXjlsDPC5scaTIk/s/PDVNyx0N9viniBcAkQWy/">Dardania</a></td></tr><tr><td><strong>Dalmatia</strong></td><td><a href=".gitbook/assets/placeholder.svg">placeholder.svg</a></td><td><a href="https://app.gitbook.com/o/nxgvFbXjlsDPC5scaTIk/s/ZqIX3bi71c75FawWsA2t/">Dalmatia</a></td></tr><tr><td><strong>Illyria MMO-RPG</strong></td><td><a href=".gitbook/assets/placeholder.svg">placeholder.svg</a></td><td><a href="https://app.gitbook.com/o/nxgvFbXjlsDPC5scaTIk/s/e1O9xLb0ed5IfLBEj0T9/">Illyria MMO-RPG</a></td></tr></tbody></table>
