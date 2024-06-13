@@ -22,15 +22,7 @@
   ],
   // Material Icon Theme Settings
   "material-icon-theme.files.color": "#ef5350",
-  "material-icon-theme.files.associations": {
-    "py.typed": "python"
-  },
   "material-icon-theme.folders.color": "#ef5350",
-  "material-icon-theme.folders.associations": {
-    "ISSUE_TEMPLATE": "template",
-    "dardania": "src",
-    "dalmatia": "src"
-  },
   // Terminal Settings
   "terminal.integrated.enableMultiLinePasteWarning": "never",
   // Workbench Settings
