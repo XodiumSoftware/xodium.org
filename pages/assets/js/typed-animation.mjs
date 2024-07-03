@@ -1,0 +1,1 @@
+new Typed(".auto-type",{strings:["Modular","DRY","Efficient"],typeSpeed:150,backSpeed:100,loop:!0});
