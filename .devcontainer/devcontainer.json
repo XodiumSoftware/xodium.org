@@ -1,5 +1,5 @@
 {
-  "image": "mcr.microsoft.com/vscode/devcontainers/base:ubuntu",
+  "image": "mcr.microsoft.com/vscode/devcontainers/javascript-node",
   "remoteUser": "vscode@Illyrion",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
