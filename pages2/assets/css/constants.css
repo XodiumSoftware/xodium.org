@@ -1,0 +1,63 @@
+/* styles.css */
+
+/* Custom variables */
+:root {
+  /* Colors */
+  --IL-primary-color: #19f5aa;
+  --IL-secondary-color: #dc3dcb;
+
+  --IL-light-color: #ffffff;
+  --IL-dark-color: #000000;
+
+  --IL-bg-primary-color: #001220;
+  --IL-bg-secondary-color: #001728;
+
+  /* Font sizes */
+  --IL-font-size-xs: 12px;
+  --IL-font-size-s: 14px;
+  --IL-font-size-m: 16px;
+  --IL-font-size-l: 18px;
+  --IL-font-size-xl: 20px;
+  --IL-font-size-xxl: 24px;
+
+  /* Spacing */
+  --IL-padding-xs: 4px;
+  --IL-padding-s: 8px;
+  --IL-padding-m: 16px;
+  --IL-padding-l: 24px;
+  --IL-padding-xl: 32px;
+  --IL-padding-xxl: 48px;
+
+  /* Border Radius */
+  --IL-border-radius-xs: 4px;
+  --IL-border-radius-s: 8px;
+  --IL-border-radius-m: 16px;
+  --IL-border-radius-l: 24px;
+  --IL-border-radius-xl: 32px;
+  --IL-border-radius-xxl: 48px;
+
+  /* Typography */
+  --IL-font-family-sans: "Helvetica", "Arial", sans-serif;
+  --IL-font-family-serif: "Georgia", "Times New Roman", serif;
+  --IL-font-family-mono: "Courier New", monospace;
+
+  /* Shadows */
+  --IL-shadow-light: 0px 1px 3px rgba(0, 0, 0, 0.12),
+    0px 1px 2px rgba(0, 0, 0, 0.24);
+  --IL-shadow-medium: 0px 3px 6px rgba(0, 0, 0, 0.15),
+    0px 3px 6px rgba(0, 0, 0, 0.23);
+  --IL-shadow-heavy: 0px 10px 20px rgba(0, 0, 0, 0.19),
+    0px 6px 6px rgba(0, 0, 0, 0.23);
+
+  /* Transitions */
+  --IL-transition-fast: 0.2s;
+  --IL-transition-medium: 0.5s;
+  --IL-transition-slow: 1s;
+
+  /* Z-index */
+  --IL-zindex-navbar: 5000;
+  --IL-zindex-dropdown: 4000;
+  --IL-zindex-overlay: 3000;
+  --IL-zindex-modal: 2000;
+  --IL-zindex-tooltip: 1000;
+}
