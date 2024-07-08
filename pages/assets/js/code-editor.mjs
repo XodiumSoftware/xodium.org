@@ -1,0 +1,1 @@
+var e=document.getElementsByClassName("editor");Array.prototype.forEach.call(e,(function(e){CodeMirror(e,{indentUnit:4,indentWithTabs:!0,lineNumbers:!0,mode:"python",theme:"monokai",lineWrapping:!0,readOnly:!0})}));
