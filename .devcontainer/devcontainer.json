@@ -1,12 +1,9 @@
 {
-  "image": "mcr.microsoft.com/vscode/devcontainers/base:debian",
-  "remoteUser": "vscode@Illyrion",
+  "image": "mcr.microsoft.com/vscode/devcontainers/javascript-node",
+  "remoteUser": "root",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
       "installZsh": "true",
-      "username": "vscode@Illyrion",
-      "userUid": "automatic",
-      "userGid": "automatic",
       "upgradePackages": "true"
     },
     "ghcr.io/devcontainers/features/git:1": {
@@ -15,17 +12,26 @@
     }
   },
   "customizations": {
+    "zsh": {
+      "theme": "agnoster",
+      "plugins": [
+        "zsh-autosuggestions",
+        "zsh-syntax-highlighting",
+        "zsh-interactive-cd",
+        "zsh-navigation-tools"
+      ]
+    },
     "vscode": {
       "extensions": [
         "esbenp.prettier-vscode",
         "github.copilot",
         "github.vscode-github-actions",
-        "ms-vscode.live-server",
         "pkief.material-icon-theme",
         "usernamehw.errorlens",
         "vsls-contrib.gistfs"
       ]
     }
   },
+  "onCreateCommand": { "npmCMD": "sudo npm install -g nextui-cli" },
   "shutdownAction": "stopContainer"
 }

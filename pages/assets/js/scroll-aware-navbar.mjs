@@ -1,1 +1,0 @@
-var e=0,t=document.querySelector(".navbar"),n=t.offsetHeight;window.addEventListener("scroll",(function(){var o=window.pageYOffset||document.documentElement.scrollTop;t.style.top=o>e?-n+"px":"0",e=o})),window.addEventListener("resize",(function(){n=t.offsetHeight}));
