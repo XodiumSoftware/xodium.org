@@ -23,5 +23,5 @@ export const COMPONENTS_PLACEHOLDER = "-placeholder";
 export const COMPONENTS_MAP = {
   header: `${COMPONENTS}header.html`,
   footer: `${COMPONENTS}footer.html`,
-  head: `${COMPONENTS}head.html`,
+  // head: `${COMPONENTS}head.html`,
 };
