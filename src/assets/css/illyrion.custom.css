@@ -1,35 +1,26 @@
-#dardanium.dropdown-item:hover,
-#dardanium.dropdown-item:focus,
-#dalmatium.dropdown-item:hover,
-#dalmatium.dropdown-item:focus {
-  border-color: var(--bs-body-bg);
-  border-radius: 8px;
-  color: var(--bs-body-bg);
+@import "./illyrion.variables.css";
+
+.il-primary-color {
+  color: var(--il-primary-color) !important;
 }
-#dardanium.dropdown-item#dardanium:hover,
-#dardanium.dropdown-item#dardanium:focus,
-#dalmatium.dropdown-item#dardanium:hover,
-#dalmatium.dropdown-item#dardanium:focus {
-  background-color: var(--bs-success);
-}
-#dardanium.dropdown-item#dalmatium:hover,
-#dardanium.dropdown-item#dalmatium:focus,
-#dalmatium.dropdown-item#dalmatium:hover,
-#dalmatium.dropdown-item#dalmatium:focus {
-  background-color: var(--bs-secondary);
+
+.il-secondary-color {
+  color: var(--il-secondary-color) !important;
 }
 
 .auto-type,
 .typed-cursor {
-  color: var(--bs-secondary);
+  color: var(--il-primary-color);
 }
 
-@media (min-width: 576px) {
-  .dropdown:hover > .dropdown-menu {
-    display: block;
-  }
-}
 .CodeMirror {
   text-align: left !important;
-  border-radius: 10px;
+  border-radius: var(--il-radius-l);
+}
+
+.svg-icon {
+  width: var(--il-size-xl);
+  height: var(--il-size-xl);
+  vertical-align: middle;
+  border-radius: var(--il-radius-l);
 }

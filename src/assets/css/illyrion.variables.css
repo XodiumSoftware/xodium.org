@@ -1,0 +1,30 @@
+/* styles.css */
+
+/* Custom variables */
+:root {
+  /* Colors */
+  --il-primary-color: #dc3dcb;
+  --il-secondary-color: #19f5aa;
+
+  --il-light-color: #ffffff;
+  --il-dark-color: #000000;
+
+  --il-bg-primary-color: #001220;
+  --il-bg-secondary-color: #001728;
+
+  /* Radius */
+  --il-radius-xs: 2px;
+  --il-radius-s: 4px;
+  --il-radius-m: 6px;
+  --il-radius-l: 10px;
+  --il-radius-xl: 12px;
+  --il-radius-xxl: 16px;
+
+  /* Sizes */
+  --il-size-xs: 8px;
+  --il-size-s: 16px;
+  --il-size-m: 24px;
+  --il-size-l: 32px;
+  --il-size-xl: 48px;
+  --il-size-xxl: 64px;
+}
