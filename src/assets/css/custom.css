@@ -1,24 +1,18 @@
-#dardanium.dropdown-item:hover,
-#dardanium.dropdown-item:focus,
-#dalmatium.dropdown-item:hover,
-#dalmatium.dropdown-item:focus {
+#dardanium.dropdown-item:hover, #dardanium.dropdown-item:focus, #dalmatium.dropdown-item:hover, #dalmatium.dropdown-item:focus {
   border-color: var(--bs-body-bg);
   border-radius: 8px;
   color: var(--bs-body-bg);
 }
 
-#dardanium.dropdown-item:hover,
-#dardanium.dropdown-item:focus {
+#dardanium.dropdown-item:hover, #dardanium.dropdown-item:focus {
   background-color: var(--bs-success);
 }
 
-#dalmatium.dropdown-item:hover,
-#dalmatium.dropdown-item:focus {
+#dalmatium.dropdown-item:hover, #dalmatium.dropdown-item:focus {
   background-color: var(--bs-secondary);
 }
 
-.auto-type,
-.typed-cursor {
+.auto-type, .typed-cursor {
   color: var(--bs-secondary);
 }
 
@@ -32,3 +26,4 @@
   text-align: left !important;
   border-radius: 10px;
 }
+
