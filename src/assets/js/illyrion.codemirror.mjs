@@ -8,7 +8,7 @@ import {
   CM_THEME,
   CM_LINE_WRAPPING,
   CM_READ_ONLY,
-} from "./constants.mjs";
+} from "./illyrion.constants.mjs";
 
 Array.from(document.getElementsByClassName(CM_TARGET)).forEach((editor) =>
   CodeMirror(editor, {

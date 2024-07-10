@@ -1,6 +1,9 @@
 // componentsloader.mjs
 
-import { COMPONENTS_MAP, COMPONENTS_PLACEHOLDER } from "./constants.mjs";
+import {
+  COMPONENTS_MAP,
+  COMPONENTS_PLACEHOLDER,
+} from "./illyrion.constants.mjs";
 
 document.addEventListener("DOMContentLoaded", async function () {
   async function loadComponent(componentName) {

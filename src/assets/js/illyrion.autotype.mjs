@@ -5,7 +5,7 @@ import {
   AT_TYPE_SPEED,
   AT_BACK_SPEED,
   AT_LOOP,
-} from "./constants.mjs";
+} from "./illyrion.constants.mjs";
 
 new Typed(AT_TARGET, {
   strings: AT_STRINGS,
