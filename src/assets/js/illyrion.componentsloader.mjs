@@ -2,7 +2,7 @@
 
 import { COMPONENTS_MAP } from "./illyrion.constants.mjs";
 
-document.addEventListener("DOMContentLoaded", async function () {
+document.addEventListener("DOMContentLoaded", function () {
   async function loadComponent(componentName) {
     const file = COMPONENTS_MAP[componentName];
     if (!file) {
@@ -24,7 +24,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     const placeholderNode = walker.nextNode();
     if (!placeholderNode) {
-      console.error(`Placeholder for ${componentName} not found.`);
       return;
     }
 
@@ -48,5 +47,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
   }
 
-  Object.keys(COMPONENTS_MAP).forEach((component) => loadComponent(component));
+  Promise.all(Object.keys(COMPONENTS_MAP).map(loadComponent)).catch((err) =>
+    console.error("An error occurred while loading components:", err)
+  );
 });
