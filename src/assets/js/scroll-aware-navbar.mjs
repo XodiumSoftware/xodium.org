@@ -1,17 +1,13 @@
-var lastScrollTop = 0;
-var navbar = document.querySelector(".navbar");
-var navbarHeight = navbar.offsetHeight;
+let lastScroll = 0;
+const navbar = document.querySelector(".navbar");
+let navbarHeight = navbar.offsetHeight;
 
-window.addEventListener("scroll", function () {
-  var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-  if (scrollTop > lastScrollTop) {
-    navbar.style.top = -navbarHeight + "px";
-  } else {
-    navbar.style.top = "0";
-  }
-  lastScrollTop = scrollTop;
+window.addEventListener("scroll", () => {
+  const currentScroll = window.scrollY;
+  navbar.style.top = currentScroll > lastScroll ? -navbarHeight + "px" : "0";
+  lastScroll = currentScroll;
 });
 
-window.addEventListener("resize", function () {
+window.addEventListener("resize", () => {
   navbarHeight = navbar.offsetHeight;
 });
