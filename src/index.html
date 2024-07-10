@@ -31,13 +31,18 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/theme/monokai.min.css"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
   </head>
   <body class="is-family-monospace">
     <!-- Header -->
     <header class="top-sentinel">
       <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="container">
-          <div class="navbar-brand">
+          <!-- Navbar left side -->
+          <div class="navbar-start">
             <!-- Title -->
             <a class="navbar-item" href="/">
               <strong>ILLYRION</strong>
@@ -49,6 +54,7 @@
                 <!-- Dardanium dropdown item -->
                 <a
                   class="navbar-item"
+                  id="dardanium"
                   href="https://github.com/IllyrionSoftware/Dardanium"
                 >
                   <img class="mr-2" src="./assets/img/dardanium.svg" alt="" />
@@ -57,6 +63,7 @@
                 <!-- Dalmatium dropdown item -->
                 <a
                   class="navbar-item"
+                  id="dalmatium"
                   href="https://github.com/IllyrionSoftware/Dalmatium"
                 >
                   <img class="mr-2" src="./assets/img/dalmatium.svg" alt="" />
@@ -67,14 +74,49 @@
             <!-- TEAM item -->
             <a class="navbar-item" href="./team.html"> TEAM </a>
           </div>
+          <!-- Navbar right side -->
+          <div class="navbar-end">
+            <!-- Discord item -->
+            <a
+              class="navbar-item"
+              href="https://discord.gg/88QWgaavRq"
+              target="_blank"
+            >
+              <span class="icon">
+                <i class="fab fa-discord"></i>
+              </span>
+            </a>
+            <!-- Docs item -->
+            <a
+              class="navbar-item"
+              href="https://wiki.illyrion.eu/"
+              target="_blank"
+            >
+              <span class="icon">
+                <i class="fas fa-book"></i>
+              </span>
+            </a>
+            <!-- Github item -->
+            <a
+              class="navbar-item"
+              href="https://github.com/IllyrionSoftware"
+              target="_blank"
+            >
+              <span class="icon">
+                <i class="fab fa-github"></i>
+              </span>
+            </a>
+          </div>
         </div>
       </nav>
     </header>
 
     <!-- Landing section -->
-    <section class="section">
-      <div class="container has-text-centered">
-        <h1 class="title">
+    <section class="section hero" id="landing">
+      <div
+        class="container has-text-centered hero-body is-flex-direction-column is-justify-content-center is-align-items-center"
+      >
+        <h1 class="title is-size-1">
           CODING <span class="autotype il-primary-color"></span>
         </h1>
         <p class="subtitle il-secondary-color">
@@ -86,7 +128,7 @@
 
     <!-- Dardanium section -->
     <section class="section has-text-right" id="dardanium">
-      <div class="container">
+      <div class="container p-6 product">
         <h2 class="title">
           <img class="svg-icon" src="./assets/img/dardanium.svg" alt="" />
           Dardanium
@@ -108,7 +150,7 @@
 
     <!-- Dalmatium section -->
     <section class="section has-text-left" id="dalmatium">
-      <div class="container">
+      <div class="container p-6 product">
         <h2 class="title">
           <img class="svg-icon" src="./assets/img/dalmatium.svg" alt="" />
           Dalmatium

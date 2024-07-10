@@ -4,7 +4,20 @@
 :root {
   /* Colors */
   --il-primary-color: #dc3dcb;
+  --il-primary-dark-color: #a400a4;
+  --il-primary-gradient: linear-gradient(
+    to right,
+    var(--il-primary-color),
+    var(--il-primary-dark-color)
+  );
+
   --il-secondary-color: #19f5aa;
+  --il-secondary-dark-color: #00c853;
+  --il-secondary-gradient: linear-gradient(
+    to right,
+    var(--il-secondary-color),
+    var(--il-secondary-dark-color)
+  );
 
   --il-light-color: #ffffff;
   --il-dark-color: #000000;

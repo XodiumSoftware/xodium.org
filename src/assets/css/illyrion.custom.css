@@ -1,7 +1,11 @@
 @import "./illyrion.variables.css";
 
 .il-primary-color {
-  color: var(--il-primary-color) !important;
+  background-image: var(--il-primary-gradient) !important;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  display: inline-block;
 }
 
 .il-secondary-color {
@@ -10,7 +14,11 @@
 
 .auto-type,
 .typed-cursor {
-  color: var(--il-primary-color);
+  background-image: var(--il-primary-gradient);
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
+  display: inline-block;
 }
 
 .CodeMirror {
@@ -23,4 +31,19 @@
   height: var(--il-size-xl);
   vertical-align: middle;
   border-radius: var(--il-radius-l);
+}
+
+#dardanium.navbar-item:hover {
+  background-color: var(--il-secondary-color);
+  color: var(--il-dark-color);
+}
+
+#dalmatium.navbar-item:hover {
+  background-color: var(--il-primary-color);
+  color: var(--il-dark-color);
+}
+
+.product {
+  border-style: solid;
+  border-color: var(--il-primary-color);
 }
