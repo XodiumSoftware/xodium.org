@@ -18,10 +18,10 @@ export const CM_LINE_WRAPPING = true;
 export const CM_READ_ONLY = true;
 
 // ComponentsLoader
-export const COMPONENTS = "../src/assets/components/";
-export const COMPONENTS_PLACEHOLDER = "-placeholder";
+export const COMPONENTS_FOLDER = "../src/assets/components/";
+export const COMPONENT = "-component";
 export const COMPONENTS_MAP = {
-  header: `${COMPONENTS}header.html`,
-  footer: `${COMPONENTS}footer.html`,
-  // head: `${COMPONENTS}head.html`,
+  header: `${COMPONENTS_FOLDER}header.html`,
+  footer: `${COMPONENTS_FOLDER}footer.html`,
+  // head: `${COMPONENTS_FOLDER}head.html`,
 };
