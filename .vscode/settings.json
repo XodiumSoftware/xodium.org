@@ -29,5 +29,6 @@
   // Workbench Settings
   "workbench.colorTheme": "Monokai Dimmed",
   "workbench.iconTheme": "material-icon-theme",
-  "workbench.startupEditor": "none"
+  "workbench.startupEditor": "none",
+  "livePreview.defaultPreviewPath": "/src/index.html"
 }

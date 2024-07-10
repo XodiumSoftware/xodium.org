@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+  <!-- Head -->
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -36,80 +37,10 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
     />
   </head>
+
   <body class="is-family-monospace">
-    <!-- Header -->
-    <header class="is-mobile is-vcentered">
-      <nav class="navbar" role="navigation" aria-label="main navigation">
-        <div class="container">
-          <!-- Navbar left side -->
-          <div class="navbar-start">
-            <!-- Title -->
-            <a class="navbar-item" href="/">
-              <strong>ILLYRION</strong>
-            </a>
-            <!-- TOOLS item -->
-            <div class="navbar-item has-dropdown is-hoverable">
-              <a class="navbar-link"> TOOLS </a>
-              <div class="navbar-dropdown">
-                <!-- Dardanium dropdown item -->
-                <a
-                  class="navbar-item"
-                  id="dardanium"
-                  href="https://github.com/IllyrionSoftware/Dardanium"
-                >
-                  <img class="mr-2" src="./assets/img/dardanium.svg" alt="" />
-                  <strong>Dardanium</strong>
-                </a>
-                <!-- Dalmatium dropdown item -->
-                <a
-                  class="navbar-item"
-                  id="dalmatium"
-                  href="https://github.com/IllyrionSoftware/Dalmatium"
-                >
-                  <img class="mr-2" src="./assets/img/dalmatium.svg" alt="" />
-                  <strong>Dalmatium</strong>
-                </a>
-              </div>
-            </div>
-            <!-- TEAM item -->
-            <a class="navbar-item" href="./team.html"> TEAM </a>
-          </div>
-          <!-- Navbar right side -->
-          <div class="navbar-end">
-            <!-- Discord item -->
-            <a
-              class="navbar-item"
-              href="https://discord.gg/88QWgaavRq"
-              target="_blank"
-            >
-              <span class="icon">
-                <i class="fab fa-discord"></i>
-              </span>
-            </a>
-            <!-- Docs item -->
-            <a
-              class="navbar-item"
-              href="https://wiki.illyrion.eu/"
-              target="_blank"
-            >
-              <span class="icon">
-                <i class="fas fa-book"></i>
-              </span>
-            </a>
-            <!-- Github item -->
-            <a
-              class="navbar-item"
-              href="https://github.com/IllyrionSoftware"
-              target="_blank"
-            >
-              <span class="icon">
-                <i class="fab fa-github"></i>
-              </span>
-            </a>
-          </div>
-        </div>
-      </nav>
-    </header>
+    <!-- Header placeholder -->
+    <div id="header-placeholder"></div>
 
     <!-- Landing section -->
     <section class="section hero" id="landing">
@@ -170,28 +101,8 @@
       </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-      <div class="columns is-mobile is-vcentered">
-        <div class="column has-text-left">
-          <p>© 2024 ILLYRION SOFTWARE INC</p>
-        </div>
-        <div class="column has-text-centered">
-          <a href="https://bulma.io" target="_blank">
-            Made with
-            <img
-              src="https://bulma.io/assets/brand/Bulma%20Logo%20White.svg"
-              alt="Made with Bulma"
-              width="128"
-              height="24"
-            />
-          </a>
-        </div>
-        <div class="column has-text-right">
-          <p>Open-Source (CAD) Software Company</p>
-        </div>
-      </div>
-    </footer>
+    <!-- Footer placeholder -->
+    <div id="footer-placeholder"></div>
 
     <!-- External imports -->
     <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
@@ -200,5 +111,6 @@
     <!-- Internal imports -->
     <script src="assets/js/autotype.mjs" type="module"></script>
     <script src="assets/js/codemirror.mjs" type="module"></script>
+    <script src="assets/js/componentsloader.mjs" type="module"></script>
   </body>
 </html>
