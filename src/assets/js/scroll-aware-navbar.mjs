@@ -1,1 +1,17 @@
-var e=0,t=document.querySelector(".navbar"),n=t.offsetHeight;window.addEventListener("scroll",(function(){var o=window.pageYOffset||document.documentElement.scrollTop;t.style.top=o>e?-n+"px":"0",e=o})),window.addEventListener("resize",(function(){n=t.offsetHeight}));
+var lastScrollTop = 0;
+var navbar = document.querySelector(".navbar");
+var navbarHeight = navbar.offsetHeight;
+
+window.addEventListener("scroll", function () {
+  var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  if (scrollTop > lastScrollTop) {
+    navbar.style.top = -navbarHeight + "px";
+  } else {
+    navbar.style.top = "0";
+  }
+  lastScrollTop = scrollTop;
+});
+
+window.addEventListener("resize", function () {
+  navbarHeight = navbar.offsetHeight;
+});
