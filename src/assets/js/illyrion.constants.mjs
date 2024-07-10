@@ -22,5 +22,4 @@ export const COMPONENTS_FOLDER = "../src/assets/components/";
 export const COMPONENTS_MAP = {
   header: `${COMPONENTS_FOLDER}header.html`,
   footer: `${COMPONENTS_FOLDER}footer.html`,
-  // head: `${COMPONENTS_FOLDER}head.html`,
 };
