@@ -1,6 +1,6 @@
-// componentsloader.mjs
+// illyrion.componentsloader.mjs
 
-import { COMPONENTS_MAP, COMPONENT } from "./illyrion.constants.mjs";
+import { COMPONENTS_MAP } from "./illyrion.constants.mjs";
 
 document.addEventListener("DOMContentLoaded", async function () {
   async function loadComponent(componentName) {
@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       return;
     }
 
-    const placeholder = `${componentName}${COMPONENT}`;
+    const placeholder = `{${componentName}}`;
     const placeholderElement = document.getElementById(placeholder);
     if (!placeholderElement) {
       console.error(`Placeholder for ${componentName} not found.`);

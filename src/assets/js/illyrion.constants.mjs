@@ -1,4 +1,4 @@
-// constants.mjs
+// illyrion.constants.mjs
 
 // AutoType
 export const AT_TARGET = ".autotype";

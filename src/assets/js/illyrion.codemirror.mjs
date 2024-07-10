@@ -1,4 +1,5 @@
-// codemirror.mjs
+// illyrion.codemirror.mjs
+
 import {
   CM_TARGET,
   CM_INDENT_UNIT,

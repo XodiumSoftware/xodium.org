@@ -1,4 +1,5 @@
-// autotype.mjs
+// illyrion.autotype.mjs
+
 import {
   AT_TARGET,
   AT_STRINGS,
