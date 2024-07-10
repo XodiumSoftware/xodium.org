@@ -1,5 +1,5 @@
 {
-  "image": "mcr.microsoft.com/vscode/devcontainers/javascript-node",
+  "image": "mcr.microsoft.com/vscode/devcontainers/base:debian",
   "remoteUser": "root",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
@@ -12,15 +12,6 @@
     }
   },
   "customizations": {
-    "zsh": {
-      "theme": "agnoster",
-      "plugins": [
-        "zsh-autosuggestions",
-        "zsh-syntax-highlighting",
-        "zsh-interactive-cd",
-        "zsh-navigation-tools"
-      ]
-    },
     "vscode": {
       "extensions": [
         "esbenp.prettier-vscode",
@@ -32,6 +23,5 @@
       ]
     }
   },
-  "onCreateCommand": { "npmCMD": "sudo npm install -g nextui-cli" },
   "shutdownAction": "stopContainer"
 }
