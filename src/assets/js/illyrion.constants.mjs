@@ -19,7 +19,6 @@ export const CM_READ_ONLY = true;
 
 // ComponentsLoader
 export const COMPONENTS_FOLDER = "../src/assets/components/";
-export const COMPONENT = "-component";
 export const COMPONENTS_MAP = {
   header: `${COMPONENTS_FOLDER}header.html`,
   footer: `${COMPONENTS_FOLDER}footer.html`,
