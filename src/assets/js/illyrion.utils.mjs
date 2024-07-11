@@ -11,10 +11,10 @@ document.addEventListener("DOMContentLoaded", function () {
       throw new Error(`Component ${componentName} not found.`);
     }
 
-    const placeholders = document.querySelectorAll(
+    const $placeholders = document.querySelectorAll(
       `[data-component="${componentName}"]`
     );
-    if (!placeholders.length) {
+    if (!$placeholders.length) {
       return;
     }
 
@@ -34,16 +34,16 @@ document.addEventListener("DOMContentLoaded", function () {
       html = await cache[componentName];
     }
 
-    placeholders.forEach((placeholder) => {
+    $placeholders.forEach((placeholder) => {
       placeholder.innerHTML = html;
     });
   }
 
-  const componentPromises = Object.keys(COMPONENTS_MAP).map((componentName) =>
+  const $componentPromises = Object.keys(COMPONENTS_MAP).map((componentName) =>
     loadComponent(componentName)
   );
 
-  Promise.all(componentPromises).catch((err) =>
+  Promise.all($componentPromises).catch((err) =>
     console.error("An unexpected error occurred while loading components:", err)
   );
 
@@ -55,8 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
     $navbarBurgers.forEach((el) => {
       if (!el.dataset.initialized) {
         el.addEventListener("click", () => {
-          const target = el.dataset.target;
-          const $target = document.getElementById(target);
+          const $target = document.getElementById(el.dataset.target);
 
           el.classList.toggle("is-active");
           $target.classList.toggle("is-active");
@@ -68,32 +67,32 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   function initializeDropdownChevron() {
-    const toolsDropdown = document.querySelector(".navbar-item.has-dropdown");
-    const chevronIcon = document.getElementById("tools-chevron");
+    const $toolsDropdown = document.querySelector(".navbar-item.has-dropdown");
+    const $chevronIcon = document.getElementById("tools-chevron");
 
-    if (toolsDropdown && chevronIcon) {
-      if (!toolsDropdown.dataset.initialized) {
-        toolsDropdown.addEventListener("mouseover", () => {
-          chevronIcon.classList.replace("fa-chevron-down", "fa-chevron-up");
+    if ($toolsDropdown && $chevronIcon) {
+      if (!$toolsDropdown.dataset.initialized) {
+        $toolsDropdown.addEventListener("mouseover", () => {
+          $chevronIcon.classList.replace("fa-chevron-down", "fa-chevron-up");
         });
 
-        toolsDropdown.addEventListener("mouseout", () => {
-          chevronIcon.classList.replace("fa-chevron-up", "fa-chevron-down");
+        $toolsDropdown.addEventListener("mouseout", () => {
+          $chevronIcon.classList.replace("fa-chevron-up", "fa-chevron-down");
         });
 
-        toolsDropdown.dataset.initialized = true;
+        $toolsDropdown.dataset.initialized = true;
       }
     } else {
-      if (!toolsDropdown) {
+      if (!$toolsDropdown) {
         console.error("toolsDropdown element not found");
       }
-      if (!chevronIcon) {
+      if (!$chevronIcon) {
         console.error("chevronIcon element not found");
       }
     }
   }
 
-  const observer = new MutationObserver((mutations) => {
+  const $observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       if (mutation.addedNodes.length) {
         initializeNavbarBurgers();
@@ -102,5 +101,5 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  observer.observe(document.body, { childList: true, subtree: true });
+  $observer.observe(document.body, { childList: true, subtree: true });
 });
