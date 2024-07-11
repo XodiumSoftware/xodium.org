@@ -48,27 +48,14 @@ function initializeDropdownChevron() {
   }
 }
 
-function checkAndInitializeDropdownChevron() {
-  if (
-    document.querySelector(".navbar-item.has-dropdown") &&
-    document.getElementById("tools-chevron")
-  ) {
-    initializeDropdownChevron();
-  } else {
-    console.log("Retrying to find elements...");
-    setTimeout(checkAndInitializeDropdownChevron, 500);
-  }
-}
-
 document.addEventListener("DOMContentLoaded", () => {
   initializeNavbarBurgers();
-  checkAndInitializeDropdownChevron();
 
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       if (mutation.addedNodes.length) {
         initializeNavbarBurgers();
-        checkAndInitializeDropdownChevron();
+        initializeDropdownChevron();
       }
     });
   });
