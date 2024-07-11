@@ -3,11 +3,12 @@
 import { COMPONENTS_MAP } from "./illyrion.constants.mjs";
 
 document.addEventListener("DOMContentLoaded", function () {
+  const cache = {};
+
   async function loadComponent(componentName) {
     const file = COMPONENTS_MAP[componentName];
     if (!file) {
-      console.error(`Component ${componentName} not found.`);
-      return;
+      throw new Error(`Component ${componentName} not found.`);
     }
 
     const placeholders = document.querySelectorAll(
@@ -17,21 +18,32 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    try {
-      const response = await fetch(file);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const html = await response.text();
-      placeholders.forEach((placeholder) => {
-        placeholder.innerHTML = html;
+    let html;
+    if (cache[componentName]) {
+      html =
+        cache[componentName] instanceof Promise
+          ? await cache[componentName]
+          : cache[componentName];
+    } else {
+      cache[componentName] = fetch(file).then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.text();
       });
-    } catch (err) {
-      console.error(`Failed to load ${componentName}:`, err);
+      html = await cache[componentName];
     }
+
+    placeholders.forEach((placeholder) => {
+      placeholder.innerHTML = html;
+    });
   }
 
-  Promise.all(Object.keys(COMPONENTS_MAP).map(loadComponent)).catch((err) =>
-    console.error("An error occurred while loading components:", err)
+  const componentPromises = Object.keys(COMPONENTS_MAP).map((componentName) =>
+    loadComponent(componentName)
+  );
+
+  Promise.all(componentPromises).catch((err) =>
+    console.error("An unexpected error occurred while loading components:", err)
   );
 });

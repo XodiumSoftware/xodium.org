@@ -47,8 +47,6 @@ function initializeDropdownChevron() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  initializeNavbarBurgers();
-
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       if (mutation.addedNodes.length) {
