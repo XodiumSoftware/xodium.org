@@ -144,7 +144,7 @@ class GitHubOrgMembers {
       card.className = "member-card";
       card.innerHTML = `
           <a href="https://github.com/${member.login}" target="_blank">
-            <img class="member-icon" src="${member.avatar_url}" alt="${member.login}" width="100" height="100">
+            <img class="member-icon" src="${member.avatar_url}" alt="${member.login} picture" width="100" height="100">
             <h3>${member.login}</h3>
           </a>
         `;
