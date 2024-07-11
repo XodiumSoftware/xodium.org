@@ -13,3 +13,7 @@ export const COMPONENTS_MAP = {
   header: `${COMPONENTS_FOLDER}header.html`,
   footer: `${COMPONENTS_FOLDER}footer.html`,
 };
+
+// Github
+export const GH_ORGNAME = "IllyrionSoftware";
+export const GH_TOKEN = "";

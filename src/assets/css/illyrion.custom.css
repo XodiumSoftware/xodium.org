@@ -22,11 +22,6 @@
   display: inline-block;
 }
 
-.CodeMirror {
-  text-align: left !important;
-  border-radius: var(--il-radius-l);
-}
-
 .svg-icon {
   width: var(--il-size-xl);
   height: var(--il-size-xl);
@@ -47,4 +42,19 @@
 .product {
   border-style: solid;
   border-color: var(--il-primary-color);
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  max-width: 600px;
+  margin: auto;
+}
+.member-card {
+  text-align: center;
+}
+
+.member-icon {
+  border: 2px solid var(--il-primary-color);
 }
