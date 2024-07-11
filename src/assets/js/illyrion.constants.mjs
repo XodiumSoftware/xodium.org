@@ -7,12 +7,5 @@ export const AT_TYPE_SPEED = 150;
 export const AT_BACK_SPEED = 100;
 export const AT_LOOP = true;
 
-// ComponentsLoader
-export const COMPONENTS_FOLDER = "assets/components/";
-export const COMPONENTS_MAP = {
-  header: `${COMPONENTS_FOLDER}header.html`,
-  footer: `${COMPONENTS_FOLDER}footer.html`,
-};
-
 // Github
 export const GH_ORGNAME = "IllyrionSoftware";
