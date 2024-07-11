@@ -2,104 +2,116 @@
 
 import { COMPONENTS_MAP } from "./illyrion.constants.mjs";
 
-document.addEventListener("DOMContentLoaded", function () {
-  const cache = {};
+class ComponentLoader {
+  constructor(componentMap) {
+    this.componentMap = componentMap;
+    this.cache = {};
+  }
 
-  async function loadComponent(componentName) {
-    const file = COMPONENTS_MAP[componentName];
+  async loadComponent(componentName) {
+    const file = this.componentMap[componentName];
     if (!file) {
       throw new Error(`Component ${componentName} not found.`);
     }
 
-    const $placeholders = document.querySelectorAll(
+    const placeholders = document.querySelectorAll(
       `[data-component="${componentName}"]`
     );
-    if (!$placeholders.length) {
+    if (!placeholders.length) {
       return;
     }
 
     let html;
-    if (cache[componentName]) {
+    if (this.cache[componentName]) {
       html =
-        cache[componentName] instanceof Promise
-          ? await cache[componentName]
-          : cache[componentName];
+        this.cache[componentName] instanceof Promise
+          ? await this.cache[componentName]
+          : this.cache[componentName];
     } else {
-      cache[componentName] = fetch(file).then((response) => {
+      this.cache[componentName] = fetch(file).then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         return response.text();
       });
-      html = await cache[componentName];
+      html = await this.cache[componentName];
     }
 
-    $placeholders.forEach((placeholder) => {
+    placeholders.forEach((placeholder) => {
       placeholder.innerHTML = html;
     });
   }
+}
 
-  const $componentPromises = Object.keys(COMPONENTS_MAP).map((componentName) =>
-    loadComponent(componentName)
-  );
-
-  Promise.all($componentPromises).catch((err) =>
-    console.error("An unexpected error occurred while loading components:", err)
-  );
-
-  function initializeNavbarBurgers() {
-    const $navbarBurgers = Array.from(
+class NavbarBurger {
+  initialize() {
+    const navbarBurgers = Array.from(
       document.querySelectorAll(".navbar-burger")
     );
 
-    $navbarBurgers.forEach((el) => {
+    navbarBurgers.forEach((el) => {
       if (!el.dataset.initialized) {
         el.addEventListener("click", () => {
-          const $target = document.getElementById(el.dataset.target);
+          const target = document.getElementById(el.dataset.target);
 
           el.classList.toggle("is-active");
-          $target.classList.toggle("is-active");
+          target.classList.toggle("is-active");
         });
 
         el.dataset.initialized = true;
       }
     });
   }
+}
 
-  function initializeDropdownChevron() {
-    const $toolsDropdown = document.querySelector(".navbar-item.has-dropdown");
-    const $chevronIcon = document.getElementById("tools-chevron");
+class DropdownChevron {
+  initialize() {
+    const toolsDropdown = document.querySelector(".navbar-item.has-dropdown");
+    const chevronIcon = document.getElementById("tools-chevron");
 
-    if ($toolsDropdown && $chevronIcon) {
-      if (!$toolsDropdown.dataset.initialized) {
-        $toolsDropdown.addEventListener("mouseover", () => {
-          $chevronIcon.classList.replace("fa-chevron-down", "fa-chevron-up");
+    if (toolsDropdown && chevronIcon) {
+      if (!toolsDropdown.dataset.initialized) {
+        toolsDropdown.addEventListener("mouseover", () => {
+          chevronIcon.classList.replace("fa-chevron-down", "fa-chevron-up");
         });
 
-        $toolsDropdown.addEventListener("mouseout", () => {
-          $chevronIcon.classList.replace("fa-chevron-up", "fa-chevron-down");
+        toolsDropdown.addEventListener("mouseout", () => {
+          chevronIcon.classList.replace("fa-chevron-up", "fa-chevron-down");
         });
 
-        $toolsDropdown.dataset.initialized = true;
+        toolsDropdown.dataset.initialized = true;
       }
     } else {
-      if (!$toolsDropdown) {
+      if (!toolsDropdown) {
         console.error("toolsDropdown element not found");
       }
-      if (!$chevronIcon) {
+      if (!chevronIcon) {
         console.error("chevronIcon element not found");
       }
     }
   }
+}
 
-  const $observer = new MutationObserver((mutations) => {
+document.addEventListener("DOMContentLoaded", function () {
+  const componentLoader = new ComponentLoader(COMPONENTS_MAP);
+  const navbarBurger = new NavbarBurger();
+  const dropdownChevron = new DropdownChevron();
+
+  Object.keys(COMPONENTS_MAP).forEach((componentName) =>
+    componentLoader.loadComponent(componentName)
+  );
+
+  navbarBurger.initialize();
+  dropdownChevron.initialize();
+
+  const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       if (mutation.addedNodes.length) {
-        initializeNavbarBurgers();
-        initializeDropdownChevron();
+        navbarBurger.initialize();
+        dropdownChevron.initialize();
       }
     });
   });
 
-  $observer.observe(document.body, { childList: true, subtree: true });
+  observer.observe(document.body, { childList: true, subtree: true });
 });
