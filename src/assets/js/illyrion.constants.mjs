@@ -8,7 +8,7 @@ export const AT_BACK_SPEED = 100;
 export const AT_LOOP = true;
 
 // ComponentsLoader
-export const COMPONENTS_FOLDER = "../components/";
+export const COMPONENTS_FOLDER = "assets/components/";
 export const COMPONENTS_MAP = {
   header: `${COMPONENTS_FOLDER}header.html`,
   footer: `${COMPONENTS_FOLDER}footer.html`,
