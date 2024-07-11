@@ -58,11 +58,3 @@
 .member-icon {
   border: 2px solid var(--il-light-color);
 }
-
-html {
-  scroll-behavior: smooth;
-}
-
-#team {
-  display: none;
-}
