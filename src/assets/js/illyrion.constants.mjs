@@ -16,4 +16,3 @@ export const COMPONENTS_MAP = {
 
 // Github
 export const GH_ORGNAME = "IllyrionSoftware";
-export const GH_TOKEN = "";
