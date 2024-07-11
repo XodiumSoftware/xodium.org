@@ -46,14 +46,113 @@
     <!-- Internal scripts -->
     <script src="assets/js/illyrion.typed.mjs" type="module"></script>
     <script src="assets/js/illyrion.utils.mjs" type="module"></script>
+    <script src="assets/js/illyrion.utils.github.mjs" type="module"></script>
   </head>
 
   <body class="is-family-monospace">
-    <!-- Header component -->
-    <div data-component="header"></div>
+    <!-- Header -->
+    <header class="is-mobile is-vcentered">
+      <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="container">
+          <!-- Navbar brand -->
+          <div class="navbar-brand">
+            <a data-toggle="index" class="navbar-item" href="">
+              <strong>ILLYRION</strong>
+            </a>
+            <!-- Burger menu for mobile view -->
+            <a
+              role="button"
+              class="navbar-burger"
+              aria-label="menu"
+              aria-expanded="false"
+              data-target="navbarMenu"
+            >
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+            </a>
+          </div>
+          <!-- Navbar menu -->
+          <div id="navbarMenu" class="navbar-menu">
+            <!-- Navbar start -->
+            <div class="navbar-start">
+              <!-- TOOLS item -->
+              <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-item">
+                  TOOLS
+                  <i
+                    id="tools-chevron"
+                    class="fas fa-chevron-down ml-2 has-text-link"
+                  ></i>
+                </a>
+                <div class="navbar-dropdown">
+                  <!-- Dardanium dropdown item -->
+                  <a
+                    class="navbar-item"
+                    id="dardanium-nav"
+                    href="https://github.com/IllyrionSoftware/Dardanium"
+                  >
+                    <img class="mr-2" src="./assets/img/dardanium.svg" alt="" />
+                    <strong>Dardanium</strong>
+                  </a>
+                  <!-- Dalmatium dropdown item -->
+                  <a
+                    class="navbar-item"
+                    id="dalmatium-nav"
+                    href="https://github.com/IllyrionSoftware/Dalmatium"
+                  >
+                    <img class="mr-2" src="./assets/img/dalmatium.svg" alt="" />
+                    <strong>Dalmatium</strong>
+                  </a>
+                </div>
+              </div>
+              <!-- TEAM item -->
+              <a data-toggle="team" class="navbar-item" href=""> TEAM </a>
+            </div>
+            <!-- Navbar end -->
+            <div class="navbar-end">
+              <!-- Discord item -->
+              <a
+                data-tooltip="Discord"
+                class="navbar-item has-tooltip-arrow has-tooltip-bottom"
+                href="https://discord.gg/88QWgaavRq"
+                target="_blank"
+              >
+                <span class="icon">
+                  <i class="fab fa-discord"></i>
+                </span>
+              </a>
+              <!-- Wiki item -->
+              <a
+                data-tooltip="wiki"
+                class="navbar-item has-tooltip-arrow has-tooltip-bottom"
+                href="https://wiki.illyrion.eu"
+                target="_blank"
+              >
+                <span class="icon">
+                  <i class="fas fa-book"></i>
+                </span>
+              </a>
+              <!-- Github item -->
+              <a
+                data-tooltip="Github"
+                class="navbar-item has-tooltip-arrow has-tooltip-bottom"
+                href="https://github.com/IllyrionSoftware"
+                target="_blank"
+              >
+                <span class="icon">
+                  <i class="fab fa-github"></i>
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
 
     <!-- Landing section -->
-    <section class="section hero is-fullheight">
+    <section data-section="index" class="section hero is-fullheight">
       <div
         class="container has-text-centered hero-body is-flex-direction-column is-justify-content-center is-align-items-center"
       >
@@ -80,7 +179,7 @@
     </section>
 
     <!-- Dardanium section -->
-    <section class="section has-text-right" id="dardanium">
+    <section data-section="index" class="section has-text-right" id="dardanium">
       <div class="container p-6 product">
         <h2 class="title">
           <img class="svg-icon" src="./assets/img/dardanium.svg" alt="" />
@@ -104,7 +203,7 @@
     </section>
 
     <!-- Dalmatium section -->
-    <section class="section has-text-left" id="dalmatium">
+    <section data-section="index" class="section has-text-left" id="dalmatium">
       <div class="container p-6 product">
         <h2 class="title">
           <img class="svg-icon" src="./assets/img/dalmatium.svg" alt="" />
@@ -127,7 +226,40 @@
       </div>
     </section>
 
-    <!-- Footer component -->
-    <div data-component="footer"></div>
+    <!-- Team section -->
+    <section data-section="team" class="section hero is-fullheight">
+      <div class="container p-6 has-text-centered">
+        <h2 class="title il-secondary-color">Our Team</h2>
+        <div class="columns">
+          <div class="column">
+            <p>No matter the project, our team can handle it.</p>
+          </div>
+        </div>
+        <div class="team-grid"></div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="columns is-mobile is-vcentered">
+        <div class="column has-text-left">
+          <p>© 2024 ILLYRION SOFTWARE INC</p>
+        </div>
+        <div class="column has-text-centered">
+          <a href="https://bulma.io" target="_blank">
+            Made with
+            <img
+              src="https://bulma.io/assets/brand/Bulma%20Logo%20White.svg"
+              alt="Made with Bulma"
+              width="128"
+              height="24"
+            />
+          </a>
+        </div>
+        <div class="column has-text-right">
+          <p>Open-Source (CAD) Software Company</p>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

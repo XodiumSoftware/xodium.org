@@ -1,50 +1,33 @@
 // illyrion.utils.mjs
 
-import { COMPONENTS_MAP } from "./illyrion.constants.mjs";
+class ContentSwapper {
+  constructor() {
+    const links = document.querySelectorAll("[data-toggle]");
+    const sections = document.querySelectorAll("[data-section]");
 
-class ComponentLoader {
-  constructor(componentMap) {
-    this.componentMap = componentMap;
-    this.cache = {};
-  }
-
-  async loadComponent(componentName) {
-    const file = this.componentMap[componentName];
-    if (!file) {
-      throw new Error(`Component ${componentName} not found.`);
-    }
-
-    const placeholders = document.querySelectorAll(
-      `[data-component="${componentName}"]`
-    );
-    if (!placeholders.length) {
-      return;
-    }
-
-    let html;
-    if (this.cache[componentName]) {
-      html =
-        this.cache[componentName] instanceof Promise
-          ? await this.cache[componentName]
-          : this.cache[componentName];
-    } else {
-      this.cache[componentName] = fetch(file).then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+    function toggleSections(showSectionData) {
+      sections.forEach((section) => {
+        if (section.dataset.section === showSectionData) {
+          section.style.display = "block";
+        } else {
+          section.style.display = "none";
         }
-        return response.text();
       });
-      html = await this.cache[componentName];
     }
 
-    placeholders.forEach((placeholder) => {
-      placeholder.innerHTML = html;
+    links.forEach((link) => {
+      link.addEventListener("click", function (e) {
+        e.preventDefault();
+        toggleSections(this.dataset.toggle);
+      });
     });
+
+    toggleSections("index");
   }
 }
 
 class NavbarBurger {
-  initialize() {
+  constructor() {
     const navbarBurgers = Array.from(
       document.querySelectorAll(".navbar-burger")
     );
@@ -65,7 +48,7 @@ class NavbarBurger {
 }
 
 class DropdownChevron {
-  initialize() {
+  constructor() {
     const toolsDropdown = document.querySelector(".navbar-item.has-dropdown");
     const chevronIcon = document.getElementById("tools-chevron");
 
@@ -93,25 +76,7 @@ class DropdownChevron {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  const componentLoader = new ComponentLoader(COMPONENTS_MAP);
-  const navbarBurger = new NavbarBurger();
-  const dropdownChevron = new DropdownChevron();
-
-  Object.keys(COMPONENTS_MAP).forEach((componentName) =>
-    componentLoader.loadComponent(componentName)
-  );
-
-  navbarBurger.initialize();
-  dropdownChevron.initialize();
-
-  const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      if (mutation.addedNodes.length) {
-        navbarBurger.initialize();
-        dropdownChevron.initialize();
-      }
-    });
-  });
-
-  observer.observe(document.body, { childList: true, subtree: true });
+  new ContentSwapper();
+  new NavbarBurger();
+  new DropdownChevron();
 });
