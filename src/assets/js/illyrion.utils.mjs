@@ -75,8 +75,26 @@ class DropdownChevron {
   }
 }
 
+class SmoothScroller {
+  constructor() {
+    const scrollLink = document.getElementById("scrollLink");
+
+    if (scrollLink) {
+      scrollLink.addEventListener("click", function (event) {
+        event.preventDefault();
+        document
+          .getElementById("dardanium")
+          .scrollIntoView({ behavior: "smooth" });
+      });
+    } else {
+      console.error("scrollLink element not found");
+    }
+  }
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   new ContentSwapper();
   new NavbarBurger();
   new DropdownChevron();
+  new SmoothScroller();
 });
