@@ -10,20 +10,10 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    const walker = document.createTreeWalker(
-      document.body,
-      NodeFilter.SHOW_COMMENT,
-      {
-        acceptNode: function (node) {
-          return node.nodeValue.trim() === `{${componentName}}`
-            ? NodeFilter.FILTER_ACCEPT
-            : NodeFilter.FILTER_REJECT;
-        },
-      }
+    const placeholders = document.querySelectorAll(
+      `[data-component="${componentName}"]`
     );
-
-    const placeholderNode = walker.nextNode();
-    if (!placeholderNode) {
+    if (!placeholders.length) {
       return;
     }
 
@@ -33,15 +23,9 @@ document.addEventListener("DOMContentLoaded", function () {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const html = await response.text();
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = html;
-      while (tempDiv.firstChild) {
-        placeholderNode.parentNode.insertBefore(
-          tempDiv.firstChild,
-          placeholderNode
-        );
-      }
-      placeholderNode.parentNode.removeChild(placeholderNode);
+      placeholders.forEach((placeholder) => {
+        placeholder.innerHTML = html;
+      });
     } catch (err) {
       console.error(`Failed to load ${componentName}:`, err);
     }

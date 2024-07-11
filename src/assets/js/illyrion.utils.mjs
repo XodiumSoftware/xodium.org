@@ -27,13 +27,11 @@ function initializeDropdownChevron() {
   if (toolsDropdown && chevronIcon) {
     if (!toolsDropdown.dataset.initialized) {
       toolsDropdown.addEventListener("mouseover", () => {
-        chevronIcon.classList.remove("fa-chevron-down");
-        chevronIcon.classList.add("fa-chevron-up");
+        chevronIcon.classList.replace("fa-chevron-down", "fa-chevron-up");
       });
 
       toolsDropdown.addEventListener("mouseout", () => {
-        chevronIcon.classList.remove("fa-chevron-up");
-        chevronIcon.classList.add("fa-chevron-down");
+        chevronIcon.classList.replace("fa-chevron-up", "fa-chevron-down");
       });
 
       toolsDropdown.dataset.initialized = true;
