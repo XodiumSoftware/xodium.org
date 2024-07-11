@@ -8,7 +8,7 @@ class ContentSwapper {
     function toggleSections(showSectionData) {
       sections.forEach((section) => {
         if (section.dataset.section === showSectionData) {
-          section.style.display = "block";
+          section.style.display = "";
         } else {
           section.style.display = "none";
         }
