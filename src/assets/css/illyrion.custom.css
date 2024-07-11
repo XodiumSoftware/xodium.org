@@ -29,12 +29,12 @@
   border-radius: var(--il-radius-l);
 }
 
-#dardanium.navbar-item:hover {
+#dardanium-nav:hover {
   background-color: var(--il-secondary-color);
   color: var(--il-dark-color);
 }
 
-#dalmatium.navbar-item:hover {
+#dalmatium-nav:hover {
   background-color: var(--il-primary-color);
   color: var(--il-dark-color);
 }
@@ -57,4 +57,8 @@
 
 .member-icon {
   border: 2px solid var(--il-light-color);
+}
+
+html {
+  scroll-behavior: smooth;
 }
