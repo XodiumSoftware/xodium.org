@@ -3,12 +3,14 @@
   "remoteUser": "root",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
-      "installZsh": "true",
-      "upgradePackages": "true"
+      "configureZshAsDefaultShell": true,
+      "installOhMyZsh": true,
+      "installOhMyZshConfig": true,
+      "upgradePackages": true
     },
     "ghcr.io/devcontainers/features/git:1": {
       "version": "latest",
-      "ppa": "false"
+      "ppa": false
     }
   },
   "customizations": {
@@ -17,6 +19,7 @@
         "esbenp.prettier-vscode",
         "github.copilot",
         "github.vscode-github-actions",
+        "ms-vscode.live-server",
         "pkief.material-icon-theme",
         "usernamehw.errorlens",
         "vsls-contrib.gistfs"
