@@ -36,9 +36,9 @@ jobs:
         name: Package Script
         run: npm run build
 
-      - id: remove_sass
-        name: Remove SASS Folder
-        run: rm -rf src/assets/sass/
+      - id: remove_sass_ts
+        name: Remove SASS & TS Folder
+        run: rm -rf src/assets/sass/ src/assets/ts/
 
       - id: setup_pages
         name: Setup Pages
