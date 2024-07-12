@@ -26,6 +26,24 @@ jobs:
         name: Checkout
         uses: actions/checkout@main
 
+      - id: setup_node
+        name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+
+      - id: install_dependencies
+        name: Install Dependencies
+        run: npm install
+
+      - id: build_css
+        name: Build CSS from SASS
+        run: npx sass src/assets/sass/:src/assets/css/
+
+      - id: remove_sass
+        name: Remove SASS Folder
+        run: rm -rf src/assets/sass/
+
       - id: setup_pages
         name: Setup Pages
         uses: actions/configure-pages@main

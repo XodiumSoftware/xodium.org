@@ -2,7 +2,7 @@
 
 import { GH_ORGNAME } from "./illyrion.constants.mjs";
 
-class GitHubOrgMembers {
+class UtilsGithub {
   constructor() {
     this.fetchOrgMembers();
   }
@@ -153,4 +153,4 @@ class GitHubOrgMembers {
   }
 }
 
-new GitHubOrgMembers();
+new UtilsGithub();

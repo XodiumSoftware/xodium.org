@@ -30,5 +30,7 @@
   "workbench.colorTheme": "Monokai Dimmed",
   "workbench.iconTheme": "material-icon-theme",
   "workbench.startupEditor": "none",
-  "livePreview.defaultPreviewPath": "/src/index.html"
+  "[sass]": {
+    "editor.defaultFormatter": "syler.sass-indented"
+  }
 }

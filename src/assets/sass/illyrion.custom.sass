@@ -1,0 +1,60 @@
+// SASS
+// illyrion.custom
+
+@use "./illyrion.variables" as *
+
+.il-primary-color
+  background-image: $il-primary-gradient !important
+  color: transparent
+  background-clip: text
+  -webkit-background-clip: text
+  display: inline-block
+
+.il-secondary-color
+  color: $il-secondary-color !important
+
+.auto-type,
+.typed-cursor
+  background-image: $il-primary-gradient
+  color: transparent
+  background-clip: text
+  -webkit-background-clip: text
+  display: inline-block
+
+.svg-icon
+  width: $il-size-xl
+  height: $il-size-xl
+  vertical-align: middle
+  border-radius: $il-radius-l
+
+#dardanium-nav:hover
+  background-color: $il-secondary-color
+  color: $il-dark-color
+
+#dalmatium-nav:hover
+  background-color: $il-primary-color
+  color: $il-dark-color
+
+.product
+  border-style: solid
+  border-color: $il-primary-color
+
+.team-grid
+  display: grid
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr))
+  gap: 20px
+  max-width: 600px
+  margin: auto
+
+.member-card
+  text-align: center
+
+.member-icon
+  border: 2px solid $il-light-color
+
+.navbar
+  transform: translateY(0)
+  transition: transform 0.2s ease-in-out
+
+  &.is-hidden-scroll
+    transform: translateY(-100%)

@@ -19,8 +19,8 @@
         "esbenp.prettier-vscode",
         "github.copilot",
         "github.vscode-github-actions",
-        "ms-vscode.live-server",
         "pkief.material-icon-theme",
+        "syler.sass-indented",
         "usernamehw.errorlens",
         "vsls-contrib.gistfs"
       ]
