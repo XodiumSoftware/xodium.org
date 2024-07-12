@@ -63,7 +63,7 @@
         <div class="container">
           <!-- Navbar brand -->
           <div class="navbar-brand">
-            <a data-toggle="index" class="navbar-item" href="">
+            <a data-cs-trigger="index" class="navbar-item" href="">
               <strong>ILLYRION</strong>
             </a>
             <!-- Burger menu for mobile view -->
@@ -115,7 +115,7 @@
                 </div>
               </div>
               <!-- TEAM item -->
-              <a data-toggle="team" class="navbar-item" href=""> TEAM </a>
+              <a data-cs-trigger="team" class="navbar-item" href=""> TEAM </a>
             </div>
             <!-- Navbar end -->
             <div class="navbar-end">
@@ -159,7 +159,7 @@
     </header>
 
     <!-- Landing section -->
-    <section data-section="index" class="hero is-fullheight-with-navbar">
+    <section data-cs-target="index" class="hero is-fullheight-with-navbar">
       <div class="hero-body">
         <div class="container has-text-centered">
           <h1 class="title is-size-1">
@@ -171,7 +171,7 @@
           </p>
           <div class="buttons is-centered">
             <a
-              id="scrollLink"
+              data-ila-target="dardanium"
               href=""
               class="button is-focused mt-5 has-text-weight-bold"
               >GET STARTED</a
@@ -187,7 +187,11 @@
     </section>
 
     <!-- Dardanium section -->
-    <section data-section="index" class="section has-text-right" id="dardanium">
+    <section
+      data-cs-target="index"
+      class="section has-text-right"
+      id="dardanium"
+    >
       <div class="container p-6 product">
         <h2 class="title">
           <img class="svg-icon" src="./assets/img/dardanium.svg" alt="" />
@@ -211,7 +215,11 @@
     </section>
 
     <!-- Dalmatium section -->
-    <section data-section="index" class="section has-text-left" id="dalmatium">
+    <section
+      data-cs-target="index"
+      class="section has-text-left"
+      id="dalmatium"
+    >
       <div class="container p-6 product">
         <h2 class="title">
           <img class="svg-icon" src="./assets/img/dalmatium.svg" alt="" />
@@ -235,7 +243,7 @@
     </section>
 
     <!-- Team section -->
-    <section data-section="team" class="hero is-fullheight-with-navbar">
+    <section data-cs-target="team" class="hero is-fullheight-with-navbar">
       <div class="hero-body">
         <div class="container has-text-centered">
           <h2 class="title il-secondary-color">Our Team</h2>

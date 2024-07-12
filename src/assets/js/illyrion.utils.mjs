@@ -1,102 +1,101 @@
 // illyrion.utils.mjs
 
-class ContentSwapper {
+class Utils {
   constructor() {
-    const links = document.querySelectorAll("[data-toggle]");
-    const sections = document.querySelectorAll("[data-section]");
+    this.handleClick = this.handleClick.bind(this);
+    this.handleNavbarClick = this.handleNavbarClick.bind(this);
+    this.handleDropdownHover = this.handleDropdownHover.bind(this);
+    this.handleContentSwap = this.handleContentSwap.bind(this);
 
-    function toggleSections(showSectionData) {
-      sections.forEach((section) => {
-        if (section.dataset.section === showSectionData) {
-          section.style.display = "";
-        } else {
-          section.style.display = "none";
-        }
-      });
-      sessionStorage.setItem("currentSection", showSectionData);
-    }
-
-    links.forEach((link) => {
-      link.addEventListener("click", function (e) {
-        e.preventDefault();
-        toggleSections(this.dataset.toggle);
-      });
-    });
-
-    const currentSection = sessionStorage.getItem("currentSection");
-    toggleSections(currentSection || "index");
+    this.attachEventListeners();
+    this.handleDropdownHover();
+    this.handleContentSwap();
   }
-}
 
-class NavbarBurger {
-  constructor() {
-    const navbarBurgers = Array.from(
-      document.querySelectorAll(".navbar-burger")
-    );
+  attachEventListeners() {
+    const addEl = document.body.addEventListener;
+    addEl("click", this.handleClick, { capture: true });
+    addEl("click", this.handleNavbarClick, { capture: true });
+  }
 
-    navbarBurgers.forEach((el) => {
-      if (!el.dataset.initialized) {
-        el.addEventListener("click", () => {
-          const target = document.getElementById(el.dataset.target);
-
-          el.classList.toggle("is-active");
-          target.classList.toggle("is-active");
-        });
-
-        el.dataset.initialized = true;
+  handleClick(e) {
+    const targetId = e.target.getAttribute("data-ila-target");
+    const behavior = e.target.getAttribute("data-ila-behavior") || "smooth";
+    if (targetId) {
+      e.preventDefault();
+      const targetEl = document.getElementById(targetId);
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: behavior });
+      } else {
+        throw new Error(targetId + " element not found");
       }
-    });
+    }
   }
-}
 
-class DropdownChevron {
-  constructor() {
+  handleNavbarClick(e) {
+    const el = e.target.closest(".navbar-burger");
+    if (el && !el.dataset.initialized) {
+      const target = document.getElementById(el.dataset.target);
+      el.classList.toggle("is-active");
+      target.classList.toggle("is-active");
+      el.dataset.initialized = true;
+    }
+  }
+
+  handleDropdownHover() {
     const toolsDropdown = document.querySelector(".navbar-item.has-dropdown");
     const chevronIcon = document.getElementById("tools-chevron");
 
     if (toolsDropdown && chevronIcon) {
       if (!toolsDropdown.dataset.initialized) {
         toolsDropdown.addEventListener("mouseover", () => {
-          chevronIcon.classList.replace("fa-chevron-down", "fa-chevron-up");
+          this.toggleClass(chevronIcon, "fa-chevron-down", "fa-chevron-up");
         });
 
         toolsDropdown.addEventListener("mouseout", () => {
-          chevronIcon.classList.replace("fa-chevron-up", "fa-chevron-down");
+          this.toggleClass(chevronIcon, "fa-chevron-up", "fa-chevron-down");
         });
 
         toolsDropdown.dataset.initialized = true;
       }
     } else {
       if (!toolsDropdown) {
-        console.error("toolsDropdown element not found");
+        throw new Error("toolsDropdown element not found");
       }
       if (!chevronIcon) {
-        console.error("chevronIcon element not found");
+        throw new Error("chevronIcon element not found");
       }
     }
   }
-}
 
-class SmoothScroller {
-  constructor() {
-    const scrollLink = document.getElementById("scrollLink");
+  handleContentSwap() {
+    this.targets = document.querySelectorAll("[data-cs-target]");
+    this.currentTarget = sessionStorage.getItem("currentTarget") || "index";
 
-    if (scrollLink) {
-      scrollLink.addEventListener("click", function (event) {
-        event.preventDefault();
-        document
-          .getElementById("dardanium")
-          .scrollIntoView({ behavior: "smooth" });
-      });
-    } else {
-      console.error("scrollLink element not found");
-    }
+    document.body.addEventListener("click", (e) => {
+      const trigger = e.target.closest("[data-cs-trigger]");
+      if (trigger) {
+        e.preventDefault();
+        this.toggleSections(trigger.dataset.csTrigger);
+      }
+    });
+
+    this.toggleSections(this.currentTarget);
+  }
+
+  toggleSections(showTargetData) {
+    this.targets.forEach((target) => {
+      target.style.display =
+        target.dataset.csTarget === showTargetData ? "" : "none";
+    });
+    sessionStorage.setItem("currentTarget", showTargetData);
+  }
+
+  toggleClass(el, oldClass, newClass) {
+    el.classList.replace(oldClass, newClass);
   }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  new ContentSwapper();
-  new NavbarBurger();
-  new DropdownChevron();
-  new SmoothScroller();
+  new Utils();
 });
