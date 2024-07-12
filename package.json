@@ -5,10 +5,10 @@
     "doc": "docs"
   },
   "scripts": {
-    "build:sass": "npx sass --style=compressed src/assets/sass/:src/assets/css/",
+    "build:min-css": "npx sass --style=compressed src/assets/sass/:src/assets/css/",
     "optimize:svg": "npx svgo -f src/assets/svg -o src/assets/svg",
     "clean": "rimraf src/assets/css/",
-    "build": "npm run clean && npm-run-all --parallel build:sass optimize:svg",
+    "build": "npm install && npm run clean && npm-run-all --parallel build:min-css optimize:svg",
     "start": "npm run build && http-server ./src -p 8080"
   },
   "keywords": [

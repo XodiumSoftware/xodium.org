@@ -32,17 +32,9 @@ jobs:
         with:
           node-version: "14"
 
-      - id: install_dependencies
-        name: Install Dependencies
-        run: npm install
-
-      - id: optimize_svg
-        name: Optimize SVG
-        run: npx svgo -f src/assets/svg -o src/assets/svg
-
-      - id: build_css
-        name: Build CSS from SASS
-        run: npx sass --style=compressed src/assets/sass/:src/assets/css/
+      - id: package_script
+        name: Package Script
+        run: npm run build
 
       - id: remove_sass
         name: Remove SASS Folder
