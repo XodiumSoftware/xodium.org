@@ -6,7 +6,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "build:sass": "npx sass src/assets/sass/:src/assets/css/",
+    "build:sass": "npx sass --style=compressed src/assets/sass/:src/assets/css/",
     "clean": "rimraf src/assets/css/ && rimraf dist/",
     "build": "npm run clean && npm-run-all --parallel build:*",
     "prebuild": "npm install",

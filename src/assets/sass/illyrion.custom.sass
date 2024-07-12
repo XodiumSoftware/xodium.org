@@ -3,15 +3,17 @@
 
 @use "./illyrion.variables" as vars
 
+// !important
 .il-primary-color
-  +vars.gradient(map-get(vars.$colors, 'primary'), map-get(vars.$colors, 'primary-dark')) !important
+  +vars.gradient(map-get(vars.$colors, 'primary'), map-get(vars.$colors, 'primary-dark'))
   color: transparent
   background-clip: text
   -webkit-background-clip: text
   display: inline-block
 
+// !important
 .il-secondary-color
-  color: map-get(vars.$colors, 'secondary') !important
+  color: map-get(vars.$colors, 'secondary')
 
 .auto-type,
 .typed-cursor

@@ -38,7 +38,7 @@ jobs:
 
       - id: build_css
         name: Build CSS from SASS
-        run: npx sass src/assets/sass/:src/assets/css/
+        run: npx sass --style=compressed src/assets/sass/:src/assets/css/
 
       - id: remove_sass
         name: Remove SASS Folder

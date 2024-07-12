@@ -1,37 +1,15 @@
-// Optimized SASS Variables
+// SASS
+// Illyrion.variables
 
 // Colors
-$colors: (
-primary: #dc3dcb,
-primary-dark: #a400a4,
-secondary: #19f5aa,
-secondary-dark: #00c853,
-light: #ffffff,
-dark: #000000,
-bg-primary: #001220,
-bg-secondary: #001728,
-)
-
-// Gradients
-@mixin gradient($start-color, $end-color)
-    background: linear-gradient(to right, $start-color, $end-color)
+$colors: ( primary: #dc3dcb,primary-dark: #a400a4,secondary: #19f5aa,secondary-dark: #00c853,light: #ffffff,dark: #000000,bg-primary: #001220,bg-secondary: #001728)
 
 // Radius Sizes
-$radius-sizes: (
-    xs: 2px,
-s: 4px,
-    m: 6px,
-    l: 10px,
-    xl: 12px,
-    xxl: 16px,
-)
+$radius-sizes: (xs: 2px,s: 4px,m: 6px,l: 10px,xl: 12px,xxl: 16px)
 
 // Element Sizes
-$element-sizes: (
-    xs: 8px,
-s: 16px,
-    m: 24px,
-    l: 32px,
-    xl: 48px,
-    xxl: 64px,
-)
+$element-sizes: (xs: 8px,s: 16px,m: 24px,l: 32px,xl: 48px,xxl: 64px)
+
+// Gradients
+=gradient($start-color, $end-color)
+    background: linear-gradient(to right, $start-color, $end-color)
