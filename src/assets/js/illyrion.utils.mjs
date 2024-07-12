@@ -13,6 +13,7 @@ class ContentSwapper {
           section.style.display = "none";
         }
       });
+      sessionStorage.setItem("currentSection", showSectionData);
     }
 
     links.forEach((link) => {
@@ -22,7 +23,8 @@ class ContentSwapper {
       });
     });
 
-    toggleSections("index");
+    const currentSection = sessionStorage.getItem("currentSection");
+    toggleSections(currentSection || "index");
   }
 }
 
