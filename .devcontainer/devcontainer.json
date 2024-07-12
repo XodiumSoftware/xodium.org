@@ -1,5 +1,5 @@
 {
-  "image": "mcr.microsoft.com/vscode/devcontainers/base:debian",
+  "image": "mcr.microsoft.com/vscode/devcontainers/javascript-node",
   "remoteUser": "root",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
