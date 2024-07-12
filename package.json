@@ -1,7 +1,6 @@
 {
   "name": "illyrionwebsite",
   "version": "1.0.0",
-  "main": "src/index.js",
   "directories": {
     "doc": "docs"
   },
