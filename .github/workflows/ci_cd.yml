@@ -36,6 +36,10 @@ jobs:
         name: Install Dependencies
         run: npm install
 
+      - id: optimize_svg
+        name: Optimize SVG
+        run: npx svgo -f src/assets/svg -o src/assets/svg
+
       - id: build_css
         name: Build CSS from SASS
         run: npx sass --style=compressed src/assets/sass/:src/assets/css/
