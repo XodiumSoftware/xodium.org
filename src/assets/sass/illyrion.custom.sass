@@ -1,43 +1,43 @@
 // SASS
 // illyrion.custom
 
-@use "./illyrion.variables" as *
+@use "./illyrion.variables" as vars
 
 .il-primary-color
-  background-image: $il-primary-gradient !important
+  +vars.gradient(map-get(vars.$colors, 'primary'), map-get(vars.$colors, 'primary-dark')) !important
   color: transparent
   background-clip: text
   -webkit-background-clip: text
   display: inline-block
 
 .il-secondary-color
-  color: $il-secondary-color !important
+  color: map-get(vars.$colors, 'secondary') !important
 
 .auto-type,
 .typed-cursor
-  background-image: $il-primary-gradient
+  +vars.gradient(map-get(vars.$colors, 'primary'), map-get(vars.$colors, 'primary-dark'))
   color: transparent
   background-clip: text
   -webkit-background-clip: text
   display: inline-block
 
 .svg-icon
-  width: $il-size-xl
-  height: $il-size-xl
+  width: map-get(vars.$element-sizes, 'xl')
+  height: map-get(vars.$element-sizes, 'xl')
   vertical-align: middle
-  border-radius: $il-radius-l
+  border-radius: map-get(vars.$radius-sizes, 'l')
 
 #dardanium-nav:hover
-  background-color: $il-secondary-color
-  color: $il-dark-color
+  background-color: map-get(vars.$colors, 'secondary')
+  color: map-get(vars.$colors, 'dark')
 
 #dalmatium-nav:hover
-  background-color: $il-primary-color
-  color: $il-dark-color
+  background-color: map-get(vars.$colors, 'primary')
+  color: map-get(vars.$colors, 'dark')
 
 .product
   border-style: solid
-  border-color: $il-primary-color
+  border-color: map-get(vars.$colors, 'primary')
 
 .team-grid
   display: grid
@@ -50,11 +50,10 @@
   text-align: center
 
 .member-icon
-  border: 2px solid $il-light-color
+  border: 2px solid map-get(vars.$colors, 'light')
 
 .navbar
   transform: translateY(0)
   transition: transform 0.2s ease-in-out
-
   &.is-hidden-scroll
     transform: translateY(-100%)

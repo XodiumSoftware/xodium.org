@@ -1,33 +1,37 @@
-// SASS
-// illyrion.variables
+// Optimized SASS Variables
 
 // Colors
-$il-primary-color: #dc3dcb
-$il-primary-dark-color: #a400a4
-$il-primary-gradient: linear-gradient(to right, $il-primary-color, $il-primary-dark-color)
+$colors: (
+primary: #dc3dcb,
+primary-dark: #a400a4,
+secondary: #19f5aa,
+secondary-dark: #00c853,
+light: #ffffff,
+dark: #000000,
+bg-primary: #001220,
+bg-secondary: #001728,
+)
 
-$il-secondary-color: #19f5aa
-$il-secondary-dark-color: #00c853
-$il-secondary-gradient: linear-gradient(to right, $il-secondary-color, $il-secondary-dark-color)
+// Gradients
+@mixin gradient($start-color, $end-color)
+    background: linear-gradient(to right, $start-color, $end-color)
 
-$il-light-color: #ffffff
-$il-dark-color: #000000
+// Radius Sizes
+$radius-sizes: (
+    xs: 2px,
+s: 4px,
+    m: 6px,
+    l: 10px,
+    xl: 12px,
+    xxl: 16px,
+)
 
-$il-bg-primary-color: #001220
-$il-bg-secondary-color: #001728
-
-// Radius
-$il-radius-xs: 2px
-$il-radius-s: 4px
-$il-radius-m: 6px
-$il-radius-l: 10px
-$il-radius-xl: 12px
-$il-radius-xxl: 16px
-
-// Sizes
-$il-size-xs: 8px
-$il-size-s: 16px
-$il-size-m: 24px
-$il-size-l: 32px
-$il-size-xl: 48px
-$il-size-xxl: 64px
+// Element Sizes
+$element-sizes: (
+    xs: 8px,
+s: 16px,
+    m: 24px,
+    l: 32px,
+    xl: 48px,
+    xxl: 64px,
+)
