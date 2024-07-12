@@ -43,6 +43,7 @@
     />
     <!-- External scripts -->
     <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@vizuaalog/bulmajs@0.12.2/dist/bulma.min.js"></script>
     <!-- Internal scripts -->
     <script src="assets/js/illyrion.typed.mjs" type="module"></script>
     <script src="assets/js/illyrion.utils.mjs" type="module"></script>
@@ -52,7 +53,13 @@
   <body class="is-family-monospace">
     <!-- Header -->
     <header class="is-mobile is-vcentered">
-      <nav class="navbar" role="navigation" aria-label="main navigation">
+      <nav
+        class="navbar"
+        role="navigation"
+        aria-label="main navigation"
+        data-hide-on-scroll="true"
+        data-sticky="true"
+      >
         <div class="container">
           <!-- Navbar brand -->
           <div class="navbar-brand">
@@ -163,12 +170,12 @@
             >Software Company
           </p>
           <div class="buttons is-centered">
-          <a
-            id="scrollLink"
-            href=""
-            class="button is-focused mt-5 has-text-weight-bold"
-            >GET STARTED</a
-          >
+            <a
+              id="scrollLink"
+              href=""
+              class="button is-focused mt-5 has-text-weight-bold"
+              >GET STARTED</a
+            >
             <a
               href="https://wiki.illyrion.eu"
               class="button mt-5 has-text-weight-bold"
