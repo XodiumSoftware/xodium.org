@@ -1,6 +1,4 @@
-// illyrion.autotype.ts
-
-import Typed from "typed.js";
+declare var Typed: any;
 
 import {
   T_TARGET,

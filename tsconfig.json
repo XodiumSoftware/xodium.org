@@ -7,9 +7,6 @@
     "module": "ESNext",
     "moduleResolution": "node",
     "outDir": "src/assets/js/",
-    "paths": {
-      "typed.js": ["node_modules/typed.js/lib/typed.min.js"]
-    },
     "skipLibCheck": true,
     "strict": true,
     "target": "ESNext"

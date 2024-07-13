@@ -19,10 +19,6 @@
   "author": "IllyrionSoftware",
   "license": "AGPL-3.0-only",
   "description": "This organization's static website.",
-  "dependencies": {
-    "@types/typed.js": "^2.0.9",
-    "typed.js": "^2.1.0"
-  },
   "devDependencies": {
     "@types/node": "^20.14.10",
     "http-server": "^14.1.1",

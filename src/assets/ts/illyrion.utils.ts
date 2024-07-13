@@ -1,5 +1,3 @@
-// illyrion.utils.ts
-
 class Utils {
   private targets: NodeListOf<HTMLElement> =
     document.querySelectorAll("[data-cs-target]");
