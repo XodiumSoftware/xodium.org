@@ -9,7 +9,8 @@
     "build:js": "npx tsc -p ./tsconfig.json",
     "optimize:svg": "npx svgo -f src/assets/svg -o src/assets/svg",
     "clean": "rimraf src/assets/css/ src/assets/js/",
-    "build": "npm install && npm run clean && npm-run-all --parallel build:* optimize:svg",
+    "update": "npx ncu -u",
+    "build": "npm run update && npm install && npm run clean && npm-run-all --parallel build:* optimize:svg",
     "start": "npm run build && http-server ./src -p 8080"
   },
   "keywords": [
@@ -22,8 +23,9 @@
   "devDependencies": {
     "@types/node": "^20.14.10",
     "http-server": "^14.1.1",
+    "npm-check-updates": "^16.14.20",
     "npm-run-all": "^4.1.5",
-    "rimraf": "^3.0.2",
+    "rimraf": "^6.0.1",
     "sass": "^1.77.8",
     "svgo": "^3.3.2",
     "ts-node": "^10.9.2",
