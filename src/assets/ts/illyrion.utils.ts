@@ -1,8 +1,9 @@
 // illyrion.utils.ts
 
 class Utils {
-  private targets: NodeListOf<Element>;
-  private currentTarget: string;
+  private targets: NodeListOf<HTMLElement> =
+    document.querySelectorAll("[data-cs-target]");
+  private currentTarget: string = "";
 
   constructor() {
     this.handleClick = this.handleClick.bind(this);
@@ -29,7 +30,7 @@ class Utils {
       e.preventDefault();
       const targetEl = document.getElementById(targetId);
       if (targetEl) {
-        targetEl.scrollIntoView({ behavior: behavior });
+        targetEl.scrollIntoView({ behavior: behavior as ScrollBehavior });
       } else {
         throw new Error(targetId + " element not found");
       }
@@ -37,8 +38,8 @@ class Utils {
   }
 
   handleNavbarClick(e: MouseEvent): void {
-    const el = (e.target as Element).closest(".navbar-burger");
-    if (el && !el.dataset.initialized) {
+    const el = (e.target as HTMLElement).closest(".navbar-burger");
+    if (el && el instanceof HTMLElement && !el.dataset.initialized) {
       const target = document.getElementById(el.dataset.target!);
       el.classList.toggle("is-active");
       target!.classList.toggle("is-active");
@@ -47,7 +48,9 @@ class Utils {
   }
 
   handleDropdownHover(): void {
-    const toolsDropdown = document.querySelector(".navbar-item.has-dropdown");
+    const toolsDropdown = document.querySelector(
+      ".navbar-item.has-dropdown"
+    ) as HTMLElement;
     const chevronIcon = document.getElementById("tools-chevron");
 
     if (toolsDropdown && chevronIcon) {
@@ -77,18 +80,17 @@ class Utils {
     this.currentTarget = sessionStorage.getItem("currentTarget") || "index";
 
     document.body.addEventListener("click", (e) => {
-      const trigger = (e.target as Element).closest("[data-cs-trigger]");
-      if (trigger) {
+      const trigger = (e.target as HTMLElement).closest("[data-cs-trigger]");
+      if (trigger && trigger instanceof HTMLElement) {
         e.preventDefault();
         this.toggleSections(trigger.dataset.csTrigger!);
       }
     });
-
     this.toggleSections(this.currentTarget);
   }
 
   toggleSections(showTargetData: string): void {
-    this.targets.forEach((target) => {
+    this.targets.forEach((target: HTMLElement) => {
       target.style.display =
         target.getAttribute("data-cs-target") === showTargetData ? "" : "none";
     });

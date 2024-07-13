@@ -7,61 +7,10 @@ class UtilsGithub {
     this.fetchOrgMembers();
   }
 
-  async encryptData(
-    data: any
-  ): Promise<{ key: CryptoKey; iv: Uint8Array; encrypted: ArrayBuffer }> {
-    const encoded = new TextEncoder().encode(JSON.stringify(data));
-    const key = await window.crypto.subtle.generateKey(
-      {
-        name: "AES-GCM",
-        length: 256,
-      },
-      true,
-      ["encrypt", "decrypt"]
-    );
-    const iv = window.crypto.getRandomValues(new Uint8Array(12));
-    const encrypted = await window.crypto.subtle.encrypt(
-      {
-        name: "AES-GCM",
-        iv: iv,
-      },
-      key,
-      encoded
-    );
-    const exportedKey = await window.crypto.subtle.exportKey("jwk", key);
-    return { key: exportedKey, iv, encrypted };
-  }
-
-  async decryptData(
-    key: JsonWebKey,
-    iv: Uint8Array,
-    data: ArrayBuffer
-  ): Promise<any> {
-    const importedKey = await window.crypto.subtle.importKey(
-      "jwk",
-      key,
-      {
-        name: "AES-GCM",
-        length: 256,
-      },
-      true,
-      ["encrypt", "decrypt"]
-    );
-    const decrypted = await window.crypto.subtle.decrypt(
-      {
-        name: "AES-GCM",
-        iv: iv,
-      },
-      importedKey,
-      data
-    );
-    return JSON.parse(new TextDecoder().decode(decrypted));
-  }
-
   async fetchOrgMembers(): Promise<void> {
     const oneHour = 60 * 60 * 1000;
-    let members = await this.getFromIndexedDB("members");
-    let timestamp = await this.getFromIndexedDB("timestamp");
+    let members = JSON.parse(localStorage.getItem("members") || "null");
+    let timestamp = Number(localStorage.getItem("timestamp"));
 
     if (!members || !timestamp || Date.now() - timestamp > oneHour) {
       const response = await fetch(
@@ -73,89 +22,29 @@ class UtilsGithub {
         }
       );
       members = await response.json();
-      const encryptedMembers = await this.encryptData(members);
-      this.saveToIndexedDB("members", encryptedMembers);
-      this.saveToIndexedDB("timestamp", Date.now());
-    } else {
-      members = await this.decryptData(
-        members.key,
-        members.iv,
-        members.encrypted
-      );
+      localStorage.setItem("members", JSON.stringify(members));
+      localStorage.setItem("timestamp", Date.now().toString());
     }
-
     this.populateTeamGrid(members);
-  }
-
-  async getFromIndexedDB(key: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      const openRequest = indexedDB.open("MyDatabase", 1);
-
-      openRequest.onupgradeneeded = function (e) {
-        const db = e.target.result;
-        if (!db.objectStoreNames.contains("store")) {
-          db.createObjectStore("store");
-        }
-      };
-
-      openRequest.onsuccess = function (e) {
-        const db = e.target.result;
-        const transaction = db.transaction("store", "readonly");
-        const store = transaction.objectStore("store");
-        const getRequest = store.get(key);
-
-        getRequest.onsuccess = function (e) {
-          resolve(e.target.result);
-        };
-      };
-
-      openRequest.onerror = function (e) {
-        reject("Error getting data from IndexedDB");
-      };
-    });
-  }
-
-  async saveToIndexedDB(key: string, data: any): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const openRequest = indexedDB.open("MyDatabase", 1);
-
-      openRequest.onupgradeneeded = function (e) {
-        const db = e.target.result;
-        if (!db.objectStoreNames.contains("store")) {
-          db.createObjectStore("store");
-        }
-      };
-
-      openRequest.onsuccess = function (e) {
-        const db = e.target.result;
-        const transaction = db.transaction("store", "readwrite");
-        const store = transaction.objectStore("store");
-        const putRequest = store.put(data, key);
-
-        putRequest.onsuccess = function (e) {
-          resolve();
-        };
-      };
-
-      openRequest.onerror = function (e) {
-        reject("Error saving data to IndexedDB");
-      };
-    });
   }
 
   populateTeamGrid(members: any[]): void {
     const grid = document.querySelector(".team-grid");
-    members.forEach((member) => {
-      const card = document.createElement("div");
-      card.className = "member-card";
-      card.innerHTML = `
+    if (grid) {
+      members.forEach((member) => {
+        const card = document.createElement("div");
+        card.className = "member-card";
+        card.innerHTML = `
           <a href="https://github.com/${member.login}" target="_blank">
             <img class="member-icon" src="${member.avatar_url}" alt="${member.login} picture" width="100" height="100">
             <h3>${member.login}</h3>
           </a>
         `;
-      grid.appendChild(card);
-    });
+        grid.appendChild(card);
+      });
+    } else {
+      console.error('Element with class ".team-grid" not found');
+    }
   }
 }
 

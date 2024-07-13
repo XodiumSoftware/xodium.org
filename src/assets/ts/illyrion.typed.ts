@@ -1,5 +1,7 @@
 // illyrion.autotype.ts
 
+import Typed from "typed.js";
+
 import {
   AT_TARGET,
   AT_STRINGS,
