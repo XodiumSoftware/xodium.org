@@ -3,16 +3,16 @@
 import Typed from "typed.js";
 
 import {
-  AT_TARGET,
-  AT_STRINGS,
-  AT_TYPE_SPEED,
-  AT_BACK_SPEED,
-  AT_LOOP,
-} from "./illyrion.constants";
+  T_TARGET,
+  T_STRINGS,
+  T_TYPE_SPEED,
+  T_BACK_SPEED,
+  T_LOOP,
+} from "./illyrion.constants.js";
 
-new Typed(AT_TARGET, {
-  strings: AT_STRINGS,
-  typeSpeed: AT_TYPE_SPEED,
-  backSpeed: AT_BACK_SPEED,
-  loop: AT_LOOP,
+new Typed(T_TARGET, {
+  strings: T_STRINGS,
+  typeSpeed: T_TYPE_SPEED,
+  backSpeed: T_BACK_SPEED,
+  loop: T_LOOP,
 });

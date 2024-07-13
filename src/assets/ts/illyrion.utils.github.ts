@@ -1,6 +1,6 @@
 // illyrion.utils.github.ts
 
-import { GH_ORGNAME } from "./illyrion.constants";
+import { GH_ORGNAME } from "./illyrion.constants.js";
 
 class UtilsGithub {
   constructor() {

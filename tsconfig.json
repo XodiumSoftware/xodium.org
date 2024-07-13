@@ -1,15 +1,19 @@
 {
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig to read more about this file */
-    "target": "ESNext",
-    "module": "ESNext",
-    "outDir": "./src/assets/js/",
+    "baseUrl": ".",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": true,
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "outDir": "src/assets/js/",
+    "paths": {
+      "typed.js": ["node_modules/typed.js/lib/typed.min.js"]
+    },
     "skipLibCheck": true,
-    "moduleResolution": "node"
+    "strict": true,
+    "target": "ESNext"
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "include": ["src/**/*"]
 }
