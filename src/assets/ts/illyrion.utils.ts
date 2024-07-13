@@ -93,6 +93,7 @@ class Utils {
         target.getAttribute("data-cs-target") === showTargetData ? "" : "none";
     });
     sessionStorage.setItem("currentTarget", showTargetData);
+    window.scrollTo(0, 0);
   }
 
   toggleClass(el: HTMLElement, oldClass: string, newClass: string): void {
