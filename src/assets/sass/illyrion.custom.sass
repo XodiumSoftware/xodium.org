@@ -1,0 +1,61 @@
+// SASS
+// illyrion.custom
+
+@use "./illyrion.variables" as vars
+
+// !important
+.il-primary-color
+  +vars.gradient(map-get(vars.$colors, 'primary'), map-get(vars.$colors, 'primary-dark'))
+  color: transparent
+  background-clip: text
+  -webkit-background-clip: text
+  display: inline-block
+
+// !important
+.il-secondary-color
+  color: map-get(vars.$colors, 'secondary')
+
+.auto-type,
+.typed-cursor
+  +vars.gradient(map-get(vars.$colors, 'primary'), map-get(vars.$colors, 'primary-dark'))
+  color: transparent
+  background-clip: text
+  -webkit-background-clip: text
+  display: inline-block
+
+.svg-icon
+  width: map-get(vars.$element-sizes, 'xl')
+  height: map-get(vars.$element-sizes, 'xl')
+  vertical-align: middle
+  border-radius: map-get(vars.$radius-sizes, 'l')
+
+#dardanium-nav:hover
+  background-color: map-get(vars.$colors, 'secondary')
+  color: map-get(vars.$colors, 'dark')
+
+#dalmatium-nav:hover
+  background-color: map-get(vars.$colors, 'primary')
+  color: map-get(vars.$colors, 'dark')
+
+.product
+  border-style: solid
+  border-color: map-get(vars.$colors, 'primary')
+
+.team-grid
+  display: grid
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr))
+  gap: 20px
+  max-width: 600px
+  margin: auto
+
+.member-card
+  text-align: center
+
+.member-icon
+  border: 2px solid map-get(vars.$colors, 'light')
+
+.navbar
+  transform: translateY(0)
+  transition: transform 0.2s ease-in-out
+  &.is-hidden-scroll
+    transform: translateY(-100%)

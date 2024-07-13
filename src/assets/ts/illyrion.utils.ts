@@ -1,6 +1,10 @@
-// illyrion.utils.mjs
+// illyrion.utils.ts
 
 class Utils {
+  private targets: NodeListOf<HTMLElement> =
+    document.querySelectorAll("[data-cs-target]");
+  private currentTarget: string = "";
+
   constructor() {
     this.handleClick = this.handleClick.bind(this);
     this.handleNavbarClick = this.handleNavbarClick.bind(this);
@@ -12,38 +16,41 @@ class Utils {
     this.handleContentSwap();
   }
 
-  attachEventListeners() {
+  attachEventListeners(): void {
     const addEl = document.body.addEventListener;
     addEl("click", this.handleClick, { capture: true });
     addEl("click", this.handleNavbarClick, { capture: true });
   }
 
-  handleClick(e) {
-    const targetId = e.target.getAttribute("data-ila-target");
-    const behavior = e.target.getAttribute("data-ila-behavior") || "smooth";
+  handleClick(e: MouseEvent): void {
+    const targetId = (e.target as Element).getAttribute("data-ila-target");
+    const behavior =
+      (e.target as Element).getAttribute("data-ila-behavior") || "smooth";
     if (targetId) {
       e.preventDefault();
       const targetEl = document.getElementById(targetId);
       if (targetEl) {
-        targetEl.scrollIntoView({ behavior: behavior });
+        targetEl.scrollIntoView({ behavior: behavior as ScrollBehavior });
       } else {
         throw new Error(targetId + " element not found");
       }
     }
   }
 
-  handleNavbarClick(e) {
-    const el = e.target.closest(".navbar-burger");
-    if (el && !el.dataset.initialized) {
-      const target = document.getElementById(el.dataset.target);
+  handleNavbarClick(e: MouseEvent): void {
+    const el = (e.target as HTMLElement).closest(".navbar-burger");
+    if (el && el instanceof HTMLElement && !el.dataset.initialized) {
+      const target = document.getElementById(el.dataset.target!);
       el.classList.toggle("is-active");
-      target.classList.toggle("is-active");
-      el.dataset.initialized = true;
+      target!.classList.toggle("is-active");
+      el.dataset.initialized = "true";
     }
   }
 
-  handleDropdownHover() {
-    const toolsDropdown = document.querySelector(".navbar-item.has-dropdown");
+  handleDropdownHover(): void {
+    const toolsDropdown = document.querySelector(
+      ".navbar-item.has-dropdown"
+    ) as HTMLElement;
     const chevronIcon = document.getElementById("tools-chevron");
 
     if (toolsDropdown && chevronIcon) {
@@ -56,7 +63,7 @@ class Utils {
           this.toggleClass(chevronIcon, "fa-chevron-up", "fa-chevron-down");
         });
 
-        toolsDropdown.dataset.initialized = true;
+        toolsDropdown.dataset.initialized = "true";
       }
     } else {
       if (!toolsDropdown) {
@@ -68,30 +75,29 @@ class Utils {
     }
   }
 
-  handleContentSwap() {
+  handleContentSwap(): void {
     this.targets = document.querySelectorAll("[data-cs-target]");
     this.currentTarget = sessionStorage.getItem("currentTarget") || "index";
 
     document.body.addEventListener("click", (e) => {
-      const trigger = e.target.closest("[data-cs-trigger]");
-      if (trigger) {
+      const trigger = (e.target as HTMLElement).closest("[data-cs-trigger]");
+      if (trigger && trigger instanceof HTMLElement) {
         e.preventDefault();
-        this.toggleSections(trigger.dataset.csTrigger);
+        this.toggleSections(trigger.dataset.csTrigger!);
       }
     });
-
     this.toggleSections(this.currentTarget);
   }
 
-  toggleSections(showTargetData) {
-    this.targets.forEach((target) => {
+  toggleSections(showTargetData: string): void {
+    this.targets.forEach((target: HTMLElement) => {
       target.style.display =
-        target.dataset.csTarget === showTargetData ? "" : "none";
+        target.getAttribute("data-cs-target") === showTargetData ? "" : "none";
     });
     sessionStorage.setItem("currentTarget", showTargetData);
   }
 
-  toggleClass(el, oldClass, newClass) {
+  toggleClass(el: HTMLElement, oldClass: string, newClass: string): void {
     el.classList.replace(oldClass, newClass);
   }
 }

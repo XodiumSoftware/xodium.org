@@ -16,7 +16,7 @@
       rel="icon"
       type="image/svg+xml"
       sizes="100x100"
-      href="assets/img/illyrion.svg"
+      href="assets/svg/illyrion.svg"
     />
     <link rel="stylesheet" href="assets/css/illyrion.custom.css" />
     <!-- External Links -->
@@ -45,9 +45,9 @@
     <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@vizuaalog/bulmajs@0.12.2/dist/bulma.min.js"></script>
     <!-- Internal scripts -->
-    <script src="assets/js/illyrion.typed.mjs" type="module"></script>
-    <script src="assets/js/illyrion.utils.mjs" type="module"></script>
-    <script src="assets/js/illyrion.utils.github.mjs" type="module"></script>
+    <script src="assets/js/illyrion.typed.js"></script>
+    <script src="assets/js/illyrion.utils.js"></script>
+    <script src="assets/js/illyrion.utils.github.js"></script>
   </head>
 
   <body class="is-family-monospace">
@@ -63,7 +63,12 @@
         <div class="container">
           <!-- Navbar brand -->
           <div class="navbar-brand">
-            <a data-cs-trigger="index" class="navbar-item" href="">
+            <a
+              data-cs-trigger="index"
+              data-ila-target="landing"
+              class="navbar-item"
+              href=""
+            >
               <strong>ILLYRION</strong>
             </a>
             <!-- Burger menu for mobile view -->
@@ -100,7 +105,7 @@
                     id="dardanium-nav"
                     href="https://github.com/IllyrionSoftware/Dardanium"
                   >
-                    <img class="mr-2" src="./assets/img/dardanium.svg" alt="" />
+                    <img class="mr-2" src="./assets/svg/dardanium.svg" alt="" />
                     <strong>Dardanium</strong>
                   </a>
                   <!-- Dalmatium dropdown item -->
@@ -109,7 +114,7 @@
                     id="dalmatium-nav"
                     href="https://github.com/IllyrionSoftware/Dalmatium"
                   >
-                    <img class="mr-2" src="./assets/img/dalmatium.svg" alt="" />
+                    <img class="mr-2" src="./assets/svg/dalmatium.svg" alt="" />
                     <strong>Dalmatium</strong>
                   </a>
                 </div>
@@ -159,7 +164,11 @@
     </header>
 
     <!-- Landing section -->
-    <section data-cs-target="index" class="hero is-fullheight-with-navbar">
+    <section
+      id="landing"
+      data-cs-target="index"
+      class="hero is-fullheight-with-navbar"
+    >
       <div class="hero-body">
         <div class="container has-text-centered">
           <h1 class="title is-size-1">
@@ -194,7 +203,7 @@
     >
       <div class="container p-6 product">
         <h2 class="title">
-          <img class="svg-icon" src="./assets/img/dardanium.svg" alt="" />
+          <img class="svg-icon" src="./assets/svg/dardanium.svg" alt="" />
           Dardanium
         </h2>
         <div class="columns">
@@ -222,7 +231,7 @@
     >
       <div class="container p-6 product">
         <h2 class="title">
-          <img class="svg-icon" src="./assets/img/dalmatium.svg" alt="" />
+          <img class="svg-icon" src="./assets/svg/dalmatium.svg" alt="" />
           Dalmatium
         </h2>
         <div class="columns">

@@ -1,4 +1,6 @@
-// illyrion.autotype.mjs
+// illyrion.autotype.ts
+
+import Typed from "typed.js";
 
 import {
   AT_TARGET,
@@ -6,7 +8,7 @@ import {
   AT_TYPE_SPEED,
   AT_BACK_SPEED,
   AT_LOOP,
-} from "./illyrion.constants.mjs";
+} from "./illyrion.constants";
 
 new Typed(AT_TARGET, {
   strings: AT_STRINGS,

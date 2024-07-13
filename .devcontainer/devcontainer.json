@@ -1,5 +1,5 @@
 {
-  "image": "mcr.microsoft.com/vscode/devcontainers/base:debian",
+  "image": "mcr.microsoft.com/vscode/devcontainers/typescript-node",
   "remoteUser": "root",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
@@ -19,8 +19,8 @@
         "esbenp.prettier-vscode",
         "github.copilot",
         "github.vscode-github-actions",
-        "ms-vscode.live-server",
         "pkief.material-icon-theme",
+        "syler.sass-indented",
         "usernamehw.errorlens",
         "vsls-contrib.gistfs"
       ]
