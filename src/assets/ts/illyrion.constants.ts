@@ -7,3 +7,4 @@ export const T_LOOP: boolean = true;
 
 // Github
 export const GH_ORGNAME: string = "IllyrionSoftware";
+export const GH_REPONAMES: string[] = ["Dardanium", "Dalmatium"];
