@@ -28,9 +28,7 @@ jobs:
 
       - id: setup_node
         name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: "14"
+        uses: actions/setup-node@main
 
       - id: package_script
         name: Package Script
