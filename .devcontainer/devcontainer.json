@@ -5,7 +5,6 @@
     "ghcr.io/devcontainers/features/common-utils:2": {
       "configureZshAsDefaultShell": true,
       "installOhMyZsh": true,
-      "installOhMyZshConfig": true,
       "upgradePackages": true
     },
     "ghcr.io/devcontainers/features/git:1": {}
