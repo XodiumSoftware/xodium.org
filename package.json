@@ -5,8 +5,8 @@
     "doc": "docs"
   },
   "scripts": {
-    "build:min-css": "npx sass --load-path=node_modules --style=compressed --watch src/assets/scss/:src/assets/css/",
-    "build:js": "npx tsc -p ./tsconfig.json --watch",
+    "build:min-css": "npx sass --load-path=node_modules --style=compressed ${CI ? '' : '--watch'} src/assets/scss/:src/assets/css/",
+    "build:js": "npx tsc -p ./tsconfig.json ${CI ? '' : '--watch'}",
     "optimize:svg": "npx svgo -f src/assets/svg -o src/assets/svg",
     "clean": "rimraf src/assets/css/ src/assets/js/",
     "build": "npm install && npm run clean && npm-run-all --parallel build:* optimize:svg",
