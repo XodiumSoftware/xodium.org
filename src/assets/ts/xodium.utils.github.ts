@@ -1,23 +1,25 @@
-import { Octokit } from "@octokit/rest";
+import axios from "axios";
+import moment from "moment";
 import { GH_ORGNAME, GH_REPONAMES } from "./xodium.constants";
-
-const octokit = new Octokit();
 
 class GithubAPI {
   static async fetchOrgMembers() {
-    const response = await octokit.orgs.listPublicMembers({
-      org: GH_ORGNAME,
-      headers: { accept: "application/vnd.github+json" },
-    });
+    const response = await axios.get(
+      `https://api.github.com/orgs/${GH_ORGNAME}/public_members`,
+      {
+        headers: { Accept: "application/vnd.github+json" },
+      }
+    );
     return response.data;
   }
 
   static async fetchProjectInfo(repoName: string) {
-    const response = await octokit.repos.getLatestRelease({
-      owner: GH_ORGNAME,
-      repo: repoName,
-      headers: { accept: "application/vnd.github+json" },
-    });
+    const response = await axios.get(
+      `https://api.github.com/repos/${GH_ORGNAME}/${repoName}/releases/latest`,
+      {
+        headers: { Accept: "application/vnd.github+json" },
+      }
+    );
     return response.data;
   }
 }
@@ -26,7 +28,7 @@ class LocalStorageService {
   static setItem(key: string, value: any) {
     const item = {
       value: value,
-      timestamp: Date.now(),
+      timestamp: moment().unix(),
     };
     localStorage.setItem(key, JSON.stringify(item));
   }
