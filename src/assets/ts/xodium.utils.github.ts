@@ -82,17 +82,21 @@ class UtilsGithub {
   private populateTeamGrid(members: any[]): void {
     const grid = document.querySelector(".team-grid");
     if (grid) {
-      members.forEach((member) => {
-        const card = document.createElement("div");
-        card.className = "member-card";
-        card.innerHTML = `
-          <a href="https://github.com/${member.login}" target="_blank">
-            <img class="member-icon" src="${member.avatar_url}" alt="${member.login} picture" width="100" height="100">
-            <h3>${member.login}</h3>
-          </a>
-        `;
-        grid.appendChild(card);
-      });
+      if (Array.isArray(members)) {
+        members.forEach((member) => {
+          const card = document.createElement("div");
+          card.className = "member-card";
+          card.innerHTML = `
+            <a href="https://github.com/${member.login}" target="_blank">
+              <img class="member-icon" src="${member.avatar_url}" alt="${member.login} picture" width="100" height="100">
+              <h3>${member.login}</h3>
+            </a>
+          `;
+          grid.appendChild(card);
+        });
+      } else {
+        console.error("Expected members to be an array, but got:", members);
+      }
     } else {
       console.error('Element with class ".team-grid" not found');
     }
