@@ -3,7 +3,7 @@ import moment from "moment";
 import { GH_ORGNAME, GH_REPONAMES } from "./xodium.constants";
 
 class GithubAPI {
-  static async fetchOrgMembers() {
+  static async fetchOrgMembers(): Promise<any[]> {
     const response = await axios.get(
       `https://api.github.com/orgs/${GH_ORGNAME}/public_members`,
       {
@@ -13,7 +13,7 @@ class GithubAPI {
     return response.data;
   }
 
-  static async fetchProjectInfo(repoName: string) {
+  static async fetchProjectInfo(repoName: string): Promise<any[]> {
     const response = await axios.get(
       `https://api.github.com/repos/${GH_ORGNAME}/${repoName}/releases/latest`,
       {
@@ -25,27 +25,33 @@ class GithubAPI {
 }
 
 class LocalStorageService {
-  static setItem(key: string, value: any) {
+  static setItem(key: string, value: any, expiryInMinutes = 60) {
     const item = {
       value: value,
-      timestamp: moment().unix(),
+      expiry: moment().add(expiryInMinutes, "minutes").unix(),
     };
     localStorage.setItem(key, JSON.stringify(item));
   }
   static getItem(key: string) {
-    const item = localStorage.getItem(key);
-    return item ? JSON.parse(item) : null;
+    const itemStr = localStorage.getItem(key);
+    if (!itemStr) {
+      return null;
+    }
+    const item = JSON.parse(itemStr);
+    const now = moment().unix();
+    if (now > item.expiry) {
+      localStorage.removeItem(key);
+      return null;
+    }
+    return item.value;
   }
 }
 
 class UtilsGithub {
+  private uiUpdater = new UIUpdater();
   constructor() {
-    Promise.all([
-      this.fetchAndStoreOrgMembers(),
-      this.fetchAndStoreProjectInfo(),
-    ]).catch((error) => {
-      console.error("Error fetching data:", error);
-    });
+    this.fetchAndStoreOrgMembers().catch(console.error);
+    this.fetchAndStoreProjectInfo().catch(console.error);
   }
 
   async fetchAndStoreOrgMembers() {
@@ -55,7 +61,7 @@ class UtilsGithub {
       members = await GithubAPI.fetchOrgMembers();
       LocalStorageService.setItem("members", members);
     }
-    this.populateTeamGrid(members);
+    this.uiUpdater.populateTeamGrid(members);
   }
 
   async fetchAndStoreProjectInfo() {
@@ -77,11 +83,13 @@ class UtilsGithub {
           latestVersion
         );
       }
-      this.setVersionInfoText(repoName, latestVersion);
+      this.uiUpdater.setVersionInfoText(repoName, latestVersion);
     }
   }
+}
 
-  private populateTeamGrid(members: any[]): void {
+class UIUpdater {
+  public populateTeamGrid(members: any[]): void {
     const grid = document.querySelector(".team-grid");
     if (grid) {
       if (Array.isArray(members)) {
@@ -104,7 +112,7 @@ class UtilsGithub {
     }
   }
 
-  private setVersionInfoText(repoName: string, version: string): void {
+  public setVersionInfoText(repoName: string, version: string): void {
     const els = document.querySelectorAll(`.${repoName}-version`);
     if (els) {
       els.forEach((el) => {
