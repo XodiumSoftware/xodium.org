@@ -6,7 +6,7 @@ import {
   T_TYPE_SPEED,
   T_BACK_SPEED,
   T_LOOP,
-} from "./xodium.constants.js";
+} from "./xodium.constants";
 
 new Typed(T_TARGET, {
   strings: T_STRINGS,

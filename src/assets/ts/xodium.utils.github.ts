@@ -1,5 +1,5 @@
 import { Octokit } from "@octokit/rest";
-import { GH_ORGNAME, GH_REPONAMES } from "./xodium.constants.js";
+import { GH_ORGNAME, GH_REPONAMES } from "./xodium.constants";
 
 const octokit = new Octokit();
 
