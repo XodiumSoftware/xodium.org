@@ -8,12 +8,12 @@ $il-secondary: #19f5aa;
 $il-secondary-dark: darken($il-secondary, 20%);
 
 // Path to Bulma's sass folder
-@use "../../../node_modules/bulma/sass" with (
+@use "bulma/sass" with (
   $primary: $il-primary
 );
 
 // Import Bulma's core
-@use "../../../node_modules/bulma/sass/utilities" as bulma;
+@use "bulma/sass/utilities" as bulma;
 
 // Import the Google Font
 @import url("https://fonts.googleapis.com/css?family=Nunito:400,700");
