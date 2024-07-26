@@ -1,28 +1,24 @@
+import { Octokit } from "@octokit/rest";
 import { GH_ORGNAME, GH_REPONAMES } from "./xodium.constants.js";
+
+const octokit = new Octokit();
 
 class GithubAPI {
   static async fetchOrgMembers() {
-    const response = await fetch(
-      `https://api.github.com/orgs/${GH_ORGNAME}/members`,
-      {
-        headers: {
-          Accept: "application/vnd.github+json",
-        },
-      }
-    );
-    return response.json();
+    const response = await octokit.orgs.listPublicMembers({
+      org: GH_ORGNAME,
+      headers: { accept: "application/vnd.github+json" },
+    });
+    return response.data;
   }
 
   static async fetchProjectInfo(repoName: string) {
-    const response = await fetch(
-      `https://api.github.com/repos/${GH_ORGNAME}/${repoName}/releases/latest`,
-      {
-        headers: {
-          Accept: "application/vnd.github+json",
-        },
-      }
-    );
-    return response.json();
+    const response = await octokit.repos.getLatestRelease({
+      owner: GH_ORGNAME,
+      repo: repoName,
+      headers: { accept: "application/vnd.github+json" },
+    });
+    return response.data;
   }
 }
 
@@ -67,9 +63,13 @@ class UtilsGithub {
       );
       let latestVersion = projectInfoData ? projectInfoData.version : null;
       if (!latestVersion) {
-        const response = await GithubAPI.fetchProjectInfo(repoName);
-        latestVersion =
-          response.message === "Not Found" ? "N.A." : response.tag_name;
+        try {
+          const response = await GithubAPI.fetchProjectInfo(repoName);
+          latestVersion = response.tag_name;
+        } catch (error) {
+          let err = error as any;
+          latestVersion = err.status === 404 ? "N.A." : "Error";
+        }
         LocalStorageService.setItem(
           `latest_release_${repoName}`,
           latestVersion

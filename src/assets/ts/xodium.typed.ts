@@ -1,4 +1,4 @@
-declare var Typed: any;
+import Typed from "typed.js";
 
 import {
   T_TARGET,

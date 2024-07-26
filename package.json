@@ -20,7 +20,9 @@
   "license": "AGPL-3.0-only",
   "description": "This organization's static website.",
   "dependencies": {
-    "bulma": "^1.0.1"
+    "@octokit/rest": "^21.0.1",
+    "bulma": "^1.0.1",
+    "typed.js": "^2.1.0"
   },
   "devDependencies": {
     "@types/http-cache-semantics": "^4.0.4",
