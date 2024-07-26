@@ -1,5 +1,5 @@
 {
-  "name": "illyrionwebsite",
+  "name": "xodium",
   "version": "1.0.0",
   "directories": {
     "doc": "docs"
@@ -17,7 +17,7 @@
     "github-pages",
     "website"
   ],
-  "author": "IllyrionSoftware",
+  "author": "XodiumSoftware",
   "license": "AGPL-3.0-only",
   "description": "This organization's static website.",
   "dependencies": {

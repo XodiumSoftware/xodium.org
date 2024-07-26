@@ -6,5 +6,5 @@ export const T_BACK_SPEED: number = 100;
 export const T_LOOP: boolean = true;
 
 // Github
-export const GH_ORGNAME: string = "IllyrionSoftware";
-export const GH_REPONAMES: string[] = ["Dardanium", "Dalmatium"];
+export const GH_ORGNAME: string = "XodiumSoftware";
+export const GH_REPONAMES: string[] = ["xCAD", "xLIB"];

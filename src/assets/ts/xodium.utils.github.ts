@@ -1,4 +1,4 @@
-import { GH_ORGNAME, GH_REPONAMES } from "./illyrion.constants.js";
+import { GH_ORGNAME, GH_REPONAMES } from "./xodium.constants.js";
 
 class GithubAPI {
   static async fetchOrgMembers() {
