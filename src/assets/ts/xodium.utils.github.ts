@@ -1,85 +1,101 @@
-import { Octokit } from "@octokit/rest";
+import axios from "axios";
+import moment from "moment";
 import { GH_ORGNAME, GH_REPONAMES } from "./xodium.constants";
 
-const octokit = new Octokit();
-
 class GithubAPI {
-  static async fetchOrgMembers() {
-    const response = await octokit.orgs.listPublicMembers({
-      org: GH_ORGNAME,
-      headers: { accept: "application/vnd.github+json" },
-    });
+  static async fetchOrgMembers(): Promise<any[]> {
+    const response = await axios.get(
+      `https://api.github.com/orgs/${GH_ORGNAME}/public_members`,
+      {
+        headers: { Accept: "application/vnd.github+json" },
+      }
+    );
     return response.data;
   }
 
-  static async fetchProjectInfo(repoName: string) {
-    const response = await octokit.repos.getLatestRelease({
-      owner: GH_ORGNAME,
-      repo: repoName,
-      headers: { accept: "application/vnd.github+json" },
-    });
-    return response.data;
+  static async fetchProjectInfo(repoName: string): Promise<any> {
+    const releasesResponse = await axios.get(
+      `https://api.github.com/repos/${GH_ORGNAME}/${repoName}/releases`,
+      {
+        headers: { Accept: "application/vnd.github+json" },
+      }
+    );
+
+    if (releasesResponse.data.length === 0) {
+      return null;
+    }
+
+    const latestReleaseResponse = await axios.get(
+      `https://api.github.com/repos/${GH_ORGNAME}/${repoName}/releases/latest`,
+      {
+        headers: { Accept: "application/vnd.github+json" },
+      }
+    );
+    return latestReleaseResponse.data;
   }
 }
 
 class LocalStorageService {
-  static setItem(key: string, value: any) {
+  static setItem(key: string, value: any, expiryInMinutes = 60) {
     const item = {
       value: value,
-      timestamp: Date.now(),
+      expiry: moment().add(expiryInMinutes, "minutes").unix(),
     };
     localStorage.setItem(key, JSON.stringify(item));
   }
   static getItem(key: string) {
-    const item = localStorage.getItem(key);
-    return item ? JSON.parse(item) : null;
+    const itemStr = localStorage.getItem(key);
+    if (!itemStr) {
+      return null;
+    }
+    const item = JSON.parse(itemStr);
+    const now = moment().unix();
+    if (now > item.expiry) {
+      localStorage.removeItem(key);
+      return null;
+    }
+    return item.value;
   }
 }
 
 class UtilsGithub {
+  private uiUpdater = new UIUpdater();
   constructor() {
-    Promise.all([
-      this.fetchAndStoreOrgMembers(),
-      this.fetchAndStoreProjectInfo(),
-    ]).catch((error) => {
-      console.error("Error fetching data:", error);
-    });
+    this.StoreOrgMembers().catch(console.error);
+    this.StoreProjectInfo().catch(console.error);
   }
 
-  async fetchAndStoreOrgMembers() {
+  async StoreOrgMembers() {
     let membersData = LocalStorageService.getItem("members");
     let members = membersData ? membersData.value : null;
     if (!members) {
       members = await GithubAPI.fetchOrgMembers();
       LocalStorageService.setItem("members", members);
     }
-    this.populateTeamGrid(members);
+    this.uiUpdater.populateTeamGrid(members);
   }
 
-  async fetchAndStoreProjectInfo() {
+  async StoreProjectInfo() {
     for (const repoName of GH_REPONAMES) {
       let projectInfoData = LocalStorageService.getItem(
         `latest_release_${repoName}`
       );
       let latestVersion = projectInfoData ? projectInfoData.version : null;
       if (!latestVersion) {
-        try {
-          const response = await GithubAPI.fetchProjectInfo(repoName);
-          latestVersion = response.tag_name;
-        } catch (error) {
-          let err = error as any;
-          latestVersion = err.status === 404 ? "N.A." : "Error";
-        }
+        const response: any = await GithubAPI.fetchProjectInfo(repoName);
+        latestVersion = response ? response.tag_name : "N.A.";
         LocalStorageService.setItem(
           `latest_release_${repoName}`,
           latestVersion
         );
       }
-      this.setVersionInfoText(repoName, latestVersion);
+      this.uiUpdater.setVersionInfoText(repoName, latestVersion);
     }
   }
+}
 
-  private populateTeamGrid(members: any[]): void {
+class UIUpdater {
+  public populateTeamGrid(members: any[]): void {
     const grid = document.querySelector(".team-grid");
     if (grid) {
       if (Array.isArray(members)) {
@@ -102,7 +118,7 @@ class UtilsGithub {
     }
   }
 
-  private setVersionInfoText(repoName: string, version: string): void {
+  public setVersionInfoText(repoName: string, version: string): void {
     const els = document.querySelectorAll(`.${repoName}-version`);
     if (els) {
       els.forEach((el) => {

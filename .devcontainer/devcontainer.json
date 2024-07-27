@@ -1,6 +1,6 @@
 {
   "image": "mcr.microsoft.com/vscode/devcontainers/typescript-node",
-  "remoteUser": "vscode@illyrion",
+  "remoteUser": "root",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
       "configureZshAsDefaultShell": true,

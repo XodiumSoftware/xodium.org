@@ -9,7 +9,7 @@
     "outDir": "src/assets/js/",
     "skipLibCheck": true,
     "strict": true,
-    "target": "ES5"
+    "target": "ESNext"
   },
   "exclude": ["node_modules"],
   "include": ["src/**/*"]
