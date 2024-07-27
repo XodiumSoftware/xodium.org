@@ -72,7 +72,7 @@ class UtilsGithub {
       let latestVersion = projectInfoData ? projectInfoData.version : null;
       if (!latestVersion) {
         try {
-          const response = await GithubAPI.fetchProjectInfo(repoName);
+          const response: any = await GithubAPI.fetchProjectInfo(repoName);
           latestVersion = response.tag_name;
         } catch (error) {
           let err = error as any;
