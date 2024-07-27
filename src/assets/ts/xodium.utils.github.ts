@@ -13,14 +13,25 @@ class GithubAPI {
     return response.data;
   }
 
-  static async fetchProjectInfo(repoName: string): Promise<any[]> {
-    const response = await axios.get(
+  static async fetchProjectInfo(repoName: string): Promise<any> {
+    const releasesResponse = await axios.get(
+      `https://api.github.com/repos/${GH_ORGNAME}/${repoName}/releases`,
+      {
+        headers: { Accept: "application/vnd.github+json" },
+      }
+    );
+
+    if (releasesResponse.data.length === 0) {
+      return null;
+    }
+
+    const latestReleaseResponse = await axios.get(
       `https://api.github.com/repos/${GH_ORGNAME}/${repoName}/releases/latest`,
       {
         headers: { Accept: "application/vnd.github+json" },
       }
     );
-    return response.data;
+    return latestReleaseResponse.data;
   }
 }
 
@@ -50,11 +61,11 @@ class LocalStorageService {
 class UtilsGithub {
   private uiUpdater = new UIUpdater();
   constructor() {
-    this.fetchAndStoreOrgMembers().catch(console.error);
-    this.fetchAndStoreProjectInfo().catch(console.error);
+    this.StoreOrgMembers().catch(console.error);
+    this.StoreProjectInfo().catch(console.error);
   }
 
-  async fetchAndStoreOrgMembers() {
+  async StoreOrgMembers() {
     let membersData = LocalStorageService.getItem("members");
     let members = membersData ? membersData.value : null;
     if (!members) {
@@ -64,20 +75,15 @@ class UtilsGithub {
     this.uiUpdater.populateTeamGrid(members);
   }
 
-  async fetchAndStoreProjectInfo() {
+  async StoreProjectInfo() {
     for (const repoName of GH_REPONAMES) {
       let projectInfoData = LocalStorageService.getItem(
         `latest_release_${repoName}`
       );
       let latestVersion = projectInfoData ? projectInfoData.version : null;
       if (!latestVersion) {
-        try {
-          const response: any = await GithubAPI.fetchProjectInfo(repoName);
-          latestVersion = response.tag_name;
-        } catch (error) {
-          let err = error as any;
-          latestVersion = err.status === 404 ? "N.A." : "Error";
-        }
+        const response: any = await GithubAPI.fetchProjectInfo(repoName);
+        latestVersion = response ? response.tag_name : "N.A.";
         LocalStorageService.setItem(
           `latest_release_${repoName}`,
           latestVersion
