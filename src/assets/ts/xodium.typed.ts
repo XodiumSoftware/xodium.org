@@ -1,4 +1,4 @@
-declare var Typed: any;
+import Typed from "typed.js";
 
 import {
   T_TARGET,
@@ -6,7 +6,7 @@ import {
   T_TYPE_SPEED,
   T_BACK_SPEED,
   T_LOOP,
-} from "./illyrion.constants.js";
+} from "./xodium.constants";
 
 new Typed(T_TARGET, {
   strings: T_STRINGS,
