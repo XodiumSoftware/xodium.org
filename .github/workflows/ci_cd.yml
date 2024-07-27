@@ -34,8 +34,6 @@ jobs:
         name: Package Script
         run: npm run build
         shell: bash
-        env:
-          CI: true
 
       - id: remove_sass_ts
         name: Remove SASS & TS Folder
