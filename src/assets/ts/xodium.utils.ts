@@ -15,9 +15,14 @@ class Utils {
   }
 
   attachEventListeners(): void {
-    const addEl = document.body.addEventListener;
-    addEl("click", this.handleClick, { capture: true });
-    addEl("click", this.handleNavbarClick, { capture: true });
+    document.body.addEventListener(
+      "click",
+      (e) => {
+        this.handleClick(e);
+        this.handleNavbarClick(e);
+      },
+      { capture: true }
+    );
   }
 
   handleClick(e: MouseEvent): void {
@@ -30,7 +35,7 @@ class Utils {
       if (targetEl) {
         targetEl.scrollIntoView({ behavior: behavior as ScrollBehavior });
       } else {
-        throw new Error(targetId + " element not found");
+        console.error(`Element with ID ${targetId} not found`);
       }
     }
   }
@@ -39,9 +44,13 @@ class Utils {
     const el = (e.target as HTMLElement).closest(".navbar-burger");
     if (el && el instanceof HTMLElement && !el.dataset.initialized) {
       const target = document.getElementById(el.dataset.target!);
-      el.classList.toggle("is-active");
-      target!.classList.toggle("is-active");
-      el.dataset.initialized = "true";
+      if (target) {
+        el.classList.toggle("is-active");
+        target.classList.toggle("is-active");
+        el.dataset.initialized = "true";
+      } else {
+        console.error(`Target element with ID ${el.dataset.target} not found`);
+      }
     }
   }
 
@@ -65,10 +74,10 @@ class Utils {
       }
     } else {
       if (!toolsDropdown) {
-        throw new Error("toolsDropdown element not found");
+        console.error("toolsDropdown element not found");
       }
       if (!chevronIcon) {
-        throw new Error("chevronIcon element not found");
+        console.error("chevronIcon element not found");
       }
     }
   }
@@ -101,6 +110,6 @@ class Utils {
   }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
   new Utils();
 });
