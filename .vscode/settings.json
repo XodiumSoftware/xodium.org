@@ -2,7 +2,6 @@
   // Editor Settings
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
-  "scm.experimental.showHistoryGraph": true,
   // General Settings
   "extensions.ignoreRecommendations": true,
   // Explorer Settings
@@ -29,8 +28,5 @@
   // Workbench Settings
   "workbench.colorTheme": "Monokai Dimmed",
   "workbench.iconTheme": "material-icon-theme",
-  "workbench.startupEditor": "none",
-  "[sass]": {
-    "editor.defaultFormatter": "syler.sass-indented"
-  }
+  "workbench.startupEditor": "none"
 }

@@ -14,7 +14,6 @@ updates:
       - "Dependencies"
     commit-message:
       prefix: "chore(deps)"
-    auto-merge: true
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
@@ -23,7 +22,6 @@ updates:
       - "Dependencies"
     commit-message:
       prefix: "chore(deps)"
-    auto-merge: true
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -32,4 +30,3 @@ updates:
       - "Dependencies"
     commit-message:
       prefix: "chore(deps)"
-    auto-merge: true
