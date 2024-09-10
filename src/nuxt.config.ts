@@ -1,17 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: "2024-04-03",
-  devtools: {
-    enabled: true,
-
-    timeline: {
-      enabled: true,
-    },
-  },
-  ssr: false,
-  modules: ["@nuxtjs/color-mode", "@vueuse/nuxt"],
+  devtools: { enabled: true },
+  modules: ["@nuxt/ui", "@vueuse/nuxt"],
+  compatibilityDate: "2024-09-10",
+  ssr: true,
   site: {
-    url: "https://xodium.org",
     name: "Xodium | Open-Source (CAD) Software Company",
+    url: "https://xodium.org",
   },
 });
