@@ -18,7 +18,8 @@
         "jock.svg",
         "pkief.material-icon-theme",
         "usernamehw.errorlens",
-        "vsls-contrib.gistfs"
+        "vsls-contrib.gistfs",
+        "vue.volar"
       ]
     }
   },
