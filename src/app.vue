@@ -35,9 +35,28 @@ useHead({
     lang: "en",
   },
 });
+
+const links = [
+  {
+    label: "XODIUM",
+    to: "/",
+  },
+  {
+    label: "TOOLS",
+    icon: "i-heroicons-wrench",
+  },
+  {
+    label: "TEAM",
+    icon: "i-heroicons-users",
+  },
+];
 </script>
 
 <template>
+  <UHorizontalNavigation
+    :links="links"
+    class="border-b border-gray-200 dark:border-gray-800"
+  />
   <UContainer>
     <UCard class="mt-10">
       <template #header>
