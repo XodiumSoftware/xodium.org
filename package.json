@@ -1,12 +1,11 @@
 {
   "name": "xodium",
   "version": "1.0.0",
-  "type": "module",
   "directories": {
     "doc": "docs"
   },
   "scripts": {
-    "build:webpack": "NODE_OPTIONS='--loader ts-node/esm' ts-node --project tsconfig.json webpack.config.ts",
+    "build:webpack": "webpack",
     "optimize:svg": "npx svgo -f src/assets/svg -o src/assets/svg",
     "build": "npm install && npm-run-all --parallel build:* optimize:*",
     "server": "webpack serve --open",
