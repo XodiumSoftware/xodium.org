@@ -67,7 +67,7 @@ class LocalStorageService {
     };
     localStorage.setItem(key, JSON.stringify(item));
   }
-  static getItem(key: string): string | number | boolean | object | null {
+  static getItem(key: string): any {
     const itemStr = localStorage.getItem(key);
     if (!itemStr) {
       return null;
