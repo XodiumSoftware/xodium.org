@@ -1,6 +1,7 @@
 {
   "name": "xodium",
   "version": "1.0.0",
+  "type": "module",
   "directories": {
     "doc": "docs"
   },
