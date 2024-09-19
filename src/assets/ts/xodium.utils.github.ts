@@ -2,9 +2,27 @@ import axios from "axios";
 import moment from "moment";
 import { GH_ORGNAME, GH_REPONAMES } from "./xodium.constants";
 
+interface GitHubUser {
+  login: string;
+  id: number;
+  avatar_url: string;
+}
+
+interface GitHubRelease {
+  url: string;
+  tag_name: string;
+  name: string;
+  body: string;
+}
+
+interface Member {
+  login: string;
+  avatar_url: string;
+}
+
 class GithubAPI {
-  static async fetchOrgMembers(): Promise<any[]> {
-    const response = await axios.get(
+  static async fetchOrgMembers(): Promise<GitHubUser[]> {
+    const response = await axios.get<GitHubUser[]>(
       `https://api.github.com/orgs/${GH_ORGNAME}/public_members`,
       {
         headers: { Accept: "application/vnd.github+json" },
@@ -13,8 +31,10 @@ class GithubAPI {
     return response.data;
   }
 
-  static async fetchProjectInfo(repoName: string): Promise<any> {
-    const releasesResponse = await axios.get(
+  static async fetchProjectInfo(
+    repoName: string
+  ): Promise<GitHubRelease | null> {
+    const releasesResponse = await axios.get<GitHubRelease[]>(
       `https://api.github.com/repos/${GH_ORGNAME}/${repoName}/releases`,
       {
         headers: { Accept: "application/vnd.github+json" },
@@ -25,7 +45,7 @@ class GithubAPI {
       return null;
     }
 
-    const latestReleaseResponse = await axios.get(
+    const latestReleaseResponse = await axios.get<GitHubRelease>(
       `https://api.github.com/repos/${GH_ORGNAME}/${repoName}/releases/latest`,
       {
         headers: { Accept: "application/vnd.github+json" },
@@ -36,14 +56,18 @@ class GithubAPI {
 }
 
 class LocalStorageService {
-  static setItem(key: string, value: any, expiryInMinutes = 60) {
+  static setItem(
+    key: string,
+    value: string | number | boolean | object,
+    expiryInMinutes = 60
+  ) {
     const item = {
       value: value,
       expiry: moment().add(expiryInMinutes, "minutes").unix(),
     };
     localStorage.setItem(key, JSON.stringify(item));
   }
-  static getItem(key: string) {
+  static getItem(key: string): string | number | boolean | object | null {
     const itemStr = localStorage.getItem(key);
     if (!itemStr) {
       return null;
@@ -66,7 +90,7 @@ class UtilsGithub {
   }
 
   async StoreOrgMembers() {
-    let membersData = LocalStorageService.getItem("members");
+    const membersData = LocalStorageService.getItem("members");
     let members = membersData ? membersData.value : null;
     if (!members) {
       members = await GithubAPI.fetchOrgMembers();
@@ -77,12 +101,13 @@ class UtilsGithub {
 
   async StoreProjectInfo() {
     for (const repoName of GH_REPONAMES) {
-      let projectInfoData = LocalStorageService.getItem(
+      const projectInfoData = LocalStorageService.getItem(
         `latest_release_${repoName}`
       );
       let latestVersion = projectInfoData ? projectInfoData.version : null;
       if (!latestVersion) {
-        const response: any = await GithubAPI.fetchProjectInfo(repoName);
+        const response: { tag_name: string } | null =
+          await GithubAPI.fetchProjectInfo(repoName);
         latestVersion = response ? response.tag_name : "N.A.";
         LocalStorageService.setItem(
           `latest_release_${repoName}`,
@@ -95,7 +120,7 @@ class UtilsGithub {
 }
 
 class UIUpdater {
-  public populateTeamGrid(members: any[]): void {
+  public populateTeamGrid(members: Member[]): void {
     const grid = document.querySelector(".team-grid");
     if (grid) {
       if (Array.isArray(members)) {
