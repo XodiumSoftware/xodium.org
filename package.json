@@ -6,7 +6,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "build:webpack": "ts-node --project tsconfig.json node_modules/webpack/bin/webpack.js --config webpack.config.ts",
+    "build:webpack": "NODE_OPTIONS='--loader ts-node/esm' ts-node --project tsconfig.json webpack.config.ts",
     "optimize:svg": "npx svgo -f src/assets/svg -o src/assets/svg",
     "build": "npm install && npm-run-all --parallel build:* optimize:*",
     "server": "webpack serve --open",
