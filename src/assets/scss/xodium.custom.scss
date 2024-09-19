@@ -1,29 +1,25 @@
 // SCSS
 // illyrion.custom
 
-// Set your brand colors
-$il-primary: #dc3dcb;
-$il-primary-dark: darken($il-primary, 20%);
-$il-secondary: #19f5aa;
-$il-secondary-dark: darken($il-secondary, 20%);
+@use "sass:color";
 
-// Path to Bulma's sass folder
+$il-primary: #dc3dcb;
+$il-primary-dark: color.adjust($il-primary, $lightness: -20%);
+$il-secondary: #19f5aa;
+$il-secondary-dark: color.adjust($il-secondary, $lightness: -20%);
+
 @use "bulma/sass" with (
   $primary: $il-primary
 );
 
-// Import Bulma's core
 @use "bulma/sass/utilities" as bulma;
 
-// Import the Google Font
 @import url("https://fonts.googleapis.com/css?family=Nunito:400,700");
 
-// Gradients
 @mixin gradient($first-arg, $second-arg) {
   background: linear-gradient(to right, $first-arg, $second-arg);
 }
 
-// Custom styles
 .il-primary-color {
   @include gradient(bulma.$primary, $il-primary-dark);
   color: transparent !important;
