@@ -5,7 +5,7 @@
     "doc": "docs"
   },
   "scripts": {
-    "build:webpack": "webpack --config webpack.config.ts",
+    "build:webpack": "webpack",
     "optimize:svg": "npx svgo -f src/assets/svg -o src/assets/svg",
     "build": "npm install && npm-run-all --parallel build:* optimize:*",
     "server": "webpack serve --open",
