@@ -8,5 +8,6 @@
       "fileMatch": ["*.json", "*.jsonc"],
       "url": "https://json.schemastore.org/package"
     }
-  ]
+  ],
+  "deno.enable": true
 }
