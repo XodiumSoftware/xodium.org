@@ -1,15 +1,14 @@
 // xodium.index.ts
 // External modules
-// ts
-import Bulma from "@vizuaalog/bulmajs";
+import "@vizuaalog/bulmajs";
+import { library, dom } from "@fortawesome/fontawesome-svg-core";
+import { fas } from "@fortawesome/free-solid-svg-icons";
+import { fab } from "@fortawesome/free-brands-svg-icons";
 // Internal modules
-// scss
 import "../scss/xodium.custom.scss";
-// ts
 import "./xodium.typed";
 import "./xodium.utils";
 import "./xodium.utils.github";
 
-document.addEventListener("DOMContentLoaded", () => {
-  Bulma.init();
-});
+library.add(fas, fab);
+dom.watch();
