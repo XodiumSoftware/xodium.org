@@ -19,7 +19,6 @@
   "license": "AGPL-3.0-only",
   "description": "This organization's static website.",
   "dependencies": {
-    "@creativebulma/bulma-tooltip": "^1.2.0",
     "@vizuaalog/bulmajs": "^0.12.2",
     "axios": "^1.7.7",
     "bulma": "^1.0.1",
