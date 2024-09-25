@@ -6,10 +6,10 @@
     "doc": "docs"
   },
   "scripts": {
-    "install": "npm i",
+    "setup": "npm i",
     "compress": "gzipper compress ./src/dist",
-    "build": "npm run install && webpack && npm run compress",
-    "serve": "npm run install && webpack serve --open"
+    "build": "npm run setup && webpack && npm run compress",
+    "serve": "npm run setup && webpack serve --open"
   },
   "keywords": [
     "github-pages",
