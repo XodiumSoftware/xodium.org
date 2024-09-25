@@ -7,8 +7,7 @@
   },
   "scripts": {
     "build": "npm i && webpack",
-    "server": "webpack serve --open",
-    "start": "npm run build && npm run server"
+    "serve": "npm i && webpack serve --open"
   },
   "keywords": [
     "github-pages",
