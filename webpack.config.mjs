@@ -7,7 +7,7 @@ import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default {
-  entry: path.resolve(__dirname, "src/assets/ts/xodium.index.ts"),
+  entry: path.resolve(__dirname, "src/assets/scripts/xodium.index.ts"),
   devServer: {
     static: path.resolve(__dirname, "src"),
     compress: true,
@@ -32,8 +32,8 @@ export default {
         exclude: /node_modules/,
       },
       {
-        test: /\.s[ac]ss$/,
-        use: ["style-loader", "css-loader", "sass-loader"],
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"],
         exclude: /node_modules/,
       },
     ],

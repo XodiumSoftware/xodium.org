@@ -35,9 +35,9 @@ jobs:
         run: npm run build
         shell: bash
 
-      - id: remove_scss_ts
-        name: Remove SCSS & TS Folder
-        run: rm -rf src/assets/scss/ src/assets/ts/
+      - id: remove_unnecessary_files
+        name: Remove Unnecessary Files
+        run: rm -rf src/assets/styles/ src/assets/scripts/
 
       - id: setup_pages
         name: Setup Pages

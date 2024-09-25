@@ -12,6 +12,7 @@
   "customizations": {
     "vscode": {
       "extensions": [
+        "bradlc.vscode-tailwindcss",
         "esbenp.prettier-vscode",
         "github.copilot",
         "github.vscode-github-actions",

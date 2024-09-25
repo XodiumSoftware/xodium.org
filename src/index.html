@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
   <!-- Head -->
@@ -15,85 +16,96 @@
       rel="icon"
       type="image/svg+xml"
       sizes="100x100"
-      href="assets/svg/xodium.svg"
+      href="assets/icons/xodium.svg"
     />
     <script type="module" src="dist/main.bundle.mjs"></script>
+    <link href="path/to/your/tailwind.css" rel="stylesheet" />
   </head>
 
-  <body class="is-family-monospace">
+  <body class="font-mono">
     <!-- Header -->
-    <header class="is-mobile is-vcentered">
-      <nav
-        class="navbar"
-        role="navigation"
-        aria-label="main navigation"
-        data-hide-on-scroll="true"
-        data-sticky="true"
-      >
-        <div class="container">
+    <header
+      class="flex items-center justify-between p-4 bg-white shadow-md sticky top-0 z-50"
+    >
+      <nav class="w-full">
+        <div class="container mx-auto flex items-center justify-between">
           <!-- Navbar brand -->
-          <div class="navbar-brand">
-            <a data-cs-trigger="index" class="navbar-item" href="">
-              <strong>XODIUM</strong>
+          <div class="flex items-center">
+            <a data-cs-trigger="index" class="text-xl font-bold" href="">
+              XODIUM
             </a>
             <!-- Burger menu for mobile view -->
-            <a
-              role="button"
-              class="navbar-burger"
+            <button
+              class="ml-4 block lg:hidden focus:outline-none"
               aria-label="menu"
               aria-expanded="false"
               data-target="navbarMenu"
             >
-              <span aria-hidden="true"></span>
-              <span aria-hidden="true"></span>
-              <span aria-hidden="true"></span>
-              <span aria-hidden="true"></span>
-            </a>
+              <span class="block w-6 h-0.5 bg-black mb-1"></span>
+              <span class="block w-6 h-0.5 bg-black mb-1"></span>
+              <span class="block w-6 h-0.5 bg-black mb-1"></span>
+              <span class="block w-6 h-0.5 bg-black"></span>
+            </button>
           </div>
           <!-- Navbar menu -->
-          <div id="navbarMenu" class="navbar-menu">
+          <div
+            id="navbarMenu"
+            class="hidden lg:flex lg:items-center lg:justify-between w-full"
+          >
             <!-- Navbar start -->
-            <div class="navbar-start">
+            <div class="flex items-center space-x-4">
               <!-- TOOLS item -->
-              <div class="navbar-item has-dropdown is-hoverable">
-                <a class="navbar-item">
+              <div class="relative group">
+                <a class="flex items-center cursor-pointer">
                   TOOLS
                   <i
                     id="tools-chevron"
-                    class="fas fa-chevron-down ml-2 has-text-link"
+                    class="fas fa-chevron-down ml-2 text-blue-500"
                   ></i>
                 </a>
-                <div class="navbar-dropdown">
+                <div
+                  class="absolute left-0 mt-2 w-48 bg-white shadow-lg rounded-md hidden group-hover:block"
+                >
                   <!-- xCAD dropdown item -->
                   <a
-                    class="navbar-item"
+                    class="flex items-center p-2 hover:bg-gray-100"
                     id="xCAD-nav"
                     href="https://github.com/XodiumSoftware/xCAD"
                   >
-                    <img class="mr-2" src="./assets/svg/xcad.svg" alt="" />
+                    <img
+                      class="mr-2 w-6 h-6"
+                      src="./assets/icons/xcad.svg"
+                      alt=""
+                    />
                     <strong>xCAD</strong>
                     <p class="xCAD-version no-link ml-2"></p>
                   </a>
                   <!-- xLIB dropdown item -->
                   <a
-                    class="navbar-item"
+                    class="flex items-center p-2 hover:bg-gray-100"
                     id="xLIB-nav"
                     href="https://github.com/XodiumSoftware/xLIB"
                   >
-                    <img class="mr-2" src="./assets/svg/xlib.svg" alt="" />
+                    <img
+                      class="mr-2 w-6 h-6"
+                      src="./assets/icons/xlib.svg"
+                      alt=""
+                    />
                     <strong>xLIB</strong>
                     <p class="xLIB-version no-link ml-2"></p>
                   </a>
                 </div>
               </div>
               <!-- TEAM item -->
-              <a data-cs-trigger="team" class="navbar-item" href=""> TEAM </a>
+              <a data-cs-trigger="team" class="hover:text-blue-500" href="">
+                TEAM
+              </a>
             </div>
             <!-- Navbar end -->
-            <div class="navbar-end">
+            <div class="flex items-center space-x-4">
               <!-- Discord item -->
               <a
-                class="navbar-item"
+                class="hover:text-blue-500"
                 href="https://discord.gg/88QWgaavRq"
                 target="_blank"
               >
@@ -103,7 +115,7 @@
               </a>
               <!-- Wiki item -->
               <a
-                class="navbar-item"
+                class="hover:text-blue-500"
                 href="https://wiki.xodium.org"
                 target="_blank"
               >
@@ -113,7 +125,7 @@
               </a>
               <!-- Github item -->
               <a
-                class="navbar-item"
+                class="hover:text-blue-500"
                 href="https://github.com/XodiumSoftware"
                 target="_blank"
               >
@@ -128,77 +140,103 @@
     </header>
 
     <!-- Landing section -->
-    <section data-cs-target="index" class="hero is-fullheight-with-navbar">
-      <div class="hero-body">
-        <div class="container has-text-centered">
-          <h1 class="title is-size-1">
-            CODING <span class="typed il-primary-color"></span>
-          </h1>
-          <p class="subtitle has-text-secondary">
-            Open-Source<strong class="has-text-secondary"> (CAD) </strong
-            >Software Company
-          </p>
-          <div class="buttons is-centered">
-            <a
-              data-ila-target="xCAD"
-              href=""
-              class="button is-focused mt-5 has-text-weight-bold"
-              >GET STARTED</a
-            >
-            <a
-              href="https://wiki.xodium.org"
-              class="button mt-5 has-text-weight-bold"
-              >BROWSE WIKI</a
-            >
-          </div>
+    <section
+      data-cs-target="index"
+      class="flex items-center justify-center min-h-screen bg-gray-100"
+    >
+      <div class="text-center">
+        <h1 class="text-5xl font-bold">
+          CODING <span class="typed il-primary-color"></span>
+        </h1>
+        <p class="text-xl text-il-secondary mt-4">
+          Open-Source<strong class="text-il-secondary"> (CAD) </strong>Software
+          Company
+        </p>
+        <div class="mt-8 space-x-4">
+          <a
+            data-ila-target="xCAD"
+            href=""
+            class="px-4 py-2 bg-blue-500 text-white font-bold rounded hover:bg-blue-600"
+            >GET STARTED</a
+          >
+          <a
+            href="https://wiki.xodium.org"
+            class="px-4 py-2 bg-gray-200 text-black font-bold rounded hover:bg-gray-300"
+            >BROWSE WIKI</a
+          >
         </div>
       </div>
     </section>
 
     <!-- xCAD section -->
-    <section data-cs-target="index" class="section has-text-centered" id="xCAD">
-      <div class="container p-6 product">
-        <img class="svg-icon mb-3" src="./assets/svg/xcad.svg" alt="" />
-        <p class="mb-3 has-text-white has-text-weight-bold">xCAD</p>
-        <p class="mb-3 is-size-3">Produce at lightspeed</p>
-        <p class="mb-3 is-size-5">CAD addon/plug-in to automize frameworks.</p>
-        <a href="https://github.com/XodiumSoftware/xCAD">Learn More.</a>
+    <section
+      data-cs-target="index"
+      class="py-12 bg-white text-center"
+      id="xCAD"
+    >
+      <div class="container mx-auto p-6 border border-il-primary">
+        <img
+          class="w-12 h-12 mx-auto mb-3"
+          src="./assets/icons/xcad.svg"
+          alt=""
+        />
+        <p class="mb-3 text-white font-bold">xCAD</p>
+        <p class="mb-3 text-2xl">Produce at lightspeed</p>
+        <p class="mb-3 text-lg">CAD addon/plug-in to automize frameworks.</p>
+        <a
+          href="https://github.com/XodiumSoftware/xCAD"
+          class="text-blue-500 hover:underline"
+          >Learn More.</a
+        >
       </div>
     </section>
 
     <!-- xLIB section -->
-    <section data-cs-target="index" class="section has-text-centered" id="xLIB">
-      <div class="container p-6 product">
-        <img class="svg-icon mb-3" src="./assets/svg/xlib.svg" alt="" />
-        <p class="mb-3 has-text-white has-text-weight-bold">xLIB</p>
-        <p class="mb-3 is-size-3">Efficient - Fast - Modular</p>
-        <p class="mb-3 is-size-5">Xodium Library written in Rust.</p>
-        <a href="https://github.com/XodiumSoftware/xLIB">Discover more.</a>
+    <section
+      data-cs-target="index"
+      class="py-12 bg-white text-center"
+      id="xLIB"
+    >
+      <div class="container mx-auto p-6 border border-il-primary">
+        <img
+          class="w-12 h-12 mx-auto mb-3"
+          src="./assets/icons/xlib.svg"
+          alt=""
+        />
+        <p class="mb-3 text-white font-bold">xLIB</p>
+        <p class="mb-3 text-2xl">Efficient - Fast - Modular</p>
+        <p class="mb-3 text-lg">Xodium Library written in Rust.</p>
+        <a
+          href="https://github.com/XodiumSoftware/xLIB"
+          class="text-blue-500 hover:underline"
+          >Discover more.</a
+        >
       </div>
     </section>
 
     <!-- Team section -->
-    <section data-cs-target="team" class="hero is-fullheight-with-navbar">
-      <div class="hero-body">
-        <div class="container has-text-centered">
-          <h2 class="title has-text-secondary">Our Team</h2>
-          <div class="columns">
-            <div class="column">
-              <p>No matter the project, our team can handle it.</p>
-            </div>
-          </div>
-          <div class="team-grid"></div>
+    <section
+      data-cs-target="team"
+      class="flex items-center justify-center min-h-screen bg-gray-100"
+    >
+      <div class="text-center">
+        <h2 class="text-3xl text-il-secondary">Our Team</h2>
+        <div class="mt-4">
+          <p>No matter the project, our team can handle it.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+          <!-- Team members will go here -->
         </div>
       </div>
     </section>
 
     <!-- Footer -->
-    <footer class="footer">
-      <div class="columns is-mobile is-centered">
-        <div class="column has-text-left">
+    <footer class="py-4 bg-gray-800 text-white">
+      <div class="container mx-auto flex justify-between">
+        <div>
           <p>© 2024 XODIUM SOFTWARE INC</p>
         </div>
-        <div class="column has-text-right">
+        <div>
           <p>Open-Source (CAD) Software Company</p>
         </div>
       </div>
