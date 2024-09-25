@@ -11,7 +11,7 @@ export default {
     compress: true,
   },
   output: {
-    filename: "[name].bundle.js",
+    filename: "[name].bundle.mjs",
     path: path.resolve(__dirname, "src/export"),
   },
   optimization: {
