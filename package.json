@@ -7,8 +7,8 @@
   },
   "scripts": {
     "install": "npm i",
-    "build": "npm run install && webpack && npm run build:compress",
-    "build:compress": "gzipper compress ./src/dist",
+    "compress": "gzipper compress ./src/dist",
+    "build": "npm run install && webpack && npm run compress",
     "serve": "npm run install && webpack serve --open"
   },
   "keywords": [
