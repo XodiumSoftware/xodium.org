@@ -1,5 +1,5 @@
 {
-  "image": "mcr.microsoft.com/vscode/devcontainers/typescript-node",
+  "image": "mcr.microsoft.com/vscode/devcontainers/base:ubuntu",
   "remoteUser": "root",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
@@ -13,6 +13,7 @@
     "vscode": {
       "extensions": [
         "bradlc.vscode-tailwindcss",
+        "denoland.vscode-deno",
         "esbenp.prettier-vscode",
         "github.copilot",
         "github.vscode-github-actions",
