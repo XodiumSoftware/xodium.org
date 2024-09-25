@@ -56,6 +56,12 @@ class GithubAPI {
   }
 }
 
+interface StoredItem {
+  value: string | number | boolean | object;
+  expiry: number;
+  version?: string;
+}
+
 class LocalStorageService {
   static setItem(
     key: string,
@@ -68,7 +74,7 @@ class LocalStorageService {
     };
     localStorage.setItem(key, JSON.stringify(item));
   }
-  static getItem(key: string): any {
+  static getItem(key: string): StoredItem | null {
     const itemStr = localStorage.getItem(key);
     if (!itemStr) {
       return null;
@@ -92,8 +98,10 @@ class UtilsGithub {
 
   async StoreOrgMembers() {
     const membersData = LocalStorageService.getItem("members");
-    let members = membersData ? membersData.value : null;
-    if (!members) {
+    let members: Member[] | null = null;
+    if (membersData && Array.isArray(membersData.value)) {
+      members = membersData.value as Member[];
+    } else {
       members = await GithubAPI.fetchOrgMembers();
       LocalStorageService.setItem("members", members);
     }
@@ -105,15 +113,21 @@ class UtilsGithub {
       const projectInfoData = LocalStorageService.getItem(
         `latest_release_${repoName}`
       );
-      let latestVersion = projectInfoData ? projectInfoData.version : null;
+      let latestVersion: string | null = null;
+      if (
+        projectInfoData &&
+        typeof projectInfoData.value === "object" &&
+        "version" in projectInfoData.value
+      ) {
+        latestVersion = (projectInfoData.value as { version: string }).version;
+      }
       if (!latestVersion) {
         const response: { tag_name: string } | null =
           await GithubAPI.fetchProjectInfo(repoName);
         latestVersion = response ? response.tag_name : "N.A.";
-        LocalStorageService.setItem(
-          `latest_release_${repoName}`,
-          latestVersion
-        );
+        LocalStorageService.setItem(`latest_release_${repoName}`, {
+          value: { version: latestVersion },
+        });
       }
       this.uiUpdater.setVersionInfoText(repoName, latestVersion);
     }
