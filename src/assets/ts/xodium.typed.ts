@@ -1,3 +1,4 @@
+// xodium.typed.ts
 import Typed from "typed.js";
 
 import {

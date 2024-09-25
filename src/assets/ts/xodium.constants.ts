@@ -1,3 +1,4 @@
+// xodium.constants.ts
 // Typed
 export const T_TARGET: string = ".typed";
 export const T_STRINGS: string[] = ["MODULAR", "STRUCTURED", "EFFICIENT"];
