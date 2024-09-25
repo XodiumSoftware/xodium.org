@@ -1,6 +1,6 @@
 // xodium.index.ts
 // External modules
-import "@vizuaalog/bulmajs";
+import "@vizuaalog/bulmajs/src/plugins/navbar";
 import { library, dom } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
