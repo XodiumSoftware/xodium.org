@@ -14,7 +14,7 @@ export default {
   },
   output: {
     filename: "[name].bundle.mjs",
-    path: path.resolve(__dirname, "src/export"),
+    path: path.resolve(__dirname, "src/dist"),
   },
   optimization: {
     minimize: true,
