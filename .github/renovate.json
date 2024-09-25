@@ -3,7 +3,7 @@
   "extends": ["config:recommended"],
   "automerge": true,
   "automergeType": "pr",
-  "assignees": ["renovate[bot]"],
-  "reviewers": ["illyrius666"],
+  "assignees": ["28700752"],
+  "reviewers": ["28700752"],
   "labels": ["Dependencies"]
 }
