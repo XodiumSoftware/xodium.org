@@ -1,8 +1,8 @@
 import path from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-import TerserPlugin from "terser-webpack-plugin";
-import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
+// import TerserPlugin from "terser-webpack-plugin";
+// import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -16,14 +16,14 @@ export default {
     filename: "[name].bundle.mjs",
     path: path.resolve(__dirname, "src/dist"),
   },
-  optimization: {
-    minimize: true,
-    minimizer: [new TerserPlugin()],
-  },
+  // optimization: {
+  //   minimize: true,
+  //   minimizer: [new TerserPlugin()],
+  // },
   resolve: {
     extensions: [".ts", ".js"],
   },
-  plugins: [new BundleAnalyzerPlugin()],
+  // plugins: [new BundleAnalyzerPlugin()],
   module: {
     rules: [
       {
