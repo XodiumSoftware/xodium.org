@@ -2,7 +2,7 @@
 // External modules
 // ts
 import Bulma from "@vizuaalog/bulmajs";
-import Bulma_tooltip from "@creativebulma/bulma-tooltip";
+// import Bulma_tooltip from "@creativebulma/bulma-tooltip";
 // Internal modules
 // scss
 import "../scss/xodium.custom.scss";
