@@ -1,6 +1,5 @@
 // xodium.utils.github.ts
 import axios from "axios";
-import moment from "moment";
 import { GH_ORGNAME, GH_REPONAMES } from "./xodium.constants";
 
 interface GitHubUser {
@@ -19,6 +18,12 @@ interface GitHubRelease {
 interface Member {
   login: string;
   avatar_url: string;
+}
+
+interface StoredItem {
+  value: string | number | boolean | object;
+  expiry: number;
+  version?: string;
 }
 
 class GithubAPI {
@@ -56,12 +61,6 @@ class GithubAPI {
   }
 }
 
-interface StoredItem {
-  value: string | number | boolean | object;
-  expiry: number;
-  version?: string;
-}
-
 class LocalStorageService {
   static setItem(
     key: string,
@@ -70,18 +69,18 @@ class LocalStorageService {
   ) {
     const item = {
       value: value,
-      expiry: moment().add(expiryInMinutes, "minutes").unix(),
+      expiry: Date.now() + expiryInMinutes * 60 * 1000,
     };
     localStorage.setItem(key, JSON.stringify(item));
   }
+
   static getItem(key: string): StoredItem | null {
     const itemStr = localStorage.getItem(key);
     if (!itemStr) {
       return null;
     }
     const item = JSON.parse(itemStr);
-    const now = moment().unix();
-    if (now > item.expiry) {
+    if (Date.now() > item.expiry) {
       localStorage.removeItem(key);
       return null;
     }
@@ -105,6 +104,14 @@ class UtilsGithub {
       members = await GithubAPI.fetchOrgMembers();
       LocalStorageService.setItem("members", members);
     }
+    members.forEach((member) => {
+      const avatarData = LocalStorageService.getItem(`avatar_${member.login}`);
+      if (!avatarData) {
+        axios.get(member.avatar_url).then((response) => {
+          LocalStorageService.setItem(`avatar_${member.login}`, response.data);
+        });
+      }
+    });
     this.uiUpdater.populateTeamGrid(members);
   }
 
