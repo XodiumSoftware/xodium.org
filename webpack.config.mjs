@@ -12,7 +12,7 @@ export default {
   },
   output: {
     filename: "[name].bundle.js",
-    path: path.resolve(__dirname, "src/assets/js"),
+    path: path.resolve(__dirname, "src/export"),
   },
   optimization: {
     runtimeChunk: false,
