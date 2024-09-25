@@ -7,7 +7,7 @@ import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export default {
-  entry: path.resolve(__dirname, "src/assets/scripts/xodium.index.ts"),
+  entry: path.resolve(__dirname, "src/assets/ts/xodium.index.ts"),
   devServer: {
     static: path.resolve(__dirname, "src"),
     compress: true,
