@@ -1,0 +1,7 @@
+{
+  "imports": {
+    "axios": "https://deno.land/x/axios@v0.21.1/mod.ts",
+    "typed.js": "https://deno.land/x/typed_js@2.1.0/mod.ts",
+    "tailwindcss": "https://deno.land/x/tailwindcss@3.4.13/mod.ts"
+  }
+}
