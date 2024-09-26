@@ -1,10 +1,18 @@
 {
-  "compilerOptions": {
-    "lib": ["dom", "esnext"]
+  "imports": {
+    "lume/": "https://deno.land/x/lume@v2.3.2/",
+    "lume/cms/": "https://cdn.jsdelivr.net/gh/lumeland/cms@v0.6.3/",
+    "axios": "https://deno.land/x/axios@v0.21.1/mod.ts",
+    "typed.js": "https://deno.land/x/typed_js@2.1.0/mod.ts",
+    "tailwindcss": "https://deno.land/x/tailwindcss@3.4.13/mod.ts"
   },
-  "importMap": "./import_map.json",
   "tasks": {
-    "start": "deno run --allow-net --import-map=import_map.json main.ts",
-    "build": "deno bundle main.ts bundle.js"
+    "lume": "echo \"import 'lume/cli.ts'\" | deno run -A -",
+    "build": "deno task lume",
+    "serve": "deno task lume -s",
+    "cms": "deno task lume cms"
+  },
+  "compilerOptions": {
+    "types": ["lume/types.ts"]
   }
 }
