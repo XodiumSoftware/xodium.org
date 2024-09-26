@@ -15,14 +15,22 @@ site.ignore("README.md", "LICENSE.md", "CODE_OF_CONDUCT.md");
 site.copyRemainingFiles((path: string) =>
   path.startsWith("") ? path.toLowerCase() : false
 );
-site.use(tailwindcss({ extensions: [".html", ".css"] }));
+site.use(
+  tailwindcss({
+    extensions: [".html", ".css"],
+    options: {
+      content: ["./src/**/*.html"],
+      theme: { colors: { primary: "", secondary: "", tertiary: "" } },
+    },
+  })
+);
+site.use(postcss());
 site.use(lightningCss());
 site.use(minifyHTML());
 site.use(sitemap());
 site.use(robots());
 site.use(svgo());
 site.use(esbuild());
-site.use(postcss());
 site.use(sourceMaps());
 
 export default site;
