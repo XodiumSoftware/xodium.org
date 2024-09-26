@@ -1,5 +1,14 @@
+---
+layout: layout.vto
+lang: en
+charset: UTF-8
+title: Xodium | Open-Source (CAD) Software Company
+favicon: assets/icons/xodium.svg
+---
+
 # Welcome to my website
 
-This is my first page using **Lume,** a static site generator for Deno.
+This is my first page using **Lume,**
+a static site generator for Deno.
 
 I hope you enjoy it.
