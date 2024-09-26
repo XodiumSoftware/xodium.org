@@ -9,7 +9,7 @@ import tailwindcss from "lume/plugins/tailwindcss.ts";
 import postcss from "lume/plugins/postcss.ts";
 import sourceMaps from "lume/plugins/source_maps.ts";
 
-const site = lume();
+const site = lume({ src: "src", location: new URL("https://xodium.org/") });
 
 site.ignore("README.md", "LICENSE.md", "CODE_OF_CONDUCT.md");
 site.copyRemainingFiles((path: string) =>
@@ -17,7 +17,7 @@ site.copyRemainingFiles((path: string) =>
 );
 site.use(
   tailwindcss({
-    extensions: [".html", ".css"],
+    extensions: [".html", ".css", ".ts"],
     options: {
       content: ["./src/**/*.html"],
       theme: { colors: { primary: "", secondary: "", tertiary: "" } },
