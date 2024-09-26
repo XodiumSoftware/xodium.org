@@ -6,7 +6,7 @@
     "tailwindcss": "https://deno.land/x/tailwindcss@3.4.13/mod.ts"
   },
   "tasks": {
-    "lume": "echo \"import 'lume/cli.ts'\" | deno run -A -",
+    "lume": "echo \"import 'lume/cli.ts'\" | deno run -A - --src=src",
     "build": "deno task lume",
     "serve": "deno task lume -s"
   },
