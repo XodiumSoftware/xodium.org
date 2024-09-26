@@ -1,5 +1,5 @@
 import lume from "lume/mod.ts";
-// import lightningCss from "lume/plugins/lightningcss.ts";
+import lightningCss from "lume/plugins/lightningcss.ts";
 import minifyHTML from "lume/plugins/minify_html.ts";
 import sitemap from "lume/plugins/sitemap.ts";
 import robots from "lume/plugins/robots.ts";
@@ -16,7 +16,7 @@ site.copyRemainingFiles((path: string) =>
   path.startsWith("") ? path.toLowerCase() : false
 );
 site.use(tailwindcss());
-// site.use(lightningCss());
+site.use(lightningCss());
 site.use(minifyHTML());
 site.use(sitemap());
 site.use(robots());
