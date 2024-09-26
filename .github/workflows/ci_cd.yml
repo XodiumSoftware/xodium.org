@@ -35,10 +35,6 @@ jobs:
         run: npm run build
         shell: bash
 
-      - id: remove_unnecessary_files
-        name: Remove Unnecessary Files
-        run: rm -rf src/assets/styles/ src/assets/scripts/
-
       - id: setup_pages
         name: Setup Pages
         uses: actions/configure-pages@main
@@ -47,7 +43,7 @@ jobs:
         name: Upload artifact
         uses: actions/upload-pages-artifact@main
         with:
-          path: "./src"
+          path: "./_site"
 
       - id: deploy_to_github_pages
         name: Deploy to GitHub Pages
