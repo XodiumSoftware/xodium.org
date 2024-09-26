@@ -1,6 +1,6 @@
 // xodium.utils.github.ts
-import axios from "axios";
-import { GH_ORGNAME, GH_REPONAMES } from "./xodium.constants";
+import axiod from "https://deno.land/x/axiod@0.26.2/mod.ts";
+import { GH_ORGNAME, GH_REPONAMES } from "./xodium.constants.ts";
 
 interface GitHubUser {
   login: string;
@@ -28,7 +28,7 @@ interface StoredItem {
 
 class GithubAPI {
   static async fetchOrgMembers(): Promise<GitHubUser[]> {
-    const response = await axios.get<GitHubUser[]>(
+    const response = await axiod.get<GitHubUser[]>(
       `https://api.github.com/orgs/${GH_ORGNAME}/public_members`,
       {
         headers: { Accept: "application/vnd.github+json" },
@@ -40,7 +40,7 @@ class GithubAPI {
   static async fetchProjectInfo(
     repoName: string
   ): Promise<GitHubRelease | null> {
-    const releasesResponse = await axios.get<GitHubRelease[]>(
+    const releasesResponse = await axiod.get<GitHubRelease[]>(
       `https://api.github.com/repos/${GH_ORGNAME}/${repoName}/releases`,
       {
         headers: { Accept: "application/vnd.github+json" },
@@ -51,7 +51,7 @@ class GithubAPI {
       return null;
     }
 
-    const latestReleaseResponse = await axios.get<GitHubRelease>(
+    const latestReleaseResponse = await axiod.get<GitHubRelease>(
       `https://api.github.com/repos/${GH_ORGNAME}/${repoName}/releases/latest`,
       {
         headers: { Accept: "application/vnd.github+json" },
@@ -107,7 +107,7 @@ class UtilsGithub {
     members.forEach((member) => {
       const avatarData = LocalStorageService.getItem(`avatar_${member.login}`);
       if (!avatarData) {
-        axios.get(member.avatar_url).then((response) => {
+        axiod.get(member.avatar_url).then((response) => {
           LocalStorageService.setItem(`avatar_${member.login}`, response.data);
         });
       }

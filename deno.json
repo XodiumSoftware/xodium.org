@@ -1,8 +1,6 @@
 {
   "imports": {
     "lume/": "https://deno.land/x/lume@v2.3.2/",
-    "axios": "https://deno.land/x/axios@v0.21.1/",
-    "typed.js": "https://deno.land/x/typed_js@2.1.0/",
     "tailwindcss": "https://deno.land/x/tailwindcss@3.4.13/"
   },
   "tasks": {
