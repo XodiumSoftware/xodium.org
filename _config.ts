@@ -1,4 +1,10 @@
 import lume from "lume/mod.ts";
+import lightningCss from "lume/plugins/lightningcss.ts";
+import minifyHTML from "lume/plugins/minify_html.ts";
+import sitemap from "lume/plugins/sitemap.ts";
+import robots from "lume/plugins/robots.ts";
+import svgo from "lume/plugins/svgo.ts";
+import sourceMaps from "lume/plugins/source_maps.ts";
 
 const site = lume();
 
@@ -6,20 +12,11 @@ site.ignore("README.md", "LICENSE.md", "CODE_OF_CONDUCT.md");
 site.copyRemainingFiles((path: string) =>
   path.startsWith("") ? path.toLowerCase() : false
 );
-
-site.loadAssets([".css"]);
-
-function minifyCSS(css: string) {
-  return css
-    .replaceAll("\n", " ")
-    .replaceAll(/\s+/g, " ")
-    .replaceAll(/([:;{])\s/g, "$1");
-}
-
-site.process([".css"], (assets) => {
-  for (const asset of assets) {
-    asset.content = minifyCSS(asset.content as string);
-  }
-});
+site.use(lightningCss(/* Options */));
+site.use(minifyHTML(/* Options */));
+site.use(sitemap(/* Options */));
+site.use(robots(/* Options */));
+site.use(svgo(/* Options */));
+site.use(sourceMaps(/* Options */));
 
 export default site;
