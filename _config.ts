@@ -15,7 +15,7 @@ site.ignore("README.md", "LICENSE.md", "CODE_OF_CONDUCT.md");
 site.copyRemainingFiles((path: string) =>
   path.startsWith("") ? path.toLowerCase() : false
 );
-site.use(tailwindcss());
+site.use(tailwindcss({ extensions: [".html", ".css"] }));
 site.use(lightningCss());
 site.use(minifyHTML());
 site.use(sitemap());

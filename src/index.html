@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- Head -->
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Xodium | Open-Source (CAD) Software Company</title>
+    <link rel="canonical" href="https://xodium.org" />
+    <meta property="og:url" content="https://xodium.org" />
+    <meta
+      name="description"
+      content="Pioneering the future of engineering with innovative design and sustainable solutions."
+    />
+    <!-- Internal Links -->
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      sizes="100x100"
+      href="assets/svg/xodium.svg"
+    />
+    <!-- External Links -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bulma-tooltip/1.2.0/bulma-tooltip.min.css"
+      integrity="sha512-eQONsEIU2JzPniggWsgCyYoASC8x8nS0w6+e5LQZbdvWzDUVfUh+vQZFmB2Ykj5uqGDIsY7tSUCdTxImWBShYg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <!-- External scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@vizuaalog/bulmajs@0.12.2/dist/bulma.min.js"></script>
+    <!-- Internal scripts -->
+    <script type="module" src="assets/js/main.bundle.js"></script>
+  </head>
+
+  <body class="is-family-monospace">
+    <!-- Header -->
+    <header class="is-mobile is-vcentered">
+      <nav
+        class="navbar"
+        role="navigation"
+        aria-label="main navigation"
+        data-hide-on-scroll="true"
+        data-sticky="true"
+      >
+        <div class="container">
+          <!-- Navbar brand -->
+          <div class="navbar-brand">
+            <a data-cs-trigger="index" class="navbar-item" href="">
+              <strong>XODIUM</strong>
+            </a>
+            <!-- Burger menu for mobile view -->
+            <a
+              role="button"
+              class="navbar-burger"
+              aria-label="menu"
+              aria-expanded="false"
+              data-target="navbarMenu"
+            >
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+            </a>
+          </div>
+          <!-- Navbar menu -->
+          <div id="navbarMenu" class="navbar-menu">
+            <!-- Navbar start -->
+            <div class="navbar-start">
+              <!-- TOOLS item -->
+              <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-item">
+                  TOOLS
+                  <i
+                    id="tools-chevron"
+                    class="fas fa-chevron-down ml-2 has-text-link"
+                  ></i>
+                </a>
+                <div class="navbar-dropdown">
+                  <!-- xCAD dropdown item -->
+                  <a
+                    class="navbar-item"
+                    id="xCAD-nav"
+                    href="https://github.com/XodiumSoftware/xCAD"
+                  >
+                    <img class="mr-2" src="./assets/svg/xcad.svg" alt="" />
+                    <strong>xCAD</strong>
+                    <p class="xCAD-version no-link ml-2"></p>
+                  </a>
+                  <!-- xLIB dropdown item -->
+                  <a
+                    class="navbar-item"
+                    id="xLIB-nav"
+                    href="https://github.com/XodiumSoftware/xLIB"
+                  >
+                    <img class="mr-2" src="./assets/svg/xlib.svg" alt="" />
+                    <strong>xLIB</strong>
+                    <p class="xLIB-version no-link ml-2"></p>
+                  </a>
+                </div>
+              </div>
+              <!-- TEAM item -->
+              <a data-cs-trigger="team" class="navbar-item" href=""> TEAM </a>
+            </div>
+            <!-- Navbar end -->
+            <div class="navbar-end">
+              <!-- Discord item -->
+              <a
+                data-tooltip="Discord"
+                class="navbar-item has-tooltip-arrow has-tooltip-bottom"
+                href="https://discord.gg/88QWgaavRq"
+                target="_blank"
+              >
+                <span class="icon">
+                  <i class="fab fa-discord"></i>
+                </span>
+              </a>
+              <!-- Wiki item -->
+              <a
+                data-tooltip="Wiki"
+                class="navbar-item has-tooltip-arrow has-tooltip-bottom"
+                href="https://wiki.xodium.org"
+                target="_blank"
+              >
+                <span class="icon">
+                  <i class="fas fa-book"></i>
+                </span>
+              </a>
+              <!-- Github item -->
+              <a
+                data-tooltip="Github"
+                class="navbar-item has-tooltip-arrow has-tooltip-bottom"
+                href="https://github.com/XodiumSoftware"
+                target="_blank"
+              >
+                <span class="icon">
+                  <i class="fab fa-github"></i>
+                </span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Landing section -->
+    <section data-cs-target="index" class="hero is-fullheight-with-navbar">
+      <div class="hero-body">
+        <div class="container has-text-centered">
+          <h1 class="title is-size-1">
+            CODING <span class="typed il-primary-color"></span>
+          </h1>
+          <p class="subtitle has-text-secondary">
+            Open-Source<strong class="has-text-secondary"> (CAD) </strong
+            >Software Company
+          </p>
+          <div class="buttons is-centered">
+            <a
+              data-ila-target="xCAD"
+              href=""
+              class="button is-focused mt-5 has-text-weight-bold"
+              >GET STARTED</a
+            >
+            <a
+              href="https://wiki.xodium.org"
+              class="button mt-5 has-text-weight-bold"
+              >BROWSE WIKI</a
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- xCAD section -->
+    <section data-cs-target="index" class="section has-text-centered" id="xCAD">
+      <div class="container p-6 product">
+        <img class="svg-icon mb-3" src="./assets/svg/xcad.svg" alt="" />
+        <p class="mb-3 has-text-white has-text-weight-bold">xCAD</p>
+        <p class="mb-3 is-size-3">Produce at lightspeed</p>
+        <p class="mb-3 is-size-5">CAD addon/plug-in to automize frameworks.</p>
+        <a href="https://github.com/XodiumSoftware/xCAD">Learn More.</a>
+      </div>
+    </section>
+
+    <!-- xLIB section -->
+    <section data-cs-target="index" class="section has-text-centered" id="xLIB">
+      <div class="container p-6 product">
+        <img class="svg-icon mb-3" src="./assets/svg/xlib.svg" alt="" />
+        <p class="mb-3 has-text-white has-text-weight-bold">xLIB</p>
+        <p class="mb-3 is-size-3">Efficient - Fast - Modular</p>
+        <p class="mb-3 is-size-5">Xodium Library written in Rust.</p>
+        <a href="https://github.com/XodiumSoftware/xLIB">Discover more.</a>
+      </div>
+    </section>
+
+    <!-- Team section -->
+    <section data-cs-target="team" class="hero is-fullheight-with-navbar">
+      <div class="hero-body">
+        <div class="container has-text-centered">
+          <h2 class="title has-text-secondary">Our Team</h2>
+          <div class="columns">
+            <div class="column">
+              <p>No matter the project, our team can handle it.</p>
+            </div>
+          </div>
+          <div class="team-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="columns is-mobile is-centered">
+        <div class="column has-text-left">
+          <p>© 2024 XODIUM SOFTWARE INC</p>
+        </div>
+        <div class="column has-text-right">
+          <p>Open-Source (CAD) Software Company</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
