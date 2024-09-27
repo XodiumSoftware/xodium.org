@@ -149,13 +149,26 @@ class UIUpdater {
     if (grid) {
       if (Array.isArray(members)) {
         members.forEach((member) => {
-          const card = document.createElement("div");
-          card.className = "member-card";
+          const card = document.createElement("li");
+          card.classList.add("mb-4");
           card.innerHTML = `
-            <a href="https://github.com/${member.login}" target="_blank">
-              <img class="member-icon" src="${member.avatar_url}" alt="${member.login} picture" width="100" height="100">
-              <h3>${member.login}</h3>
-            </a>
+            <div class="flex items-center gap-x-6">
+              <img
+                class="h-16 w-16 rounded-full"
+                src="${member.avatar_url}"
+                alt="${member.login} picture"
+              />
+              <div>
+                <h3
+                  class="text-base font-semibold leading-7 tracking-tight text-gray-900 dark:text-slate-100"
+                >
+                  ${member.login}
+                </h3>
+                <p class="text-sm font-semibold leading-6 text-indigo-600">
+                  ROLE FEATURE WIP
+                </p>
+              </div>
+            </div>
           `;
           grid.appendChild(card);
         });
