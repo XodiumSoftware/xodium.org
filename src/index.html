@@ -33,36 +33,15 @@
             />XODIUM
           </a>
         </div> -->
-        <div class="flex lg:hidden">
-          <button
-            type="button"
-            class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
-          >
-            <span class="sr-only">Open main menu</span>
-            <svg
-              class="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-              />
-            </svg>
-          </button>
-        </div>
         <div class="hidden lg:flex lg:gap-x-12">
           <div class="relative">
             <button
+              id="tools-button"
               type="button"
               class="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900"
               aria-expanded="false"
             >
-              Product
+              TOOLS
               <svg
                 class="h-5 w-5 flex-none text-gray-400"
                 viewBox="0 0 20 20"
@@ -76,19 +55,9 @@
                 />
               </svg>
             </button>
-
-            <!--
-              'Product' flyout menu, show/hide based on flyout menu state.
-    
-              Entering: "transition ease-out duration-200"
-                From: "opacity-0 translate-y-1"
-                To: "opacity-100 translate-y-0"
-              Leaving: "transition ease-in duration-150"
-                From: "opacity-100 translate-y-0"
-                To: "opacity-0 translate-y-1"
-            -->
             <div
-              class="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5"
+              id="tools-menu"
+              class="hidden absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5"
             >
               <div class="p-4">
                 <div
@@ -169,7 +138,7 @@
           </div>
 
           <a href="" class="text-sm font-semibold leading-6 text-gray-900"
-            >Team</a
+            >TEAM</a
           >
         </div>
         <div class="hidden lg:flex lg:flex-1 lg:justify-end">
