@@ -42,6 +42,7 @@
       "npm:@fortawesome/free-solid-svg-icons@^6.6.0": "npm:@fortawesome/free-solid-svg-icons@6.6.0",
       "npm:@js-temporal/polyfill@0.4.4": "npm:@js-temporal/polyfill@0.4.4",
       "npm:@types/estree@1.0.5": "npm:@types/estree@1.0.5",
+      "npm:@types/node": "npm:@types/node@18.16.19",
       "npm:autoprefixer@10.4.20": "npm:autoprefixer@10.4.20_postcss@8.4.45",
       "npm:estree-walker@3.0.3": "npm:estree-walker@3.0.3",
       "npm:lightningcss-wasm@1.26.0": "npm:lightningcss-wasm@1.26.0",
@@ -268,6 +269,10 @@
       },
       "@types/estree@1.0.5": {
         "integrity": "sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==",
+        "dependencies": {}
+      },
+      "@types/node@18.16.19": {
+        "integrity": "sha512-IXl7o+R9iti9eBW4Wg2hx1xQDig183jj7YLn8F7udNceyfkbn1ZxmzZXuak20gR40D7pIkIY1kYGx5VIGbaHKA==",
         "dependencies": {}
       },
       "ansi-regex@5.0.1": {
@@ -1056,6 +1061,7 @@
     "https://deno.land/x/lume/mod.ts": "https://deno.land/x/lume@v2.3.2/mod.ts",
     "https://deno.land/x/lume/plugins/minify_html.ts": "https://deno.land/x/lume@v2.3.2/plugins/minify_html.ts",
     "https://deno.land/x/lume/types.ts": "https://deno.land/x/lume@v2.3.2/types.ts",
+    "https://deno.land/x/tailwindcss@3.4.13/": "https://deno.land/x/tailwindcss@3.4.13",
     "https://unpkg.com/typewriter-effect@latest/dist/core.js": "https://unpkg.com/typewriter-effect@2.21.0/dist/core.js"
   },
   "remote": {

@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
   <!-- Head -->
@@ -17,83 +18,173 @@
       sizes="100x100"
       href="assets/icons/xodium.svg"
     />
-    <link rel="stylesheet" href="assets/styles/xodium.custom.css" />
     <script type="module" src="assets/modules/xodium.index.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
   </head>
 
-  <body>
+  <body class="bg-white font-mono">
     <!-- Header -->
-    <header>
-      <nav>
-        <div>
-          <!-- Navbar brand -->
-          <div>
-            <a>
-              <strong>XODIUM</strong>
-            </a>
-            <!-- Burger menu for mobile view -->
-            <a>
-              <span aria-hidden="true"></span>
-              <span aria-hidden="true"></span>
-              <span aria-hidden="true"></span>
-              <span aria-hidden="true"></span>
-            </a>
-          </div>
-          <!-- Navbar menu -->
-          <div>
-            <!-- Navbar start -->
-            <div>
-              <!-- TOOLS item -->
-              <div>
-                <a>
-                  TOOLS
-                  <i></i>
-                </a>
-                <div>
-                  <!-- xCAD dropdown item -->
-                  <a
-                    id="xCAD-nav"
-                    href="https://github.com/XodiumSoftware/xCAD"
+    <header class="bg-white">
+      <nav
+        class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
+        aria-label="Global"
+      >
+        <!-- <div class="flex lg:flex-1">
+          <a href="" class="-m-1.5 p-1.5">
+            <img
+              class="h-8 w-auto"
+              src="assets/icons/xodium.svg"
+              alt=""
+            />XODIUM
+          </a>
+        </div> -->
+        <div class="flex lg:hidden">
+          <button
+            type="button"
+            class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
+          >
+            <span class="sr-only">Open main menu</span>
+            <svg
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+              />
+            </svg>
+          </button>
+        </div>
+        <div class="hidden lg:flex lg:gap-x-12">
+          <div class="relative">
+            <button
+              type="button"
+              class="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900"
+              aria-expanded="false"
+            >
+              Product
+              <svg
+                class="h-5 w-5 flex-none text-gray-400"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </button>
+
+            <!--
+              'Product' flyout menu, show/hide based on flyout menu state.
+    
+              Entering: "transition ease-out duration-200"
+                From: "opacity-0 translate-y-1"
+                To: "opacity-100 translate-y-0"
+              Leaving: "transition ease-in duration-150"
+                From: "opacity-100 translate-y-0"
+                To: "opacity-0 translate-y-1"
+            -->
+            <div
+              class="absolute -left-8 top-full z-10 mt-3 w-screen max-w-md overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5"
+            >
+              <div class="p-4">
+                <div
+                  class="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50"
+                >
+                  <div
+                    class="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white"
                   >
-                    <img src="./assets/icons/xcad.svg" alt="" />
-                    <strong>xCAD</strong>
-                    <p></p>
-                  </a>
-                  <!-- xLIB dropdown item -->
-                  <a
-                    id="xLIB-nav"
-                    href="https://github.com/XodiumSoftware/xLIB"
+                    <svg
+                      class="h-6 w-6 text-gray-600 group-hover:text-indigo-600"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6z"
+                      />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z"
+                      />
+                    </svg>
+                  </div>
+                  <div class="flex-auto">
+                    <a
+                      href="https://github.com/XodiumSoftware/xCAD"
+                      class="block font-semibold text-gray-900"
+                    >
+                      xCAD
+                      <span class="absolute inset-0"></span>
+                    </a>
+                    <p class="mt-1 text-gray-600">
+                      CAD addon/plug-in to automize frameworks
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm leading-6 hover:bg-gray-50"
+                >
+                  <div
+                    class="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white"
                   >
-                    <img src="./assets/icons/xlib.svg" alt="" />
-                    <strong>xLIB</strong>
-                    <p></p>
-                  </a>
+                    <svg
+                      class="h-6 w-6 text-gray-600 group-hover:text-indigo-600"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zM12 2.25V4.5m5.834.166l-1.591 1.591M20.25 10.5H18M7.757 14.743l-1.59 1.59M6 10.5H3.75m4.007-4.243l-1.59-1.59"
+                      />
+                    </svg>
+                  </div>
+                  <div class="flex-auto">
+                    <a
+                      href="https://github.com/XodiumSoftware/xLIB"
+                      class="block font-semibold text-gray-900"
+                    >
+                      xLIB
+                      <span class="absolute inset-0"></span>
+                    </a>
+                    <p class="mt-1 text-gray-600">
+                      Xodium Library written in Rust
+                    </p>
+                  </div>
                 </div>
               </div>
-              <!-- TEAM item -->
-              <a> TEAM </a>
             </div>
-            <!-- Navbar end -->
-            <div>
-              <!-- Discord item -->
-              <a href="https://discord.gg/88QWgaavRq" target="_blank">
-                <span>
-                  <i class="fab fa-discord"></i>
-                </span>
-              </a>
-              <!-- Wiki item -->
-              <a href="https://wiki.xodium.org" target="_blank">
-                <span>
-                  <i class="fas fa-book"></i>
-                </span>
-              </a>
-              <!-- Github item -->
-              <a href="https://github.com/XodiumSoftware" target="_blank">
-                <span>
-                  <i class="fab fa-github"></i>
-                </span>
-              </a>
-            </div>
+          </div>
+
+          <a href="" class="text-sm font-semibold leading-6 text-gray-900"
+            >Team</a
+          >
+        </div>
+        <div class="hidden lg:flex lg:flex-1 lg:justify-end">
+          <div class="flex items-center space-x-4">
+            <a href="https://wiki.xodium.org">
+              <img src="assets/icons/wiki.svg" alt="Wiki" class="h-6 w-6" />
+            </a>
+            <a href="https://github.com/XodiumSoftware">
+              <img src="assets/icons/github.svg" alt="Github" class="h-6 w-6" />
+            </a>
           </div>
         </div>
       </nav>
@@ -101,90 +192,369 @@
 
     <!-- Landing section -->
     <section>
-      <div>
-        <div>
-          <h1>CODING <span></span></h1>
-          <p>Open-Source<strong> (CAD) </strong>Software Company</p>
-          <div>
-            <a href="">GET STARTED</a>
-            <a href="https://wiki.xodium.org">BROWSE WIKI</a>
+      <div class="relative isolate px-6 pt-14 lg:px-8">
+        <div
+          class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
+          aria-hidden="true"
+        >
+          <div
+            class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
+            style="
+              clip-path: polygon(
+                74.1% 44.1%,
+                100% 61.6%,
+                97.5% 26.9%,
+                85.5% 0.1%,
+                80.7% 2%,
+                72.5% 32.5%,
+                60.2% 62.4%,
+                52.4% 68.1%,
+                47.5% 58.3%,
+                45.2% 34.5%,
+                27.5% 76.7%,
+                0.1% 64.9%,
+                17.9% 100%,
+                27.6% 76.8%,
+                76.1% 97.7%,
+                74.1% 44.1%
+              );
+            "
+          ></div>
+        </div>
+        <div class="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
+          <div class="text-center">
+            <h1
+              class=".typewriter text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl"
+            >
+              CODING <span></span>
+            </h1>
+            <p class="mt-6 text-lg leading-8 text-gray-600">
+              Open-Source<strong> (CAD) </strong>Software Company
+            </p>
+            <div class="mt-10 flex items-center justify-center gap-x-6">
+              <a
+                href=""
+                class="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                >Get started</a
+              >
+              <a
+                href="https://wiki.xodium.org"
+                class="text-sm font-semibold leading-6 text-gray-900"
+                >Learn more <span aria-hidden="true">→</span></a
+              >
+            </div>
           </div>
+        </div>
+        <div
+          class="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
+          aria-hidden="true"
+        >
+          <div
+            class="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"
+            style="
+              clip-path: polygon(
+                74.1% 44.1%,
+                100% 61.6%,
+                97.5% 26.9%,
+                85.5% 0.1%,
+                80.7% 2%,
+                72.5% 32.5%,
+                60.2% 62.4%,
+                52.4% 68.1%,
+                47.5% 58.3%,
+                45.2% 34.5%,
+                27.5% 76.7%,
+                0.1% 64.9%,
+                17.9% 100%,
+                27.6% 76.8%,
+                76.1% 97.7%,
+                74.1% 44.1%
+              );
+            "
+          ></div>
         </div>
       </div>
     </section>
 
     <!-- xCAD section -->
     <section id="xCAD">
-      <div>
-        <img src="./assets/icons/xcad.svg" alt="" />
-        <p>xCAD</p>
-        <p>Produce at lightspeed</p>
-        <p>CAD addon/plug-in to automize frameworks.</p>
-        <a href="https://github.com/XodiumSoftware/xCAD">Learn More.</a>
+      <div class="overflow-hidden bg-white py-24 sm:py-32">
+        <div class="mx-auto max-w-7xl px-6 lg:px-8">
+          <div
+            class="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2"
+          >
+            <div class="lg:pr-8 lg:pt-4">
+              <div class="lg:max-w-lg">
+                <h2 class="text-base font-semibold leading-7 text-indigo-600">
+                  Produce at lightspeed
+                </h2>
+                <p
+                  class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"
+                >
+                  xCAD
+                </p>
+                <p class="mt-6 text-lg leading-8 text-gray-600">
+                  CAD addon/plug-in to automize frameworks.
+                </p>
+                <dl
+                  class="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-600 lg:max-w-none"
+                >
+                  <div class="relative pl-9">
+                    <dt class="inline font-semibold text-gray-900">
+                      <svg
+                        class="absolute left-1 top-1 h-5 w-5 text-indigo-600"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M5.5 17a4.5 4.5 0 01-1.44-8.765 4.5 4.5 0 018.302-3.046 3.5 3.5 0 014.504 4.272A4 4 0 0115 17H5.5zm3.75-2.75a.75.75 0 001.5 0V9.66l1.95 2.1a.75.75 0 101.1-1.02l-3.25-3.5a.75.75 0 00-1.1 0l-3.25 3.5a.75.75 0 101.1 1.02l1.95-2.1v4.59z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                      Push to deploy.
+                    </dt>
+                    <dd class="inline">
+                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                      Maiores impedit perferendis suscipit eaque, iste dolor
+                      cupiditate blanditiis ratione.
+                    </dd>
+                  </div>
+                  <div class="relative pl-9">
+                    <dt class="inline font-semibold text-gray-900">
+                      <svg
+                        class="absolute left-1 top-1 h-5 w-5 text-indigo-600"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                      SSL certificates.
+                    </dt>
+                    <dd class="inline">
+                      Anim aute id magna aliqua ad ad non deserunt sunt. Qui
+                      irure qui lorem cupidatat commodo.
+                    </dd>
+                  </div>
+                  <div class="relative pl-9">
+                    <dt class="inline font-semibold text-gray-900">
+                      <svg
+                        class="absolute left-1 top-1 h-5 w-5 text-indigo-600"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M4.632 3.533A2 2 0 016.577 2h6.846a2 2 0 011.945 1.533l1.976 8.234A3.489 3.489 0 0016 11.5H4c-.476 0-.93.095-1.344.267l1.976-8.234z"
+                        />
+                        <path
+                          fill-rule="evenodd"
+                          d="M4 13a2 2 0 100 4h12a2 2 0 100-4H4zm11.24 2a.75.75 0 01.75-.75H16a.75.75 0 01.75.75v.01a.75.75 0 01-.75.75h-.01a.75.75 0 01-.75-.75V15zm-2.25-.75a.75.75 0 00-.75.75v.01c0 .414.336.75.75.75H13a.75.75 0 00.75-.75V15a.75.75 0 00-.75-.75h-.01z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                      Database backups.
+                    </dt>
+                    <dd class="inline">
+                      Ac tincidunt sapien vehicula erat auctor pellentesque
+                      rhoncus. Et magna sit morbi lobortis.
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+            <img
+              src="https://tailwindui.com/img/component-images/dark-project-app-screenshot.png"
+              alt="Product screenshot"
+              class="w-[48rem] max-w-none rounded-xl shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem] md:-ml-4 lg:-ml-0"
+              width="2432"
+              height="1442"
+            />
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- xLIB section -->
     <section id="xLIB">
-      <div>
-        <img src="./assets/icons/xlib.svg" alt="" />
-        <p>xLIB</p>
-        <p>Efficient - Fast - Modular</p>
-        <p>Xodium Library written in Rust.</p>
-        <a href="https://github.com/XodiumSoftware/xLIB">Discover more.</a>
+      <div class="overflow-hidden bg-white py-24 sm:py-32">
+        <div class="mx-auto max-w-7xl px-6 lg:px-8">
+          <div
+            class="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2"
+          >
+            <div class="lg:pr-8 lg:pt-4">
+              <div class="lg:max-w-lg">
+                <h2 class="text-base font-semibold leading-7 text-indigo-600">
+                  Efficient - Fast - Modular
+                </h2>
+                <p
+                  class="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"
+                >
+                  xLIB
+                </p>
+                <p class="mt-6 text-lg leading-8 text-gray-600">
+                  Xodium Library written in Rust.
+                </p>
+                <dl
+                  class="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-600 lg:max-w-none"
+                >
+                  <div class="relative pl-9">
+                    <dt class="inline font-semibold text-gray-900">
+                      <svg
+                        class="absolute left-1 top-1 h-5 w-5 text-indigo-600"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M5.5 17a4.5 4.5 0 01-1.44-8.765 4.5 4.5 0 018.302-3.046 3.5 3.5 0 014.504 4.272A4 4 0 0115 17H5.5zm3.75-2.75a.75.75 0 001.5 0V9.66l1.95 2.1a.75.75 0 101.1-1.02l-3.25-3.5a.75.75 0 00-1.1 0l-3.25 3.5a.75.75 0 101.1 1.02l1.95-2.1v4.59z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                      Push to deploy.
+                    </dt>
+                    <dd class="inline">
+                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                      Maiores impedit perferendis suscipit eaque, iste dolor
+                      cupiditate blanditiis ratione.
+                    </dd>
+                  </div>
+                  <div class="relative pl-9">
+                    <dt class="inline font-semibold text-gray-900">
+                      <svg
+                        class="absolute left-1 top-1 h-5 w-5 text-indigo-600"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                      SSL certificates.
+                    </dt>
+                    <dd class="inline">
+                      Anim aute id magna aliqua ad ad non deserunt sunt. Qui
+                      irure qui lorem cupidatat commodo.
+                    </dd>
+                  </div>
+                  <div class="relative pl-9">
+                    <dt class="inline font-semibold text-gray-900">
+                      <svg
+                        class="absolute left-1 top-1 h-5 w-5 text-indigo-600"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M4.632 3.533A2 2 0 016.577 2h6.846a2 2 0 011.945 1.533l1.976 8.234A3.489 3.489 0 0016 11.5H4c-.476 0-.93.095-1.344.267l1.976-8.234z"
+                        />
+                        <path
+                          fill-rule="evenodd"
+                          d="M4 13a2 2 0 100 4h12a2 2 0 100-4H4zm11.24 2a.75.75 0 01.75-.75H16a.75.75 0 01.75.75v.01a.75.75 0 01-.75.75h-.01a.75.75 0 01-.75-.75V15zm-2.25-.75a.75.75 0 00-.75.75v.01c0 .414.336.75.75.75H13a.75.75 0 00.75-.75V15a.75.75 0 00-.75-.75h-.01z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                      Database backups.
+                    </dt>
+                    <dd class="inline">
+                      Ac tincidunt sapien vehicula erat auctor pellentesque
+                      rhoncus. Et magna sit morbi lobortis.
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+            </div>
+            <img
+              src="https://tailwindui.com/img/component-images/dark-project-app-screenshot.png"
+              alt="Product screenshot"
+              class="w-[48rem] max-w-none rounded-xl shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem] md:-ml-4 lg:-ml-0"
+              width="2432"
+              height="1442"
+            />
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- Team section -->
     <section>
-      <div>
-        <div>
-          <h2>Our Team</h2>
-          <div>
-            <div>
-              <p>No matter the project, our team can handle it.</p>
-            </div>
+      <div class="bg-white py-24 sm:py-32">
+        <div
+          class="mx-auto grid max-w-7xl gap-x-8 gap-y-20 px-6 lg:px-8 xl:grid-cols-3"
+        >
+          <div class="max-w-2xl">
+            <h2
+              class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"
+            >
+              Meet our team
+            </h2>
+            <p class="mt-6 text-lg leading-8 text-gray-600">
+              No matter the project, our team can handle it.
+            </p>
           </div>
-          <div></div>
+          <ul
+            role="list"
+            class="grid gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-16 xl:col-span-2"
+          >
+            <li>
+              <!-- use this template in the script -->
+              <div class="flex items-center gap-x-6">
+                <img
+                  class="h-16 w-16 rounded-full"
+                  src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                  alt=""
+                />
+
+                <div>
+                  <h3
+                    class="text-base font-semibold leading-7 tracking-tight text-gray-900"
+                  >
+                    Leslie Alexander
+                  </h3>
+                  <p class="text-sm font-semibold leading-6 text-indigo-600">
+                    Co-Founder / CEO
+                  </p>
+                </div>
+              </div>
+            </li>
+          </ul>
         </div>
       </div>
     </section>
 
     <!-- Footer -->
-    <!-- <footer>
-      <div>
-        <div>
-          <p>© 2024 XODIUM SOFTWARE INC</p>
-        </div>
-        <div>
-          <p>Open-Source (CAD) Software Company</p>
-        </div>
-      </div>
-    </footer> -->
-
-    <footer class="bg-white rounded-lg shadow m-4 dark:bg-gray-800">
+    <footer class="bg-white">
       <div
         class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between"
       >
-        <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400"
-          >© 2023
-          <a href="https://flowbite.com/" class="hover:underline">Flowbite™</a>.
-          All Rights Reserved.
+        <span class="text-sm sm:text-center font-bold"
+          >© 2024 <a href="" class="hover:underline">XODIUM™</a>. Open-Source
+          (CAD) Software Company.
         </span>
         <ul
-          class="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0"
+          class="flex flex-wrap items-center mt-3 text-sm font-medium sm:mt-0"
         >
           <li>
-            <a href="#" class="hover:underline me-4 md:me-6">About</a>
+            <a href="" class="hover:underline me-4 md:me-6">About</a>
           </li>
           <li>
-            <a href="#" class="hover:underline me-4 md:me-6">Privacy Policy</a>
+            <a href="" class="hover:underline me-4 md:me-6">Privacy Policy</a>
           </li>
           <li>
-            <a href="#" class="hover:underline me-4 md:me-6">Licensing</a>
+            <a href="" class="hover:underline me-4 md:me-6">Licensing</a>
           </li>
           <li>
-            <a href="#" class="hover:underline">Contact</a>
+            <a href="" class="hover:underline">Contact</a>
           </li>
         </ul>
       </div>

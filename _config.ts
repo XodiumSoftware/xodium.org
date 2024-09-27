@@ -5,8 +5,6 @@ import sitemap from "lume/plugins/sitemap.ts";
 import robots from "lume/plugins/robots.ts";
 import svgo from "lume/plugins/svgo.ts";
 import esbuild from "lume/plugins/esbuild.ts";
-import tailwindcss from "lume/plugins/tailwindcss.ts";
-import postcss from "lume/plugins/postcss.ts";
 import sourceMaps from "lume/plugins/source_maps.ts";
 
 const site = lume({ src: "src", location: new URL("https://xodium.org/") });
@@ -15,16 +13,6 @@ site.ignore("README.md", "LICENSE.md", "CODE_OF_CONDUCT.md");
 site.copyRemainingFiles((path: string) =>
   path.startsWith("") ? path.toLowerCase() : false
 );
-site.use(
-  tailwindcss({
-    extensions: [".html", ".css", ".ts"],
-    options: {
-      content: ["./src/**/*.html"],
-      theme: { colors: { primary: "", secondary: "", tertiary: "" } },
-    },
-  })
-);
-site.use(postcss());
 site.use(lightningCss());
 site.use(minifyHTML());
 site.use(sitemap());
