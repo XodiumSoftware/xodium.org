@@ -22,7 +22,6 @@ class Utils {
       const element = document.getElementById(target);
       if (e.type === this.clickEvent) {
         const isOpen = !element?.classList.contains(classtype);
-        console.log(`Menu is ${isOpen ? "open" : "closed"}`);
         element?.classList.toggle(classtype);
         this.toggleArrow(isOpen);
       } else if (
@@ -30,7 +29,6 @@ class Utils {
         !element?.classList.contains(classtype)
       ) {
         element?.classList.add(classtype);
-        console.log("Menu is closed due to focusout");
         this.toggleArrow(true);
       }
     }
@@ -47,7 +45,6 @@ class Utils {
   toggleArrow = (isOpen: boolean) => {
     const arrow = document.getElementById("arrow");
     if (arrow) {
-      console.log(`Arrow is now ${isOpen ? "up" : "down"}`);
       arrow.textContent = isOpen ? "▼" : "▲";
     }
   };
