@@ -7,12 +7,10 @@ class Utils {
   constructor() {
     [this.clickEvent, this.focusoutEvent].forEach((eType) =>
       document.addEventListener(eType, (e) => {
-        e.preventDefault();
         this.handleToggle(e, "data-toggle", "hidden");
       })
     );
     document.addEventListener(this.clickEvent, (e) => {
-      e.preventDefault();
       this.handleScroll(e, "data-scroll", "smooth");
     });
   }
@@ -20,6 +18,7 @@ class Utils {
   handleToggle = (e: Event, attr: string, classtype: string) => {
     const target = (e.target as HTMLElement).getAttribute(attr);
     if (target) {
+      e.preventDefault();
       const element = document.getElementById(target);
       if (e.type === this.clickEvent) {
         element?.classList.toggle(classtype);
@@ -30,9 +29,11 @@ class Utils {
   };
 
   handleScroll = (e: Event, attr: string, behavior: ScrollBehavior) => {
-    document
-      .getElementById((e.target as HTMLElement).getAttribute(attr)!)
-      ?.scrollIntoView({ behavior });
+    const target = (e.target as HTMLElement).getAttribute(attr);
+    if (target) {
+      e.preventDefault();
+      document.getElementById(target)?.scrollIntoView({ behavior });
+    }
   };
 }
 
