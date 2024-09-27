@@ -22,11 +22,16 @@ class Utils {
       const element = document.getElementById(target);
       if (e.type === this.clickEvent) {
         const isOpen = !element?.classList.contains(classtype);
+        console.log(`Menu is ${isOpen ? "open" : "closed"}`);
         element?.classList.toggle(classtype);
         this.toggleArrow(isOpen);
-      } else if (e.type === this.focusoutEvent) {
+      } else if (
+        e.type === this.focusoutEvent &&
+        !element?.classList.contains(classtype)
+      ) {
         element?.classList.add(classtype);
-        this.toggleArrow(false);
+        console.log("Menu is closed due to focusout");
+        this.toggleArrow(true);
       }
     }
   };
@@ -42,7 +47,8 @@ class Utils {
   toggleArrow = (isOpen: boolean) => {
     const arrow = document.getElementById("arrow");
     if (arrow) {
-      arrow.textContent = isOpen ? "▲" : "▼";
+      console.log(`Arrow is now ${isOpen ? "up" : "down"}`);
+      arrow.textContent = isOpen ? "▼" : "▲";
     }
   };
 }
