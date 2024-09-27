@@ -1,9 +1,16 @@
 // xodium.utils.ts
-const toolsButton = document.getElementById("tools-button");
-const toolsMenu = document.getElementById("tools-menu");
+class Utils {
+  constructor() {
+    document.addEventListener("click", (e) =>
+      this.handleToggle(e, "data-toggle")
+    );
+  }
 
-if (toolsButton && toolsMenu) {
-  toolsButton.addEventListener("click", () => {
-    toolsMenu.classList.toggle("hidden");
-  });
+  handleToggle = (e: Event, attr: string) =>
+    (e.target as HTMLElement).getAttribute(attr) &&
+    document
+      .getElementById((e.target as HTMLElement).getAttribute(attr)!)
+      ?.classList.toggle("hidden");
 }
+
+new Utils();
