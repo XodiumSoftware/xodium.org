@@ -21,9 +21,12 @@ class Utils {
       e.preventDefault();
       const element = document.getElementById(target);
       if (e.type === this.clickEvent) {
+        const isOpen = !element?.classList.contains(classtype);
         element?.classList.toggle(classtype);
+        this.toggleArrow(isOpen);
       } else if (e.type === this.focusoutEvent) {
         element?.classList.add(classtype);
+        this.toggleArrow(false);
       }
     }
   };
@@ -33,6 +36,13 @@ class Utils {
     if (target) {
       e.preventDefault();
       document.getElementById(target)?.scrollIntoView({ behavior });
+    }
+  };
+
+  toggleArrow = (isOpen: boolean) => {
+    const arrow = document.getElementById("arrow");
+    if (arrow) {
+      arrow.textContent = isOpen ? "▲" : "▼";
     }
   };
 }
