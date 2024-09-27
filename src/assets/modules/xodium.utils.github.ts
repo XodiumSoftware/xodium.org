@@ -1,6 +1,8 @@
 // xodium.utils.github.ts
 import axiod from "https://deno.land/x/axiod@0.26.2/mod.ts";
-import { GH_ORGNAME, GH_REPONAMES } from "./xodium.constants.ts";
+
+const GH_ORGNAME: string = "XodiumSoftware";
+const GH_REPONAMES: string[] = ["xCAD", "xLIB"];
 
 interface GitHubUser {
   login: string;
