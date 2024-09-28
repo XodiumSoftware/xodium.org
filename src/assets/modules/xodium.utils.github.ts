@@ -1,6 +1,8 @@
-import axios from "axios";
-import moment from "moment";
-import { GH_ORGNAME, GH_REPONAMES } from "./xodium.constants";
+// xodium.utils.github.ts
+import axiod from "https://deno.land/x/axiod@0.26.2/mod.ts";
+
+const GH_ORGNAME: string = "XodiumSoftware";
+const GH_REPONAMES: string[] = ["xCAD", "xLIB"];
 
 interface GitHubUser {
   login: string;
@@ -20,9 +22,15 @@ interface Member {
   avatar_url: string;
 }
 
+interface StoredItem {
+  value: string | number | boolean | object;
+  expiry: number;
+  version?: string;
+}
+
 class GithubAPI {
   static async fetchOrgMembers(): Promise<GitHubUser[]> {
-    const response = await axios.get<GitHubUser[]>(
+    const response = await axiod.get<GitHubUser[]>(
       `https://api.github.com/orgs/${GH_ORGNAME}/public_members`,
       {
         headers: { Accept: "application/vnd.github+json" },
@@ -34,7 +42,7 @@ class GithubAPI {
   static async fetchProjectInfo(
     repoName: string
   ): Promise<GitHubRelease | null> {
-    const releasesResponse = await axios.get<GitHubRelease[]>(
+    const releasesResponse = await axiod.get<GitHubRelease[]>(
       `https://api.github.com/repos/${GH_ORGNAME}/${repoName}/releases`,
       {
         headers: { Accept: "application/vnd.github+json" },
@@ -45,7 +53,7 @@ class GithubAPI {
       return null;
     }
 
-    const latestReleaseResponse = await axios.get<GitHubRelease>(
+    const latestReleaseResponse = await axiod.get<GitHubRelease>(
       `https://api.github.com/repos/${GH_ORGNAME}/${repoName}/releases/latest`,
       {
         headers: { Accept: "application/vnd.github+json" },
@@ -63,18 +71,18 @@ class LocalStorageService {
   ) {
     const item = {
       value: value,
-      expiry: moment().add(expiryInMinutes, "minutes").unix(),
+      expiry: Date.now() + expiryInMinutes * 60 * 1000,
     };
     localStorage.setItem(key, JSON.stringify(item));
   }
-  static getItem(key: string): any {
+
+  static getItem(key: string): StoredItem | null {
     const itemStr = localStorage.getItem(key);
     if (!itemStr) {
       return null;
     }
     const item = JSON.parse(itemStr);
-    const now = moment().unix();
-    if (now > item.expiry) {
+    if (Date.now() > item.expiry) {
       localStorage.removeItem(key);
       return null;
     }
@@ -91,11 +99,21 @@ class UtilsGithub {
 
   async StoreOrgMembers() {
     const membersData = LocalStorageService.getItem("members");
-    let members = membersData ? membersData.value : null;
-    if (!members) {
+    let members: Member[] | null = null;
+    if (membersData && Array.isArray(membersData.value)) {
+      members = membersData.value as Member[];
+    } else {
       members = await GithubAPI.fetchOrgMembers();
       LocalStorageService.setItem("members", members);
     }
+    members.forEach((member) => {
+      const avatarData = LocalStorageService.getItem(`avatar_${member.login}`);
+      if (!avatarData) {
+        axiod.get(member.avatar_url).then((response) => {
+          LocalStorageService.setItem(`avatar_${member.login}`, response.data);
+        });
+      }
+    });
     this.uiUpdater.populateTeamGrid(members);
   }
 
@@ -104,15 +122,21 @@ class UtilsGithub {
       const projectInfoData = LocalStorageService.getItem(
         `latest_release_${repoName}`
       );
-      let latestVersion = projectInfoData ? projectInfoData.version : null;
+      let latestVersion: string | null = null;
+      if (
+        projectInfoData &&
+        typeof projectInfoData.value === "object" &&
+        "version" in projectInfoData.value
+      ) {
+        latestVersion = (projectInfoData.value as { version: string }).version;
+      }
       if (!latestVersion) {
         const response: { tag_name: string } | null =
           await GithubAPI.fetchProjectInfo(repoName);
         latestVersion = response ? response.tag_name : "N.A.";
-        LocalStorageService.setItem(
-          `latest_release_${repoName}`,
-          latestVersion
-        );
+        LocalStorageService.setItem(`latest_release_${repoName}`, {
+          value: { version: latestVersion },
+        });
       }
       this.uiUpdater.setVersionInfoText(repoName, latestVersion);
     }
@@ -125,13 +149,26 @@ class UIUpdater {
     if (grid) {
       if (Array.isArray(members)) {
         members.forEach((member) => {
-          const card = document.createElement("div");
-          card.className = "member-card";
+          const card = document.createElement("li");
+          card.classList.add("mb-4");
           card.innerHTML = `
-            <a href="https://github.com/${member.login}" target="_blank">
-              <img class="member-icon" src="${member.avatar_url}" alt="${member.login} picture" width="100" height="100">
-              <h3>${member.login}</h3>
-            </a>
+            <div class="flex items-center gap-x-6">
+              <img
+                class="h-16 w-16 rounded-full"
+                src="${member.avatar_url}"
+                alt="${member.login} picture"
+              />
+              <div>
+                <h3
+                  class="text-base font-semibold leading-7 tracking-tight text-gray-900 dark:text-slate-100"
+                >
+                  ${member.login}
+                </h3>
+                <p class="text-sm font-semibold leading-6 text-indigo-600">
+                  ROLE FEATURE WIP
+                </p>
+              </div>
+            </div>
           `;
           grid.appendChild(card);
         });
