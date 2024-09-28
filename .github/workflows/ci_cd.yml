@@ -26,13 +26,15 @@ jobs:
         name: Checkout
         uses: actions/checkout@main
 
-      - id: setup_node
-        name: Setup Node.js
-        uses: actions/setup-node@main
+      - id: setup_deno
+        name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
 
       - id: package_script
         name: Package Script
-        run: npm run build
+        run: deno task build
         shell: bash
 
       - id: setup_pages
