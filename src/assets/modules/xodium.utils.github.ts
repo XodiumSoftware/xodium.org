@@ -21,6 +21,15 @@ interface GitHubUser {
   role: string;
 }
 
+const FETCH_DATA_MAP: Map<string, { headers: { Accept: string } }> = new Map([
+  [
+    "https://api.github.com/orgs/XodiumSoftware/public_members",
+    {
+      headers: { Accept: "application/vnd.github+json" },
+    },
+  ],
+]);
+
 /**
  * A service for interacting with the GitHub API.
  */
@@ -31,44 +40,54 @@ export class GithubService {
    * @returns {Promise<GitHubUser[]>} A promise that resolves to an array of GitHubUser objects.
    */
   static async fetchData(): Promise<GitHubUser[]> {
-    const response = await axiod.get<GitHubUser[]>(
-      `https://api.github.com/orgs/XodiumSoftware/public_members`,
-      {
-        headers: { Accept: "application/vnd.github+json" },
-      }
-    );
-    return response.data;
+    const results: GitHubUser[] = [];
+    for (const [url, config] of FETCH_DATA_MAP) {
+      const response = await axiod.get<GitHubUser[]>(url, config);
+      results.push(...response.data);
+    }
+    return results;
   }
 
   /**
-   * Fetches and stores GitHub organization members in local storage.
+   * Stores GitHub data in local storage.
    *
-   * This method first attempts to retrieve the members from local storage. If the members
-   * are not found or the data is not in the expected format, it fetches the members from
-   * the GitHub API and stores them in local storage.
+   * This method retrieves GitHub data from local storage if available.
+   * If not, it fetches the data from a remote source using the provided fetch function and stores it in local storage.
+   * Additionally, it ensures that each user's avatar data is also stored in local storage.
    *
-   * For each member, it checks if the avatar data is already stored in local storage. If not,
-   * it fetches the avatar data from the provided URL and stores it in local storage.
-   *
+   * @param {() => Promise<GitHubUser[]>} fetchFunction - The function to fetch data from GitHub.
+   * @param {string} storageKey - The key to store the data in local storage.
    * @returns {Promise<GitHubUser[]>} A promise that resolves to an array of GitHubUser objects.
    */
-  static async StoreOrgMembers(): Promise<GitHubUser[]> {
-    const membersData = LocalStorageService.getItem("members");
-    let members: GitHubUser[] | null = null;
-    if (membersData && Array.isArray(membersData)) {
-      members = membersData as GitHubUser[];
+  static async storeData(
+    fetchFunction: () => Promise<GitHubUser[]>,
+    storageKey: string
+  ): Promise<GitHubUser[]> {
+    const data = LocalStorageService.getItem(storageKey);
+    let items: GitHubUser[] | null = null;
+    if (data && Array.isArray(data)) {
+      items = data as GitHubUser[];
     } else {
-      members = await this.fetchData();
-      LocalStorageService.setItem("members", members);
+      items = await fetchFunction();
+      LocalStorageService.setItem(storageKey, items);
     }
-    members.forEach((member) => {
-      const avatarData = LocalStorageService.getItem(`avatar_${member.login}`);
-      if (!avatarData) {
-        axiod.get(member.avatar_url).then((response) => {
-          LocalStorageService.setItem(`avatar_${member.login}`, response.data);
-        });
-      }
-    });
-    return members;
+    return items;
+  }
+
+  /**
+   * Retrieves GitHub data from local storage or fetches it if not available.
+   *
+   * @param {string} storageKey - The key to store the data in local storage.
+   * @returns {Promise<GitHubUser[]>} A promise that resolves to an array of GitHubUser objects.
+   */
+  static async getData(storageKey: string): Promise<GitHubUser[]> {
+    const data = LocalStorageService.getItem(storageKey);
+    if (data && Array.isArray(data)) {
+      return data as GitHubUser[];
+    } else {
+      const items = await this.fetchData();
+      LocalStorageService.setItem(storageKey, items);
+      return items;
+    }
   }
 }

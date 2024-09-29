@@ -52,7 +52,7 @@ class Utils {
   };
 
   async populateTeamGrid(): Promise<void> {
-    const members = await GithubService.StoreOrgMembers();
+    const members = await GithubService.getData("members");
     const grid = document.querySelector(".team-grid");
     if (grid) {
       if (Array.isArray(members)) {
@@ -82,11 +82,7 @@ class Utils {
             `;
           grid.appendChild(card);
         });
-      } else {
-        console.error("Expected members to be an array, but got:", members);
       }
-    } else {
-      console.error('Element with class ".team-grid" not found');
     }
   }
 }
