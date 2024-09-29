@@ -1,3 +1,6 @@
 // xodium.index.ts
 import "xodium/typewriter";
-import "xodium/utils";
+import { Utils } from "xodium/utils";
+
+Utils.addEventListeners();
+Utils.populateTeamGrid();
