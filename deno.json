@@ -1,7 +1,12 @@
 {
   "imports": {
     "lume/": "https://deno.land/x/lume@v2.3.2/",
-    "tailwindcss": "https://deno.land/x/tailwindcss@3.4.13/"
+    "axiod": "https://deno.land/x/axiod@0.26.2/mod.ts",
+    "typewriter": "https://unpkg.com/typewriter-effect@2.21.0/dist/core.js",
+    "xodium/typewriter": "./src/assets/modules/xodium.typewriter.ts",
+    "xodium/utils": "./src/assets/modules/xodium.utils.ts",
+    "xodium/utils/github": "./src/assets/modules/xodium.utils.github.ts",
+    "xodium/utils/localstorage": "./src/assets/modules/xodium.utils.localstorage.ts"
   },
   "tasks": {
     "lume": "echo \"import 'lume/cli.ts'\" | deno run -A -",

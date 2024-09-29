@@ -1,5 +1,4 @@
 // xodium.index.ts
-// Internal modules
-import "./xodium.typewriter.ts";
-import "./xodium.utils.github.ts";
-import "./xodium.utils.ts";
+import "xodium/typewriter";
+import "xodium/utils/github";
+import "xodium/utils";

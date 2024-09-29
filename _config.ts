@@ -9,7 +9,9 @@ import sourceMaps from "lume/plugins/source_maps.ts";
 
 const site = lume({ src: "src", location: new URL("https://xodium.org/") });
 
-site.ignore("README.md", "LICENSE.md", "CODE_OF_CONDUCT.md");
+site.ignore("README.md", "LICENSE.md", "CODE_OF_CONDUCT.md", (path: string) =>
+  path.includes(".test.")
+);
 site.copyRemainingFiles((path: string) =>
   path.startsWith("") ? path.toLowerCase() : false
 );

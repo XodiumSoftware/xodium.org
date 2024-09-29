@@ -1,5 +1,6 @@
 // xodium.utils.github.ts
-import axiod from "https://deno.land/x/axiod@0.26.2/mod.ts";
+import axiod from "axiod";
+import { LocalStorageService } from "xodium/utils/localstorage";
 
 const GH_ORGNAME: string = "XodiumSoftware";
 const GH_REPONAMES: string[] = ["xCAD", "xLIB"];
@@ -8,6 +9,7 @@ interface GitHubUser {
   login: string;
   id: number;
   avatar_url: string;
+  html_url: string;
 }
 
 interface GitHubRelease {
@@ -17,23 +19,14 @@ interface GitHubRelease {
   body: string;
 }
 
-interface Member {
-  login: string;
-  avatar_url: string;
-}
-
-interface StoredItem {
-  value: string | number | boolean | object;
-  expiry: number;
-  version?: string;
-}
+const acceptHeader = "application/vnd.github+json";
 
 class GithubAPI {
   static async fetchOrgMembers(): Promise<GitHubUser[]> {
     const response = await axiod.get<GitHubUser[]>(
       `https://api.github.com/orgs/${GH_ORGNAME}/public_members`,
       {
-        headers: { Accept: "application/vnd.github+json" },
+        headers: { Accept: acceptHeader },
       }
     );
     return response.data;
@@ -45,7 +38,7 @@ class GithubAPI {
     const releasesResponse = await axiod.get<GitHubRelease[]>(
       `https://api.github.com/repos/${GH_ORGNAME}/${repoName}/releases`,
       {
-        headers: { Accept: "application/vnd.github+json" },
+        headers: { Accept: acceptHeader },
       }
     );
 
@@ -63,33 +56,6 @@ class GithubAPI {
   }
 }
 
-class LocalStorageService {
-  static setItem(
-    key: string,
-    value: string | number | boolean | object,
-    expiryInMinutes = 60
-  ) {
-    const item = {
-      value: value,
-      expiry: Date.now() + expiryInMinutes * 60 * 1000,
-    };
-    localStorage.setItem(key, JSON.stringify(item));
-  }
-
-  static getItem(key: string): StoredItem | null {
-    const itemStr = localStorage.getItem(key);
-    if (!itemStr) {
-      return null;
-    }
-    const item = JSON.parse(itemStr);
-    if (Date.now() > item.expiry) {
-      localStorage.removeItem(key);
-      return null;
-    }
-    return item.value;
-  }
-}
-
 class UtilsGithub {
   private uiUpdater = new UIUpdater();
   constructor() {
@@ -99,9 +65,9 @@ class UtilsGithub {
 
   async StoreOrgMembers() {
     const membersData = LocalStorageService.getItem("members");
-    let members: Member[] | null = null;
-    if (membersData && Array.isArray(membersData.value)) {
-      members = membersData.value as Member[];
+    let members: GitHubUser[] | null = null;
+    if (membersData && Array.isArray(membersData)) {
+      members = membersData as GitHubUser[];
     } else {
       members = await GithubAPI.fetchOrgMembers();
       LocalStorageService.setItem("members", members);
@@ -125,10 +91,10 @@ class UtilsGithub {
       let latestVersion: string | null = null;
       if (
         projectInfoData &&
-        typeof projectInfoData.value === "object" &&
-        "version" in projectInfoData.value
+        typeof projectInfoData === "object" &&
+        "version" in projectInfoData
       ) {
-        latestVersion = (projectInfoData.value as { version: string }).version;
+        latestVersion = (projectInfoData as { version: string }).version;
       }
       if (!latestVersion) {
         const response: { tag_name: string } | null =
@@ -144,7 +110,7 @@ class UtilsGithub {
 }
 
 class UIUpdater {
-  public populateTeamGrid(members: Member[]): void {
+  public populateTeamGrid(members: GitHubUser[]): void {
     const grid = document.querySelector(".team-grid");
     if (grid) {
       if (Array.isArray(members)) {
@@ -153,11 +119,13 @@ class UIUpdater {
           card.classList.add("mb-4");
           card.innerHTML = `
             <div class="flex items-center gap-x-6">
-              <img
-                class="h-16 w-16 rounded-full"
-                src="${member.avatar_url}"
-                alt="${member.login} picture"
-              />
+              <a href="${member.html_url}" target="_blank">
+                <img
+                  class="h-16 w-16 rounded-full"
+                  src="${member.avatar_url}"
+                  alt="${member.login} picture"
+                />
+              </a>
               <div>
                 <h3
                   class="text-base font-semibold leading-7 tracking-tight text-gray-900 dark:text-slate-100"

@@ -1,16 +1,16 @@
 // xodium.utils.ts
 
-class Utils {
-  clickEvent = "click";
-  focusoutEvent = "focusout";
+const clickEvent = "click";
+const focusoutEvent = "focusout";
 
+class Utils {
   constructor() {
-    [this.clickEvent, this.focusoutEvent].forEach((eType) =>
+    [clickEvent, focusoutEvent].forEach((eType) =>
       document.addEventListener(eType, (e) => {
         this.handleToggle(e, "data-toggle", "hidden");
       })
     );
-    document.addEventListener(this.clickEvent, (e) => {
+    document.addEventListener(clickEvent, (e) => {
       this.handleScroll(e, "data-scroll", "smooth");
     });
   }
@@ -20,12 +20,12 @@ class Utils {
     if (target) {
       e.preventDefault();
       const element = document.getElementById(target);
-      if (e.type === this.clickEvent) {
+      if (e.type === clickEvent) {
         const isOpen = !element?.classList.contains(classtype);
         element?.classList.toggle(classtype);
         this.toggleArrow(isOpen);
       } else if (
-        e.type === this.focusoutEvent &&
+        e.type === focusoutEvent &&
         !element?.classList.contains(classtype)
       ) {
         element?.classList.add(classtype);
