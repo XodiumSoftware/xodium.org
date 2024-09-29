@@ -29,18 +29,13 @@ interface GitHubUser {
  */
 type FetchDataKey = "members";
 
-const FETCH_DATA_MAP: Map<FetchDataKey, { url: string; config?: IConfig }> =
-  new Map([
-    [
-      "members",
-      {
-        url: "https://api.github.com/orgs/XodiumSoftware/public_members",
-        config: {
-          headers: { Accept: "application/vnd.github+json" },
-        },
-      },
-    ],
-  ]);
+const FETCH_DATA_MAP: Record<FetchDataKey, { url: string; config?: IConfig }> =
+  {
+    members: {
+      url: "https://api.github.com/orgs/XodiumSoftware/public_members",
+      config: { headers: { Accept: "application/vnd.github+json" } },
+    },
+  };
 
 /**
  * A service for interacting with the GitHub API.
@@ -52,14 +47,8 @@ export class GithubService {
    * @returns {Promise<GitHubUser[]>} A promise that resolves to an array of GitHubUser objects.
    */
   static async fetchData(key: FetchDataKey): Promise<GitHubUser[]> {
-    const results: GitHubUser[] = [];
-    const fetchData = FETCH_DATA_MAP.get(key);
-    if (fetchData) {
-      const { url, config } = fetchData;
-      const response = await axiod.get<GitHubUser[]>(url, config);
-      results.push(...response.data);
-    }
-    return results;
+    const { url, config } = FETCH_DATA_MAP[key];
+    return (await axiod.get<GitHubUser[]>(url, config)).data;
   }
 
   /**
@@ -77,11 +66,8 @@ export class GithubService {
     fetchFunction: () => Promise<GitHubUser[]>,
     storageKey: string
   ): Promise<GitHubUser[]> {
-    const data = LocalStorageService.getItem(storageKey);
-    let items: GitHubUser[] | null = null;
-    if (data && Array.isArray(data)) {
-      items = data as GitHubUser[];
-    } else {
+    let items = LocalStorageService.getItem(storageKey) as GitHubUser[] | null;
+    if (!items) {
       items = await fetchFunction();
       LocalStorageService.setItem(storageKey, items);
     }
@@ -95,13 +81,11 @@ export class GithubService {
    * @returns {Promise<GitHubUser[]>} A promise that resolves to an array of GitHubUser objects.
    */
   static async getData(key: FetchDataKey): Promise<GitHubUser[]> {
-    const data = LocalStorageService.getItem(key);
-    if (data && Array.isArray(data)) {
-      return data as GitHubUser[];
-    } else {
-      const items = await this.fetchData(key);
-      LocalStorageService.setItem(key, items);
-      return items;
+    let items = LocalStorageService.getItem(key) as GitHubUser[] | null;
+    if (!items) {
+      items = await this.fetchData(key);
+      LocalStorageService.setItem(key, await this.fetchData(key));
     }
+    return items;
   }
 }
