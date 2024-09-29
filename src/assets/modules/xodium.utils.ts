@@ -1,8 +1,8 @@
 // xodium.utils.ts
 import { GithubService } from "xodium/utils/github";
 
-const CLICK_EVENT: string = "click";
-const FOCUS_OUT_EVENT: string = "focusout";
+export const CLICK_EVENT: string = "click";
+export const FOCUS_OUT_EVENT: string = "focusout";
 
 /**
  * Utility class providing various helper methods.
@@ -13,27 +13,22 @@ const FOCUS_OUT_EVENT: string = "focusout";
  */
 export class Utils {
   /**
-   * Adds event listeners for specified event types.
+   * Adds event listeners for specified event types and methods.
    *
-   * This method attaches event listeners for `CLICK_EVENT` and `FOCUS_OUT_EVENT` to the document.
-   * When these events are triggered, the `handleToggle` method is called with the event,
-   * "data-toggle" attribute, and "hidden" class.
-   *
-   * Additionally, it attaches another event listener for `CLICK_EVENT` that calls the `handleScroll`
-   * method with the event, "data-scroll" attribute, and "smooth" behavior.
+   * This method attaches event listeners for the provided event types and methods to the document.
    *
    * @static
    * @method
+   * @param {Array<{ eventType: string[], method: (e: Event) => void }>} eventList - List of event types and corresponding methods.
    * @returns {void}
    */
-  static addEventListeners(): void {
-    [CLICK_EVENT, FOCUS_OUT_EVENT].forEach((eType) =>
-      document.addEventListener(eType, (e) => {
-        Utils.handleToggle(e, "data-toggle", "hidden");
-      })
-    );
-    document.addEventListener(CLICK_EVENT, (e) => {
-      Utils.handleScroll(e, "data-scroll", "smooth");
+  static eventListenerManager(
+    eventList: Array<{ eventTypes: string[]; method: (e: Event) => void }>
+  ): void {
+    eventList.forEach(({ eventTypes, method }) => {
+      eventTypes.forEach((eventType) => {
+        document.addEventListener(eventType, method);
+      });
     });
   }
 
