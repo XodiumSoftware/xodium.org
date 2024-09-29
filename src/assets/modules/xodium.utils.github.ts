@@ -2,74 +2,63 @@
 import axiod from "axiod";
 import { LocalStorageService } from "xodium/utils/localstorage";
 
-const GH_ORGNAME: string = "XodiumSoftware";
-const GH_REPONAMES: string[] = ["xCAD", "xLIB"];
-
+/**
+ * Represents a GitHub user with essential details.
+ *
+ * @interface GitHubUser
+ *
+ * @property {number} id - The unique identifier for the user.
+ * @property {string} login - The username of the GitHub user.
+ * @property {string} avatar_url - The URL to the user's avatar image.
+ * @property {string} html_url - The URL to the user's GitHub profile.
+ * @property {string} role - The role of the user within a specific context.
+ */
 interface GitHubUser {
-  login: string;
   id: number;
+  login: string;
   avatar_url: string;
   html_url: string;
+  role: string;
 }
 
-interface GitHubRelease {
-  url: string;
-  tag_name: string;
-  name: string;
-  body: string;
-}
-
-const acceptHeader = "application/vnd.github+json";
-
-class GithubAPI {
-  static async fetchOrgMembers(): Promise<GitHubUser[]> {
+/**
+ * A service for interacting with the GitHub API.
+ */
+export class GithubService {
+  /**
+   * Fetches the list of public members of the XodiumSoftware organization from GitHub.
+   *
+   * @returns {Promise<GitHubUser[]>} A promise that resolves to an array of GitHubUser objects.
+   */
+  static async fetchData(): Promise<GitHubUser[]> {
     const response = await axiod.get<GitHubUser[]>(
-      `https://api.github.com/orgs/${GH_ORGNAME}/public_members`,
+      `https://api.github.com/orgs/XodiumSoftware/public_members`,
       {
-        headers: { Accept: acceptHeader },
+        headers: { Accept: "application/vnd.github+json" },
       }
     );
     return response.data;
   }
 
-  static async fetchProjectInfo(
-    repoName: string
-  ): Promise<GitHubRelease | null> {
-    const releasesResponse = await axiod.get<GitHubRelease[]>(
-      `https://api.github.com/repos/${GH_ORGNAME}/${repoName}/releases`,
-      {
-        headers: { Accept: acceptHeader },
-      }
-    );
-
-    if (releasesResponse.data.length === 0) {
-      return null;
-    }
-
-    const latestReleaseResponse = await axiod.get<GitHubRelease>(
-      `https://api.github.com/repos/${GH_ORGNAME}/${repoName}/releases/latest`,
-      {
-        headers: { Accept: "application/vnd.github+json" },
-      }
-    );
-    return latestReleaseResponse.data;
-  }
-}
-
-class UtilsGithub {
-  private uiUpdater = new UIUpdater();
-  constructor() {
-    this.StoreOrgMembers().catch(console.error);
-    this.StoreProjectInfo().catch(console.error);
-  }
-
-  async StoreOrgMembers() {
+  /**
+   * Fetches and stores GitHub organization members in local storage.
+   *
+   * This method first attempts to retrieve the members from local storage. If the members
+   * are not found or the data is not in the expected format, it fetches the members from
+   * the GitHub API and stores them in local storage.
+   *
+   * For each member, it checks if the avatar data is already stored in local storage. If not,
+   * it fetches the avatar data from the provided URL and stores it in local storage.
+   *
+   * @returns {Promise<GitHubUser[]>} A promise that resolves to an array of GitHubUser objects.
+   */
+  static async StoreOrgMembers(): Promise<GitHubUser[]> {
     const membersData = LocalStorageService.getItem("members");
     let members: GitHubUser[] | null = null;
     if (membersData && Array.isArray(membersData)) {
       members = membersData as GitHubUser[];
     } else {
-      members = await GithubAPI.fetchOrgMembers();
+      members = await this.fetchData();
       LocalStorageService.setItem("members", members);
     }
     members.forEach((member) => {
@@ -80,86 +69,6 @@ class UtilsGithub {
         });
       }
     });
-    this.uiUpdater.populateTeamGrid(members);
-  }
-
-  async StoreProjectInfo() {
-    for (const repoName of GH_REPONAMES) {
-      const projectInfoData = LocalStorageService.getItem(
-        `latest_release_${repoName}`
-      );
-      let latestVersion: string | null = null;
-      if (
-        projectInfoData &&
-        typeof projectInfoData === "object" &&
-        "version" in projectInfoData
-      ) {
-        latestVersion = (projectInfoData as { version: string }).version;
-      }
-      if (!latestVersion) {
-        const response: { tag_name: string } | null =
-          await GithubAPI.fetchProjectInfo(repoName);
-        latestVersion = response ? response.tag_name : "N.A.";
-        LocalStorageService.setItem(`latest_release_${repoName}`, {
-          value: { version: latestVersion },
-        });
-      }
-      this.uiUpdater.setVersionInfoText(repoName, latestVersion);
-    }
+    return members;
   }
 }
-
-class UIUpdater {
-  public populateTeamGrid(members: GitHubUser[]): void {
-    const grid = document.querySelector(".team-grid");
-    if (grid) {
-      if (Array.isArray(members)) {
-        members.forEach((member) => {
-          const card = document.createElement("li");
-          card.classList.add("mb-4");
-          card.innerHTML = `
-            <div class="flex items-center gap-x-6">
-              <a href="${member.html_url}" target="_blank">
-                <img
-                  class="h-16 w-16 rounded-full"
-                  src="${member.avatar_url}"
-                  alt="${member.login} picture"
-                />
-              </a>
-              <div>
-                <h3
-                  class="text-base font-semibold leading-7 tracking-tight text-gray-900 dark:text-slate-100"
-                >
-                  ${member.login}
-                </h3>
-                <p class="text-sm font-semibold leading-6 text-indigo-600">
-                  ROLE FEATURE WIP
-                </p>
-              </div>
-            </div>
-          `;
-          grid.appendChild(card);
-        });
-      } else {
-        console.error("Expected members to be an array, but got:", members);
-      }
-    } else {
-      console.error('Element with class ".team-grid" not found');
-    }
-  }
-
-  public setVersionInfoText(repoName: string, version: string): void {
-    const els = document.querySelectorAll(`.${repoName}-version`);
-    if (els) {
-      els.forEach((el) => {
-        el.innerHTML = `<i class="fas fa-solid fa-tag"> ${version}</i>`;
-      });
-    } else {
-      console.error(`Element with class ".${repoName}-version" not found`);
-    }
-  }
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-  new UtilsGithub();
-});
