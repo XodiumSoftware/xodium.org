@@ -86,12 +86,12 @@ export class Utils {
    * @param {boolean} param.isOpen - The state indicating whether the arrow should point down (true) or up (false).
    * @returns {void}
    */
-  static toggleArrow({ isOpen }: { isOpen: boolean }): void {
-    const arrow = document.getElementById("arrow");
+  static toggleArrow = ({ isOpen }: { isOpen: boolean }): void => {
+    const arrow = document.querySelector(".arrow") as HTMLElement;
     if (arrow) {
-      arrow.textContent = isOpen ? "▼" : "▲";
+      arrow.style.transform = isOpen ? "rotate(0deg)" : "rotate(180deg)";
     }
-  }
+  };
 
   /**
    * Populates the team grid with member data fetched from the GitHub service.
