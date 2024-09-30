@@ -9,7 +9,7 @@ Utils.eventListenerManager([
   },
   {
     eventTypes: [CLICK_EVENT],
-    method: (e) => Utils.handleScroll(e, "data-toggle", "smooth"),
+    method: (e) => Utils.handleScroll(e, "data-scroll", "smooth"),
   },
 ]);
 Utils.populateTeamGrid();
