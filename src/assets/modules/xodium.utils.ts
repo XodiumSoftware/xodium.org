@@ -5,6 +5,24 @@ export const CLICK_EVENT: string = "click";
 export const FOCUS_OUT_EVENT: string = "focusout";
 
 /**
+ * Represents a GitHub user with essential details.
+ *
+ * @interface GitHubUser
+ *
+ * @property {number} id - The unique identifier for the user.
+ * @property {string} login - The username of the GitHub user.
+ * @property {string} avatar_url - The URL to the user's avatar image.
+ * @property {string} html_url - The URL to the user's GitHub profile.
+ * @property {string} role - The role of the user within a specific context.
+ */
+interface GitHubUser {
+  id: number;
+  login: string;
+  avatar_url: string;
+  html_url: string;
+}
+
+/**
  * Utility class providing various helper methods.
  *
  * @class
@@ -106,7 +124,7 @@ export class Utils {
    */
   static async populateTeamGrid(): Promise<void> {
     try {
-      const members = await GithubService.getData("members");
+      const members = await GithubService.getData<GitHubUser>("members");
       const grid = document.querySelector(".team-grid");
       if (grid && Array.isArray(members)) {
         const fragment = document.createDocumentFragment();
@@ -114,7 +132,7 @@ export class Utils {
           const card = document.createElement("li");
           card.innerHTML = `
             <div class="flex items-center gap-x-6 mb-4">
-              <a href="${member.html_url}" target="_blank">
+              <a href="${member.html_url}">
                 <img
                   class="h-16 w-16 rounded-full"
                   src="${member.avatar_url}"
