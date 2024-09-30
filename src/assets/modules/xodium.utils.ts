@@ -47,17 +47,19 @@ export class Utils {
     const target = (e.target as HTMLElement).getAttribute(attr);
     if (target) {
       e.preventDefault();
-      const element = document.getElementById(target);
+      const el = document.getElementById(target);
       if (e.type === CLICK_EVENT) {
-        const isOpen = !element?.classList.contains(classtype);
-        element?.classList.toggle(classtype);
+        const isOpen = !el?.classList.contains(classtype);
+        el?.classList.toggle(classtype);
         Utils.toggleArrow({ isOpen });
       } else if (
         e.type === FOCUS_OUT_EVENT &&
-        !element?.classList.contains(classtype)
+        !el?.classList.contains(classtype)
       ) {
-        element?.classList.add(classtype);
-        Utils.toggleArrow({ isOpen: true });
+        if (!el?.contains((e as FocusEvent).relatedTarget as Node)) {
+          el?.classList.add(classtype);
+          Utils.toggleArrow({ isOpen: true });
+        }
       }
     }
   };
