@@ -123,7 +123,7 @@ export class Utils {
                 <h3 class="text-base font-semibold leading-7 tracking-tight text-gray-900 dark:text-slate-100">
                   ${member.login}
                 </h3>
-                <p class="text-sm font-semibold leading-6 text-indigo-600">
+                <p class="text-sm font-semibold leading-6 text-[#CB2D3E]">
                   ${member.role}
                 </p>
               </div>
