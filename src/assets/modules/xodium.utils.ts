@@ -126,7 +126,7 @@ export class Utils {
                   ${member.login}
                 </h3>
                 <p class="text-sm font-semibold leading-6 text-[#CB2D3E]">
-                  ${member.role}
+                  {MEMBER ROLE FEATURE WIP}
                 </p>
               </div>
             </div>
