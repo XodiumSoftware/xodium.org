@@ -25,6 +25,7 @@ export class GithubService {
   /**
    * Fetches data from a remote source.
    *
+   * @template T The type of data to be fetched.
    * @param {FetchDataKey} key - The key to fetch data from the remote source.
    * @returns {Promise<T[]>} A promise that resolves to an array of objects of type T.
    */
@@ -36,6 +37,7 @@ export class GithubService {
   /**
    * Stores data in local storage if not already available.
    *
+   * @template T The type of data to be stored.
    * @param {() => Promise<T[]>} fetchFunction - A function that fetches data from a remote source.
    * @param {string} storageKey - The key to store the data in local storage.
    * @returns {Promise<T[]>} A promise that resolves to an array of objects of type T.
@@ -55,6 +57,7 @@ export class GithubService {
   /**
    * Gets data from local storage if available, otherwise fetches it from a remote source.
    *
+   * @template T The type of data to be fetched.
    * @param {FetchDataKey} key - The key to fetch data from the remote source.
    * @returns {Promise<T[]>} A promise that resolves to an array of objects of type T.
    */
@@ -62,7 +65,7 @@ export class GithubService {
     let items = LocalStorageService.getItem(key) as T[] | null;
     if (!items) {
       items = await this.fetchData(key);
-      LocalStorageService.setItem(key, await this.fetchData(key));
+      LocalStorageService.setItem(key, items);
     }
     return items;
   }

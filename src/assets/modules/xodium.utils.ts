@@ -13,13 +13,29 @@ export const FOCUS_OUT_EVENT: string = "focusout";
  * @property {string} login - The username of the GitHub user.
  * @property {string} avatar_url - The URL to the user's avatar image.
  * @property {string} html_url - The URL to the user's GitHub profile.
- * @property {string} role - The role of the user within a specific context.
  */
 interface GitHubUser {
   id: number;
   login: string;
   avatar_url: string;
   html_url: string;
+}
+
+/**
+ * Represents a GitHub project with essential details.
+ *
+ * @interface GitHubProject
+ *
+ * @property {number} id - The unique identifier for the project.
+ * @property {string} name - The name of the GitHub project.
+ * @property {string} html_url - The URL to the project's GitHub repository.
+ * @property {string} description - The description of the project.
+ */
+interface GitHubProject {
+  id: number;
+  name: string;
+  html_url: string;
+  description: string;
 }
 
 /**
@@ -122,11 +138,11 @@ export class Utils {
    *
    * @throws Will log an error to the console if there is an issue fetching the team members.
    */
-  static async populateTeamGrid(): Promise<void> {
+  static async populateTeamCards(): Promise<void> {
     try {
       const members = await GithubService.getData<GitHubUser>("members");
-      const grid = document.querySelector(".team-grid");
-      if (grid && Array.isArray(members)) {
+      const cards = document.querySelector(".team-cards");
+      if (cards && Array.isArray(members)) {
         const fragment = document.createDocumentFragment();
         members.forEach((member) => {
           const card = document.createElement("li");
@@ -151,10 +167,10 @@ export class Utils {
           `;
           fragment.appendChild(card);
         });
-        grid.appendChild(fragment);
+        cards.appendChild(fragment);
       }
-    } catch (error) {
-      console.error("Error fetching team members:", error);
+    } catch (err) {
+      console.error("Error fetching team members:", err);
     }
   }
 }
