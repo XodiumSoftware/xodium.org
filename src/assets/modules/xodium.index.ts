@@ -2,8 +2,6 @@
 import "xodium/typewriter";
 import { Utils, CLICK_EVENT, FOCUS_OUT_EVENT } from "xodium/utils";
 
-const SCROLL_EVENT: string = "scroll";
-
 Utils.eventListenerManager([
   {
     eventTypes: [CLICK_EVENT, FOCUS_OUT_EVENT],
@@ -14,8 +12,8 @@ Utils.eventListenerManager([
     method: (e) => Utils.handleScroll(e, "data-scroll", "smooth"),
   },
   {
-    eventTypes: [SCROLL_EVENT],
-    method: () => Utils.handleNavbarVisibility(),
+    eventTypes: ["scroll"],
+    method: () => Utils.handleElementVisibility(".visibility", 100),
   },
 ]);
 Utils.populateTeamCards();

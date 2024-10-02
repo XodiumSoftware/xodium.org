@@ -30,6 +30,28 @@ interface GitHubUser {
  */
 export class Utils {
   /**
+   * Handles the visibility of a specified element based on the scroll position.
+   *
+   * @static
+   * @method
+   * @param {string} elClass - The ID of the element to show/hide.
+   * @param {number} scrollThreshold - The scroll position threshold to trigger visibility.
+   * @returns {void}
+   */
+  static handleElementVisibility(
+    elClass: string,
+    scrollThreshold: number
+  ): void {
+    document
+      .querySelector(elClass)
+      ?.classList.toggle(
+        "hidden",
+        document.body.scrollTop <= scrollThreshold &&
+          document.documentElement.scrollTop <= scrollThreshold
+      );
+  }
+
+  /**
    * Adds event listeners for specified event types and methods.
    *
    * This method attaches event listeners for the provided event types and methods to the document.
@@ -47,29 +69,6 @@ export class Utils {
         document.addEventListener(eventType, method);
       });
     });
-  }
-
-  /**
-   * Handles the visibility of the navbar based on the current scroll position.
-   * If the user has scrolled down, the navbar will be hidden by adding the "navbar-hidden" class.
-   * If the user is at the top of the page, the "navbar-hidden" class will be removed.
-   *
-   * @remarks
-   * This function assumes that there is an element with the class "navbar" in the DOM.
-   * It also relies on the global `scrollY` property or `document.documentElement.scrollTop` for determining the scroll position.
-   *
-   * @returns {void} This function does not return a value.
-   */
-  static handleNavbarVisibility(): void {
-    const navbar = document.querySelector(".navbar") as HTMLElement;
-    if (!navbar) return;
-    const currentScrollTop =
-      globalThis.scrollY || document.documentElement.scrollTop;
-    if (currentScrollTop > 0) {
-      navbar.classList.add("navbar-hidden");
-    } else {
-      navbar.classList.remove("navbar-hidden");
-    }
   }
 
   /**
