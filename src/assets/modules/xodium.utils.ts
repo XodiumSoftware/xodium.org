@@ -22,23 +22,6 @@ interface GitHubUser {
 }
 
 /**
- * Represents a GitHub project with essential details.
- *
- * @interface GitHubProject
- *
- * @property {number} id - The unique identifier for the project.
- * @property {string} name - The name of the GitHub project.
- * @property {string} html_url - The URL to the project's GitHub repository.
- * @property {string} description - The description of the project.
- */
-interface GitHubProject {
-  id: number;
-  name: string;
-  html_url: string;
-  description: string;
-}
-
-/**
  * Utility class providing various helper methods.
  *
  * @class
