@@ -30,6 +30,26 @@ interface GitHubUser {
  */
 export class Utils {
   /**
+   * Adds event listeners for specified event types and methods.
+   *
+   * This method attaches event listeners for the provided event types and methods to the document.
+   *
+   * @static
+   * @method
+   * @param {Array<{ eventType: string[], method: (e: Event) => void }>} eventList - List of event types and corresponding methods.
+   * @returns {void}
+   */
+  static eventListenerManager(
+    eventList: Array<{ eventTypes: string[]; method: (e: Event) => void }>
+  ): void {
+    eventList.forEach(({ eventTypes, method }) => {
+      eventTypes.forEach((eventType) => {
+        document.addEventListener(eventType, method);
+      });
+    });
+  }
+
+  /**
    * Handles the visibility of a specified element based on the scroll position.
    *
    * @static
@@ -49,26 +69,6 @@ export class Utils {
         document.body.scrollTop <= scrollThreshold &&
           document.documentElement.scrollTop <= scrollThreshold
       );
-  }
-
-  /**
-   * Adds event listeners for specified event types and methods.
-   *
-   * This method attaches event listeners for the provided event types and methods to the document.
-   *
-   * @static
-   * @method
-   * @param {Array<{ eventType: string[], method: (e: Event) => void }>} eventList - List of event types and corresponding methods.
-   * @returns {void}
-   */
-  static eventListenerManager(
-    eventList: Array<{ eventTypes: string[]; method: (e: Event) => void }>
-  ): void {
-    eventList.forEach(({ eventTypes, method }) => {
-      eventTypes.forEach((eventType) => {
-        document.addEventListener(eventType, method);
-      });
-    });
   }
 
   /**
