@@ -1,5 +1,5 @@
 // xodium.typewriter.ts
-import Typewriter from "https://unpkg.com/typewriter-effect@2.21.0/dist/core.js";
+import Typewriter from "typewriter";
 
 const T_TARGET: string = ".typewriter";
 const T_AUTO_START: boolean = true;
