@@ -1,24 +1,31 @@
 // xodium.utils.ts
 import { GithubService } from "xodium/utils/github";
-
-export const CLICK_EVENT: string = "click";
-export const FOCUS_OUT_EVENT: string = "focusout";
+import { CLICK_EVENT, FetchDataKey, FOCUS_OUT_EVENT } from "xodium/constants";
 
 /**
  * Represents a GitHub user with essential details.
  *
  * @interface GitHubUser
  *
- * @property {number} id - The unique identifier for the user.
  * @property {string} login - The username of the GitHub user.
  * @property {string} avatar_url - The URL to the user's avatar image.
  * @property {string} html_url - The URL to the user's GitHub profile.
  */
 interface GitHubUser {
-  id: number;
   login: string;
   avatar_url: string;
   html_url: string;
+}
+
+/**
+ * Represents a GitHub release.
+ *
+ * @interface GitHubRelease
+ *
+ * @property {string} name - The name of the release.
+ */
+interface GitHubRelease {
+  name: string;
 }
 
 /**
@@ -131,6 +138,39 @@ export class Utils {
       arrow.style.transform = isOpen ? "rotate(0deg)" : "rotate(180deg)";
     }
   };
+
+  /**
+   * Replaces the inner HTML content of specified target elements with data fetched from GitHub.
+   *
+   * @param replacements - An array of objects containing the source, target, and optional fallback content.
+   * @param replacements[].source - The key used to fetch data from GitHub.
+   * @param replacements[].target - The CSS selector of the target element whose content will be replaced.
+   * @param replacements[].fallbackContent - Optional. The content to use if the fetched data is empty or an error occurs. Defaults to "n.a.".
+   *
+   * @returns A promise that resolves when all replacements are complete.
+   * @throws Will log an error to the console if fetching data fails for any target.
+   */
+  static async replaceContents(
+    replacements: {
+      source: FetchDataKey;
+      target: string;
+      fallbackContent?: string;
+    }[]
+  ): Promise<void> {
+    for (const { source, target, fallbackContent = "n.a." } of replacements) {
+      try {
+        const content = await GithubService.getData<GitHubRelease>(source);
+        const el = document.querySelector(target);
+        if (el)
+          el.innerHTML =
+            Array.isArray(content) && content.length > 0
+              ? content[0].name
+              : fallbackContent;
+      } catch (err) {
+        console.error("Error fetching content for target:", target, err);
+      }
+    }
+  }
 
   /**
    * Populates the team grid with member data fetched from the GitHub service.

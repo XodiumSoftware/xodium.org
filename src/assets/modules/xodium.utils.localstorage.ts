@@ -9,7 +9,7 @@
  * @property {number} expiry - The expiry time of the stored item in milliseconds since the Unix epoch.
  * @property {string} [version] - An optional version identifier for the stored item.
  */
-export interface StoredItem {
+interface StoredItem {
   value: string | number | boolean | object;
   expiry?: number;
 }

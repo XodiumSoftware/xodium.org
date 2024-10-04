@@ -1,6 +1,7 @@
 // xodium.index.ts
 import "xodium/typewriter";
-import { Utils, CLICK_EVENT, FOCUS_OUT_EVENT } from "xodium/utils";
+import { Utils } from "xodium/utils";
+import { CLICK_EVENT, FOCUS_OUT_EVENT } from "xodium/constants";
 
 Utils.eventListenerManager([
   {
@@ -17,3 +18,7 @@ Utils.eventListenerManager([
   },
 ]);
 Utils.populateTeamCards();
+Utils.replaceContents([
+  { source: "xCAD", target: ".xCAD-version" },
+  { source: "xLIB", target: ".xLIB-version" },
+]);

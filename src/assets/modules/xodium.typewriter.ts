@@ -1,12 +1,13 @@
 // xodium.typewriter.ts
 import Typewriter from "typewriter";
-
-const T_TARGET: string = ".typewriter";
-const T_AUTO_START: boolean = true;
-const T_STRINGS: string[] = ["MODULAR", "STRUCTURED", "EFFICIENT"];
-const T_TYPE_SPEED: number = 150;
-const T_BACK_SPEED: string | number = "natural";
-const T_LOOP: boolean = true;
+import {
+  T_TARGET,
+  T_AUTO_START,
+  T_STRINGS,
+  T_TYPE_SPEED,
+  T_BACK_SPEED,
+  T_LOOP,
+} from "xodium/constants";
 
 new Typewriter(T_TARGET, {
   autoStart: T_AUTO_START,

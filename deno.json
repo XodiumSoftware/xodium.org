@@ -4,6 +4,7 @@
     "axiod/mod": "https://deno.land/x/axiod@0.26.2/mod.ts",
     "axiod/interfaces": "https://deno.land/x/axiod@0.26.2/interfaces.ts",
     "typewriter": "https://unpkg.com/typewriter-effect@2.21.0/dist/core.js",
+    "xodium/constants": "./src/assets/modules/xodium.constants.ts",
     "xodium/typewriter": "./src/assets/modules/xodium.typewriter.ts",
     "xodium/utils": "./src/assets/modules/xodium.utils.ts",
     "xodium/utils/github": "./src/assets/modules/xodium.utils.github.ts",

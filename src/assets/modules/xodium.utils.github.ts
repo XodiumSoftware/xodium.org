@@ -1,22 +1,7 @@
 // xodium.utils.github.ts
 import axiod from "axiod/mod";
-import { IConfig } from "axiod/interfaces";
 import { LocalStorageService } from "xodium/utils/localstorage";
-
-/**
- * Represents the valid keys for fetching data.
- *
- * @type FetchDataKey
- */
-type FetchDataKey = "members";
-
-const FETCH_DATA_MAP: Record<FetchDataKey, { url: string; config?: IConfig }> =
-  {
-    members: {
-      url: "https://api.github.com/orgs/XodiumSoftware/public_members",
-      config: { headers: { Accept: "application/vnd.github+json" } },
-    },
-  };
+import { FetchDataKey, FETCH_DATA_MAP } from "xodium/constants";
 
 /**
  * A service for interacting with the GitHub API.
