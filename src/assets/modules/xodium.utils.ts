@@ -3,18 +3,19 @@ import { GithubService } from "xodium/utils/github";
 import { CLICK_EVENT, FetchDataKey, FOCUS_OUT_EVENT } from "xodium/constants";
 
 /**
- * Represents a GitHub user with essential details.
+ * Represents a GitHub member with essential details.
  *
- * @interface GitHubUser
+ * @interface GitHubMember
  *
- * @property {string} login - The username of the GitHub user.
- * @property {string} avatar_url - The URL to the user's avatar image.
- * @property {string} html_url - The URL to the user's GitHub profile.
+ * @property {string} login - The username of the GitHub member.
+ * @property {string} avatar_url - The URL to the member's avatar image.
+ * @property {string} html_url - The URL to the member's GitHub profile.
  */
-interface GitHubUser {
+interface GitHubMember {
   login: string;
   avatar_url: string;
   html_url: string;
+  followers_url: string;
 }
 
 /**
@@ -170,7 +171,7 @@ export class Utils {
    */
   static async populateTeamCards(): Promise<void> {
     try {
-      const members = await GithubService.getData<GitHubUser>("members");
+      const members = await GithubService.getData<GitHubMember>("members");
       const cards = document.querySelector(".team-cards");
       if (cards && Array.isArray(members)) {
         const fragment = document.createDocumentFragment();
@@ -190,7 +191,7 @@ export class Utils {
                   ${member.login}
                 </h3>
                 <p class="text-sm font-semibold leading-6 text-[#CB2D3E]">
-                  {MEMBER ROLE FEATURE WIP}
+                  followers: ${member.followers_url.length}
                 </p>
               </div>
             </div>
