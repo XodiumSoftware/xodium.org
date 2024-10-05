@@ -111,21 +111,6 @@ export class Utils {
   };
 
   /**
-   * Handles the scroll event by preventing the default behavior and scrolling to the target element.
-   *
-   * @param e - The scroll event.
-   * @param attr - The attribute name to retrieve the target element's ID.
-   * @param behavior - The scroll behavior (e.g., 'auto' or 'smooth').
-   */
-  static handleScroll = (e: Event, attr: string, behavior: ScrollBehavior) => {
-    const target = (e.target as HTMLElement).getAttribute(attr);
-    if (target) {
-      e.preventDefault();
-      document.getElementById(target)?.scrollIntoView({ behavior });
-    }
-  };
-
-  /**
    * Toggles the direction of an arrow element based on the provided state.
    *
    * @param {Object} param - The parameter object.

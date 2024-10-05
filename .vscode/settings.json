@@ -1,14 +1,11 @@
 {
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "[svg]": {
-    "editor.defaultFormatter": "jock.svg"
-  },
+  "[svg]": { "editor.defaultFormatter": "jock.svg" },
   "json.schemas": [
     {
       "fileMatch": ["*.json", "*.jsonc"],
       "url": "https://json.schemastore.org/package"
     }
   ],
-  "deno.enable": true,
-  "files.associations": { "*.vto": "html" }
+  "deno.enable": true
 }
