@@ -1,4 +1,8 @@
 /* xodium.custom.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .tooltip {
   @apply invisible absolute left-1/2 transform -translate-x-1/2 p-2 text-sm text-gray-700 dark:text-slate-200;
 }
