@@ -9,5 +9,6 @@
       "url": "https://json.schemastore.org/package"
     }
   ],
-  "deno.enable": true
+  "deno.enable": true,
+  "files.associations": { "*.vto": "html" }
 }
