@@ -1,3 +1,4 @@
+// _config.ts
 import lume from "lume/mod.ts";
 
 import tailwindcss from "lume/plugins/tailwindcss.ts";
@@ -18,7 +19,7 @@ site.ignore(
   "CODE_OF_CONDUCT.md",
   (path: string) =>
     path.includes(".test.") ||
-    (path.endsWith(".ts") && !path.endsWith("index.ts"))
+    (path.endsWith(".ts") && !path.endsWith("index.ts")),
 );
 site.copyRemainingFiles((path: string) =>
   path.startsWith("") ? path.toLowerCase() : false

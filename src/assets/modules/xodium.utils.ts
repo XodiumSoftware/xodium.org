@@ -48,7 +48,7 @@ export class Utils {
    * @returns {void}
    */
   static eventListenerManager(
-    eventList: Array<{ eventTypes: string[]; method: (e: Event) => void }>
+    eventList: Array<{ eventTypes: string[]; method: (e: Event) => void }>,
   ): void {
     eventList.forEach(({ eventTypes, method }) => {
       eventTypes.forEach((eventType) => {
@@ -68,14 +68,14 @@ export class Utils {
    */
   static handleElementVisibility(
     elClass: string,
-    scrollThreshold: number
+    scrollThreshold: number,
   ): void {
     document
       .querySelector(elClass)
       ?.classList.toggle(
         "hidden",
         document.body.scrollTop <= scrollThreshold &&
-          document.documentElement.scrollTop <= scrollThreshold
+          document.documentElement.scrollTop <= scrollThreshold,
       );
   }
 
@@ -141,17 +141,17 @@ export class Utils {
       source: FetchDataKey;
       target: string;
       fallbackContent?: string;
-    }[]
+    }[],
   ): Promise<void> {
     for (const { source, target, fallbackContent = "n.a." } of replacements) {
       try {
         const content = await GithubService.getData<GitHubRelease>(source);
         const el = document.querySelector(target);
-        if (el)
-          el.innerHTML =
-            Array.isArray(content) && content.length > 0
-              ? content[0].name
-              : fallbackContent;
+        if (el) {
+          el.innerHTML = Array.isArray(content) && content.length > 0
+            ? content[0].name
+            : fallbackContent;
+        }
       } catch (err) {
         console.error("Error fetching content for target:", target, err);
       }
@@ -177,24 +177,23 @@ export class Utils {
         const fragment = document.createDocumentFragment();
         members.forEach((member) => {
           const card = document.createElement("li");
+          card.classList.add("flex", "items-center", "gap-x-6", "mb-4");
           card.innerHTML = `
-            <div class="flex items-center gap-x-6 mb-4">
               <a href="${member.html_url}">
                 <img
-                  class="h-16 w-16 rounded-full"
+                  class="h-16 w-16 rounded-full p-1 ring-2 ring-slate-400 dark:ring-slate-600 hover:ring-[#CB2D3E]"
                   src="${member.avatar_url}"
                   alt="${member.login} picture"
                 />
               </a>
               <div>
-                <h3 class="text-base font-semibold leading-7 tracking-tight text-gray-900 dark:text-slate-100">
+                <h3 class="text-base font-semibold leading-7 tracking-tight text-black dark:text-white">
                   ${member.login}
                 </h3>
                 <p class="text-sm font-semibold leading-6 text-[#CB2D3E]">
                   followers: ${member.followers_url.length}
                 </p>
               </div>
-            </div>
           `;
           fragment.appendChild(card);
         });

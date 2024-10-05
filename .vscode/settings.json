@@ -1,5 +1,6 @@
 {
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.defaultFormatter": "denoland.vscode-deno",
+  "[yaml]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
   "[svg]": { "editor.defaultFormatter": "jock.svg" },
   "json.schemas": [
     {
