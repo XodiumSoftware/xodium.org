@@ -398,9 +398,9 @@ title: Xodium
         role="list"
         class="team-cards grid sm:grid-cols-1 xl:col-span-1"
       >
-      {{# {{ for await member in getMembers() }}
+      {{ for await member of getMembers() }}
         <p>{{ member.followers_url.length }}</p>
-      {{ /for }} #}}
+      {{ /for }}
       {{# {{> getMembers() }} #}}
       {{# {{> getMembers().forEach((member) => {
           const card = document.createElement("li");
