@@ -3,22 +3,6 @@ import { GithubService } from "xodium/utils/github";
 import { CLICK_EVENT, FetchDataKey, FOCUS_OUT_EVENT } from "xodium/constants";
 
 /**
- * Represents a GitHub member with essential details.
- *
- * @interface GitHubMember
- *
- * @property {string} login - The username of the GitHub member.
- * @property {string} avatar_url - The URL to the member's avatar image.
- * @property {string} html_url - The URL to the member's GitHub profile.
- */
-interface GitHubMember {
-  login: string;
-  avatar_url: string;
-  html_url: string;
-  followers_url: string;
-}
-
-/**
  * Represents a GitHub release.
  *
  * @interface GitHubRelease
@@ -155,52 +139,6 @@ export class Utils {
       } catch (err) {
         console.error("Error fetching content for target:", target, err);
       }
-    }
-  }
-
-  /**
-   * Populates the team grid with member data fetched from the GitHub service.
-   *
-   * This function retrieves member information from the GitHub service and dynamically
-   * creates and appends list items to the team grid in the DOM. Each list item contains
-   * member details such as their avatar, login name, and role.
-   *
-   * @returns {Promise<void>} A promise that resolves when the team grid has been populated.
-   *
-   * @throws Will log an error to the console if there is an issue fetching the team members.
-   */
-  static async populateTeamCards(): Promise<void> {
-    try {
-      const members = await GithubService.getData<GitHubMember>("members");
-      const cards = document.querySelector(".team-cards");
-      if (cards && Array.isArray(members)) {
-        const fragment = document.createDocumentFragment();
-        members.forEach((member) => {
-          const card = document.createElement("li");
-          card.classList.add("flex", "items-center", "gap-x-6", "mb-4");
-          card.innerHTML = `
-              <a href="${member.html_url}">
-                <img
-                  class="h-16 w-16 rounded-full p-1 ring-2 ring-slate-400 dark:ring-slate-600 hover:ring-[#CB2D3E]"
-                  src="${member.avatar_url}"
-                  alt="${member.login} picture"
-                />
-              </a>
-              <div>
-                <h3 class="text-base font-semibold leading-7 tracking-tight text-black dark:text-white">
-                  ${member.login}
-                </h3>
-                <p class="text-sm font-semibold leading-6 text-[#CB2D3E]">
-                  followers: ${member.followers_url.length}
-                </p>
-              </div>
-          `;
-          fragment.appendChild(card);
-        });
-        cards.appendChild(fragment);
-      }
-    } catch (err) {
-      console.error("Error fetching team members:", err);
     }
   }
 }

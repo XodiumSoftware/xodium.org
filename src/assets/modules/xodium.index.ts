@@ -13,7 +13,6 @@ Utils.eventListenerManager([
     method: () => Utils.handleElementVisibility("visibility", 100),
   },
 ]);
-// Utils.populateTeamCards();
 Utils.replaceContents([
   { source: "xCAD", target: ".xCAD-version" },
   { source: "xLIB", target: ".xLIB-version" },

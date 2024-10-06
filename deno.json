@@ -1,6 +1,6 @@
 {
   "imports": {
-    "lume/": "https://deno.land/x/lume@v2.3.2/",
+    "lume/": "https://cdn.jsdelivr.net/gh/lumeland/lume@3f2f37e424b6e17c178a026f23e74e7a7f3b3494/",
     "axiod/mod": "https://deno.land/x/axiod@0.26.2/mod.ts",
     "axiod/interfaces": "https://deno.land/x/axiod@0.26.2/interfaces.ts",
     "typewriter": "https://unpkg.com/typewriter-effect@2.21.0/dist/core.js",
@@ -16,6 +16,8 @@
     "serve": "deno task lume -s"
   },
   "compilerOptions": {
-    "types": ["lume/types.ts"]
+    "types": [
+      "lume/types.ts"
+    ]
   }
 }

@@ -14,7 +14,7 @@ export class GithubService {
    * @param {FetchDataKey} key - The key to fetch data from the remote source.
    * @returns {Promise<T[]>} A promise that resolves to an array of objects of type T.
    */
-  static async fetchData<T>(key: FetchDataKey): Promise<T[]> {
+  private static async fetchData<T>(key: FetchDataKey): Promise<T[]> {
     const { url, config } = FETCH_DATA_MAP[key];
     return (await axiod.get<T[]>(url, config)).data;
   }
