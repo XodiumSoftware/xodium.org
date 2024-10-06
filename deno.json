@@ -1,6 +1,6 @@
 {
   "imports": {
-    "lume/": "https://cdn.jsdelivr.net/gh/lumeland/lume@3f2f37e424b6e17c178a026f23e74e7a7f3b3494/",
+    "lume/": "https://cdn.jsdelivr.net/gh/lumeland/lume@40a650bbd433fdbb56bdd4517057b3e9ff3fe4e4/",
     "axiod/mod": "https://deno.land/x/axiod@0.26.2/mod.ts",
     "axiod/interfaces": "https://deno.land/x/axiod@0.26.2/interfaces.ts",
     "typewriter": "https://unpkg.com/typewriter-effect@2.21.0/dist/core.js",
