@@ -12,10 +12,10 @@ import { GithubService } from "xodium/utils/github";
  * @property {string} followers_url - The URL to the list of followers of the GitHub member.
  */
 interface GitHubMember {
-    login: string;
-    avatar_url: string;
-    html_url: string;
-    followers_url: string;
+  login: string;
+  avatar_url: string;
+  html_url: string;
+  followers_url: string;
 }
 
 /**
@@ -24,5 +24,5 @@ interface GitHubMember {
  * @returns {Promise<GitHubMember[]>} A promise that resolves to an array of GitHub members.
  */
 export function getMembers(): Promise<GitHubMember[]> {
-    return GithubService.getData("members");
+  return GithubService.getData("members");
 }
