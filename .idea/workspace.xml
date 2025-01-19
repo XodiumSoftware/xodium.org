@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1e90bda5-fbfd-408b-9ec4-58cce9e3a333" name="Changes" comment="" />
+    <list default="true" id="1e90bda5-fbfd-408b-9ec4-58cce9e3a333" name="Changes" comment="+">
+      <change beforePath="$PROJECT_DIR$/.docs/.gitbook/assets/Dalmatium.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.docs/.gitbook/assets/Dardanium.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.docs/.gitbook/assets/cover.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.docs/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.docs/SUMMARY.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/ISSUE_TEMPLATE/bug.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/ISSUE_TEMPLATE/bug.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/ISSUE_TEMPLATE/feature.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/ISSUE_TEMPLATE/feature.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -27,10 +36,16 @@
     &quot;accountId&quot;: &quot;77e893f9-2a38-4dc7-a9c4-70d40c204ac3&quot;
   }
 }</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
 }</component>
   <component name="ProjectId" id="2rrDebIVT9I0LX5SxeuiCRy9yS2" />
+  <component name="ProjectLevelVcsManager">
+    <OptionsSetting value="false" id="Update" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -39,9 +54,12 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "deno.use.library": "true",
+    "git-widget-placeholder": "#89 on v2.0.2",
     "ignore.virus.scanning.warn.message": "true",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "com.intellij.deno.DenoConfigurable"
   }
 }]]></component>
   <component name="SharedIndexes">
@@ -61,10 +79,24 @@
       <updated>1737308401168</updated>
       <workItem from="1737308403189" duration="12000" />
       <workItem from="1737308424983" duration="187000" />
+      <workItem from="1737308626682" duration="237000" />
     </task>
+    <task id="LOCAL-00001" summary="+">
+      <option name="closed" value="true" />
+      <created>1737308710867</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1737308710867</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="+" />
+    <option name="LAST_COMMIT_MESSAGE" value="+" />
   </component>
 </project>

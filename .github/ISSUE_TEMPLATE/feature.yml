@@ -40,6 +40,5 @@ body:
       description: What alternatives have you considered?
       placeholder: list any...
   - type: markdown
-    id: thanks
     attributes:
       value: "Thank you for filling out the form! We will read it soon.."
