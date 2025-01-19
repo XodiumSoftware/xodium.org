@@ -14,6 +14,6 @@ Utils.eventListenerManager([
   },
 ]);
 Utils.replaceContents([
-  { source: "xCAD", target: ".xCAD-version" },
-  { source: "xLIB", target: ".xLIB-version" },
-]);
+  {source: "xCAD", target: ".xCAD-version"},
+  {source: "xLIB", target: ".xLIB-version"},
+]).then(_ => {});

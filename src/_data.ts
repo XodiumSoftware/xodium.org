@@ -23,6 +23,4 @@ interface GitHubMember {
  *
  * @returns {Promise<GitHubMember[]>} A promise that resolves to an array of GitHub members.
  */
-export function getMembers(): Promise<GitHubMember[]> {
-  return GithubService.getData("members");
-}
+export const getMembers = (): Promise<GitHubMember[]> => GithubService.getData("members");

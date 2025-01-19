@@ -4,8 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1e90bda5-fbfd-408b-9ec4-58cce9e3a333" name="Changes" comment="cleanup">
+    <list default="true" id="1e90bda5-fbfd-408b-9ec4-58cce9e3a333" name="Changes" comment="more cleanup">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/_data.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/_data.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/icons/xodium.favicon.svg" beforeDir="false" afterPath="$PROJECT_DIR$/src/assets/icons/xodium.favicon.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/assets/modules/xodium.index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/assets/modules/xodium.index.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,6 +44,7 @@
   <component name="ProjectId" id="2rrDebIVT9I0LX5SxeuiCRy9yS2" />
   <component name="ProjectLevelVcsManager">
     <OptionsSetting value="false" id="Update" />
+    <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -53,13 +57,19 @@
     "deno.use.library": "true",
     "git-widget-placeholder": "#89 on v2.0.2",
     "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/Fitim/WebstormProjects/XodiumSoftware.github.io/src/assets/icons",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+    "settings.editor.selected.configurable": "copyright.profiles"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Fitim\WebstormProjects\XodiumSoftware.github.io\src\assets\icons" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -77,7 +87,7 @@
       <updated>1737308401168</updated>
       <workItem from="1737308403189" duration="12000" />
       <workItem from="1737308424983" duration="187000" />
-      <workItem from="1737308626682" duration="685000" />
+      <workItem from="1737308626682" duration="1560000" />
     </task>
     <task id="LOCAL-00001" summary="+">
       <option name="closed" value="true" />
@@ -95,7 +105,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737308924895</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="more cleanup">
+      <option name="closed" value="true" />
+      <created>1737309524981</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1737309524981</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -104,6 +122,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="+" />
     <MESSAGE value="cleanup" />
-    <option name="LAST_COMMIT_MESSAGE" value="cleanup" />
+    <MESSAGE value="more cleanup" />
+    <option name="LAST_COMMIT_MESSAGE" value="more cleanup" />
   </component>
 </project>
