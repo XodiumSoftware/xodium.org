@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="1e90bda5-fbfd-408b-9ec4-58cce9e3a333" name="Changes" comment="+">
-      <change beforePath="$PROJECT_DIR$/.docs/.gitbook/assets/Dalmatium.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.docs/.gitbook/assets/Dardanium.svg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.docs/.gitbook/assets/cover.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.docs/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.docs/SUMMARY.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/ISSUE_TEMPLATE/bug.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/ISSUE_TEMPLATE/bug.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/ISSUE_TEMPLATE/feature.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/ISSUE_TEMPLATE/feature.yml" afterDir="false" />
+    <list default="true" id="1e90bda5-fbfd-408b-9ec4-58cce9e3a333" name="Changes" comment="cleanup">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -57,9 +53,11 @@
     "deno.use.library": "true",
     "git-widget-placeholder": "#89 on v2.0.2",
     "ignore.virus.scanning.warn.message": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "com.intellij.deno.DenoConfigurable"
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
 }]]></component>
   <component name="SharedIndexes">
@@ -79,7 +77,7 @@
       <updated>1737308401168</updated>
       <workItem from="1737308403189" duration="12000" />
       <workItem from="1737308424983" duration="187000" />
-      <workItem from="1737308626682" duration="237000" />
+      <workItem from="1737308626682" duration="685000" />
     </task>
     <task id="LOCAL-00001" summary="+">
       <option name="closed" value="true" />
@@ -89,7 +87,15 @@
       <option name="project" value="LOCAL" />
       <updated>1737308710867</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="cleanup">
+      <option name="closed" value="true" />
+      <created>1737308924895</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1737308924895</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -97,6 +103,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="+" />
-    <option name="LAST_COMMIT_MESSAGE" value="+" />
+    <MESSAGE value="cleanup" />
+    <option name="LAST_COMMIT_MESSAGE" value="cleanup" />
   </component>
 </project>
