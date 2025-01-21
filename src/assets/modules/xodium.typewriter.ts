@@ -1,4 +1,8 @@
-// xodium.typewriter.ts
+/*
+ * Copyright (c) 2025. Xodium.
+ * All rights reserved.
+ */
+
 import Typewriter from "typewriter";
 
 const T_TARGET: string = ".typewriter";

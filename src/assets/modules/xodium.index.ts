@@ -1,6 +1,10 @@
-// xodium.index.ts
+/*
+ * Copyright (c) 2025. Xodium.
+ * All rights reserved.
+ */
+
 import "xodium/typewriter";
-import { Utils, CLICK_EVENT, FOCUS_OUT_EVENT } from "xodium/utils";
+import {CLICK_EVENT, FOCUS_OUT_EVENT, Utils} from "xodium/utils";
 
 Utils.eventListenerManager([
   {
@@ -16,4 +20,4 @@ Utils.eventListenerManager([
     method: () => Utils.handleElementVisibility(".visibility", 100),
   },
 ]);
-Utils.populateTeamCards();
+Utils.populateTeamCards().then((r) => console.log(r));

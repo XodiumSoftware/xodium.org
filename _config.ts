@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2025. Xodium.
+ * All rights reserved.
+ */
+
 import lume from "lume/mod.ts";
 
 import tailwindcss from "lume/plugins/tailwindcss.ts";
@@ -12,8 +17,13 @@ import sourceMaps from "lume/plugins/source_maps.ts";
 
 const site = lume({ src: "src", location: new URL("https://xodium.org/") });
 
-site.ignore("README.md", "LICENSE.md", "CODE_OF_CONDUCT.md", (path: string) =>
-  path.includes(".test.")
+site.ignore(
+  "README.md",
+  "LICENSE.md",
+  "CODE_OF_CONDUCT.md",
+  (path: string) =>
+    path.includes(".test.") ||
+    (path.endsWith(".ts") && !path.endsWith("index.ts")),
 );
 site.copyRemainingFiles((path: string) =>
   path.startsWith("") ? path.toLowerCase() : false

@@ -1,7 +1,11 @@
-// xodium.utils.github.ts
+/*
+ * Copyright (c) 2025. Xodium.
+ * All rights reserved.
+ */
+
 import axiod from "axiod/mod";
-import { IConfig } from "axiod/interfaces";
-import { LocalStorageService } from "xodium/utils/localstorage";
+import {IConfig} from "axiod/interfaces";
+import {LocalStorageService} from "xodium/utils/localstorage";
 
 /**
  * Represents the valid keys for fetching data.
@@ -44,7 +48,7 @@ export class GithubService {
    */
   static async storeData<T>(
     fetchFunction: () => Promise<T[]>,
-    storageKey: string
+    storageKey: string,
   ): Promise<T[]> {
     let items = LocalStorageService.getItem(storageKey) as T[] | null;
     if (!items) {

@@ -1,5 +1,9 @@
-// xodium.utils.ts
-import { GithubService } from "xodium/utils/github";
+/*
+ * Copyright (c) 2025. Xodium.
+ * All rights reserved.
+ */
+
+import {GithubService} from "xodium/utils/github";
 
 export const CLICK_EVENT: string = "click";
 export const FOCUS_OUT_EVENT: string = "focusout";
@@ -40,7 +44,7 @@ export class Utils {
    * @returns {void}
    */
   static eventListenerManager(
-    eventList: Array<{ eventTypes: string[]; method: (e: Event) => void }>
+    eventList: Array<{ eventTypes: string[]; method: (e: Event) => void }>,
   ): void {
     eventList.forEach(({ eventTypes, method }) => {
       eventTypes.forEach((eventType) => {
@@ -60,14 +64,14 @@ export class Utils {
    */
   static handleElementVisibility(
     elClass: string,
-    scrollThreshold: number
+    scrollThreshold: number,
   ): void {
     document
       .querySelector(elClass)
       ?.classList.toggle(
         "hidden",
         document.body.scrollTop <= scrollThreshold &&
-          document.documentElement.scrollTop <= scrollThreshold
+          document.documentElement.scrollTop <= scrollThreshold,
       );
   }
 
