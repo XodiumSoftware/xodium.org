@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Deno: BUILD" type="DenoConfigurationType" inputPath="$PROJECT_DIR$/deno.json" programParameters="deno task build">
+  <configuration default="false" name="Deno: BUILD" type="DenoConfigurationType" inputPath="$PROJECT_DIR$/deno.json" programParameters="deno task lume">
     <method v="2" />
   </configuration>
 </component>
