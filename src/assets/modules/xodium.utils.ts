@@ -115,11 +115,10 @@ export class Utils {
    * @param behavior - The scroll behavior (e.g., 'auto' or 'smooth').
    */
   static handleScroll = (e: Event, attr: string, behavior: ScrollBehavior) => {
-    const target = (e.target as HTMLElement).getAttribute(attr);
-    if (target) {
-      e.preventDefault();
-      document.getElementById(target)?.scrollIntoView({ behavior });
-    }
+    const id = (e.target as HTMLElement).getAttribute(attr);
+    if (!id) return;
+    e.preventDefault();
+    document.getElementById(id)?.scrollIntoView({ behavior });
   };
 
   /**
@@ -156,30 +155,64 @@ export class Utils {
         members.forEach((member) => {
           const card = document.createElement("li");
           card.innerHTML = `
-            <div class="flex items-center gap-x-6 mb-4">
-              <a href="${member.html_url}">
-                <img
-                  class="h-16 w-16 rounded-full"
-                  src="${member.avatar_url}"
-                  alt="${member.login} picture"
-                />
-              </a>
-              <div>
-                <h3 class="text-base font-semibold leading-7 tracking-tight text-gray-900 dark:text-slate-100">
+          <div class="flex items-center gap-x-6 mb-4">
+            <a href="${member.html_url}">
+              <img
+                class="h-16 w-16 rounded-full"
+                src="${member.avatar_url}"
+                alt="${member.login} picture"
+                style="transition: border-color 0.3s ease; border: 3px solid transparent;"
+              />
+            </a>
+            <div>
+              <h3 class="text-base font-semibold leading-7 tracking-tight text-gray-900 dark:text-slate-100">
+                <a href="${member.html_url}" style="transition: color 0.3s ease;">
                   ${member.login}
-                </h3>
-                <p class="text-sm font-semibold leading-6 text-[#CB2D3E]">
-                  {MEMBER ROLE FEATURE WIP}
-                </p>
-              </div>
+                </a>
+              </h3>
             </div>
-          `;
+          </div>
+        `;
           fragment.appendChild(card);
+
+          const img = card.querySelector("img") as HTMLElement;
+          const loginLink = card.querySelector("h3 a") as HTMLElement;
+
+          if (img && loginLink) {
+            this.addHighlightEffect([img, loginLink]);
+          }
         });
         cards.appendChild(fragment);
       }
     } catch (err) {
       console.error("Error fetching team members:", err);
     }
+  }
+
+  /**
+   * Adds a highlight effect to the specified elements on mouseover and removes it on mouseout.
+   *
+   * @static
+   * @method
+   * @param {HTMLElement[]} elements - The elements to add the highlight effect to.
+   * @returns {void}
+   */
+  static addHighlightEffect(elements: HTMLElement[]): void {
+    const toggleHighlight = (apply: boolean) => {
+      elements.forEach((element) => {
+        if (element.tagName === "IMG") {
+          (element as HTMLImageElement).style.borderColor = apply
+            ? "#CB2D3E"
+            : "transparent";
+        } else {
+          element.style.color = apply ? "#CB2D3E" : "";
+        }
+      });
+    };
+
+    elements.forEach((element) => {
+      element.addEventListener("mouseover", () => toggleHighlight(true));
+      element.addEventListener("mouseout", () => toggleHighlight(false));
+    });
   }
 }

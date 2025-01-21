@@ -18,6 +18,7 @@
 [![Contributors][contributors_shield_url]][contributors_url]
 [![Issues][issues_shield_url]][issues_url]
 [![Roadmap][roadmap_shield_url]][roadmap_url]
+
 </div>
 
 ## Table of Contents
@@ -32,28 +33,19 @@
 <div align="center">
 
 [![Built With][built_with_shield_url]][built_with_url]
+
 </div>
 
 <p align="right"><a href="#readme-top">▲</a></p>
 
 [built_with_shield_url]: https://skillicons.dev/icons?i=typescript,deno,github,githubactions
-
 [built_with_url]: https://skillicons.dev
-
 [code_of_conduct_url]: https://github.com/XodiumSoftware/XodiumSoftware.github.io?tab=coc-ov-file
-
 [contributing_url]: https://github.com/XodiumSoftware/XodiumSoftware.github.io/blob/main/CONTRIBUTING.md
-
 [contributors_shield_url]: https://img.shields.io/github/contributors/XodiumSoftware/XodiumSoftware.github.io?style=for-the-badge&color=blue
-
 [contributors_url]: https://github.com/XodiumSoftware/XodiumSoftware.github.io/graphs/contributors
-
 [issues_shield_url]: https://img.shields.io/github/issues/XodiumSoftware/XodiumSoftware.github.io?style=for-the-badge&color=yellow
-
 [issues_url]: https://github.com/XodiumSoftware/XodiumSoftware.github.io/issues
-
 [license_url]: https://github.com/XodiumSoftware/XodiumSoftware.github.io?tab=AGPL-3.0-1-ov-file
-
 [roadmap_shield_url]: https://img.shields.io/badge/Roadmap-Click%20Me!-purple.svg?style=for-the-badge
-
 [roadmap_url]: https://github.com/orgs/XodiumSoftware/projects/4
