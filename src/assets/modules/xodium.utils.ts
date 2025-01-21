@@ -1,6 +1,10 @@
-// xodium.utils.ts
-import { GithubService } from "xodium/utils/github";
-import { CLICK_EVENT, FetchDataKey, FOCUS_OUT_EVENT } from "xodium/constants";
+/*
+ * Copyright (c) 2025. Xodium.
+ * All rights reserved.
+ */
+
+import {GithubService} from "xodium/utils/github";
+import {CLICK_EVENT, FetchDataKey, FOCUS_OUT_EVENT} from "xodium/constants";
 
 /**
  * Represents a GitHub release.

@@ -1,5 +1,9 @@
-// _data.ts
-import { GithubService } from "xodium/utils/github";
+/*
+ * Copyright (c) 2025. Xodium.
+ * All rights reserved.
+ */
+
+import {GithubService} from "xodium/utils/github";
 
 /**
  * Represents a member of GitHub with relevant profile information.
@@ -23,4 +27,5 @@ interface GitHubMember {
  *
  * @returns {Promise<GitHubMember[]>} A promise that resolves to an array of GitHub members.
  */
-export const getMembers = (): Promise<GitHubMember[]> => GithubService.getData("members");
+export const getMembers = (): Promise<GitHubMember[]> =>
+  GithubService.getData("members");

@@ -1,24 +1,16 @@
-// xodium.utils.github.ts
+/*
+ * Copyright (c) 2025. Xodium.
+ * All rights reserved.
+ */
+
 import axiod from "axiod/mod";
-import { LocalStorageService } from "xodium/utils/localstorage";
-import { FETCH_DATA_MAP, FetchDataKey } from "xodium/constants";
+import {LocalStorageService} from "xodium/utils/localstorage";
+import {FETCH_DATA_MAP, FetchDataKey} from "xodium/constants";
 
 /**
  * A service for interacting with the GitHub API.
  */
 export class GithubService {
-  /**
-   * Fetches data from a remote source.
-   *
-   * @template T The type of data to be fetched.
-   * @param {FetchDataKey} key - The key to fetch data from the remote source.
-   * @returns {Promise<T[]>} A promise that resolves to an array of objects of type T.
-   */
-  private static async fetchData<T>(key: FetchDataKey): Promise<T[]> {
-    const { url, config } = FETCH_DATA_MAP[key];
-    return (await axiod.get<T[]>(url, config)).data;
-  }
-
   /**
    * Stores data in local storage if not already available.
    *
@@ -53,5 +45,17 @@ export class GithubService {
       LocalStorageService.setItem(key, items);
     }
     return items;
+  }
+
+  /**
+   * Fetches data from a remote source.
+   *
+   * @template T The type of data to be fetched.
+   * @param {FetchDataKey} key - The key to fetch data from the remote source.
+   * @returns {Promise<T[]>} A promise that resolves to an array of objects of type T.
+   */
+  private static async fetchData<T>(key: FetchDataKey): Promise<T[]> {
+    const { url, config } = FETCH_DATA_MAP[key];
+    return (await axiod.get<T[]>(url, config)).data;
   }
 }

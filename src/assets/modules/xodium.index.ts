@@ -1,7 +1,11 @@
-// xodium.index.ts
+/*
+ * Copyright (c) 2025. Xodium.
+ * All rights reserved.
+ */
+
 import "xodium/typewriter";
-import { Utils } from "xodium/utils";
-import { CLICK_EVENT, FOCUS_OUT_EVENT } from "xodium/constants";
+import {Utils} from "xodium/utils";
+import {CLICK_EVENT, FOCUS_OUT_EVENT} from "xodium/constants";
 
 Utils.eventListenerManager([
   {
@@ -14,6 +18,6 @@ Utils.eventListenerManager([
   },
 ]);
 Utils.replaceContents([
-  {source: "xCAD", target: ".xCAD-version"},
-  {source: "xLIB", target: ".xLIB-version"},
-]).then(_ => {});
+  { source: "xCAD", target: ".xCAD-version" },
+  { source: "xLIB", target: ".xLIB-version" },
+]).then((_) => {});

@@ -1,4 +1,7 @@
-// xodium.utils.localstorage.ts
+/*
+ * Copyright (c) 2025. Xodium.
+ * All rights reserved.
+ */
 
 /**
  * Represents an item to be stored in local storage with an optional expiry time and version.

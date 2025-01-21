@@ -1,5 +1,9 @@
-// xodium.constants.ts
-import { IConfig } from "axiod/interfaces";
+/*
+ * Copyright (c) 2025. Xodium.
+ * All rights reserved.
+ */
+
+import {IConfig} from "axiod/interfaces";
 
 // TYPEWRITER CONSTANTS
 export const T_TARGET: string = ".typewriter";
