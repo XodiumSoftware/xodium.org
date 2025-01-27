@@ -17,7 +17,6 @@ Utils.eventListenerManager([
     method: () => Utils.handleElementVisibility("visibility", 100),
   },
 ]);
-Utils.replaceContents([
-  { source: "xCAD", target: ".xCAD-version" },
-  { source: "xLIB", target: ".xLIB-version" },
-]).then((_) => {});
+Utils.replaceContents([{ source: "xBIM", target: ".xBIM-version" }]).then(
+  (_) => {}
+);
