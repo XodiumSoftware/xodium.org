@@ -4,8 +4,8 @@
  */
 
 import axiod from "axiod/mod";
-import {LocalStorageService} from "xodium/utils/localstorage";
-import {FETCH_DATA_MAP, FetchDataKey} from "xodium/constants";
+import { LocalStorageService } from "xodium/utils/localstorage";
+import { FETCH_DATA_MAP, FetchDataKey } from "xodium/constants";
 
 /**
  * A service for interacting with the GitHub API.
@@ -21,7 +21,7 @@ export class GithubService {
    */
   static async storeData<T>(
     fetchFunction: () => Promise<T[]>,
-    storageKey: string,
+    storageKey: string
   ): Promise<T[]> {
     let items = LocalStorageService.getItem(storageKey) as T[] | null;
     if (!items) {

@@ -3,8 +3,8 @@
  * All rights reserved.
  */
 
-import {GithubService} from "xodium/utils/github";
-import {CLICK_EVENT, FetchDataKey, FOCUS_OUT_EVENT} from "xodium/constants";
+import { GithubService } from "xodium/utils/github";
+import { CLICK_EVENT, FetchDataKey, FOCUS_OUT_EVENT } from "xodium/constants";
 
 /**
  * Represents a GitHub release.
@@ -36,7 +36,7 @@ export class Utils {
    * @returns {void}
    */
   static eventListenerManager(
-    eventList: Array<{ eventTypes: string[]; method: (e: Event) => void }>,
+    eventList: Array<{ eventTypes: string[]; method: (e: Event) => void }>
   ): void {
     eventList.forEach(({ eventTypes, method }) => {
       eventTypes.forEach((eventType) => {
@@ -56,14 +56,14 @@ export class Utils {
    */
   static handleElementVisibility(
     elClass: string,
-    scrollThreshold: number,
+    scrollThreshold: number
   ): void {
     document
       .querySelector(elClass)
       ?.classList.toggle(
         "hidden",
         document.body.scrollTop <= scrollThreshold &&
-          document.documentElement.scrollTop <= scrollThreshold,
+          document.documentElement.scrollTop <= scrollThreshold
       );
   }
 
@@ -129,16 +129,17 @@ export class Utils {
       source: FetchDataKey;
       target: string;
       fallbackContent?: string;
-    }[],
+    }[]
   ): Promise<void> {
     for (const { source, target, fallbackContent = "n.a." } of replacements) {
       try {
         const content = await GithubService.getData<GitHubRelease>(source);
         const el = document.querySelector(target);
         if (el) {
-          el.innerHTML = Array.isArray(content) && content.length > 0
-            ? content[0].name
-            : fallbackContent;
+          el.innerHTML =
+            Array.isArray(content) && content.length > 0
+              ? content[0].name
+              : fallbackContent;
         }
       } catch (err) {
         console.error("Error fetching content for target:", target, err);

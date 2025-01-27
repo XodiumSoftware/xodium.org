@@ -4,8 +4,8 @@
  */
 
 import "xodium/typewriter";
-import {Utils} from "xodium/utils";
-import {CLICK_EVENT, FOCUS_OUT_EVENT} from "xodium/constants";
+import { Utils } from "xodium/utils";
+import { CLICK_EVENT, FOCUS_OUT_EVENT } from "xodium/constants";
 
 Utils.eventListenerManager([
   {

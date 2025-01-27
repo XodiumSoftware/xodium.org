@@ -3,7 +3,7 @@
  * All rights reserved.
  */
 
-import {IConfig} from "axiod/interfaces";
+import { IConfig } from "axiod/interfaces";
 
 // TYPEWRITER CONSTANTS
 export const T_TARGET: string = ".typewriter";
