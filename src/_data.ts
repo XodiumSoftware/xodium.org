@@ -13,13 +13,11 @@ import { GithubService } from "xodium/utils/github";
  * @property {string} login - The username of the GitHub member.
  * @property {string} avatar_url - The URL to the avatar image of the GitHub member.
  * @property {string} html_url - The URL to the GitHub member's profile page.
- * @property {string} followers_url - The URL to the list of followers of the GitHub member.
  */
 interface GitHubMember {
   login: string;
   avatar_url: string;
   html_url: string;
-  followers_url: string;
 }
 
 /**
