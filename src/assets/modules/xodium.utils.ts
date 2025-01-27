@@ -4,7 +4,7 @@
  */
 
 import { GithubService } from "xodium/utils/github";
-import { CLICK_EVENT, FetchDataKey, FOCUS_OUT_EVENT } from "xodium/constants";
+import { CLICK_EVENT, FOCUS_OUT_EVENT } from "xodium/constants";
 
 /**
  * Represents a GitHub release.
@@ -126,7 +126,7 @@ export class Utils {
    */
   static async replaceContents(
     replacements: {
-      source: FetchDataKey;
+      source: string;
       target: string;
       fallbackContent?: string;
     }[]

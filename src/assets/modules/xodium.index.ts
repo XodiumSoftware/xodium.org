@@ -17,6 +17,4 @@ Utils.eventListenerManager([
     method: () => Utils.handleElementVisibility("visibility", 100),
   },
 ]);
-Utils.replaceContents([{ source: "xBIM", target: ".xBIM-version" }]).then(
-  (_) => {}
-);
+Utils.replaceContents([{ source: "xBIM", target: ".xBIM-version" }]);

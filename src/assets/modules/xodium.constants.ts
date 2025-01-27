@@ -18,17 +18,14 @@ export const CLICK_EVENT: string = "click";
 export const FOCUS_OUT_EVENT: string = "focusout";
 
 // UTILS GITHUB CONSTANTS
-export type FetchDataKey = "members" | "xBIM";
-export const FETCH_DATA_MAP: Record<
-  FetchDataKey,
-  { url: string; config?: IConfig }
-> = {
-  members: {
-    url: "https://api.github.com/orgs/XodiumSoftware/public_members",
-    config: { headers: { Accept: "application/vnd.github+json" } },
-  },
-  xBIM: {
-    url: "https://api.github.com/repos/XodiumSoftware/xCAD/releases",
-    config: { headers: { Accept: "application/vnd.github+json" } },
-  },
-};
+export const FETCH_DATA_MAP: Record<string, { url: string; config?: IConfig }> =
+  {
+    members: {
+      url: "https://api.github.com/orgs/XodiumSoftware/public_members",
+      config: { headers: { Accept: "application/vnd.github+json" } },
+    },
+    xBIM: {
+      url: "https://api.github.com/repos/XodiumSoftware/xCAD/releases",
+      config: { headers: { Accept: "application/vnd.github+json" } },
+    },
+  };
