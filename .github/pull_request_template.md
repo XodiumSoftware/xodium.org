@@ -1,6 +1,7 @@
 ## Description
 
-Please include a summary of the changes and the related issue. Explain the motivation behind these changes.
+Please include a summary of the changes and the related issue. Explain the
+motivation behind these changes.
 
 ## Checklist:
 

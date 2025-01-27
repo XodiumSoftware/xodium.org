@@ -1,4 +1,7 @@
-// xodium.utils.localstorage.ts
+/*
+ * Copyright (c) 2025. Xodium.
+ * All rights reserved.
+ */
 
 /**
  * Represents an item to be stored in local storage with an optional expiry time and version.
@@ -9,7 +12,7 @@
  * @property {number} expiry - The expiry time of the stored item in milliseconds since the Unix epoch.
  * @property {string} [version] - An optional version identifier for the stored item.
  */
-export interface StoredItem {
+interface StoredItem {
   value: string | number | boolean | object;
   expiry?: number;
 }

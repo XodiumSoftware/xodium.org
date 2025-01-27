@@ -1,24 +1,20 @@
-// xodium.utils.ts
-import { GithubService } from "xodium/utils/github";
+/*
+ * Copyright (c) 2025. Xodium.
+ * All rights reserved.
+ */
 
-export const CLICK_EVENT: string = "click";
-export const FOCUS_OUT_EVENT: string = "focusout";
+import { GithubService } from "xodium/utils/github";
+import { CLICK_EVENT, FetchDataKey, FOCUS_OUT_EVENT } from "xodium/constants";
 
 /**
- * Represents a GitHub user with essential details.
+ * Represents a GitHub release.
  *
- * @interface GitHubUser
+ * @interface GitHubRelease
  *
- * @property {number} id - The unique identifier for the user.
- * @property {string} login - The username of the GitHub user.
- * @property {string} avatar_url - The URL to the user's avatar image.
- * @property {string} html_url - The URL to the user's GitHub profile.
+ * @property {string} name - The name of the release.
  */
-interface GitHubUser {
-  id: number;
-  login: string;
-  avatar_url: string;
-  html_url: string;
+interface GitHubRelease {
+  name: string;
 }
 
 /**
@@ -104,21 +100,6 @@ export class Utils {
   };
 
   /**
-   * Handles the scroll event by preventing the default behavior and scrolling to the target element.
-   *
-   * @param e - The scroll event.
-   * @param attr - The attribute name to retrieve the target element's ID.
-   * @param behavior - The scroll behavior (e.g., 'auto' or 'smooth').
-   */
-  static handleScroll = (e: Event, attr: string, behavior: ScrollBehavior) => {
-    const target = (e.target as HTMLElement).getAttribute(attr);
-    if (target) {
-      e.preventDefault();
-      document.getElementById(target)?.scrollIntoView({ behavior });
-    }
-  };
-
-  /**
    * Toggles the direction of an arrow element based on the provided state.
    *
    * @param {Object} param - The parameter object.
@@ -133,49 +114,36 @@ export class Utils {
   };
 
   /**
-   * Populates the team grid with member data fetched from the GitHub service.
+   * Replaces the inner HTML content of specified target elements with data fetched from GitHub.
    *
-   * This function retrieves member information from the GitHub service and dynamically
-   * creates and appends list items to the team grid in the DOM. Each list item contains
-   * member details such as their avatar, login name, and role.
+   * @param replacements - An array of objects containing the source, target, and optional fallback content.
+   * @param replacements[].source - The key used to fetch data from GitHub.
+   * @param replacements[].target - The CSS selector of the target element whose content will be replaced.
+   * @param replacements[].fallbackContent - Optional. The content to use if the fetched data is empty or an error occurs. Defaults to "n.a.".
    *
-   * @returns {Promise<void>} A promise that resolves when the team grid has been populated.
-   *
-   * @throws Will log an error to the console if there is an issue fetching the team members.
+   * @returns A promise that resolves when all replacements are complete.
+   * @throws Will log an error to the console if fetching data fails for any target.
    */
-  static async populateTeamCards(): Promise<void> {
-    try {
-      const members = await GithubService.getData<GitHubUser>("members");
-      const cards = document.querySelector(".team-cards");
-      if (cards && Array.isArray(members)) {
-        const fragment = document.createDocumentFragment();
-        members.forEach((member) => {
-          const card = document.createElement("li");
-          card.innerHTML = `
-            <div class="flex items-center gap-x-6 mb-4">
-              <a href="${member.html_url}">
-                <img
-                  class="h-16 w-16 rounded-full"
-                  src="${member.avatar_url}"
-                  alt="${member.login} picture"
-                />
-              </a>
-              <div>
-                <h3 class="text-base font-semibold leading-7 tracking-tight text-gray-900 dark:text-slate-100">
-                  ${member.login}
-                </h3>
-                <p class="text-sm font-semibold leading-6 text-[#CB2D3E]">
-                  {MEMBER ROLE FEATURE WIP}
-                </p>
-              </div>
-            </div>
-          `;
-          fragment.appendChild(card);
-        });
-        cards.appendChild(fragment);
+  static async replaceContents(
+    replacements: {
+      source: FetchDataKey;
+      target: string;
+      fallbackContent?: string;
+    }[]
+  ): Promise<void> {
+    for (const { source, target, fallbackContent = "n.a." } of replacements) {
+      try {
+        const content = await GithubService.getData<GitHubRelease>(source);
+        const el = document.querySelector(target);
+        if (el) {
+          el.innerHTML =
+            Array.isArray(content) && content.length > 0
+              ? content[0].name
+              : fallbackContent;
+        }
+      } catch (err) {
+        console.error("Error fetching content for target:", target, err);
       }
-    } catch (err) {
-      console.error("Error fetching team members:", err);
     }
   }
 }

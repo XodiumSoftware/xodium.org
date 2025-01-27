@@ -1,9 +1,10 @@
 {
   "imports": {
-    "lume/": "https://deno.land/x/lume@v2.3.2/",
+    "lume/": "https://cdn.jsdelivr.net/gh/lumeland/lume@40a650bbd433fdbb56bdd4517057b3e9ff3fe4e4/",
     "axiod/mod": "https://deno.land/x/axiod@0.26.2/mod.ts",
     "axiod/interfaces": "https://deno.land/x/axiod@0.26.2/interfaces.ts",
     "typewriter": "https://unpkg.com/typewriter-effect@2.21.0/dist/core.js",
+    "xodium/constants": "./src/assets/modules/xodium.constants.ts",
     "xodium/typewriter": "./src/assets/modules/xodium.typewriter.ts",
     "xodium/utils": "./src/assets/modules/xodium.utils.ts",
     "xodium/utils/github": "./src/assets/modules/xodium.utils.github.ts",
