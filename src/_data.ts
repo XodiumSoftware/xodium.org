@@ -3,7 +3,7 @@
  * All rights reserved.
  */
 
-import {GithubService} from "xodium/utils/github";
+import { GithubService } from "xodium/utils/github";
 
 /**
  * Represents a member of GitHub with relevant profile information.
