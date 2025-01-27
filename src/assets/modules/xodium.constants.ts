@@ -25,7 +25,7 @@ export const FETCH_DATA_MAP: Record<string, { url: string; config?: IConfig }> =
       config: { headers: { Accept: "application/vnd.github+json" } },
     },
     xBIM: {
-      url: "https://api.github.com/repos/XodiumSoftware/xCAD/releases",
+      url: "https://api.github.com/repos/XodiumSoftware/xBIM/releases",
       config: { headers: { Accept: "application/vnd.github+json" } },
     },
   };
