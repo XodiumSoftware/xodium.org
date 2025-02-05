@@ -28,7 +28,29 @@ site.ignore(
 site.copyRemainingFiles((path: string) =>
   path.startsWith("") ? path.toLowerCase() : false
 );
-site.use(tailwindcss({ extensions: [".html", ".ts", ".css"] }));
+site.use(
+  tailwindcss({
+    extensions: [".html", ".ts", ".css"],
+    options: {
+      safelist: [
+        "mb-4",
+        "flex",
+        "items-center",
+        "gap-x-6",
+        "h-16",
+        "w-16",
+        "rounded-full",
+        "hover:underline",
+        "text-base",
+        "font-semibold",
+        "leading-7",
+        "tracking-tight",
+        "text-gray-900",
+        "dark:text-slate-100",
+      ],
+    },
+  })
+);
 site.use(postcss());
 site.use(lightningCss());
 site.use(minifyHTML());

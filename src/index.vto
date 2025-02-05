@@ -130,7 +130,7 @@ All rights reserved. #}}
       </div>
     </div>
     <div
-      class="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
+      class="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-50rem)]"
       aria-hidden="true"
     >
       <div
@@ -157,28 +157,8 @@ All rights reserved. #}}
         </p>
       </div>
       <ul
-        role="list"
-        class="team-cards grid sm:grid-cols-1 xl:col-span-1"
+        class="team-cards"
       >
-      {{ for await member of getMembers() }}
-        <li class="flex items-center gap-x-6 mb-4">
-          <a href="{{ member.html_url }}">
-            <img
-              class="h-16 w-16 rounded-full p-1 ring-2 ring-slate-400 dark:ring-slate-600 hover:ring-[#CB2D3E]"
-              src="{{ member.avatar_url }}"
-              alt="{{ member.login }} picture"
-            />
-          </a>
-          <div>
-            <h3 class="text-base font-semibold leading-7 tracking-tight text-black dark:text-white">
-              {{ member.login }}
-            </h3>
-            <p class="text-sm font-semibold leading-6 text-[#CB2D3E]">
-              followers: {{ member.followers_url.length }}
-            </p>
-          </div>
-        </li>
-      {{ /for }}
       </ul>
     </div>
   </div>

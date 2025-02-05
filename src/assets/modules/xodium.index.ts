@@ -4,3 +4,9 @@
  */
 
 import "xodium/typewriter";
+import "xodium/utils/github";
+import { Utils } from "xodium/utils";
+
+document.addEventListener("DOMContentLoaded", () => {
+  Utils.populateTeamCards();
+});
