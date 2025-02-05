@@ -17,6 +17,7 @@ import sourceMaps from "lume/plugins/source_maps.ts";
 
 const site = lume({ src: "src", location: new URL("https://xodium.org/") });
 
+site.data("version", "v1.0.1");
 site.ignore(
   "README.md",
   "LICENSE.md",
