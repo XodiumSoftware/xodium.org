@@ -7,6 +7,10 @@
 @tailwind components;
 @tailwind utilities;
 
+/* * {
+  outline: 1px solid red !important;
+} */
+
 .tooltip {
   @apply invisible absolute left-1/2 transform -translate-x-1/2 p-2 text-sm
     text-slate-700 dark:text-slate-200;
