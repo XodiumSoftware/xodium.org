@@ -79,6 +79,15 @@ export class Utils {
         container.appendChild(infoDiv);
         card.appendChild(container);
         fragment.appendChild(card);
+
+        const toggleHighlight = (highlight: boolean) => {
+          const highlightColor = "#CB2D3E";
+          img.style.outline = highlight ? `2px solid ${highlightColor}` : "";
+          nameHeading.style.color = highlight ? highlightColor : "";
+        };
+
+        card.addEventListener("mouseenter", () => toggleHighlight(true));
+        card.addEventListener("mouseleave", () => toggleHighlight(false));
       });
 
       cards.appendChild(fragment);
