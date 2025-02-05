@@ -4,6 +4,3 @@
  */
 
 import "xodium/typewriter";
-import { Utils } from "xodium/utils";
-
-Utils.replaceContents([{ source: "xBIM", target: ".xBIM-version" }]);
