@@ -13,10 +13,6 @@ export const T_TYPE_SPEED: number = 150;
 export const T_BACK_SPEED: string | number = "natural";
 export const T_LOOP: boolean = true;
 
-// UTILS CONSTANTS
-export const CLICK_EVENT: string = "click";
-export const FOCUS_OUT_EVENT: string = "focusout";
-
 // UTILS GITHUB CONSTANTS
 export const FETCH_DATA_MAP: Record<string, { url: string; config?: IConfig }> =
   {
