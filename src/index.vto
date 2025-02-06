@@ -119,13 +119,8 @@ All rights reserved. #}}
           <a
             class="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm text-black rounded-lg group bg-gradient-to-br from-[#CB2D3E] to-[#EF473A] group-hover:from-[#CB2D3E] group-hover:to-[#EF473A] hover:text-white dark:text-white font-semibold"
             href="/dashboard"
-          >
-            <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-slate-100 dark:bg-gray-900 rounded-md group-hover:bg-opacity-0"
-            >
-              Get started
-            </span>
-          </a>
-          <a href="https://wiki.xodium.org">{{ comp.button_1({ text: "Documentation " }) }}</a>
+          >{{ comp.button_0({ text: "Get started" }) }}</a>
+          <a href="https://wiki.xodium.org">{{ comp.button_1({ text: "Documentation" }) }}</a>
         </div>
       </div>
     </div>
@@ -165,6 +160,4 @@ All rights reserved. #}}
 </section>
 
 {{# Scripts #}}
-<script type="module" src="assets/modules/xodium.index.js">
-import "xodium/typewriter";
-</script>
+<script type="module" src="assets/modules/xodium.index.js"></script>

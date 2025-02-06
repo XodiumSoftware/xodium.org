@@ -3,4 +3,5 @@
  * All rights reserved.
  */
 
+import "xodium/typewriter";
 import "xodium/utils/teamcards";
