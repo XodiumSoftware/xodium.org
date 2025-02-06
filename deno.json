@@ -6,9 +6,9 @@
     "typewriter": "https://unpkg.com/typewriter-effect@2.21.0/dist/core.js",
     "xodium/constants": "./src/assets/modules/xodium.constants.ts",
     "xodium/typewriter": "./src/assets/modules/xodium.typewriter.ts",
-    "xodium/utils": "./src/assets/modules/xodium.utils.ts",
     "xodium/utils/github": "./src/assets/modules/xodium.utils.github.ts",
-    "xodium/utils/localstorage": "./src/assets/modules/xodium.utils.localstorage.ts"
+    "xodium/utils/localstorage": "./src/assets/modules/xodium.utils.localstorage.ts",
+    "xodium/utils/teamcards": "./src/assets/modules/xodium.utils.teamcards.ts"
   },
   "tasks": {
     "lume": "echo \"import 'lume/cli.ts'\" | deno run -A -",

@@ -23,12 +23,11 @@ export class GithubService {
     fetchFunction: () => Promise<T[]>,
     storageKey: string
   ): Promise<T[]> {
-    let items = LocalStorageService.getItem(storageKey) as T[] | null;
-    if (!items) {
-      items = await fetchFunction();
-      LocalStorageService.setItem(storageKey, items);
-    }
-    return items;
+    const cached = LocalStorageService.getItem(storageKey) as T[] | null;
+    if (cached) return cached;
+    const data = await fetchFunction();
+    LocalStorageService.setItem(storageKey, data);
+    return data;
   }
 
   /**
@@ -39,12 +38,11 @@ export class GithubService {
    * @returns {Promise<T[]>} A promise that resolves to an array of objects of type T.
    */
   static async getData<T>(key: string): Promise<T[]> {
-    let items = LocalStorageService.getItem(key) as T[] | null;
-    if (!items) {
-      items = await this.fetchData(key);
-      LocalStorageService.setItem(key, items);
-    }
-    return items;
+    const cached = LocalStorageService.getItem(key) as T[] | null;
+    if (cached) return cached;
+    const data = await this.fetchData<T>(key);
+    LocalStorageService.setItem(key, data);
+    return data;
   }
 
   /**
