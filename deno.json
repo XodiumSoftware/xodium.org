@@ -15,7 +15,5 @@
     "build": "deno task lume",
     "serve": "deno task lume -s"
   },
-  "compilerOptions": {
-    "types": ["lume/types.ts"]
-  }
+  "compilerOptions": { "types": ["lume/types.ts"] }
 }
