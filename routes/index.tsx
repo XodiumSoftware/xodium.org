@@ -64,7 +64,7 @@ export default function Home() {
                     type="button"
                     class="text-sm font-semibold leading-6 text-black dark:text-white hover:text-[#CB2D3E]"
                   >
-                    Documentation
+                    Documentation&nbsp;
                     <span aria-hidden="true">→</span>
                   </button>
                 </a>

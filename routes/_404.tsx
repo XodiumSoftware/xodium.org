@@ -43,7 +43,7 @@ export default function Error404() {
                   type="button"
                   class="text-sm font-semibold leading-6 text-black dark:text-white hover:text-[#CB2D3E]"
                 >
-                  Contact support
+                  Contact support&nbsp;
                   <span aria-hidden="true">→</span>
                 </button>
               </a>
