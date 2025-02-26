@@ -5,8 +5,8 @@
 
 import Footer from "../components/footer.tsx";
 import Header from "../components/header.tsx";
-import "xodium/typewriter";
 import "xodium/utils/teamcards";
+import Typewriter from "../islands/typewriter.tsx";
 
 export default function Home() {
   return (
@@ -27,13 +27,21 @@ export default function Home() {
           <div class="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
             <div class="text-center">
               <h1 class="text-4xl font-bold tracking-tight text-black dark:text-white sm:text-6xl">
-                CODING
-                <span class="typewriter bg-gradient-to-r from-[#CB2D3E] to-[#EF473A] inline-block text-transparent bg-clip-text">
+                CODING&nbsp;
+                <span class="bg-gradient-to-r from-[#CB2D3E] to-[#EF473A] inline-block text-transparent bg-clip-text">
+                  <Typewriter
+                    text={["MODULAR", "STRUCTURED", "EFFICIENT"]}
+                    speed={150}
+                    loop
+                    pause={0}
+                    unwrite
+                  />
                 </span>
               </h1>
               <p class="mt-6 text-lg leading-8 text-gray-600 dark:text-slate-400">
-                Open-Source<strong class="text-[#CB2D3E]">(CAD)</strong>Software
-                Company
+                Open-Source&nbsp;<strong class="text-[#CB2D3E]">
+                  (CAD)&nbsp;
+                </strong>Software Company
               </p>
               <div class="mt-10 flex items-center justify-center gap-x-6">
                 <a

@@ -28,7 +28,7 @@
     "xodium/typewriter": "./modules/xodium.typewriter.ts",
     "xodium/utils/github": "./modules/xodium.utils.github.ts",
     "xodium/utils/localstorage": "./modules/xodium.utils.localstorage.ts",
-    "xodium/utils/teamcards": "./modules/xodium.utils.teamcards.ts"
+    "xodium/utils/teamcards": "./modules/xodium.utils.teamcards.tsx"
   },
   "compilerOptions": { "jsx": "react-jsx", "jsxImportSource": "preact" },
   "nodeModulesDir": "auto"
