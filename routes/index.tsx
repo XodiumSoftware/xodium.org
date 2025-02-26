@@ -3,17 +3,21 @@
  * All rights reserved.
  */
 
+import ButtonUp from "../components/button_up.tsx";
 import Footer from "../components/footer.tsx";
 import Header from "../components/header.tsx";
 import "../islands/teamcards.tsx";
 import Typewriter from "../islands/typewriter.tsx";
 
+/**
+ * Home route
+ */
 export default function Home() {
   return (
     <div>
       <Header />
       {/* Landing section */}
-      <section>
+      <section id="landing">
         <div class="relative isolate px-6 pt-14 lg:px-8">
           <div class="absolute inset-0 h-full w-full bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:96px_96px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_60%,transparent_100%)] pointer-events-none">
           </div>
@@ -77,6 +81,10 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Projects section */}
+      <section id="projects">
+      </section>
+
       {/* Team section */}
       <section id="team">
         <div class="bg-slate-100 dark:bg-slate-900 py-24 sm:py-32">
@@ -94,6 +102,7 @@ export default function Home() {
         </div>
       </section>
       <Footer />
+      <ButtonUp />
     </div>
   );
 }

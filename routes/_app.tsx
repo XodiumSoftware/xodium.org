@@ -6,6 +6,9 @@
 import { type PageProps } from "$fresh/server.ts";
 import Version from "../components/version.tsx";
 
+/**
+ * App route
+ */
 export default function App({ Component }: PageProps) {
   return (
     <html>

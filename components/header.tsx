@@ -3,7 +3,10 @@
  * All rights reserved.
  */
 
-export default function Footer() {
+/**
+ * Header component
+ */
+export default function Header() {
   return (
     <header id="top" class="z-20 relative">
       <nav
@@ -17,6 +20,12 @@ export default function Footer() {
               alt="Xodium Icon"
               class="h-12 w-12"
             />
+          </a>
+          <a
+            href="#projects"
+            class="flex items-center text-sm font-semibold leading-6 text-black dark:text-white hover:text-[#CB2D3E]"
+          >
+            PROJECTS
           </a>
           <a
             href="#team"

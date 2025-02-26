@@ -6,6 +6,9 @@
 import { Head } from "$fresh/runtime.ts";
 import Footer from "../components/footer.tsx";
 
+/**
+ * Error404 route
+ */
 export default function Error404() {
   return (
     <>
