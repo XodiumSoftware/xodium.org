@@ -18,16 +18,12 @@ export default function Footer() {
               class="h-12 w-12"
             />
           </a>
-          <button
-            type="button"
-            class="text-sm font-semibold leading-6 text-black dark:text-white hover:text-[#CB2D3E]"
-            onClick={() =>
-              document.getElementById("team")?.scrollIntoView({
-                behavior: "smooth",
-              })}
+          <a
+            href="#team"
+            class="flex items-center text-sm font-semibold leading-6 text-black dark:text-white hover:text-[#CB2D3E]"
           >
             TEAM
-          </button>
+          </a>
         </div>
         <div class="hidden lg:flex lg:flex-1 lg:justify-end">
           <div class="flex items-center space-x-4">

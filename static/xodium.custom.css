@@ -8,8 +8,12 @@
 @tailwind utilities;
 
 /* * {
-    outline: 1px solid red !important;
+  outline: 1px solid red !important;
 } */
+
+html {
+  scroll-behavior: smooth;
+}
 
 .tooltip {
   @apply invisible absolute left-1/2 transform -translate-x-1/2 p-2 text-sm
