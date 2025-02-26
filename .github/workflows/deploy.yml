@@ -1,9 +1,9 @@
 name: Deploy
 on:
   push:
-    branches: feat/fresh
+    branches: main
   pull_request:
-    branches: feat/fresh
+    branches: main
 
 jobs:
   deploy:
