@@ -4,6 +4,7 @@
  */
 
 import { type PageProps } from "$fresh/server.ts";
+import Version from "../components/version.tsx";
 
 export default function App({ Component }: PageProps) {
   return (
@@ -15,8 +16,9 @@ export default function App({ Component }: PageProps) {
         <link rel="stylesheet" href="/xodium.custom.css" />
         <link rel="icon" href="/xodium.favicon.svg" />
       </head>
-      <body>
+      <body class="bg-slate-100 dark:bg-slate-900 font-mono">
         <Component />
+        <Version />
       </body>
     </html>
   );
