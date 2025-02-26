@@ -31,9 +31,9 @@ export default function Home() {
                 <span class="bg-gradient-to-r from-[#CB2D3E] to-[#EF473A] inline-block text-transparent bg-clip-text">
                   <Typewriter
                     text={["MODULAR", "STRUCTURED", "EFFICIENT"]}
-                    speed={150}
+                    speed={0.15}
                     loop
-                    pause={0}
+                    pause={[1, 0]}
                     unwrite
                   />
                 </span>
