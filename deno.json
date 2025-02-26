@@ -1,19 +1,33 @@
 {
+  "lock": false,
+  "tasks": {
+    "check": "deno fmt --check && deno lint && deno check **/*.ts && deno check **/*.tsx",
+    "cli": "echo \"import '\\$fresh/src/dev/cli.ts'\" | deno run --unstable -A -",
+    "manifest": "deno task cli manifest $(pwd)",
+    "start": "deno run -A --watch=static/,routes/ dev.ts",
+    "build": "deno run -A dev.ts build",
+    "preview": "deno run -A main.ts",
+    "update": "deno run -A -r https://fresh.deno.dev/update ."
+  },
+  "lint": { "rules": { "tags": ["fresh", "recommended"] } },
+  "exclude": ["**/_fresh/*"],
   "imports": {
-    "lume/": "https://cdn.jsdelivr.net/gh/lumeland/lume@40a650bbd433fdbb56bdd4517057b3e9ff3fe4e4/",
     "axiod/mod": "https://deno.land/x/axiod@0.26.2/mod.ts",
     "axiod/interfaces": "https://deno.land/x/axiod@0.26.2/interfaces.ts",
-    "typewriter": "https://unpkg.com/typewriter-effect@2.21.0/dist/core.js",
-    "xodium/constants": "./src/assets/modules/xodium.constants.ts",
-    "xodium/typewriter": "./src/assets/modules/xodium.typewriter.ts",
-    "xodium/utils/github": "./src/assets/modules/xodium.utils.github.ts",
-    "xodium/utils/localstorage": "./src/assets/modules/xodium.utils.localstorage.ts",
-    "xodium/utils/teamcards": "./src/assets/modules/xodium.utils.teamcards.ts"
+    "$fresh/": "https://deno.land/x/fresh@1.7.3/",
+    "preact": "https://esm.sh/preact@10.22.0",
+    "preact/": "https://esm.sh/preact@10.22.0/",
+    "@preact/signals": "https://esm.sh/*@preact/signals@1.2.2",
+    "@preact/signals-core": "https://esm.sh/*@preact/signals-core@1.5.1",
+    "tailwindcss": "npm:tailwindcss@3.4.1",
+    "tailwindcss/": "npm:/tailwindcss@3.4.1/",
+    "tailwindcss/plugin": "npm:/tailwindcss@3.4.1/plugin.js",
+    "$std/": "https://deno.land/std@0.216.0/",
+    "xodium/constants": "./modules/xodium.constants.ts",
+    "xodium/utils/github": "./modules/xodium.utils.github.ts",
+    "xodium/utils/localstorage": "./modules/xodium.utils.localstorage.ts",
+    "xodium/utils/teamcards": "./modules/xodium.utils.teamcards.tsx"
   },
-  "tasks": {
-    "lume": "echo \"import 'lume/cli.ts'\" | deno run -A -",
-    "build": "deno task lume",
-    "serve": "deno task lume -s"
-  },
-  "compilerOptions": { "types": ["lume/types.ts"] }
+  "compilerOptions": { "jsx": "react-jsx", "jsxImportSource": "preact" },
+  "nodeModulesDir": "auto"
 }

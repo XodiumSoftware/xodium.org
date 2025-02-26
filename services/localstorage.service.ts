@@ -31,14 +31,14 @@ export class LocalStorageService {
   static setItem(
     key: string,
     value: string | number | boolean | object,
-    expiryInMinutes = 60
+    expiryInMinutes = 60,
   ) {
     localStorage.setItem(
       key,
       JSON.stringify({
         value: value,
         expiry: Date.now() + expiryInMinutes * 60 * 1000,
-      })
+      }),
     );
   }
 
