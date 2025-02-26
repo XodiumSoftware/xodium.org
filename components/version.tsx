@@ -3,7 +3,7 @@
  * All rights reserved.
  */
 
-import { config } from "../fresh.config.ts";
+import { config } from "../utils/constants.ts";
 
 export default function Version() {
   return (

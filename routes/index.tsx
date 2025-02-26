@@ -5,7 +5,7 @@
 
 import Footer from "../components/footer.tsx";
 import Header from "../components/header.tsx";
-import "xodium/utils/teamcards";
+import "../islands/teamcards.tsx";
 import Typewriter from "../islands/typewriter.tsx";
 
 export default function Home() {

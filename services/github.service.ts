@@ -3,9 +3,8 @@
  * All rights reserved.
  */
 
-import axiod from "axiod/mod";
-import { LocalStorageService } from "xodium/utils/localstorage";
-import { FETCH_DATA_MAP } from "xodium/constants";
+import { LocalStorageService } from "./localstorage.service.ts";
+import { FETCH_DATA_MAP } from "../utils/constants.ts";
 
 /**
  * A service for interacting with the GitHub API.
@@ -46,14 +45,20 @@ export class GithubService {
   }
 
   /**
-   * Fetches data from a remote source.
+   * Fetches data from a remote source using the native fetch API.
    *
-   * @template T The type of data to be fetched.
+   * @template T - The type of data to be fetched.
    * @param {string} key - The key to fetch data from a remote source.
    * @returns {Promise<T[]>} A promise that resolves to an array of objects of type T.
+   * @throws Will throw an error if no mapping is found or the fetch fails.
    */
   private static async fetchData<T>(key: string): Promise<T[]> {
-    const { url, config } = FETCH_DATA_MAP[key];
-    return (await axiod.get<T[]>(url, config)).data;
+    const mapping = FETCH_DATA_MAP[key];
+    if (!mapping) throw new Error(`No mapping found for key: ${key}`);
+    const response = await fetch(mapping.url, mapping.config);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.statusText}`);
+    }
+    return response.json() as Promise<T[]>;
   }
 }

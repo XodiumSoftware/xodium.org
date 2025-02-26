@@ -13,7 +13,7 @@ export default function Footer() {
         <div class="hidden lg:flex lg:gap-x-8">
           <a href="">
             <img
-              src="/xodium.favicon.svg"
+              src="/favicon.svg"
               alt="Xodium Icon"
               class="h-12 w-12"
             />

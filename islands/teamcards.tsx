@@ -1,5 +1,5 @@
 import { useEffect, useState } from "preact/hooks";
-import { GithubService } from "xodium/utils/github";
+import { GithubService } from "../services/github.service.ts";
 
 /**
  * Represents a member of GitHub with relevant profile information.
