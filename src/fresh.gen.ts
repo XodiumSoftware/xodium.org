@@ -10,7 +10,6 @@ import * as $api_auth_signout from "./routes/api/auth/signout.ts";
 import * as $dashboard_index from "./routes/dashboard/index.tsx";
 import * as $index from "./routes/index.tsx";
 import * as $login from "./routes/login.tsx";
-import * as $teamcards from "./islands/teamcards.tsx";
 import * as $typewriter from "./islands/typewriter.tsx";
 import type { Manifest } from "$fresh/server.ts";
 
@@ -26,7 +25,6 @@ const manifest = {
     "./routes/login.tsx": $login,
   },
   islands: {
-    "./islands/teamcards.tsx": $teamcards,
     "./islands/typewriter.tsx": $typewriter,
   },
   baseUrl: import.meta.url,

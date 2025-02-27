@@ -7,7 +7,6 @@ import { JSX } from "preact/jsx-runtime";
 import ButtonUp from "../components/button_up.tsx";
 import Footer from "../components/footer.tsx";
 import Header from "../components/header.tsx";
-import "../islands/teamcards.tsx";
 import Typewriter from "../islands/typewriter.tsx";
 import Grid from "../components/grid.tsx";
 
