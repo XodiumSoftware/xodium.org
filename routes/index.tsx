@@ -3,24 +3,26 @@
  * All rights reserved.
  */
 
+import { JSX } from "preact/jsx-runtime";
 import ButtonUp from "../components/button_up.tsx";
 import Footer from "../components/footer.tsx";
 import Header from "../components/header.tsx";
 import "../islands/teamcards.tsx";
 import Typewriter from "../islands/typewriter.tsx";
+import Grid from "../components/grid.tsx";
 
 /**
  * Home route
+ * @returns {JSX.Element} JSX.Element
  */
-export default function Home() {
+export default function Home(): JSX.Element {
   return (
     <div>
       <Header />
       {/* Landing section */}
       <section id="landing">
         <div class="relative isolate px-6 pt-14 lg:px-8">
-          <div class="absolute inset-0 h-full w-full bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:96px_96px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_60%,transparent_100%)] pointer-events-none">
-          </div>
+          <Grid />
           <div
             class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
             aria-hidden="true"

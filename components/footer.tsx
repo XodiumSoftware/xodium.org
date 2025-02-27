@@ -3,10 +3,13 @@
  * All rights reserved.
  */
 
+import { JSX } from "preact/jsx-runtime";
+
 /**
  * Footer component
+ * @returns {JSX.Element} JSX.Element
  */
-export default function Footer() {
+export default function Footer(): JSX.Element {
   return (
     <footer>
       <div className="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">

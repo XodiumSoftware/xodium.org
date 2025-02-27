@@ -1,5 +1,6 @@
 import { useEffect, useState } from "preact/hooks";
 import { GithubService } from "../services/github.service.ts";
+import { JSX } from "preact/jsx-runtime";
 
 /**
  * Represents a member of GitHub with relevant profile information.
@@ -10,14 +11,21 @@ export interface GitHubMember {
   html_url: string;
 }
 
+/**
+ * Team card properties.
+ */
 interface TeamCardProps {
   member: GitHubMember;
 }
 
-function TeamCard({ member }: TeamCardProps) {
+/**
+ * Team card component.
+ * @param {TeamCardProps} props TeamCardProps
+ * @returns {JSX.Element} JSX.Element
+ */
+function TeamCard({ member }: TeamCardProps): JSX.Element {
   const [hovered, setHovered] = useState(false);
   const highlightColor = "#CB2D3E";
-
   return (
     <li
       className="mb-4"
@@ -48,9 +56,12 @@ function TeamCard({ member }: TeamCardProps) {
   );
 }
 
-export default function TeamCards() {
+/**
+ * Team cards component.
+ * @returns {JSX.Element} JSX.Element
+ */
+export default function TeamCards(): JSX.Element {
   const [members, setMembers] = useState<GitHubMember[]>([]);
-
   useEffect(() => {
     (async () => {
       try {
@@ -67,7 +78,6 @@ export default function TeamCards() {
       }
     })();
   }, []);
-
   return (
     <ul className="team-cards">
       {members.map((member) => <TeamCard key={member.login} member={member} />)}

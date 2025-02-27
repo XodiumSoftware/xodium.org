@@ -14,6 +14,7 @@
       "extensions": [
         "bradlc.vscode-tailwindcss",
         "denoland.vscode-deno",
+        "doi.fileheadercomment",
         "esbenp.prettier-vscode",
         "github.copilot",
         "github.vscode-github-actions",

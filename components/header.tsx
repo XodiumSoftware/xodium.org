@@ -3,10 +3,13 @@
  * All rights reserved.
  */
 
+import { JSX } from "preact/jsx-runtime";
+
 /**
  * Header component
+ * @returns {JSX.Element} JSX.Element
  */
-export default function Header() {
+export default function Header(): JSX.Element {
   return (
     <header id="top" class="z-20 relative">
       <nav

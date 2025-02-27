@@ -3,10 +3,13 @@
  * All rights reserved.
  */
 
+import { JSX } from "preact/jsx-runtime";
+
 /**
  * ButtonUp component
+ * @returns {JSX.Element} JSX.Element
  */
-export default function ButtonUp() {
+export default function ButtonUp(): JSX.Element {
   return (
     <a
       href="#"

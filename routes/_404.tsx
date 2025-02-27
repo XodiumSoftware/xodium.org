@@ -4,21 +4,23 @@
  */
 
 import { Head } from "$fresh/runtime.ts";
+import { JSX } from "preact/jsx-runtime";
 import Footer from "../components/footer.tsx";
+import Grid from "../components/grid.tsx";
 
 /**
  * Error404 route
+ * @returns {JSX.Element} JSX.Element
  */
-export default function Error404() {
+export default function Error404(): JSX.Element {
   return (
     <>
       <Head>
         <title>Xodium | 404</title>
       </Head>
-      <div class="flex flex-col h-screen">
+      <section class="flex flex-col h-screen">
         <main class="flex-grow grid place-items-center bg-slate-100 dark:bg-slate-900 px-6 py-24 sm:py-32 lg:px-8">
-          <div class="absolute inset-0 h-full w-full bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:96px_96px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_60%,transparent_100%)] pointer-events-none">
-          </div>
+          <Grid />
           <div class="text-center">
             <p class="text-base font-semibold text-[#CB2D3E] dark:text-[#CB2D3E]">
               Xodium | 404
@@ -51,7 +53,7 @@ export default function Error404() {
           </div>
         </main>
         <Footer />
-      </div>
+      </section>
     </>
   );
 }

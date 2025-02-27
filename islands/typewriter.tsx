@@ -4,7 +4,11 @@
  */
 
 import { useEffect, useState } from "preact/hooks";
+import { JSX } from "preact/jsx-runtime";
 
+/**
+ * Typewriter component properties.
+ */
 export interface TypewriterProps {
   text: string[];
   speed?: number;
@@ -25,7 +29,7 @@ export interface TypewriterProps {
  *   When provided as a tuple, the first value is the start pause (after typing is complete)
  *   and the second is the end pause (after deleting is complete).
  * @param {boolean} props.unwrite - If true, deletes the text before showing the next.
- * @returns {JSX.Element} The typewriter animation element.
+ * @returns {JSX.Element} JSX.Element
  */
 export default function Typewriter({
   text,
@@ -33,7 +37,7 @@ export default function Typewriter({
   loop,
   pause,
   unwrite,
-}: TypewriterProps) {
+}: TypewriterProps): JSX.Element {
   const [displayed, setDisplayed] = useState("");
   const [letterIndex, setLetterIndex] = useState(0);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
