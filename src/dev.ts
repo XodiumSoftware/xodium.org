@@ -4,7 +4,7 @@
  */
 
 import dev from "$fresh/dev.ts";
-import config from "./src/fresh.config.ts";
+import config from "./fresh.config.ts";
 
 import "$std/dotenv/load.ts";
 
