@@ -7,7 +7,7 @@ import { Handlers } from "$fresh/server.ts";
 
 const CLIENT_ID = Deno.env.get("GITHUB_CLIENT_ID") || "";
 const CLIENT_SECRET = Deno.env.get("GITHUB_CLIENT_SECRET") || "";
-const REDIRECT_URI = Deno.env.get("REDIRECT_URI") ||
+const REDIRECT_URI = Deno.env.get("GITHUB_REDIRECT_URI") ||
   "http://localhost:8000/api/auth/github/callback";
 
 export const handler: Handlers = {
