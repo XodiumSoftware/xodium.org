@@ -7,6 +7,7 @@ import { Handlers, PageProps } from "$fresh/server.ts";
 import { Head } from "$fresh/runtime.ts";
 import { State } from "../../middlewares/auth.ts";
 import Footer from "../../components/footer.tsx";
+import Grid from "../../components/grid.tsx";
 
 export const handler: Handlers<null, State> = {
   GET(_req, ctx) {
@@ -22,6 +23,7 @@ export default function Dashboard({ state }: PageProps<null, State>) {
       <Head>
         <title>Xodium | Dashboard</title>
       </Head>
+      <Grid />
       <div class="min-h-screen flex flex-col bg-slate-100 dark:bg-slate-900">
         <main class="flex-grow container mx-auto px-4 py-8">
           <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
@@ -55,7 +57,7 @@ export default function Dashboard({ state }: PageProps<null, State>) {
 
             <div class="mt-8">
               <a
-                href="/"
+                href="/api/auth/signout"
                 class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
               >
                 Sign Out
