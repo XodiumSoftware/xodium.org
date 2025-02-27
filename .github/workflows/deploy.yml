@@ -30,7 +30,7 @@ jobs:
         uses: denoland/deployctl@v1
         with:
           project: "xodium"
-          entrypoint: "src/main.ts"
-          root: "."
+          entrypoint: "main.ts"
+          root: "./src"
           
           
