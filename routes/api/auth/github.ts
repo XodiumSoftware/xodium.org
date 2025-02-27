@@ -89,5 +89,3 @@ export const handler: Handlers = {
     }
   },
 };
-
-export default handler;
