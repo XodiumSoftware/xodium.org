@@ -11,6 +11,7 @@ import * as $api_orgs_github from "./routes/api/orgs/github.ts";
 import * as $dashboard_index from "./routes/dashboard/index.tsx";
 import * as $index from "./routes/index.tsx";
 import * as $login from "./routes/login.tsx";
+import * as $carousel from "./islands/carousel.tsx";
 import * as $teamcards from "./islands/teamcards.tsx";
 import * as $typewriter from "./islands/typewriter.tsx";
 import type { Manifest } from "$fresh/server.ts";
@@ -28,6 +29,7 @@ const manifest = {
     "./routes/login.tsx": $login,
   },
   islands: {
+    "./islands/carousel.tsx": $carousel,
     "./islands/teamcards.tsx": $teamcards,
     "./islands/typewriter.tsx": $typewriter,
   },
