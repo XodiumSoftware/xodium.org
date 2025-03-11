@@ -6,7 +6,7 @@
 /// <reference lib="deno.unstable" />
 
 import { useEffect, useState } from "preact/hooks";
-import { Member } from "../routes/api/orgs/github.ts";
+import { Member } from "../routes/api/orgs/github/members.ts";
 import { JSX } from "preact/jsx-runtime";
 import { GITHUB } from "../utils/constants.ts";
 
@@ -25,7 +25,9 @@ export default function TeamCards(): JSX.Element {
       setError(null);
 
       try {
-        const response = await fetch(`/api/orgs/github?org=${GITHUB.org.name}`);
+        const response = await fetch(
+          `/api/orgs/github/members?org=${GITHUB.org.name}`,
+        );
         if (!response.ok) {
           throw new Error(
             `Failed to fetch organization members: ${response.status} ${response.statusText}`,

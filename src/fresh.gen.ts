@@ -7,7 +7,7 @@ import * as $_app from "./routes/_app.tsx";
 import * as $api_auth_github from "./routes/api/auth/github.ts";
 import * as $api_auth_github_callback from "./routes/api/auth/github/callback.ts";
 import * as $api_auth_signout from "./routes/api/auth/signout.ts";
-import * as $api_orgs_github from "./routes/api/orgs/github.ts";
+import * as $api_orgs_github from "./routes/api/orgs/github/members.ts";
 import * as $dashboard_index from "./routes/dashboard/index.tsx";
 import * as $index from "./routes/index.tsx";
 import * as $login from "./routes/login.tsx";

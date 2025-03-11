@@ -5,7 +5,7 @@
 
 /// <reference lib="deno.unstable" />
 
-import { GITHUB } from "../../../utils/constants.ts";
+import { GITHUB } from "../../../../utils/constants.ts";
 
 export interface Member {
   login: string;
