@@ -6,12 +6,60 @@
 /// <reference lib="deno.unstable" />
 
 import { GITHUB } from "../../../../utils/constants.ts";
-import { fetchAndCacheOrgData } from "../../../../utils/utils.ts";
+import { fetchFromGitHub } from "../../../../utils/utils.ts";
 
 export interface Member {
   login: string;
   avatar_url: string;
   html_url: string;
+}
+
+interface CachedMembers {
+  members: Member[];
+  timestamp: number;
+}
+
+/**
+ * Gets organization members, using cached data if available and valid.
+ * @param {string} org The organization to fetch members from.
+ * @param {string | undefined} token The GitHub token to use.
+ * @returns {Promise<Member[]>} A promise that resolves to an array of members.
+ */
+async function getOrganizationMembers(
+  org: string,
+  token?: string,
+): Promise<Member[]> {
+  try {
+    const kv = await Deno.openKv();
+    try {
+      const cachedData = await kv.get<CachedMembers>(["members", org]);
+      if (
+        cachedData.value &&
+        Date.now() - cachedData.value.timestamp <
+          GITHUB.api.members.cacheExpiry
+      ) {
+        console.log(`Using cached data for org: ${org}`);
+        return cachedData.value.members;
+      }
+
+      console.log(`Fetching data from GitHub for org: ${org}`);
+      const members = await fetchFromGitHub<Member[]>(
+        `/orgs/${org}/members`,
+        token,
+      );
+      const dataToStore: CachedMembers = {
+        members,
+        timestamp: Date.now(),
+      };
+      await kv.set(["members", org], dataToStore);
+      return members;
+    } finally {
+      kv.close();
+    }
+  } catch (e) {
+    console.error("Error fetching or caching organization members:", e);
+    throw new Error("Failed to load team members.");
+  }
 }
 
 /**
@@ -28,15 +76,7 @@ export default async (request: Request): Promise<Response> => {
   }
 
   try {
-    const members = await fetchAndCacheOrgData<Member>(
-      "members",
-      "team members",
-      org,
-      "members",
-      GITHUB.api.members.cacheExpiry,
-      undefined,
-    );
-
+    const members = await getOrganizationMembers(org);
     return new Response(JSON.stringify(members), {
       headers: { "Content-Type": "application/json" },
     });

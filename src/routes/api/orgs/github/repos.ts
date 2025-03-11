@@ -6,7 +6,7 @@
 /// <reference lib="deno.unstable" />
 
 import { GITHUB } from "../../../../utils/constants.ts";
-import { fetchAndCacheOrgData } from "../../../../utils/utils.ts";
+import { fetchFromGitHub } from "../../../../utils/utils.ts";
 
 export interface Repo {
   id: number;
@@ -14,6 +14,50 @@ export interface Repo {
   full_name: string;
   html_url: string;
   description: string;
+}
+
+interface CachedRepos {
+  repos: Repo[];
+  timestamp: number;
+}
+
+/**
+ * Gets organization projects (repositories), using cached data if available and valid.
+ * @param {string} org The organization to fetch projects from.
+ * @param {string | undefined} token The GitHub token to use.
+ * @returns {Promise<Repo[]>} A promise that resolves to an array of repositories.
+ */
+async function getOrganizationProjects(
+  org: string,
+  token?: string,
+): Promise<Repo[]> {
+  try {
+    const kv = await Deno.openKv();
+    try {
+      const cachedData = await kv.get<CachedRepos>(["repos", org]);
+      if (
+        cachedData.value &&
+        Date.now() - cachedData.value.timestamp < GITHUB.api.members.cacheExpiry
+      ) {
+        console.log(`Using cached projects for org: ${org}`);
+        return cachedData.value.repos;
+      }
+
+      console.log(`Fetching projects from GitHub for org: ${org}`);
+      const repos = await fetchFromGitHub<Repo[]>(`/orgs/${org}/repos`, token);
+      const dataToStore: CachedRepos = {
+        repos,
+        timestamp: Date.now(),
+      };
+      await kv.set(["repos", org], dataToStore);
+      return repos;
+    } finally {
+      kv.close();
+    }
+  } catch (e) {
+    console.error("Error fetching or caching organization projects:", e);
+    throw new Error("Failed to load organization projects.");
+  }
 }
 
 /**
@@ -30,15 +74,7 @@ export default async (request: Request): Promise<Response> => {
   }
 
   try {
-    const projects = await fetchAndCacheOrgData<Repo>(
-      "repos",
-      "organization projects",
-      org,
-      "repos",
-      GITHUB.api.members.cacheExpiry,
-      undefined,
-    );
-
+    const projects = await getOrganizationProjects(org);
     return new Response(JSON.stringify(projects), {
       headers: { "Content-Type": "application/json" },
     });
