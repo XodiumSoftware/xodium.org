@@ -29,7 +29,7 @@ export default function Carousel({ images, interval = 5 }: CarouselProps) {
   }
 
   return (
-    <div class="relative w-full overflow-hidden">
+    <div class="relative w-full overflow-hidden max-h-screen">
       {/* Label */}
       <h2 class="absolute text-3xl sm:text-4xl font-bold tracking-tight bg-slate-100 dark:bg-slate-900 text-black dark:text-white p-3 rounded-br-lg z-10">
         Projects
@@ -44,7 +44,7 @@ export default function Carousel({ images, interval = 5 }: CarouselProps) {
             key={index}
             src={src}
             alt={`Slide ${index + 1}`}
-            class="w-full flex-shrink-0"
+            class="w-full flex-shrink-0 object-cover"
           />
         ))}
       </div>
