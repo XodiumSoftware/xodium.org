@@ -8,7 +8,7 @@
 import { useEffect, useState } from "preact/hooks";
 import { Member } from "../routes/api/orgs/github.ts";
 import { JSX } from "preact/jsx-runtime";
-import { github } from "../utils/constants.ts";
+import { GITHUB } from "../utils/constants.ts";
 
 /**
  * TeamCards component that displays a list of team members.
@@ -25,7 +25,7 @@ export default function TeamCards(): JSX.Element {
       setError(null);
 
       try {
-        const response = await fetch(`/api/orgs/github?org=${github.org.name}`);
+        const response = await fetch(`/api/orgs/github?org=${GITHUB.org.name}`);
         if (!response.ok) {
           throw new Error(
             `Failed to fetch organization members: ${response.status} ${response.statusText}`,
