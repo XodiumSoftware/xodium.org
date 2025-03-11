@@ -7,7 +7,8 @@ import * as $_app from "./routes/_app.tsx";
 import * as $api_auth_github from "./routes/api/auth/github.ts";
 import * as $api_auth_github_callback from "./routes/api/auth/github/callback.ts";
 import * as $api_auth_signout from "./routes/api/auth/signout.ts";
-import * as $api_orgs_github from "./routes/api/orgs/github/members.ts";
+import * as $api_orgs_github_members from "./routes/api/orgs/github/members.ts";
+import * as $api_orgs_github_repos from "./routes/api/orgs/github/repos.ts";
 import * as $dashboard_index from "./routes/dashboard/index.tsx";
 import * as $index from "./routes/index.tsx";
 import * as $login from "./routes/login.tsx";
@@ -23,7 +24,8 @@ const manifest = {
     "./routes/api/auth/github.ts": $api_auth_github,
     "./routes/api/auth/github/callback.ts": $api_auth_github_callback,
     "./routes/api/auth/signout.ts": $api_auth_signout,
-    "./routes/api/orgs/github.ts": $api_orgs_github,
+    "./routes/api/orgs/github/members.ts": $api_orgs_github_members,
+    "./routes/api/orgs/github/repos.ts": $api_orgs_github_repos,
     "./routes/dashboard/index.tsx": $dashboard_index,
     "./routes/index.tsx": $index,
     "./routes/login.tsx": $login,

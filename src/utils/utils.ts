@@ -29,14 +29,33 @@ export const fetchFromGitHub = async <T>(
     "X-GitHub-Api-Version": GITHUB.api.version,
     ...(token ? { Authorization: `token ${token}` } : {}),
   });
+
   const res = await fetch(`${GITHUB.api.url}${endpoint}`, { headers });
+
   if (!res.ok) {
     const errorText = await res.text();
     throw new Error(
       `GitHub API error: ${res.status} ${res.statusText} - ${errorText}`,
     );
   }
-  return res.json();
+
+  const contentType = res.headers.get("content-type");
+  if (!contentType || !contentType.includes("application/json")) {
+    console.warn(`Expected JSON response but got content-type: ${contentType}`);
+  }
+
+  const text = await res.text();
+  if (!text || text.trim() === "") {
+    console.warn("Received empty response from GitHub API");
+    return (Array.isArray(endpoint.split("/").pop()) ? [] : {}) as unknown as T;
+  }
+
+  try {
+    return JSON.parse(text) as T;
+  } catch (err) {
+    console.error("Failed to parse GitHub API response:", err);
+    throw new Error(`Failed to parse GitHub API response: ${err.message}`);
+  }
 };
 
 /**
