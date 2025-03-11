@@ -6,6 +6,7 @@
 /// <reference lib="deno.unstable" />
 
 import { GITHUB } from "../../../../utils/constants.ts";
+import { fetchFromGitHub } from "../../../../utils/utils.ts";
 
 export interface Repo {
   id: number;
@@ -18,40 +19,6 @@ export interface Repo {
 interface CachedRepos {
   repos: Repo[];
   timestamp: number;
-}
-
-/**
- * Fetches organization projects (repositories) from GitHub API, with caching.
- * @param {string} org The organization to fetch projects from.
- * @param {string | undefined} token The GitHub token to use for authentication.
- * @returns {Promise<Repo[]>} A promise that resolves to an array of repositories.
- */
-async function fetchOrganizationProjects(
-  org: string,
-  token?: string,
-): Promise<Repo[]> {
-  const headers = new Headers({
-    "User-Agent": GITHUB.org.user_agent,
-    "X-GitHub-Api-Version": GITHUB.api.version,
-    ...(token ? { Authorization: `token ${token}` } : {}),
-  });
-
-  const response = await fetch(`${GITHUB.api.url}/orgs/${org}/repos`, {
-    headers,
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error(
-      `GitHub API error: ${response.status} ${response.statusText}`,
-      errorText,
-    );
-    throw new Error(
-      `Failed to fetch organization projects: ${response.status} ${response.statusText} - ${errorText}`,
-    );
-  }
-
-  return await response.json();
 }
 
 /**
@@ -77,7 +44,7 @@ async function getOrganizationProjects(
       }
 
       console.log(`Fetching projects from GitHub for org: ${org}`);
-      const repos = await fetchOrganizationProjects(org, token);
+      const repos = await fetchFromGitHub<Repo[]>(`/orgs/${org}/repos`, token);
       const dataToStore: CachedRepos = {
         repos,
         timestamp: Date.now(),

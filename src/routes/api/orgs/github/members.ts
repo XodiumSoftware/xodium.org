@@ -6,6 +6,7 @@
 /// <reference lib="deno.unstable" />
 
 import { GITHUB } from "../../../../utils/constants.ts";
+import { fetchFromGitHub } from "../../../../utils/utils.ts";
 
 export interface Member {
   login: string;
@@ -16,40 +17,6 @@ export interface Member {
 interface CachedMembers {
   members: Member[];
   timestamp: number;
-}
-
-/**
- * Fetches organization members from GitHub API, with caching.
- * @param {string} org The organization to fetch members from.
- * @param {string | undefined} token The GitHub token to use for authentication.
- * @returns {Promise<Member[]>} A promise that resolves to an array of members.
- */
-async function fetchOrganizationMembers(
-  org: string,
-  token?: string,
-): Promise<Member[]> {
-  const headers = new Headers({
-    "User-Agent": GITHUB.org.user_agent,
-    "X-GitHub-Api-Version": GITHUB.api.version,
-    ...(token ? { Authorization: `token ${token}` } : {}),
-  });
-
-  const response = await fetch(`${GITHUB.api.url}/orgs/${org}/members`, {
-    headers,
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error(
-      `GitHub API error: ${response.status} ${response.statusText}`,
-      errorText,
-    );
-    throw new Error(
-      `Failed to fetch organization members: ${response.status} ${response.statusText} - ${errorText}`,
-    );
-  }
-
-  return await response.json();
 }
 
 /**
@@ -76,7 +43,10 @@ async function getOrganizationMembers(
       }
 
       console.log(`Fetching data from GitHub for org: ${org}`);
-      const members = await fetchOrganizationMembers(org, token);
+      const members = await fetchFromGitHub<Member[]>(
+        `/orgs/${org}/members`,
+        token,
+      );
       const dataToStore: CachedMembers = {
         members,
         timestamp: Date.now(),
