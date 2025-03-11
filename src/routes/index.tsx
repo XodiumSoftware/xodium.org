@@ -9,6 +9,7 @@ import Footer from "../components/footer.tsx";
 import Header from "../components/header.tsx";
 import Typewriter from "../islands/typewriter.tsx";
 import Grid from "../components/grid.tsx";
+import TeamCards from "../islands/teamcards.tsx";
 
 /**
  * Home route
@@ -98,7 +99,7 @@ export default function Home(): JSX.Element {
                 No matter the project, our team can handle it.
               </p>
             </div>
-            <ul class="team-cards"></ul>
+            <TeamCards />
           </div>
         </div>
       </section>
