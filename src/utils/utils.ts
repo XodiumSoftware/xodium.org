@@ -47,13 +47,20 @@ export const fetchFromGitHub = async <T>(
   const text = await res.text();
   if (!text || text.trim() === "") {
     console.warn("Received empty response from GitHub API");
-    return (Array.isArray(endpoint.split("/").pop()) ? [] : {}) as unknown as T;
+    // Check endpoints that typically return arrays vs objects
+    const isArrayEndpoint = endpoint.endsWith("/members") ||
+      endpoint.endsWith("/repos") ||
+      endpoint.includes("/teams/") ||
+      endpoint.includes("/issues");
+
+    return (isArrayEndpoint ? [] : {}) as unknown as T;
   }
 
   try {
     return JSON.parse(text) as T;
   } catch (err) {
     console.error("Failed to parse GitHub API response:", err);
+    console.error("Response text:", text); // Log the actual response text
     throw new Error(`Failed to parse GitHub API response: ${err.message}`);
   }
 };
