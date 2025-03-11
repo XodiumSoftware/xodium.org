@@ -20,26 +20,21 @@ export function hoursToMilliseconds(hours: number): number {
  * @param token Optional GitHub token for authentication.
  * @returns A promise resolving with the parsed JSON data from GitHub.
  */
-export async function fetchFromGitHub<T>(
+export const fetchFromGitHub = async <T>(
   endpoint: string,
   token?: string,
-): Promise<T> {
+): Promise<T> => {
   const headers = new Headers({
     "User-Agent": GITHUB.org.user_agent,
     "X-GitHub-Api-Version": GITHUB.api.version,
     ...(token ? { Authorization: `token ${token}` } : {}),
   });
-
-  const response = await fetch(`${GITHUB.api.url}${endpoint}`, { headers });
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error(
-      `GitHub API error: ${response.status} ${response.statusText}`,
-      errorText,
-    );
+  const res = await fetch(`${GITHUB.api.url}${endpoint}`, { headers });
+  if (!res.ok) {
+    const errorText = await res.text();
     throw new Error(
-      `Failed to fetch from GitHub: ${response.status} ${response.statusText} - ${errorText}`,
+      `GitHub API error: ${res.status} ${res.statusText} - ${errorText}`,
     );
   }
-  return await response.json();
-}
+  return res.json();
+};
