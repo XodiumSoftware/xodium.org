@@ -6,17 +6,9 @@
 /// <reference lib="deno.unstable" />
 
 import { useEffect, useState } from "preact/hooks";
-import { getOrganizationMembers, Member } from "../routes/api/orgs/github.ts";
+import { Member } from "../routes/api/orgs/github.ts";
 import { JSX } from "preact/jsx-runtime";
-import { org } from "../utils/constants.ts";
-
-// Cached members to avoid fetching them on every render
-interface CachedMembers {
-  members: Member[];
-  timestamp: number;
-}
-
-const CACHE_EXPIRY = 60 * 60 * 1000; // 1 hour
+import { github } from "../utils/constants.ts";
 
 /**
  * TeamCards component that displays a list of team members.
@@ -33,35 +25,21 @@ export default function TeamCards(): JSX.Element {
       setError(null);
 
       try {
-        const kv = await Deno.openKv();
-        const cachedData = await kv.get<CachedMembers>(["members"]);
-
-        if (
-          cachedData.value &&
-          Date.now() - cachedData.value.timestamp < CACHE_EXPIRY
-        ) {
-          console.log("Using cached data");
-          setMembers(cachedData.value.members);
-        } else {
-          console.log("Fetching data from GitHub");
-          const fetchedMembers = await getOrganizationMembers(org, undefined);
-
-          const dataToStore: CachedMembers = {
-            members: fetchedMembers,
-            timestamp: Date.now(),
-          };
-          await kv.set(["members"], dataToStore);
-          setMembers(fetchedMembers);
+        const response = await fetch(`/api/orgs/github?org=${github.org.name}`);
+        if (!response.ok) {
+          throw new Error(
+            `Failed to fetch organization members: ${response.status} ${response.statusText}`,
+          );
         }
-        kv.close();
+        const fetchedMembers: Member[] = await response.json();
+        setMembers(fetchedMembers);
       } catch (e) {
-        console.error("Error fetching or caching organization members:", e);
+        console.error("Error fetching organization members:", e);
         setError("Failed to load team members.");
       } finally {
         setIsLoading(false);
       }
     };
-
     fetchMembers();
   }, []);
 
