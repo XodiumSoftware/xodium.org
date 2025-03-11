@@ -38,3 +38,49 @@ export const fetchFromGitHub = async <T>(
   }
   return res.json();
 };
+
+/**
+ * Generic function to get organization data with caching.
+ * @param {string} cacheKey The key to use for caching in Deno KV.
+ * @param {string} org The organization to fetch data from.
+ * @param {string} apiEndpoint The GitHub API endpoint to fetch data from.
+ * @param {string | undefined} token The GitHub token to use.
+ * @param {number} cacheExpiry The cache expiry time in milliseconds.
+ * @returns {Promise<T>} A promise that resolves to the fetched data.
+ */
+export async function getOrganizationData<T>(
+  cacheKey: string,
+  org: string,
+  apiEndpoint: string,
+  token?: string,
+  cacheExpiry: number = GITHUB.api.members.cacheExpiry,
+): Promise<T> {
+  try {
+    const kv = await Deno.openKv();
+    try {
+      const cachedData = await kv.get<{ data: T; timestamp: number }>([
+        cacheKey,
+        org,
+      ]);
+
+      if (
+        cachedData.value &&
+        Date.now() - cachedData.value.timestamp < cacheExpiry
+      ) {
+        console.log(`Using cached data for ${cacheKey}: ${org}`);
+        return cachedData.value.data;
+      }
+
+      console.log(`Fetching data from GitHub for ${cacheKey}: ${org}`);
+      const data = await fetchFromGitHub<T>(apiEndpoint, token);
+      const dataToStore = { data, timestamp: Date.now() };
+      await kv.set([cacheKey, org], dataToStore);
+      return data;
+    } finally {
+      kv.close();
+    }
+  } catch (e) {
+    console.error(`Error fetching or caching organization ${cacheKey}:`, e);
+    throw new Error(`Failed to load organization ${cacheKey}.`);
+  }
+}
