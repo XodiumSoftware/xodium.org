@@ -32,5 +32,3 @@ jobs:
           project: "xodium"
           entrypoint: "src/main.ts"
           root: "."
-          
-          
