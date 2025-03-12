@@ -52,14 +52,14 @@ export default function Carousel({ images, interval = 5 }: CarouselProps) {
       <button
         type="button"
         onClick={handlePrev}
-        class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-slate-100 dark:bg-slate-900 bg-opacity-50 text-black dark:text-white w-10 h-10 rounded-full hover:bg-opacity-75"
+        class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-slate-100 dark:bg-slate-900 bg-opacity-50 text-black dark:text-white w-10 h-10 rounded-full hover:text-[#CB2D3E] hover:outline hover:outline-2 hover:outline-[#CB2D3E]"
       >
         ❮
       </button>
       <button
         type="button"
         onClick={handleNext}
-        class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-slate-100 dark:bg-slate-900 bg-opacity-50 text-black dark:text-white w-10 h-10 rounded-full hover:bg-opacity-75"
+        class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-slate-100 dark:bg-slate-900 bg-opacity-50 text-black dark:text-white w-10 h-10 rounded-full hover:text-[#CB2D3E] hover:outline hover:outline-2 hover:outline-[#CB2D3E]"
       >
         ❯
       </button>
@@ -70,7 +70,7 @@ export default function Carousel({ images, interval = 5 }: CarouselProps) {
             key={index}
             type="button"
             onClick={() => setCurrentIndex(index)}
-            class={`w-3 h-3 rounded-full ${
+            class={`w-3 h-3 rounded-full hover:bg-[#CB2D3E] ${
               currentIndex === index ? "bg-gray-800" : "bg-gray-400"
             }`}
           />

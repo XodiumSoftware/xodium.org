@@ -5,7 +5,7 @@
 
 import { hoursToMilliseconds } from "./utils.ts";
 
-export const CONFIG = { version: "2.1.0" };
+export const CONFIG = { version: "2.1.1" };
 
 export const GITHUB = {
   api: {
