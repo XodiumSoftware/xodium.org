@@ -1,10 +1,10 @@
-/**
+/*
  * Copyright (c) 2025. Xodium.
  * All rights reserved.
  */
 
-import { Head } from "$fresh/runtime.ts";
-import { JSX } from "preact/jsx-runtime";
+import {Head} from "$fresh/runtime.ts";
+import {JSX} from "preact/jsx-runtime";
 import Footer from "../components/footer.tsx";
 import Grid from "../components/grid.tsx";
 

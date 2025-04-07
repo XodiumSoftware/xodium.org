@@ -1,9 +1,9 @@
-/**
+/*
  * Copyright (c) 2025. Xodium.
  * All rights reserved.
  */
 
-import { Handlers } from "$fresh/server.ts";
+import {Handlers} from "$fresh/server.ts";
 
 export const handler: Handlers = {
   GET(_req) {

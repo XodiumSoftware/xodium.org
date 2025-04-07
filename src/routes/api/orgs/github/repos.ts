@@ -5,7 +5,7 @@
 
 /// <reference lib="deno.unstable" />
 
-import { getOrganizationData } from "../../../../utils/utils.ts";
+import {getOrganizationData} from "../../../../utils/utils.ts";
 
 export interface Repo {
   id: number;
@@ -18,7 +18,7 @@ export interface Repo {
 /**
  * API route handler for fetching organization projects.
  * @param {Request} request The incoming request.
- * @returns {Promise<Response>} A promise that resolves to a response containing the projects data.
+ * @returns {Promise<Response>} A promise that resolves to a response containing the project data.
  */
 export default async (request: Request): Promise<Response> => {
   const url = new URL(request.url);

@@ -1,10 +1,10 @@
-/**
+/*
  * Copyright (c) 2025. Xodium.
  * All rights reserved.
  */
 
-import { type PageProps } from "$fresh/server.ts";
-import { JSX } from "preact/jsx-runtime";
+import {type PageProps} from "$fresh/server.ts";
+import {JSX} from "preact/jsx-runtime";
 import Version from "../components/version.tsx";
 
 /**

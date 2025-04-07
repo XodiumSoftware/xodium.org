@@ -1,9 +1,9 @@
-/**
+/*
  * Copyright (c) 2025. Xodium.
  * All rights reserved.
  */
 
-import { JSX } from "preact/jsx-runtime";
+import {JSX} from "preact/jsx-runtime";
 
 /**
  * Header component

@@ -1,9 +1,9 @@
-/**
+/*
  * Copyright (c) 2025. Xodium.
  * All rights reserved.
  */
 
-import { Handlers } from "$fresh/server.ts";
+import {Handlers} from "$fresh/server.ts";
 
 const CLIENT_ID = Deno.env.get("GITHUB_CLIENT_ID") || "";
 const CLIENT_SECRET = Deno.env.get("GITHUB_CLIENT_SECRET") || "";

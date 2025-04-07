@@ -3,8 +3,8 @@
  * All rights reserved.
  */
 
-import { useEffect, useState } from "preact/hooks";
-import { JSX } from "preact/jsx-runtime";
+import {useEffect, useState} from "preact/hooks";
+import {JSX} from "preact/jsx-runtime";
 
 /**
  * Typewriter component properties.

@@ -1,11 +1,11 @@
-/**
+/*
  * Copyright (c) 2025. Xodium.
  * All rights reserved.
  */
 
-import { Handlers, PageProps } from "$fresh/server.ts";
-import { Head } from "$fresh/runtime.ts";
-import { State } from "../../middlewares/auth.ts";
+import {Handlers, PageProps} from "$fresh/server.ts";
+import {Head} from "$fresh/runtime.ts";
+import {State} from "../../middlewares/auth.ts";
 import Footer from "../../components/footer.tsx";
 import Grid from "../../components/grid.tsx";
 

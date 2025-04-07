@@ -1,9 +1,9 @@
-/**
+/*
  * Copyright (c) 2025. Xodium.
  * All rights reserved.
  */
 
-import { MiddlewareHandler } from "$fresh/server.ts";
+import {MiddlewareHandler} from "$fresh/server.ts";
 
 export interface User {
   id: number;

@@ -5,7 +5,7 @@
 
 /// <reference lib="deno.unstable" />
 
-import { getOrganizationData } from "../../../../utils/utils.ts";
+import {getOrganizationData} from "../../../../utils/utils.ts";
 
 export interface Member {
   login: string;

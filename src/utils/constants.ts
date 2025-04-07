@@ -3,7 +3,7 @@
  * All rights reserved.
  */
 
-import { hoursToMilliseconds } from "./utils.ts";
+import {hoursToMilliseconds} from "./utils.ts";
 
 export const CONFIG = { version: "2.1.1" };
 

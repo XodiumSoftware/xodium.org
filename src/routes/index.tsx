@@ -1,9 +1,9 @@
-/**
+/*
  * Copyright (c) 2025. Xodium.
  * All rights reserved.
  */
 
-import { JSX } from "preact/jsx-runtime";
+import {JSX} from "preact/jsx-runtime";
 import Footer from "../components/footer.tsx";
 import Header from "../components/header.tsx";
 import Typewriter from "../islands/typewriter.tsx";

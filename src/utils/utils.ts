@@ -3,7 +3,7 @@
  * All rights reserved.
  */
 
-import { GITHUB } from "./constants.ts";
+import {GITHUB} from "./constants.ts";
 
 /**
  * Convert hours to milliseconds.
@@ -41,6 +41,7 @@ export const fetchFromGitHub = async <T>(
 
 /**
  * Generic function to get organization data with caching.
+ * @template T The type of data to be returned
  * @param {string} cacheKey The key to use for caching in Deno KV.
  * @param {string} org The organization to fetch data from.
  * @param {string} apiEndpoint The GitHub API endpoint to fetch data from.

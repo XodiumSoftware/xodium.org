@@ -5,10 +5,10 @@
 
 /// <reference lib="deno.unstable" />
 
-import { useEffect, useState } from "preact/hooks";
-import { Member } from "../routes/api/orgs/github/members.ts";
-import { JSX } from "preact/jsx-runtime";
-import { GITHUB } from "../utils/constants.ts";
+import {useEffect, useState} from "preact/hooks";
+import {Member} from "../routes/api/orgs/github/members.ts";
+import {JSX} from "preact/jsx-runtime";
+import {GITHUB} from "../utils/constants.ts";
 
 /**
  * TeamCards component that displays a list of team members.
