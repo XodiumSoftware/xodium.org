@@ -5,17 +5,16 @@
 
 import {Handlers, PageProps} from "$fresh/server.ts";
 import {Head} from "$fresh/runtime.ts";
-import {State} from "../../middlewares/auth.ts";
 import Footer from "../../components/footer.tsx";
 import Grid from "../../components/grid.tsx";
 
-export const handler: Handlers<null, State> = {
+export const handler: Handlers<null> = {
   GET(_req, ctx) {
     return ctx.render();
   },
 };
 
-export default function Dashboard({ state }: PageProps<null, State>) {
+export default function Dashboard({ state }: PageProps<null>) {
   const user = state.user;
 
   return (
