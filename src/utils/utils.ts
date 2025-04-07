@@ -3,6 +3,8 @@
  * All rights reserved.
  */
 
+/// <reference lib="deno.unstable" />
+
 import {GITHUB} from "./constants.ts";
 
 /**
