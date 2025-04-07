@@ -3,7 +3,7 @@
  * All rights reserved.
  */
 
-import {JSX} from "preact/jsx-runtime";
+import {VNode} from "preact";
 import Footer from "../components/footer.tsx";
 import Header from "../components/header.tsx";
 import Typewriter from "../islands/typewriter.tsx";
@@ -13,9 +13,9 @@ import Carousel from "../islands/carousel.tsx";
 
 /**
  * Home route
- * @returns {JSX.Element} JSX.Element
+ * @returns {VNode} VNode
  */
-export default function Home(): JSX.Element {
+export default function Home(): VNode {
   return (
     <div>
       <Header />

@@ -4,15 +4,15 @@
  */
 
 import {Head} from "$fresh/runtime.ts";
-import {JSX} from "preact/jsx-runtime";
+import {VNode} from "preact";
 import Footer from "../components/footer.tsx";
 import Grid from "../components/grid.tsx";
 
 /**
  * Login component
- * @returns {JSX.Element} JSX.Element
+ * @returns {VNode} VNode
  */
-export default function Login(): JSX.Element {
+export default function Login(): VNode {
   return (
     <>
       <Head>

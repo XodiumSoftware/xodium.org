@@ -3,13 +3,13 @@
  * All rights reserved.
  */
 
-import {JSX} from "preact/jsx-runtime";
+import {VNode} from "preact";
 
 /**
  * Footer component
- * @returns {JSX.Element} JSX.Element
+ * @returns {VNode} VNode
  */
-export default function Footer(): JSX.Element {
+export default function Footer(): VNode {
   return (
     <footer>
       <div className="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between">

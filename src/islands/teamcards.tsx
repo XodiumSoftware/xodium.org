@@ -3,24 +3,22 @@
  * All rights reserved.
  */
 
-/// <reference lib="deno.unstable" />
-
 import {useEffect, useState} from "preact/hooks";
 import {Member} from "../routes/api/orgs/github/members.ts";
-import {JSX} from "preact/jsx-runtime";
+import {VNode} from "preact";
 import {GITHUB} from "../utils/constants.ts";
 
 /**
  * TeamCards component that displays a list of team members.
- * @returns {JSX.Element} JSX.Element
+ * @returns {VNode}
  */
-export default function TeamCards(): JSX.Element {
+export default function TeamCards(): VNode {
   const [members, setMembers] = useState<Member[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchMembers = async () => {
+    (async () => {
       setIsLoading(true);
       setError(null);
 
@@ -29,10 +27,13 @@ export default function TeamCards(): JSX.Element {
           `/api/orgs/github/members?org=${GITHUB.org.name}`,
         );
         if (!response.ok) {
-          throw new Error(
+          console.error(
             `Failed to fetch organization members: ${response.status} ${response.statusText}`,
           );
+          setError("Failed to load team members.");
+          return;
         }
+
         const fetchedMembers: Member[] = await response.json();
         setMembers(fetchedMembers);
       } catch (e) {
@@ -41,8 +42,7 @@ export default function TeamCards(): JSX.Element {
       } finally {
         setIsLoading(false);
       }
-    };
-    fetchMembers();
+    })();
   }, []);
 
   if (isLoading) {

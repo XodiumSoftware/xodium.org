@@ -4,15 +4,15 @@
  */
 
 import {type PageProps} from "$fresh/server.ts";
-import {JSX} from "preact/jsx-runtime";
 import Version from "../components/version.tsx";
+import {VNode} from "preact";
 
 /**
  * App route
  * @param {PageProps} props PageProps
- * @returns {JSX.Element} JSX.Element
+ * @returns {VNode} VNode
  */
-export default function App({ Component }: PageProps): JSX.Element {
+export default function App({ Component }: PageProps): VNode {
   return (
     <html>
       <head>

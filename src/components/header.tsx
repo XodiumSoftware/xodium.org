@@ -3,13 +3,13 @@
  * All rights reserved.
  */
 
-import {JSX} from "preact/jsx-runtime";
+import {VNode} from "preact";
 
 /**
  * Header component
- * @returns {JSX.Element} JSX.Element
+ * @returns {VNode} VNode
  */
-export default function Header(): JSX.Element {
+export default function Header(): VNode {
   return (
     <header id="top" class="z-20 relative">
       <nav

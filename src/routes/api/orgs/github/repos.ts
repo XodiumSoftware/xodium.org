@@ -3,8 +3,6 @@
  * All rights reserved.
  */
 
-/// <reference lib="deno.unstable" />
-
 import {getOrganizationData} from "../../../../utils/utils.ts";
 
 export interface Repo {
