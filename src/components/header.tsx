@@ -25,13 +25,13 @@ export default function Header(): VNode {
             />
           </a>
           <a
-            href="#projects"
+            href="/#projects"
             class="flex items-center text-sm font-semibold leading-6 text-black dark:text-white hover:text-[#CB2D3E]"
           >
             PROJECTS
           </a>
           <a
-            href="#team"
+            href="/#team"
             class="flex items-center text-sm font-semibold leading-6 text-black dark:text-white hover:text-[#CB2D3E]"
           >
             TEAM
