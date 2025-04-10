@@ -87,3 +87,42 @@ export async function getOrganizationData<T>(
     throw new Error(`Failed to load organization ${cacheKey}.`);
   }
 }
+
+/**
+ * Creates a generic API route handler for fetching different types of organization data.
+ *
+ * @param {string} dataType The type of data being fetched (for caching purposes)
+ * @param {string} endpoint The GitHub API endpoint path to call (without the org part)
+ * @returns {(request: Request) => Promise<Response>} A reusable API route handler
+ */
+export function createOrgDataHandler<T>(
+  dataType: string,
+  endpoint: string,
+): (request: Request) => Promise<Response> {
+  return async (request: Request): Promise<Response> => {
+    const url = new URL(request.url);
+    const org = url.searchParams.get("org");
+
+    if (!org) return new Response("Missing 'org' parameter", { status: 400 });
+
+    try {
+      const data = await getOrganizationData<T>(
+        dataType,
+        org,
+        endpoint.replace("{org}", org),
+      );
+      return new Response(JSON.stringify(data), {
+        headers: { "Content-Type": "application/json" },
+      });
+    } catch (e: unknown) {
+      let message = "An unexpected error occurred.";
+      if (e instanceof Error) {
+        message = e.message;
+        console.error(`Error in ${dataType} API route:`, e);
+      } else {
+        console.error(`An unknown error occurred in ${dataType} API route:`, e);
+      }
+      return new Response(message, { status: 500 });
+    }
+  };
+}
