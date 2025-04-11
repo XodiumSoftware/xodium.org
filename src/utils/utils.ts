@@ -89,11 +89,11 @@ export async function getOrganizationData<T>(
   cacheExpiry: number = GITHUB.api.members.cacheExpiry,
 ): Promise<T> {
   try {
-    const cachedData = await cache.get<T>(cacheKey, org);
+    const cachedData = await getFromCache<T>(cacheKey, org);
     if (cachedData) return cachedData;
 
     const data = await fetchFromGitHub<T>(apiEndpoint, token);
-    await cache.set(cacheKey, org, data, { expireIn: cacheExpiry });
+    await saveToCache(cacheKey, org, data, cacheExpiry);
 
     return data;
   } catch (e: unknown) {
