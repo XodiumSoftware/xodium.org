@@ -5,41 +5,79 @@
 
 /// <reference lib="deno.unstable" />
 
-import {GITHUB} from "./constants.ts";
+import {GITHUB, kvStore} from "./constants.ts";
+import {Octokit} from "@octokit/core";
 
 /**
- * Convert hours to milliseconds.
- * @param hours The number of hours to convert.
- * @returns The number of milliseconds in the given number of hours.
+ * Fetch data from GitHub API
+ * @template T The type of data to be fetched
+ * @param {string} endpoint The GitHub API endpoint to fetch data from.
+ * @param {string | undefined} token The GitHub token to use.
+ * @returns {Promise<T>} A promise that resolves to the fetched data.
  */
-export const hoursToMilliseconds = (hours: number): number =>
-  hours * 60 * 60 * 1000;
-
-/**
- * Fetch data from the GitHub API.
- * @param endpoint The GitHub API endpoint (starting with a slash, e.g. `/orgs/{org}/members`).
- * @param token Optional GitHub token for authentication.
- * @returns A promise resolving with the parsed JSON data from GitHub.
- */
-export const fetchFromGitHub = async <T>(
+async function fetchFromGitHub<T>(
   endpoint: string,
   token?: string,
-): Promise<T> => {
-  const res = await fetch(`${GITHUB.api.url}${endpoint}`, {
-    headers: {
-      "User-Agent": GITHUB.org.user_agent,
-      "X-GitHub-Api-Version": GITHUB.api.version,
-      ...(token && { Authorization: `token ${token}` }),
-    },
-  });
+): Promise<T> {
+  return (await new Octokit({
+    userAgent: GITHUB.org.user_agent,
+    baseUrl: GITHUB.api.url,
+    headers: { "X-GitHub-Api-Version": GITHUB.api.version },
+  }).request(`GET ${endpoint}`, {
+    headers: token ? { authorization: `token ${token}` } : {},
+  })).data as T;
+}
 
-  if (!res.ok) {
-    throw new Error(
-      `GitHub API error: ${res.status} ${res.statusText} - ${await res.text()}`,
-    );
+/**
+ * Specific error class for GitHub API errors
+ */
+export class GitHubApiError extends Error {
+  constructor(
+    public status: number,
+    public statusText: string,
+    message: string,
+  ) {
+    super(`GitHub API error: ${status} ${statusText} - ${message}`);
+    this.name = "GitHubApiError";
   }
-  return res.json();
-};
+}
+
+/**
+ * Get data from KV cache if valid
+ */
+async function getFromCache<T>(
+  cacheKey: string,
+  org: string,
+  cacheExpiry: number,
+): Promise<T | null> {
+  const cachedData = await kvStore.get<{ data: T; timestamp: number }>([
+    cacheKey,
+    org,
+  ]);
+
+  if (
+    cachedData.value && Date.now() - cachedData.value.timestamp < cacheExpiry
+  ) {
+    return cachedData.value.data;
+  }
+  return null;
+}
+
+/**
+ * Save data to KV cache
+ * @template T The type of data to be cached
+ * @param {string} cacheKey The key to use for caching in Deno KV.
+ * @param {string} org The organization to fetch data from.
+ * @param {T} data The data to cache.
+ * @returns {Promise<void>} A promise that resolves when the data is cached.
+ */
+async function saveToCache<T>(
+  cacheKey: string,
+  org: string,
+  data: T,
+): Promise<void> {
+  await kvStore.set([cacheKey, org], { data, timestamp: Date.now() });
+}
 
 /**
  * Generic function to get organization data with caching.
@@ -58,32 +96,21 @@ export async function getOrganizationData<T>(
   token?: string,
   cacheExpiry: number = GITHUB.api.members.cacheExpiry,
 ): Promise<T> {
-  const kv = await Deno.openKv();
   try {
-    const cachedData = await kv.get<{ data: T; timestamp: number }>([
-      cacheKey,
-      org,
-    ]);
-
-    if (
-      cachedData.value &&
-      Date.now() - cachedData.value.timestamp < cacheExpiry
-    ) {
-      return cachedData.value.data;
-    }
+    const cachedData = await getFromCache<T>(cacheKey, org, cacheExpiry);
+    if (cachedData) return cachedData;
 
     const data = await fetchFromGitHub<T>(apiEndpoint, token);
-    await kv.set([cacheKey, org], { data, timestamp: Date.now() });
+    await saveToCache(cacheKey, org, data);
 
     return data;
   } catch (e: unknown) {
+    if (e instanceof GitHubApiError) throw e;
     throw new Error(
       `Failed to load organization ${cacheKey}: ${
         e instanceof Error ? e.message : String(e)
       }`,
     );
-  } finally {
-    kv.close();
   }
 }
 
@@ -121,3 +148,26 @@ export function createOrgDataHandler<T>(
     }
   };
 }
+
+/**
+ * Register shutdown hooks to ensure proper resource cleanup
+ */
+function registerShutdownHooks(): void {
+  addEventListener("unload", () => {
+    kvStore.close();
+  });
+
+  Deno.addSignalListener("SIGINT", () => {
+    console.log("Shutting down gracefully...");
+    kvStore.close();
+    Deno.exit(0);
+  });
+
+  Deno.addSignalListener("SIGTERM", () => {
+    console.log("Termination signal received, shutting down...");
+    kvStore.close();
+    Deno.exit(0);
+  });
+}
+
+registerShutdownHooks();

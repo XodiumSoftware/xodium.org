@@ -15,6 +15,7 @@
     "axiod/mod": "https://deno.land/x/axiod@0.26.2/mod.ts",
     "axiod/interfaces": "https://deno.land/x/axiod@0.26.2/interfaces.ts",
     "$fresh/": "https://deno.land/x/fresh@1.7.3/",
+    "@octokit/core": "https://esm.sh/@octokit/core@5.0.1",
     "preact": "https://esm.sh/preact@10.22.0",
     "preact/": "https://esm.sh/preact@10.22.0/",
     "@preact/signals": "https://esm.sh/*@preact/signals@1.2.2",
