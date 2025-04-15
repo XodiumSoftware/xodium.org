@@ -15,7 +15,7 @@ export default async function Dashboard(req: Request) {
   const isAuthenticated = sessionId !== undefined;
   if (!isAuthenticated) {
     return Response.redirect(
-      new URL("/sign-in", req.url),
+      new URL("/login", req.url),
       STATUS_CODE.Found,
     );
   }
