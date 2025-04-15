@@ -12,6 +12,7 @@
   "lint": { "rules": { "tags": ["fresh", "recommended"] } },
   "exclude": ["**/_fresh/*"],
   "imports": {
+    "@deno/kv-oauth": "jsr:@deno/kv-oauth@^0.11.0",
     "@std/cache": "jsr:@std/cache@^0.2.0",
     "axiod/mod": "https://deno.land/x/axiod@0.26.2/mod.ts",
     "axiod/interfaces": "https://deno.land/x/axiod@0.26.2/interfaces.ts",
