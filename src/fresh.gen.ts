@@ -18,12 +18,7 @@ import * as $carousel from "./islands/carousel.tsx";
 import * as $dashboard from "./islands/dashboard.tsx";
 import * as $teamcards from "./islands/teamcards.tsx";
 import type {Manifest} from "$fresh/server.ts";
-import * as $
-
-typewrit
-er
-from
-"./islands/typewriter.tsx";
+import * as $typewriter from "./islands/typewriter.tsx";
 
 const manifest = {
   routes: {

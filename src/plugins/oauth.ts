@@ -6,8 +6,8 @@
 import {createGitHubOAuthConfig, createHelpers} from "@deno/kv-oauth";
 import type {Plugin} from "$fresh/server.ts";
 
-const {signIn, handleCallback, signOut, getSessionId} = createHelpers(
-    createGitHubOAuthConfig(),
+const { signIn, handleCallback, signOut, getSessionId } = createHelpers(
+  createGitHubOAuthConfig(),
 );
 
 export default {
@@ -15,31 +15,25 @@ export default {
   routes: [
     {
       path: "/auth/sign-in",
-      async handler(req) {
-        return await signIn(req);
-      },
+      handler: async (req) => await signIn(req),
     },
     {
       path: "/auth/callback",
-      async handler(req) {
-        return await handleCallback(req);
-      },
+      handler: async (req) => await handleCallback(req),
     },
     {
       path: "/auth/sign-out",
-      async handler(req) {
-        return await signOut(req);
-      },
+      handler: async (req) => await signOut(req),
     },
     {
       path: "/protected",
-      async handler(req) {
-        return await getSessionId(req) === undefined
-            ? new Response("Unauthorized", {
-              status: 302,
-              headers: {"Location": "/login"},
-            })
-            : new Response("Authorized", {status: 302});
+      handler: async (req) => {
+        await getSessionId(req) === undefined
+          ? new Response("Unauthorized", {
+            status: 302,
+            headers: { "Location": "/login" },
+          })
+          : new Response("Authorized", { status: 302 });
       },
     },
   ],
