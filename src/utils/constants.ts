@@ -7,7 +7,7 @@
 
 import {HOUR} from "$std/datetime/constants.ts";
 
-export const CONFIG = {version: "2.2.0"};
+export const CONFIG = { version: "2.2.0" };
 
 export const GITHUB = {
   api: {
@@ -22,9 +22,17 @@ export const GITHUB = {
 };
 
 /**
- * KV store manager to avoid opening/closing repeatedly
+ * The structure for KV store data.
  */
-export const kvStore = {
+interface KvData<T> {
+  data: T;
+  timestamp: number;
+}
+
+/**
+ * KV store manager.
+ */
+export const KvStore = {
   kv: null as Deno.Kv | null,
 
   async getKv(): Promise<Deno.Kv> {
@@ -40,52 +48,22 @@ export const kvStore = {
     this.kv = null;
   },
 
-  async getItem<T>(
-    key: Deno.KvKey,
-  ): Promise<{ value: { data: T; timestamp: number } | null }> {
-    const local = this.getFromLocalStorage<T>(key);
-    if (local) return { value: local };
-
+  async getItem<T>(key: Deno.KvKey): Promise<T | null> {
     const kv = await this.getKv();
-    const result = await kv.get<{ data: T; timestamp: number }>(key);
-    return { value: result.value ?? null };
+    const result = await kv.get<KvData<T>>(key);
+    return result.value ? result.value.data : null;
   },
 
   async setItem<T>(key: Deno.KvKey, value: T): Promise<void> {
-    const record = { data: value, timestamp: Date.now() };
     const kv = await this.getKv();
-    this.setToLocalStorage(key, record) || await kv.set(key, record);
-  },
-
-  getFromLocalStorage<T>(
-    key: Deno.KvKey,
-  ): { data: T; timestamp: number } | null {
-    try {
-      return typeof localStorage !== "undefined"
-        ? JSON.parse(localStorage.getItem(key.join(":")) ?? "null")
-        : null;
-    } catch (e) {
-      console.error("Error getting item from localStorage:", e);
-      return null;
-    }
-  },
-
-  setToLocalStorage<T>(
-    key: Deno.KvKey,
-    record: { data: T; timestamp: number },
-  ): boolean {
-    try {
-      localStorage?.setItem(key.join(":"), JSON.stringify(record));
-      return true;
-    } catch (e) {
-      console.error("Error setting item to localStorage:", e);
-      return false;
-    }
+    const record: KvData<T> = { data: value, timestamp: Date.now() };
+    await kv.set(key, record);
   },
 
   registerShutdownHooks(): void {
-    addEventListener("unload", () => this.close());
-    Deno.addSignalListener("SIGINT", () => this.close());
-    Deno.addSignalListener("SIGTERM", () => this.close());
+    const shutdown = () => this.close();
+    addEventListener("unload", shutdown);
+    Deno.addSignalListener("SIGINT", shutdown);
+    Deno.addSignalListener("SIGTERM", shutdown);
   },
 };
