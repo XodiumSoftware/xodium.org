@@ -1,18 +1,18 @@
-/**
+/*
  * Copyright (c) 2025. Xodium.
  * All rights reserved.
  */
 
-import { Head } from "$fresh/runtime.ts";
-import { JSX } from "preact/jsx-runtime";
+import {Head} from "$fresh/runtime.ts";
+import {VNode} from "preact";
 import Footer from "../components/footer.tsx";
 import Grid from "../components/grid.tsx";
 
 /**
  * Error404 route
- * @returns {JSX.Element} JSX.Element
+ * @returns {VNode} VNode
  */
-export default function Error404(): JSX.Element {
+export default function Error404(): VNode {
   return (
     <>
       <Head>

@@ -1,15 +1,15 @@
-/**
+/*
  * Copyright (c) 2025. Xodium.
  * All rights reserved.
  */
 
-import { JSX } from "preact/jsx-runtime";
+import {VNode} from "preact";
 
 /**
  * Header component
- * @returns {JSX.Element} JSX.Element
+ * @returns {VNode} VNode
  */
-export default function Header(): JSX.Element {
+export default function Header(): VNode {
   return (
     <header id="top" class="z-20 relative">
       <nav
@@ -25,13 +25,13 @@ export default function Header(): JSX.Element {
             />
           </a>
           <a
-            href="#projects"
+            href="/#projects"
             class="flex items-center text-sm font-semibold leading-6 text-black dark:text-white hover:text-[#CB2D3E]"
           >
             PROJECTS
           </a>
           <a
-            href="#team"
+            href="/#team"
             class="flex items-center text-sm font-semibold leading-6 text-black dark:text-white hover:text-[#CB2D3E]"
           >
             TEAM

@@ -1,9 +1,9 @@
-/**
+/*
  * Copyright (c) 2025. Xodium.
  * All rights reserved.
  */
 
-import { useEffect, useState } from "preact/hooks";
+import {useEffect, useState} from "preact/hooks";
 
 interface CarouselProps {
   images: string[];

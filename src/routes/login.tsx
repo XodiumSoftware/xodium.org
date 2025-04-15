@@ -1,18 +1,18 @@
-/**
+/*
  * Copyright (c) 2025. Xodium.
  * All rights reserved.
  */
 
-import { Head } from "$fresh/runtime.ts";
-import { JSX } from "preact/jsx-runtime";
+import {Head} from "$fresh/runtime.ts";
+import {VNode} from "preact";
 import Footer from "../components/footer.tsx";
 import Grid from "../components/grid.tsx";
 
 /**
  * Login component
- * @returns {JSX.Element} JSX.Element
+ * @returns {VNode} VNode
  */
-export default function Login(): JSX.Element {
+export default function Login(): VNode {
   return (
     <>
       <Head>
@@ -44,7 +44,7 @@ export default function Login(): JSX.Element {
                     GitHub account.
                   </p>
                   <a
-                    href="/api/auth/github"
+                    href="/sign-in"
                     class="relative inline-flex items-center justify-center w-full p-0.5 overflow-hidden text-sm text-black rounded-lg group bg-gradient-to-br from-[#CB2D3E] to-[#EF473A] group-hover:from-[#CB2D3E] group-hover:to-[#EF473A] hover:text-white dark:text-white font-semibold"
                   >
                     <span class="relative w-full flex items-center justify-center px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-800 rounded-md group-hover:bg-opacity-0">
