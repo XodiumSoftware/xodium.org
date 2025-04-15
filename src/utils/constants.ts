@@ -28,7 +28,11 @@ export const kvStore = {
   kv: null as Deno.Kv | null,
 
   async getKv(): Promise<Deno.Kv> {
-    return this.kv ??= await Deno.openKv();
+    if (!this.kv) {
+      this.kv = await Deno.openKv();
+      this.registerShutdownHooks();
+    }
+    return this.kv;
   },
 
   close(): void {
@@ -77,5 +81,11 @@ export const kvStore = {
       console.error("Error setting item to localStorage:", e);
       return false;
     }
+  },
+
+  registerShutdownHooks(): void {
+    addEventListener("unload", () => this.close());
+    Deno.addSignalListener("SIGINT", () => this.close());
+    Deno.addSignalListener("SIGTERM", () => this.close());
   },
 };

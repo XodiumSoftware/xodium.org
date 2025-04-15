@@ -77,7 +77,6 @@ export function createOrgDataHandler<T>(
   return async (request: Request): Promise<Response> => {
     const url = new URL(request.url);
     const org = url.searchParams.get("org");
-
     if (!org) return new Response("Missing 'org' parameter", { status: 400 });
 
     try {
@@ -89,7 +88,7 @@ export function createOrgDataHandler<T>(
       return new Response(JSON.stringify(data), {
         headers: { "Content-Type": "application/json" },
       });
-    } catch (e: unknown) {
+    } catch (e) {
       console.error(`Error in ${dataType} API route:`, e);
       return new Response(e instanceof Error ? e.message : String(e), {
         status: 500,
@@ -97,26 +96,3 @@ export function createOrgDataHandler<T>(
     }
   };
 }
-
-/**
- * Register shutdown hooks to ensure proper resource cleanup
- */
-function registerShutdownHooks(): void {
-  addEventListener("unload", () => {
-    kvStore.close();
-  });
-
-  Deno.addSignalListener("SIGINT", () => {
-    console.log("Shutting down gracefully...");
-    kvStore.close();
-    Deno.exit(0);
-  });
-
-  Deno.addSignalListener("SIGTERM", () => {
-    console.log("Termination signal received, shutting down...");
-    kvStore.close();
-    Deno.exit(0);
-  });
-}
-
-registerShutdownHooks();
