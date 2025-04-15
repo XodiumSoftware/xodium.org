@@ -4,12 +4,21 @@
  */
 
 import {Head} from "$fresh/runtime.ts";
+import {STATUS_CODE} from "$std/http/status.ts";
 import Footer from "../components/footer.tsx";
 import Grid from "../components/grid.tsx";
+import {getSessionId} from "../plugins/oauth.ts";
 
-export default function Dashboard() {
+export default async function Dashboard(req: Request) {
+  if (!await getSessionId(req) === undefined) {
+    return new Response(null, {
+      status: STATUS_CODE.Unauthorized,
+      headers: { "Location": "/sign-in" },
+    });
+  }
+
   const handleSignOut = async () => {
-    await fetch("/auth/sign-out");
+    await fetch("/sign-out");
     globalThis.location.href = "/";
   };
 
