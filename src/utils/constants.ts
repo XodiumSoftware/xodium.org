@@ -36,11 +36,46 @@ export const kvStore = {
     this.kv = null;
   },
 
-  async get<T>(key: Deno.KvKey): Promise<Deno.KvEntryMaybe<T>> {
-    return (await this.getKv()).get<T>(key);
+  async getItem<T>(
+    key: Deno.KvKey,
+  ): Promise<{ value: { data: T; timestamp: number } | null }> {
+    const local = this.getFromLocalStorage<T>(key);
+    if (local) return { value: local };
+
+    const kv = await this.getKv();
+    const result = await kv.get<{ data: T; timestamp: number }>(key);
+    return { value: result.value ?? null };
   },
 
-  async set<T>(key: Deno.KvKey, value: T): Promise<Deno.KvCommitResult> {
-    return (await this.getKv()).set(key, value);
+  async setItem<T>(key: Deno.KvKey, value: T): Promise<void> {
+    const record = { data: value, timestamp: Date.now() };
+    const kv = await this.getKv();
+    this.setToLocalStorage(key, record) || await kv.set(key, record);
+  },
+
+  getFromLocalStorage<T>(
+    key: Deno.KvKey,
+  ): { data: T; timestamp: number } | null {
+    try {
+      return typeof localStorage !== "undefined"
+        ? JSON.parse(localStorage.getItem(key.join(":")) ?? "null")
+        : null;
+    } catch (e) {
+      console.error("Error getting item from localStorage:", e);
+      return null;
+    }
+  },
+
+  setToLocalStorage<T>(
+    key: Deno.KvKey,
+    record: { data: T; timestamp: number },
+  ): boolean {
+    try {
+      localStorage?.setItem(key.join(":"), JSON.stringify(record));
+      return true;
+    } catch (e) {
+      console.error("Error setting item to localStorage:", e);
+      return false;
+    }
   },
 };

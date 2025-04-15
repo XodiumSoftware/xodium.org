@@ -7,7 +7,6 @@
 
 import {GITHUB, kvStore} from "./constants.ts";
 import {Octokit} from "@octokit/core";
-import {cache} from "./cache.ts";
 
 /**
  * Fetch data from GitHub API
@@ -30,20 +29,6 @@ async function fetchFromGitHub<T>(
 }
 
 /**
- * Specific error class for GitHub API errors
- */
-export class GitHubApiError extends Error {
-  constructor(
-    public status: number,
-    public statusText: string,
-    message: string,
-  ) {
-    super(`GitHub API error: ${status} ${statusText} - ${message}`);
-    this.name = "GitHubApiError";
-  }
-}
-
-/**
  * Generic function to get organization data with caching.
  * @template T The type of data to be returned
  * @param {string} cacheKey The key to use for caching in Deno KV.
@@ -61,20 +46,20 @@ export async function getOrganizationData<T>(
   cacheExpiry: number = GITHUB.api.members.cacheExpiry,
 ): Promise<T> {
   try {
-    const cachedData = await cache.get<T>(cacheKey, org);
-    if (cachedData) return cachedData;
+    const result = await kvStore.getItem<T>([cacheKey, org]);
+    if (result.value && Date.now() - result.value.timestamp < cacheExpiry) {
+      console.log(`Using cached data for ${cacheKey}: ${org}`);
+      return result.value.data;
+    }
 
+    console.log(`Fetching data from GitHub for ${cacheKey}: ${org}`);
     const data = await fetchFromGitHub<T>(apiEndpoint, token);
-    await cache.set(cacheKey, org, data, cacheExpiry);
+    await kvStore.setItem([cacheKey, org], data);
 
     return data;
-  } catch (e: unknown) {
-    if (e instanceof GitHubApiError) throw e;
-    throw new Error(
-      `Failed to load organization ${cacheKey}: ${
-        e instanceof Error ? e.message : String(e)
-      }`,
-    );
+  } catch (e) {
+    console.error(`Error fetching or caching organization ${cacheKey}:`, e);
+    throw new Error(`Failed to load organization ${cacheKey}.`);
   }
 }
 
