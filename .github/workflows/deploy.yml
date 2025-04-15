@@ -25,6 +25,9 @@ jobs:
 
       - name: Build step
         run: "deno task build"
+        env:
+          GITHUB_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
+          GITHUB_CLIENT_SECRET: ${{ secrets.OAUTH_CLIENT_SECRET }}
 
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
