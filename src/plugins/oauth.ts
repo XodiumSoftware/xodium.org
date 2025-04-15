@@ -19,7 +19,10 @@ export default {
     },
     {
       path: "/callback",
-      handler: async (req) => await handleCallback(req),
+      handler: async (req) => {
+        const {response} = await handleCallback(req);
+        return response;
+      },
     },
     {
       path: "/sign-out",
