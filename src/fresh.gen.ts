@@ -11,13 +11,19 @@ import * as $_404 from "./routes/_404.tsx";
 import * as $_app from "./routes/_app.tsx";
 import * as $api_orgs_github_members from "./routes/api/orgs/github/members.ts";
 import * as $api_orgs_github_repos from "./routes/api/orgs/github/repos.ts";
-import * as $dashboard_index from "./routes/protected/dashboard.tsx";
 import * as $index from "./routes/index.tsx";
 import * as $login from "./routes/login.tsx";
+import * as $protected_dashboard from "./routes/protected/dashboard.tsx";
 import * as $carousel from "./islands/carousel.tsx";
+import * as $dashboard from "./islands/dashboard.tsx";
 import * as $teamcards from "./islands/teamcards.tsx";
-import * as $typewriter from "./islands/typewriter.tsx";
 import type {Manifest} from "$fresh/server.ts";
+import * as $
+
+typewrit
+er
+from
+"./islands/typewriter.tsx";
 
 const manifest = {
   routes: {
@@ -25,12 +31,13 @@ const manifest = {
     "./routes/_app.tsx": $_app,
     "./routes/api/orgs/github/members.ts": $api_orgs_github_members,
     "./routes/api/orgs/github/repos.ts": $api_orgs_github_repos,
-    "./routes/dashboard/index.tsx": $dashboard_index,
     "./routes/index.tsx": $index,
     "./routes/login.tsx": $login,
+    "./routes/protected/dashboard.tsx": $protected_dashboard,
   },
   islands: {
     "./islands/carousel.tsx": $carousel,
+    "./islands/dashboard.tsx": $dashboard,
     "./islands/teamcards.tsx": $teamcards,
     "./islands/typewriter.tsx": $typewriter,
   },

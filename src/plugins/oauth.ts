@@ -39,7 +39,7 @@ export default {
               status: 302,
               headers: {"Location": "/login"},
             })
-            : new Response(null, {status: 204});
+            : new Response("Authorized", {status: 302});
       },
     },
   ],

@@ -81,7 +81,7 @@ export default function Header(): VNode {
             </a>
             <a
               class="has-tooltip dark:text-white hover:text-[#CB2D3E]"
-              href="/dashboard"
+              href="/protected/dashboard"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"

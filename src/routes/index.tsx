@@ -54,7 +54,7 @@ export default function Home(): VNode {
             <div class="mt-10 flex items-center justify-center gap-x-6">
               <a
                 class="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm text-black rounded-lg group bg-gradient-to-br from-[#CB2D3E] to-[#EF473A] group-hover:from-[#CB2D3E] group-hover:to-[#EF473A] hover:text-white dark:text-white font-semibold"
-                href="/src/routes/protected/dashboard"
+                href="/protected/dashboard"
               >
                 <button
                   type="button"
