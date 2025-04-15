@@ -5,17 +5,19 @@
 
 import {Head} from "$fresh/runtime.ts";
 import {STATUS_CODE} from "$std/http/status.ts";
-import Footer from "../../components/footer.tsx";
-import Grid from "../../components/grid.tsx";
-import {getSessionId} from "../../plugins/oauth.ts";
-import SignOutButton from "../../components/signout.tsx";
+import Footer from "../components/footer.tsx";
+import Grid from "../components/grid.tsx";
+import {getSessionId} from "../plugins/oauth.ts";
+import SignOutButton from "../islands/signout.tsx";
 
 export default async function Dashboard(req: Request) {
-  if (!await getSessionId(req) === undefined) {
-    return new Response(null, {
-      status: STATUS_CODE.Unauthorized,
-      headers: { "Location": "/sign-in" },
-    });
+  const sessionId = await getSessionId(req);
+  const isAuthenticated = sessionId !== undefined;
+  if (!isAuthenticated) {
+    return Response.redirect(
+      new URL("/sign-in", req.url),
+      STATUS_CODE.Found,
+    );
   }
 
   return (
