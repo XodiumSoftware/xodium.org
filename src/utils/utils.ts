@@ -5,7 +5,7 @@
 
 /// <reference lib="deno.unstable" />
 
-import {GITHUB, KvStore} from "./constants.ts";
+import {GITHUB, KvData, KvStore} from "./constants.ts";
 import {Octokit} from "@octokit/core";
 
 /**
@@ -46,10 +46,10 @@ export async function getOrganizationData<T>(
   cacheExpiry: number = GITHUB.api.members.cacheExpiry,
 ): Promise<T> {
   try {
-    const result = await KvStore.getItem<T>([cacheKey, org]);
-    if (result.value && Date.now() - result.value.timestamp < cacheExpiry) {
+    const result = await KvStore.getItem<KvData<T>>([cacheKey, org]);
+    if (result && Date.now() - result.timestamp < cacheExpiry) {
       console.log(`Using cached data for ${cacheKey}: ${org}`);
-      return result.value.data;
+      return result.data;
     }
 
     console.log(`Fetching data from GitHub for ${cacheKey}: ${org}`);

@@ -24,7 +24,7 @@ export const GITHUB = {
 /**
  * The structure for KV store data.
  */
-interface KvData<T> {
+export interface KvData<T> {
   data: T;
   timestamp: number;
 }
