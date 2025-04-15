@@ -2,6 +2,8 @@
   <dictionary name="project">
     <words>
       <w>asynciterable</w>
+      <w>nosniff</w>
+      <w>sameorigin</w>
       <w>signin</w>
       <w>xodium</w>
     </words>
