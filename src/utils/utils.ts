@@ -5,9 +5,9 @@
 
 /// <reference lib="deno.unstable" />
 
-import {cache} from "./cache.ts";
 import {GITHUB, kvStore} from "./constants.ts";
 import {Octokit} from "@octokit/core";
+import {cache} from "./cache.ts";
 
 /**
  * Fetch data from GitHub API
@@ -44,34 +44,6 @@ export class GitHubApiError extends Error {
 }
 
 /**
- * Get data from KV cache if valid
- */
-async function getFromCache<T>(
-  cacheKey: string,
-  org: string,
-): Promise<T | null> {
-  return await cache.get<T>(cacheKey, org);
-}
-
-/**
- * Save data to KV cache
- * @template T The type of data to be cached
- * @param {string} cacheKey The key to use for caching in Deno KV.
- * @param {string} org The organization to fetch data from.
- * @param {T} data The data to cache.
- * @param {number} cacheExpiry The cache expiry time in milliseconds.
- * @returns {Promise<void>} A promise that resolves when the data is cached.
- */
-async function saveToCache<T>(
-  cacheKey: string,
-  org: string,
-  data: T,
-  cacheExpiry: number = GITHUB.api.members.cacheExpiry,
-): Promise<void> {
-  await cache.set(cacheKey, org, data, { expireIn: cacheExpiry });
-}
-
-/**
  * Generic function to get organization data with caching.
  * @template T The type of data to be returned
  * @param {string} cacheKey The key to use for caching in Deno KV.
@@ -89,11 +61,11 @@ export async function getOrganizationData<T>(
   cacheExpiry: number = GITHUB.api.members.cacheExpiry,
 ): Promise<T> {
   try {
-    const cachedData = await getFromCache<T>(cacheKey, org);
+    const cachedData = await cache.get<T>(cacheKey, org);
     if (cachedData) return cachedData;
 
     const data = await fetchFromGitHub<T>(apiEndpoint, token);
-    await saveToCache(cacheKey, org, data, cacheExpiry);
+    await cache.set(cacheKey, org, data, cacheExpiry);
 
     return data;
   } catch (e: unknown) {

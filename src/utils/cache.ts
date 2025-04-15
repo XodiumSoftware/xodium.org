@@ -5,62 +5,81 @@
 
 import {GITHUB, kvStore} from "./constants.ts";
 
-export interface CacheOptions {
-  expireIn: number;
-}
-
 /**
- * Cache utility class for managing cached data with expiration support.
- * Provides methods to get, set, and delete cached entries using key-value storage.
- * Each entry is stored with a timestamp to handle automatic expiration.
+ * Cache class that handles in-memory and KV store caching
  */
 export class Cache {
-  /**
-   * Get data from cache if valid and not expired
-   * @param key The unique identifier for the cached item
-   * @param namespace The category or grouping for the cached item
-   * @returns Promise resolving to the cached data if valid, or null if expired/not found
-   */
-  async get<T>(key: string, namespace: string): Promise<T | null> {
-    const { value } = await kvStore.get<{ data: T; timestamp: number }>([
-      key,
-      namespace,
-    ]);
-    return value &&
-        Date.now() - value.timestamp < GITHUB.api.members.cacheExpiry
-      ? value.data
-      : null;
+  private memoryCache: Map<string, { data: unknown; expiry: number }>;
+
+  constructor() {
+    this.memoryCache = new Map();
   }
 
   /**
-   * Store data in cache with timestamp
-   * @param key The unique identifier for the cached item
-   * @param namespace The category or grouping for the cached item
-   * @param data The data to be cached
-   * @param options Optional configuration for cache behavior including expiration time
-   * @returns Promise that resolves when the data is successfully cached
+   * Retrieves data from the in‑memory cache or kvStore if not available locally.
+   * @template T - The type of cached data.
+   * @param {string} cacheKey - The cache key.
+   * @param {string} org - The organization namespace.
+   * @returns {Promise<T | null>} The cached data or null if expired/missing.
+   */
+  async get<T>(cacheKey: string, org: string): Promise<T | null> {
+    const key = `${org}:${cacheKey}`;
+    const localEntry = this.memoryCache.get(key);
+    if (localEntry && Date.now() < localEntry.expiry) {
+      return localEntry.data as T;
+    }
+    const result = await kvStore.get<{ data: T; expiry: number }>([
+      org,
+      cacheKey,
+    ]);
+    if (!result.value || Date.now() > result.value.expiry) {
+      return null;
+    }
+    this.memoryCache.set(key, {
+      data: result.value.data,
+      expiry: result.value.expiry,
+    });
+    return result.value.data;
+  }
+
+  /**
+   * Saves data to kvStore and updates the in‑memory cache.
+   * @template T - The type of data to cache.
+   * @param {string} cacheKey - The cache key.
+   * @param {string} org - The organization namespace.
+   * @param {T} data - The data to cache.
+   * @param {number} cacheExpiry - Cache expiry time in milliseconds.
+   * @returns {Promise<void>} A promise that resolves once saving is complete.
    */
   async set<T>(
-    key: string,
-    namespace: string,
+    cacheKey: string,
+    org: string,
     data: T,
-    options?: CacheOptions,
+    cacheExpiry: number = GITHUB.api.members.cacheExpiry,
   ): Promise<void> {
-    await kvStore.set([key, namespace], {
-      data,
-      timestamp: Date.now(),
-      expiry: options?.expireIn || GITHUB.api.members.cacheExpiry,
-    });
+    const expiryTimestamp = Date.now() + cacheExpiry;
+    await kvStore.set([org, cacheKey], { data, expiry: expiryTimestamp });
+    const key = `${org}:${cacheKey}`;
+    this.memoryCache.set(key, { data, expiry: expiryTimestamp });
   }
 
   /**
-   * Remove an item from cache
-   * @param key The unique identifier for the cached item to delete
-   * @param namespace The category or grouping for the cached item to delete
-   * @returns Promise that resolves when the item is successfully removed
+   * Clears the in-memory cache for a specific key prefix.
+   * @param prefix
    */
-  async delete(key: string, namespace: string): Promise<void> {
-    await (await kvStore.getKv()).delete([key, namespace]);
+  clearByKey(prefix: string): void {
+    for (const key of this.memoryCache.keys()) {
+      if (key.startsWith(prefix)) {
+        this.memoryCache.delete(key);
+      }
+    }
+  }
+
+  /**
+   * Clears all the in-memory cache.
+   */
+  clearAll(): void {
+    this.memoryCache.clear();
   }
 }
 
