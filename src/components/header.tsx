@@ -31,6 +31,7 @@ export default function Header() {
         className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
         aria-label="Global"
       >
+        {/* Left side Header */}
         <div className="hidden lg:flex lg:gap-x-8">
           <a href="">
             <img
@@ -52,7 +53,8 @@ export default function Header() {
             TEAM
           </a>
         </div>
-        {/* Right side icons */}
+        {/* Right side Header */}
+        {/* TODO: fix tooltips broken */}
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           <ul className="flex items-center space-x-4">
             {socialLinks.map(({href, label, Icon}) => (
