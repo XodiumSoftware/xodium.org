@@ -3,17 +3,23 @@
  * All rights reserved.
  */
 
+import {STATUS_CODE} from "$std/http/status.ts";
 import {useCallback, useState} from "preact/hooks";
 
 export default function SignOutButton() {
   const [isSigningOut, setIsSigningOut] = useState(false);
 
   const handleClick = useCallback(async () => {
+    if (isSigningOut) return;
     setIsSigningOut(true);
-    await fetch("/sign-out");
-    globalThis.location.href = "/";
-    setIsSigningOut(false);
-  }, []);
+    try {
+      await fetch("/sign-out");
+      Response.redirect(new URL("/"), STATUS_CODE.Found);
+    } catch (err) {
+      console.error("Sign out failed:", err);
+      setIsSigningOut(false);
+    }
+  }, [isSigningOut]);
 
   return (
     <button
