@@ -5,12 +5,10 @@
 
 import {Head} from "$fresh/runtime.ts";
 import {STATUS_CODE} from "$std/http/status.ts";
-import Grid from "../components/grid.tsx";
 import {getSessionId} from "../plugins/oauth.ts";
-import Footer from "../components/footer.tsx";
-import SideBar from "../components/dashboard/sidebar.tsx";
+import DashboardPage from "../islands/dashboard.tsx";
 
-export default async function Dashboard(req: Request) {
+export default async function DashboardRoute(req: Request) {
   const sessionId = await getSessionId(req);
   const isAuthenticated = sessionId !== undefined;
   if (!isAuthenticated) {
@@ -22,18 +20,7 @@ export default async function Dashboard(req: Request) {
       <Head>
         <title>Xodium | Dashboard</title>
       </Head>
-      <Grid />
-      <main className="min-h-screen flex flex-col bg-slate-100 dark:bg-slate-900">
-        <div className="flex flex-1">
-          <SideBar />
-          <div className="flex flex-col flex-1">
-            <div className="flex-grow container mx-auto my-8 px-4 py-8 rounded-xl border border-gray-200 dark:border-gray-800">
-              {/* TODO: Add content */}
-            </div>
-            <Footer />
-          </div>
-        </div>
-      </main>
+      <DashboardPage />
     </>
   );
 }

@@ -13,16 +13,19 @@ export default function Header() {
       href: "https://wiki.xodium.org",
       label: "Wiki",
       Icon: WikiIcon,
+      isExternal: true,
     },
     {
       href: "https://github.com/XodiumSoftware",
       label: "Github",
       Icon: GithubIcon,
+      isExternal: true,
     },
     {
       href: "/dashboard",
       label: "Login",
       Icon: LoginIcon,
+      isExternal: false,
     },
   ];
   return (
@@ -57,14 +60,16 @@ export default function Header() {
         {/* TODO: fix tooltips broken */}
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           <ul className="flex items-center space-x-4">
-            {socialLinks.map(({href, label, Icon}) => (
+            {socialLinks.map(({ href, label, Icon, isExternal }) => (
               <li key={href}>
                 <a
                   className="has-tooltip dark:text-white hover:text-[#CB2D3E]"
                   href={href}
                   aria-label={label}
+                  target={isExternal ? "_blank" : undefined}
+                  rel={isExternal ? "noopener noreferrer" : undefined}
                 >
-                  <Icon className="w-6 h-6"/>
+                  <Icon className="w-6 h-6" aria-hidden="true" />
                   <span className="tooltip">{label}</span>
                 </a>
               </li>
