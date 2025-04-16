@@ -45,11 +45,11 @@ export default function Login() {
             </a>
             <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
               <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-                <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white text-center">
                   Sign in to your account
                 </h1>
                 <div className="space-y-4 md:space-y-6">
-                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                  <p className="text-sm text-gray-700 dark:text-gray-300 text-center">
                     To access Xodium's dashboard, please sign in with your
                     GitHub account.
                   </p>
@@ -58,7 +58,7 @@ export default function Login() {
                     className="relative inline-flex items-center justify-center w-full p-0.5 overflow-hidden text-sm text-black rounded-lg group bg-gradient-to-br from-[#CB2D3E] to-[#EF473A] group-hover:from-[#CB2D3E] group-hover:to-[#EF473A] hover:text-white dark:text-white font-semibold"
                   >
                     <span className="relative w-full flex items-center justify-center px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-800 rounded-md group-hover:bg-opacity-0">
-                      <GithubIcon className="w-5 h-5 mr-2"/>
+                      <GithubIcon className="w-5 h-5 mr-2" />
                       Sign in with GitHub
                     </span>
                   </a>
