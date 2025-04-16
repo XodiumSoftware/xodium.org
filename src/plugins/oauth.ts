@@ -15,8 +15,7 @@ export default {
   routes: [
     {
       path: "/sign-in",
-      handler: async (req) =>
-        await signIn(req, { urlParams: { returnTo: "/dashboard" } }),
+      handler: async (req) => await signIn(req),
     },
     {
       path: "/callback",

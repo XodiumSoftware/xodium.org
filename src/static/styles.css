@@ -8,7 +8,7 @@
 @tailwind utilities;
 
 * {
-    outline: 1px solid red !important;
+    /*outline: 1px solid red !important;*/
 }
 
 html {
