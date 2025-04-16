@@ -5,12 +5,12 @@
 
 export default function SearchBar() {
     return (
-        <div class="hidden lg:block">
+        <div className="hidden lg:block">
             <form>
-                <div class="relative">
-          <span class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2">
+                <div className="relative">
+          <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2">
             <svg
-                class="fill-gray-500 dark:fill-gray-400"
+                className="fill-gray-500 dark:fill-gray-400"
                 width="20"
                 height="20"
                 viewBox="0 0 20 20"
