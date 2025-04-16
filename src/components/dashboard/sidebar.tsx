@@ -13,23 +13,22 @@ export default function SideBar() {
     {
       name: "Dashboard",
       href: "/dashboard",
-      icon: <DashboardIcon className="w-6 h-6"/>,
+      icon: <DashboardIcon className="w-6 h-6" />,
     },
     {
       name: "Analytics",
       href: "/analytics",
-      icon: <AnalyticsIcon className="w-6 h-6"/>,
+      icon: <AnalyticsIcon className="w-6 h-6" />,
     },
     {
       name: "Library",
       href: "/library",
-      icon: <LibraryIcon className="w-6 h-6"/>,
+      icon: <LibraryIcon className="w-6 h-6" />,
     },
   ];
 
   return (
-    <aside
-      className="sidebar fixed top-0 left-0 z-9999 flex h-screen w-[290px] flex-col border-r border-gray-200 dark:border-gray-800 px-5 transition-all duration-300 lg:static lg:translate-x-0 -translate-x-full">
+    <aside className="sidebar fixed top-0 left-0 z-9999 flex h-screen w-[290px] flex-col border-r border-gray-200 dark:border-gray-800 px-5 transition-all duration-300 lg:static lg:translate-x-0 -translate-x-full">
       <div className="flex items-center justify-between gap-2 px-4 py-2 mb-6">
         {/* TODO: Add a button to collapse sidebar on mobile if needed */}
         {
@@ -46,9 +45,6 @@ export default function SideBar() {
         <nav className="mt-5 py-4 px-4 lg:mt-9 lg:px-6">
           {/* <!-- Menu Group --> */}
           <div>
-            <h3 className="mb-4 ml-4 text-sm font-semibold text-gray-500 dark:text-gray-400">
-              MENU
-            </h3>
             <ul className="mb-6 flex flex-col gap-1.5">
               {/* <!-- Menu Item --> */}
               {menuItems.map((item) => (
@@ -66,8 +62,7 @@ export default function SideBar() {
               ))}
               {/* <!-- Logout Menu Item --> */}
               <li>
-                <LogOutButton
-                  className="group relative flex w-full items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-gray-700 duration-300 ease-in-out hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"/>
+                <LogOutButton className="group relative flex w-full items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-gray-700 duration-300 ease-in-out hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700" />
               </li>
             </ul>
           </div>
