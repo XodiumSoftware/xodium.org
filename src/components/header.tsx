@@ -8,6 +8,23 @@ import LoginIcon from "./icons/login.tsx";
 import WikiIcon from "./icons/wiki.tsx";
 
 export default function Header() {
+  const socialLinks = [
+    {
+      href: "https://wiki.xodium.org",
+      label: "Wiki",
+      Icon: WikiIcon,
+    },
+    {
+      href: "https://github.com/XodiumSoftware",
+      label: "Github",
+      Icon: GithubIcon,
+    },
+    {
+      href: "/dashboard",
+      label: "Login",
+      Icon: LoginIcon,
+    },
+  ];
   return (
     <header id="top" className="z-20 relative">
       <nav
@@ -35,30 +52,22 @@ export default function Header() {
             TEAM
           </a>
         </div>
+        {/* Right side icons */}
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <div className="flex items-center space-x-4">
-            <a
-              className="has-tooltip dark:text-white hover:text-[#CB2D3E]"
-              href="https://wiki.xodium.org"
-            >
-              <WikiIcon className="w-6 h-6" />
-              <span className="tooltip">Wiki</span>
-            </a>
-            <a
-              className="has-tooltip dark:text-white hover:text-[#CB2D3E]"
-              href="https://github.com/XodiumSoftware"
-            >
-              <GithubIcon className="w-6 h-6" />
-              <span className="tooltip">Github</span>
-            </a>
-            <a
-              className="has-tooltip dark:text-white hover:text-[#CB2D3E]"
-              href="/dashboard"
-            >
-              <LoginIcon className="w-6 h-6" />
-              <span className="tooltip">Login</span>
-            </a>
-          </div>
+          <ul className="flex items-center space-x-4">
+            {socialLinks.map(({href, label, Icon}) => (
+              <li key={href}>
+                <a
+                  className="has-tooltip dark:text-white hover:text-[#CB2D3E]"
+                  href={href}
+                  aria-label={label}
+                >
+                  <Icon className="w-6 h-6"/>
+                  <span className="tooltip">{label}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
       </nav>
     </header>
