@@ -8,7 +8,7 @@ import {STATUS_CODE} from "$std/http/status.ts";
 import Footer from "../components/footer.tsx";
 import Grid from "../components/grid.tsx";
 import {getSessionId} from "../plugins/oauth.ts";
-import SignOutButton from "../islands/signout.tsx";
+import LogOutButton from "../islands/logout.tsx";
 
 export default async function Dashboard(req: Request) {
   const sessionId = await getSessionId(req);
@@ -25,7 +25,7 @@ export default async function Dashboard(req: Request) {
       <Grid />
       <div class="min-h-screen flex flex-col bg-slate-100 dark:bg-slate-900">
         <main class="flex-grow container mx-auto px-4 py-8">
-          <SignOutButton />
+          <LogOutButton />
         </main>
         <Footer />
       </div>

@@ -5,14 +5,9 @@
 
 import {useEffect, useState} from "preact/hooks";
 import {Member} from "../routes/api/orgs/github/members.ts";
-import {VNode} from "preact";
 import {GITHUB} from "../utils/constants.ts";
 
-/**
- * TeamCards component that displays a list of team members.
- * @returns {VNode}
- */
-export default function TeamCards(): VNode {
+export default function TeamCards() {
   const [members, setMembers] = useState<Member[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);

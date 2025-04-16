@@ -4,15 +4,11 @@
  */
 
 import {Head} from "$fresh/runtime.ts";
-import {VNode} from "preact";
 import Footer from "../components/footer.tsx";
 import Grid from "../components/grid.tsx";
 
-/**
- * Login component
- * @returns {VNode} VNode
- */
-export default function Login(): VNode {
+export default function Login() {
+  //TODO: redirect after callback to dashboard.
   return (
     <>
       <Head>

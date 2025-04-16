@@ -15,7 +15,7 @@ import * as $dashboard from "./routes/dashboard.tsx";
 import * as $index from "./routes/index.tsx";
 import * as $login from "./routes/login.tsx";
 import * as $carousel from "./islands/carousel.tsx";
-import * as $signout from "./islands/signout.tsx";
+import * as $signout from "./islands/logout.tsx";
 import * as $teamcards from "./islands/teamcards.tsx";
 import * as $typewriter from "./islands/typewriter.tsx";
 import type {Manifest} from "$fresh/server.ts";
