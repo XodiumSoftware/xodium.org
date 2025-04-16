@@ -4,15 +4,10 @@
  */
 
 import {Head} from "$fresh/runtime.ts";
-import {VNode} from "preact";
 import Footer from "../components/footer.tsx";
 import Grid from "../components/grid.tsx";
 
-/**
- * Error404 route
- * @returns {VNode} VNode
- */
-export default function Error404(): VNode {
+export default function Error404() {
   return (
     <>
       <Head>

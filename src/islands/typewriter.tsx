@@ -4,11 +4,7 @@
  */
 
 import {useEffect, useState} from "preact/hooks";
-import {VNode} from "preact";
 
-/**
- * Typewriter component properties.
- */
 export interface TypewriterProps {
   text: string[];
   speed?: number;
@@ -17,27 +13,13 @@ export interface TypewriterProps {
   unwrite?: boolean;
 }
 
-/**
- * Typewriter component that displays an array of strings using a typewriter animation.
- *
- * @param {TypewriterProps} props - Component properties.
- * @param {string[]} props.text - Array of strings to display.
- * @param {number} props.speed - Typing speed in seconds.
- * @param {boolean} props.loop - If true, cycles through texts indefinitely.
- * @param {number | [number, number]} props.pause - Pause duration in seconds.
- *   If a single number is provided, it is used for both start and end pauses.
- *   When provided as a tuple, the first value is the start pause (after typing is complete)
- *   and the second is the end pause (after deleting is complete).
- * @param {boolean} props.unwrite - If true, deletes the text before showing the next.
- * @returns {VNode} VNode
- */
 export default function Typewriter({
   text,
   speed,
   loop,
   pause,
   unwrite,
-}: TypewriterProps): VNode {
+                                   }: TypewriterProps) {
   const [displayed, setDisplayed] = useState("");
   const [letterIndex, setLetterIndex] = useState(0);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);

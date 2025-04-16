@@ -4,15 +4,24 @@
  */
 
 import {Head} from "$fresh/runtime.ts";
-import {VNode} from "preact";
+import {Handlers, STATUS_CODE} from "$fresh/server.ts";
 import Footer from "../components/footer.tsx";
 import Grid from "../components/grid.tsx";
+import {getSessionId} from "../plugins/oauth.ts";
 
-/**
- * Login component
- * @returns {VNode} VNode
- */
-export default function Login(): VNode {
+export const handler: Handlers = {
+  async GET(req, ctx) {
+    const sessionId = await getSessionId(req);
+    return sessionId
+      ? new Response(null, {
+        status: STATUS_CODE.SeeOther,
+        headers: { location: "/dashboard" },
+      })
+      : ctx.render();
+  },
+};
+
+export default function Login() {
   return (
     <>
       <Head>
@@ -23,7 +32,7 @@ export default function Login(): VNode {
           <Grid />
           <div class="flex flex-col items-center gap-4 z-10">
             <a
-              href="/"
+              href="/src/static"
               class="flex items-center text-2xl font-semibold text-gray-900 dark:text-white"
             >
               <img
@@ -44,7 +53,7 @@ export default function Login(): VNode {
                     GitHub account.
                   </p>
                   <a
-                      href={`/sign-in?redirect_to=${encodeURIComponent("/dashboard")}`}
+                    href="/sign-in"
                     class="relative inline-flex items-center justify-center w-full p-0.5 overflow-hidden text-sm text-black rounded-lg group bg-gradient-to-br from-[#CB2D3E] to-[#EF473A] group-hover:from-[#CB2D3E] group-hover:to-[#EF473A] hover:text-white dark:text-white font-semibold"
                   >
                     <span class="relative w-full flex items-center justify-center px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-800 rounded-md group-hover:bg-opacity-0">

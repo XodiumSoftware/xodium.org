@@ -5,14 +5,8 @@
 
 import {type PageProps} from "$fresh/server.ts";
 import Version from "../components/version.tsx";
-import {VNode} from "preact";
 
-/**
- * App route
- * @param {PageProps} props PageProps
- * @returns {VNode} VNode
- */
-export default function App({ Component }: PageProps): VNode {
+export default function App({ Component }: PageProps) {
   return (
     <html>
       <head>

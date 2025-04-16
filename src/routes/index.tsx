@@ -3,7 +3,6 @@
  * All rights reserved.
  */
 
-import {VNode} from "preact";
 import Footer from "../components/footer.tsx";
 import Header from "../components/header.tsx";
 import Typewriter from "../islands/typewriter.tsx";
@@ -11,11 +10,7 @@ import Grid from "../components/grid.tsx";
 import TeamCards from "../islands/teamcards.tsx";
 import Carousel from "../islands/carousel.tsx";
 
-/**
- * Home route
- * @returns {VNode} VNode
- */
-export default function Home(): VNode {
+export default function Home() {
   return (
     <div>
       <Header />
