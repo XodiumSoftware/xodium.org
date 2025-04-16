@@ -4,11 +4,24 @@
  */
 
 import {Head} from "$fresh/runtime.ts";
+import {Handlers, STATUS_CODE} from "$fresh/server.ts";
 import Footer from "../components/footer.tsx";
 import Grid from "../components/grid.tsx";
+import {getSessionId} from "../plugins/oauth.ts";
+
+export const handler: Handlers = {
+  async GET(req, ctx) {
+    const sessionId = await getSessionId(req);
+    return sessionId
+      ? new Response(null, {
+        status: STATUS_CODE.SeeOther,
+        headers: { location: "/dashboard" },
+      })
+      : ctx.render();
+  },
+};
 
 export default function Login() {
-  //TODO: redirect after callback to dashboard.
   return (
     <>
       <Head>
@@ -19,7 +32,7 @@ export default function Login() {
           <Grid />
           <div class="flex flex-col items-center gap-4 z-10">
             <a
-              href="/"
+              href="/src/static"
               class="flex items-center text-2xl font-semibold text-gray-900 dark:text-white"
             >
               <img
