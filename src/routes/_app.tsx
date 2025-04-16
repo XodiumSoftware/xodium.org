@@ -16,7 +16,7 @@ export default function App({ Component }: PageProps) {
         <link rel="stylesheet" href="/styles.css" />
         <link rel="icon" href="/favicon.svg" />
       </head>
-      <body class="bg-slate-100 dark:bg-slate-900 font-mono">
+      <body className="bg-slate-100 dark:bg-slate-900 font-mono">
         <Component />
         <Version />
       </body>

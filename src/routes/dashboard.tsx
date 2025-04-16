@@ -9,7 +9,6 @@ import Grid from "../components/grid.tsx";
 import {getSessionId} from "../plugins/oauth.ts";
 import Footer from "../components/footer.tsx";
 import SideBar from "../components/dashboard/sidebar.tsx";
-import SearchBar from "../components/dashboard/searchbar.tsx";
 
 export default async function Dashboard(req: Request) {
   const sessionId = await getSessionId(req);
@@ -28,7 +27,7 @@ export default async function Dashboard(req: Request) {
         <div className="flex flex-1">
           <SideBar />
           <div className="flex flex-col flex-1">
-            <SearchBar />
+            <header></header>
             <div className="flex-grow container mx-auto my-8 px-4 py-8 rounded-xl border-r border-gray-200 dark:border-gray-800">
               {/* TODO: Add content */}
             </div>

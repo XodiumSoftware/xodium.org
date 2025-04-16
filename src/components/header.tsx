@@ -5,36 +5,36 @@
 
 export default function Header() {
   return (
-    <header id="top" class="z-20 relative">
+      <header id="top" className="z-20 relative">
       <nav
-        class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
+          className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
         aria-label="Global"
       >
-        <div class="hidden lg:flex lg:gap-x-8">
+        <div className="hidden lg:flex lg:gap-x-8">
           <a href="">
             <img
               src="/favicon.svg"
               alt="Xodium Icon"
-              class="h-12 w-12"
+              className="h-12 w-12"
             />
           </a>
           <a
             href="/#projects"
-            class="flex items-center text-sm font-semibold leading-6 text-black dark:text-white hover:text-[#CB2D3E]"
+            className="flex items-center text-sm font-semibold leading-6 text-black dark:text-white hover:text-[#CB2D3E]"
           >
             PROJECTS
           </a>
           <a
             href="/#team"
-            class="flex items-center text-sm font-semibold leading-6 text-black dark:text-white hover:text-[#CB2D3E]"
+            className="flex items-center text-sm font-semibold leading-6 text-black dark:text-white hover:text-[#CB2D3E]"
           >
             TEAM
           </a>
         </div>
-        <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-          <div class="flex items-center space-x-4">
+        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+          <div className="flex items-center space-x-4">
             <a
-              class="has-tooltip dark:text-white hover:text-[#CB2D3E]"
+                className="has-tooltip dark:text-white hover:text-[#CB2D3E]"
               href="https://wiki.xodium.org"
             >
               <svg
@@ -51,10 +51,10 @@ export default function Header() {
                   clip-rule="evenodd"
                 />
               </svg>
-              <span class="tooltip">Wiki</span>
+              <span className="tooltip">Wiki</span>
             </a>
             <a
-              class="has-tooltip dark:text-white hover:text-[#CB2D3E]"
+                className="has-tooltip dark:text-white hover:text-[#CB2D3E]"
               href="https://github.com/XodiumSoftware"
             >
               <svg
@@ -71,10 +71,10 @@ export default function Header() {
                   clip-rule="evenodd"
                 />
               </svg>
-              <span class="tooltip">Github</span>
+              <span className="tooltip">Github</span>
             </a>
             <a
-              class="has-tooltip dark:text-white hover:text-[#CB2D3E]"
+                className="has-tooltip dark:text-white hover:text-[#CB2D3E]"
               href="/dashboard"
             >
               <svg
@@ -91,7 +91,7 @@ export default function Header() {
                   clip-rule="evenodd"
                 />
               </svg>
-              <span class="tooltip">Dashboard</span>
+              <span className="tooltip">Dashboard</span>
             </a>
           </div>
         </div>
