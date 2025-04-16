@@ -3,13 +3,7 @@
  * All rights reserved.
  */
 
-import {VNode} from "preact";
-
-/**
- * Header component
- * @returns {VNode} VNode
- */
-export default function Header(): VNode {
+export default function Header() {
   return (
     <header id="top" class="z-20 relative">
       <nav
