@@ -53,7 +53,7 @@ export default function SideBar() {
                     href={item.href}
                     // TODO: Add logic here to determine the active link (e.g., based on current URL)
                     // Example active class: 'bg-gray-100 dark:bg-gray-700'
-                    className="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-gray-700 duration-300 ease-in-out hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
+                    className="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-gray-700 duration-300 ease-in-out hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700 hover:text-[#CB2D3E]"
                   >
                     {item.icon}
                     {item.name}
@@ -62,7 +62,7 @@ export default function SideBar() {
               ))}
               {/* <!-- Logout Menu Item --> */}
               <li>
-                <LogOutButton className="group relative flex w-full items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-gray-700 duration-300 ease-in-out hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700" />
+                <LogOutButton className="group relative flex w-full items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-gray-700 duration-300 ease-in-out hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700 hover:text-[#CB2D3E]" />
               </li>
             </ul>
           </div>
