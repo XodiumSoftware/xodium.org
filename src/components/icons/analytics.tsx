@@ -8,10 +8,7 @@ import {JSX} from "preact";
 export default function AnalyticsIcon(props: JSX.SVGAttributes<SVGSVGElement>) {
   return (
     <svg
-      width="800px"
-      height="800px"
       viewBox="0 0 24 24"
-      fill="none"
       xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
