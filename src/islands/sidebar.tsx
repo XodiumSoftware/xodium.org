@@ -9,6 +9,7 @@ import AnalyticsIcon from "../components/icons/analytics.tsx";
 import LibraryIcon from "../components/icons/library.tsx";
 import {type Signal, useSignal} from "@preact/signals";
 import {JSX} from "preact/jsx-runtime";
+import UserProfile from "../components/profile.tsx";
 
 export type DashboardSection = "dashboard" | "analytics" | "library";
 
@@ -28,17 +29,17 @@ export default function SideBar({ activeSection }: SideBarProps) {
     {
       id: "dashboard",
       name: "Dashboard",
-      icon: <DashboardIcon className="w-6 h-6 flex-shrink-0"/>,
+      icon: <DashboardIcon className="w-6 h-6 flex-shrink-0"  />,
     },
     {
       id: "analytics",
       name: "Analytics",
-      icon: <AnalyticsIcon className="w-6 h-6 flex-shrink-0"/>,
+      icon: <AnalyticsIcon className="w-6 h-6 flex-shrink-0"  />,
     },
     {
       id: "library",
       name: "Library",
-      icon: <LibraryIcon className="w-6 h-6 flex-shrink-0"/>,
+      icon: <LibraryIcon className="w-6 h-6 flex-shrink-0"  />,
     },
   ];
 
@@ -117,29 +118,7 @@ export default function SideBar({ activeSection }: SideBarProps) {
       </div>
 
       {/* User Profile */}
-      <div
-        className={`flex items-center ${
-          isCollapsed.value ? "justify-center" : "px-4"
-        } py-3 border-t border-b border-gray-200 dark:border-gray-800`}
-      >
-        <div className="flex items-center">
-          <img
-            src=""
-            alt="User profile"
-            className="w-10 h-10 rounded-full object-cover mr-3 ring-2 ring-gray-200 dark:ring-gray-700"
-          />
-          {!isCollapsed.value && (
-            <div className="flex flex-col">
-              <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                John Doe
-              </span>
-              <span className="text-xs text-gray-500 dark:text-gray-400">
-                john.doe@xodium.org
-              </span>
-            </div>
-          )}
-        </div>
-      </div>
+      <UserProfile isCollapsed={isCollapsed.value}/>
 
       {/* Navigation */}
       <div className="no-scrollbar flex flex-col overflow-y-auto duration-300 ease-linear flex-grow">
