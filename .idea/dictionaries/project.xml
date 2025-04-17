@@ -2,6 +2,9 @@
   <dictionary name="project">
     <words>
       <w>asynciterable</w>
+      <w>githubusercontent</w>
+      <w>noopener</w>
+      <w>noreferrer</w>
       <w>nosniff</w>
       <w>sameorigin</w>
       <w>signin</w>
