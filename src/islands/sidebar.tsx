@@ -53,11 +53,22 @@ export default function SideBar({ activeSection }: SideBarProps) {
 
   const sidebarWidthClass = isCollapsed.value ? "w-auto" : "w-[290px]";
   const sidebarPaddingClass = isCollapsed.value ? "px-2" : "px-5";
+
   const clickableItemBaseClasses =
-    `group relative flex w-full items-center gap-2.5 rounded-sm py-2 font-medium text-left duration-300 ease-in-out`;
-  const clickableItemHoverClasses =
-    `text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-[#CB2D3E]`;
-  const activeNavClasses = `bg-gray-200 dark:bg-gray-700 text-[#CB2D3E]`;
+    `group relative flex w-full items-center gap-2.5 rounded-md py-2 font-medium text-left duration-300 ease-in-out`;
+
+  const hoverRingClasses =
+    `hover:ring-2 hover:ring-inset hover:ring-cyan-500/50 dark:hover:ring-blue-400/50`;
+  const activeRingClasses =
+    `ring-2 ring-inset ring-cyan-500/50 dark:ring-blue-400/50`;
+
+  const baseTextClasses = `text-gray-700 dark:text-gray-200`;
+  const hoverTextClasses = `hover:text-[#CB2D3E] dark:hover:text-[#CB2D3E]`;
+  const activeTextClasses = `text-[#CB2D3E]`;
+
+  const nonActiveItemClasses =
+    `${baseTextClasses} ${hoverTextClasses} ${hoverRingClasses}`;
+  const activeItemClasses = `${activeTextClasses} ${activeRingClasses}`;
 
   return (
     <aside
@@ -118,14 +129,14 @@ export default function SideBar({ activeSection }: SideBarProps) {
                 const itemClasses = `
                     ${clickableItemBaseClasses}
                     ${isCollapsed.value ? "px-3 justify-center" : "px-4"}
-                    ${isActive ? activeNavClasses : clickableItemHoverClasses}
+                    ${isActive ? activeItemClasses : nonActiveItemClasses}
                  `;
                 return (
                   <li key={item.id}>
                     <button
                       type="button"
                       onClick={() => handleSectionClick(item.id)}
-                      className={itemClasses.trim()}
+                      className={itemClasses.trim().replace(/\s+/g, " ")}
                       aria-current={isActive ? "page" : undefined}
                       title={isCollapsed.value ? item.name : undefined}
                     >
@@ -145,8 +156,8 @@ export default function SideBar({ activeSection }: SideBarProps) {
                   className={`
                     ${clickableItemBaseClasses}
                     ${isCollapsed.value ? "px-3 justify-center" : "px-4"}
-                    ${clickableItemHoverClasses}
-                  `.trim()}
+                    ${nonActiveItemClasses}
+                  `.trim().replace(/\s+/g, " ")}
                   title={isCollapsed.value ? "Logout" : undefined}
                 />
               </li>

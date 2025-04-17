@@ -42,7 +42,7 @@ export default function DashboardPage() {
         <div className="flex flex-1">
           <SideBar activeSection={activeSection} />
           <div className="flex flex-col flex-1">
-            <div className="flex-grow container mx-auto my-8 px-4 py-8 rounded-xl border border-gray-200 dark:border-gray-800">
+            <div className="flex-grow container mx-auto my-8 px-4 py-8 rounded-xl border border-gray-200 dark:border-gray-800 shadow-lg shadow-cyan-500/50 dark:shadow-blue-400/50">
               {ActiveContentComponent
                 ? <ActiveContentComponent />
                 : <div>Unknown Section</div>}
