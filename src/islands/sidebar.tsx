@@ -9,8 +9,6 @@ import AnalyticsIcon from "../components/icons/analytics.tsx";
 import LibraryIcon from "../components/icons/library.tsx";
 import {type Signal, useSignal} from "@preact/signals";
 import {JSX} from "preact/jsx-runtime";
-import ChevronRight from "../components/icons/chevron_right.tsx";
-import ChevronLeft from "../components/icons/chevron_left.tsx";
 
 export type DashboardSection = "dashboard" | "analytics" | "library";
 
@@ -51,7 +49,7 @@ export default function SideBar({ activeSection }: SideBarProps) {
     isCollapsed.value = !isCollapsed.value;
   };
 
-  const sidebarWidthClass = isCollapsed.value ? "w-auto" : "w-[290px]";
+  const sidebarWidthClass = isCollapsed.value ? "w-auto" : "w-[250px]";
   const sidebarPaddingClass = isCollapsed.value ? "px-2" : "px-5";
 
   const clickableItemBaseClasses =
@@ -72,8 +70,17 @@ export default function SideBar({ activeSection }: SideBarProps) {
 
   return (
     <aside
-      className={`sidebar fixed top-0 left-0 z-9999 flex h-screen flex-col border-r border-gray-200 dark:border-gray-800 ${sidebarPaddingClass} ${sidebarWidthClass} transition-all duration-300 lg:static lg:translate-x-0 -translate-x-full`}
+      className={`sidebar relative fixed top-0 left-0 z-9999 flex h-screen flex-col border-r border-gray-200 dark:border-gray-800 ${sidebarPaddingClass} ${sidebarWidthClass} transition-all duration-300 lg:static lg:translate-x-0 -translate-x-full`}
     >
+      {/* Toggle Button */}
+      <button
+        type="button"
+        onClick={toggleCollapse}
+        aria-label={isCollapsed.value ? "Expand sidebar" : "Collapse sidebar"}
+        aria-expanded={!isCollapsed.value}
+        className={`absolute top-1/2 left-full -translate-x-1/2 -translate-y-1/2 z-50 h-12 p-1.5 rounded-md bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 hover:ring-2 hover:ring-blue-500 dark:hover:ring-blue-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-cyan-500 dark:focus-visible:ring-blue-400 dark:focus-visible:ring-offset-gray-900 transition-all duration-150 ease-in-out`}
+      />
+
       {/* Header */}
       <div className="flex items-center justify-between py-4 h-16">
         {!isCollapsed.value && (
@@ -81,7 +88,7 @@ export default function SideBar({ activeSection }: SideBarProps) {
             <a
               href="/"
               aria-label="Go to Xodium homepage"
-              className="flex items-center ml-4"
+              className="flex items-center"
             >
               <img
                 src="/favicon.svg"
@@ -89,31 +96,24 @@ export default function SideBar({ activeSection }: SideBarProps) {
                 className="w-6 h-6 mr-2"
                 aria-hidden="true"
               />
-              <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
+              <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-100 truncate">
                 Xodium
               </h1>
             </a>
           </div>
         )}
-        <div
-          className={`flex ${
-            isCollapsed.value ? "w-full justify-center" : "justify-end"
-          }`}
-        >
-          <button
-            type="button"
-            onClick={toggleCollapse}
-            aria-label={isCollapsed.value
-              ? "Expand sidebar"
-              : "Collapse sidebar"}
-            aria-expanded={!isCollapsed.value}
-            className="p-2 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            {isCollapsed.value
-              ? <ChevronRight className="w-6 h-6"/>
-              : <ChevronLeft className="w-6 h-6"/>}
-          </button>
-        </div>
+        {isCollapsed.value && (
+          <div className="flex w-full items-center justify-center">
+            <a href="/" aria-label="Go to Xodium homepage">
+              <img
+                src="/favicon.svg"
+                alt="Xodium Logo"
+                className="w-6 h-6"
+                aria-hidden="true"
+              />
+            </a>
+          </div>
+        )}
       </div>
 
       {/* Navigation */}
