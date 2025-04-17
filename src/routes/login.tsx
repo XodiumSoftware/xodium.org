@@ -26,7 +26,7 @@ export default function Login() {
   return (
     <>
       <Head>
-        <title>Xodium | Dashboard Login</title>
+        <title>Xodium | Login</title>
       </Head>
       <section className="flex flex-col h-screen">
         <main className="flex-grow grid place-items-center bg-slate-100 dark:bg-slate-900 px-6 py-24 sm:py-32 lg:px-8">

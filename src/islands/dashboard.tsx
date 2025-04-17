@@ -3,41 +3,19 @@
  * All rights reserved.
  */
 
-import {useSignal} from "@preact/signals";
+import {effect, useSignal} from "@preact/signals";
 import {JSX} from "preact/jsx-runtime";
 import Grid from "../components/grid.tsx";
 import Footer from "../components/footer.tsx";
 import SideBar, {DashboardSection} from "./sidebar.tsx";
+import {AnalyticsContent, DashboardContent, LibraryContent,} from "../components/dashboard/content.tsx";
+import {IS_BROWSER} from "$fresh/runtime.ts";
 
-function DashboardContent() {
-  return (
-    <div>
-      <h1 class="text-2xl font-semibold mb-4">Dashboard</h1>
-      <p>Welcome to your dashboard!</p>
-      {/* TODO: Add Dashboard specific components and content here */}
-    </div>
-  );
-}
-
-function AnalyticsContent() {
-  return (
-    <div>
-      <h1 class="text-2xl font-semibold mb-4">Analytics</h1>
-      <p>Here are your analytics.</p>
-      {/* TODO: Add Analytics specific components and content here */}
-    </div>
-  );
-}
-
-function LibraryContent() {
-  return (
-    <div>
-      <h1 class="text-2xl font-semibold mb-4">Library</h1>
-      <p>Browse your library.</p>
-      {/* TODO: Add Library specific components and content here */}
-    </div>
-  );
-}
+const sectionTitles: Record<DashboardSection, string> = {
+  dashboard: "Dashboard",
+  analytics: "Analytics",
+  library: "Library",
+};
 
 const contentComponents: Record<DashboardSection, () => JSX.Element> = {
   dashboard: DashboardContent,
@@ -47,6 +25,15 @@ const contentComponents: Record<DashboardSection, () => JSX.Element> = {
 
 export default function DashboardPage() {
   const activeSection = useSignal<DashboardSection>("dashboard");
+  const ActiveContentComponent = contentComponents[activeSection.value];
+
+  effect(() => {
+    if (IS_BROWSER) {
+      const sectionKey = activeSection.value;
+      const title = sectionTitles[sectionKey] || "Dashboard";
+      document.title = `Xodium | ${title}`;
+    }
+  });
 
   return (
     <>
@@ -56,9 +43,9 @@ export default function DashboardPage() {
           <SideBar activeSection={activeSection} />
           <div className="flex flex-col flex-1">
             <div className="flex-grow container mx-auto my-8 px-4 py-8 rounded-xl border border-gray-200 dark:border-gray-800">
-              {activeSection.value === "dashboard" && <DashboardContent />}
-              {activeSection.value === "analytics" && <AnalyticsContent />}
-              {activeSection.value === "library" && <LibraryContent />}
+              {ActiveContentComponent
+                ? <ActiveContentComponent />
+                : <div>Unknown Section</div>}
             </div>
             <Footer />
           </div>

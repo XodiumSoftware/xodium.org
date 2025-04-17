@@ -8,9 +8,13 @@ import LogoutIcon from "../components/icons/logout.tsx";
 
 type LogOutButtonProps = {
   className?: string;
+  isCollapsed?: boolean;
+  title?: string;
 };
 
-export default function LogOutButton({ className = "" }: LogOutButtonProps) {
+export default function LogOutButton(
+  {className = "", isCollapsed = false, title}: LogOutButtonProps,
+) {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const handleClick = useCallback(async () => {
     if (isLoggingOut) return;
@@ -28,19 +32,27 @@ export default function LogOutButton({ className = "" }: LogOutButtonProps) {
       setIsLoggingOut(false);
     }
   }, [isLoggingOut]);
-  const buttonClasses = `${className} ${
-    isLoggingOut ? "cursor-not-allowed opacity-50" : ""
-  }`;
+  const internalClasses = "flex items-center";
+  const buttonClasses = `
+    ${internalClasses}
+    ${className}
+    ${isLoggingOut ? "cursor-not-allowed opacity-50" : ""}
+  `;
 
   return (
     <button
       type="button"
       onClick={handleClick}
-      className={buttonClasses}
+      className={buttonClasses.trim()}
       disabled={isLoggingOut}
+      title={title}
     >
-      <LogoutIcon className="w-6 h-6" />
-      {isLoggingOut ? "Logging Out..." : "Logout"}
+      <LogoutIcon className="w-6 h-6 flex-shrink-0"/>
+      {!isCollapsed && (
+        <span className="truncate">
+          {isLoggingOut ? "Logging Out..." : "Logout"}
+        </span>
+      )}
     </button>
   );
 }
