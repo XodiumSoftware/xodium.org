@@ -7,5 +7,8 @@ import {defineConfig} from "$fresh/server.ts";
 import tailwind from "$fresh/plugins/tailwind.ts";
 import oauth from "./plugins/oauth.ts";
 import securityHeaders from "./plugins/security_headers.ts";
+import github from "./plugins/github.ts";
 
-export default defineConfig({ plugins: [tailwind(), oauth, securityHeaders] });
+export default defineConfig({
+  plugins: [tailwind(), github, oauth, securityHeaders],
+});
