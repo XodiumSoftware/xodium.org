@@ -20,7 +20,7 @@ import * as $logout from "./islands/logout.tsx";
 import * as $sidebar from "./islands/sidebar.tsx";
 import * as $teamcards from "./islands/teamcards.tsx";
 import * as $typewriter from "./islands/typewriter.tsx";
-import type {Manifest} from "$fresh/server.ts";
+import type {Manifes t} from "$fresh/server.ts";
 
 const manifest = {
   routes: {

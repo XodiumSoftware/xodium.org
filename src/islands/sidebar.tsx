@@ -67,15 +67,21 @@ export default function SideBar({ activeSection }: SideBarProps) {
       <div className="flex items-center justify-between py-4 h-16">
         {!isCollapsed.value && (
           <div className="flex items-center ml-4">
-            <img
-              src="/favicon.svg"
-              alt="Xodium Logo"
-              className="w-6 h-6 mr-2"
-              aria-hidden="true"
-            />
-            <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
-              Xodium
-            </h1>
+            <a
+              href="/"
+              aria-label="Go to Xodium homepage"
+              className="flex items-center ml-4"
+            >
+              <img
+                src="/favicon.svg"
+                alt=""
+                className="w-6 h-6 mr-2"
+                aria-hidden="true"
+              />
+              <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
+                Xodium
+              </h1>
+            </a>
           </div>
         )}
         <div

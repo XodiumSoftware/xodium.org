@@ -8,7 +8,7 @@ import {JSX} from "preact/jsx-runtime";
 import Grid from "../components/grid.tsx";
 import Footer from "../components/footer.tsx";
 import SideBar, {DashboardSection} from "./sidebar.tsx";
-import {AnalyticsContent, DashboardContent, LibraryContent,} from "../components/dashboard/content.tsx";
+import {AnalyticsContent, DashboardContent, LibraryContent,} from "../components/dashboard.tsx";
 import {IS_BROWSER} from "$fresh/runtime.ts";
 
 const sectionTitles: Record<DashboardSection, string> = {
