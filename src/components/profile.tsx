@@ -4,6 +4,7 @@
  */
 
 import {useSignal} from "@preact/signals";
+import {useEffect} from "preact/hooks";
 
 interface UserProfileProps {
   isCollapsed: boolean;
@@ -20,20 +21,28 @@ export default function UserProfile({ isCollapsed }: UserProfileProps) {
   const isLoading = useSignal(true);
   const error = useSignal<Error | null>(null);
 
-  // Use useEffect to handle API calls properly
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
         isLoading.value = true;
         error.value = null;
 
+        // TODO: rethink this logic, doesnt make sense.
         const response = await fetch("/api/profile");
-        if (!response.ok) throw new Error("Failed to fetch profile");
+        if (!response.ok) {
+          const fetchError = new Error(
+            `Failed to fetch profile: ${response.statusText}`,
+            {
+              cause: { status: response.status },
+            },
+          );
+          console.error("Error fetching user profile:", fetchError);
+          error.value = fetchError;
+          return;
+        }
 
         const data = await response.json();
-        if (data.isLoggedIn && data.profile) {
-          profile.value = data.profile;
-        }
+        if (data.isLoggedIn && data.profile) profile.value = data.profile;
       } catch (err) {
         console.error("Error fetching user profile:", err);
         error.value = err instanceof Error ? err : new Error("Unknown error");
@@ -41,11 +50,9 @@ export default function UserProfile({ isCollapsed }: UserProfileProps) {
         isLoading.value = false;
       }
     };
-
-    fetchUserProfile();
+    void fetchUserProfile();
   }, []);
 
-  // Error UI
   if (error.value && !isLoading.value) {
     return (
       <div className="flex items-center justify-center py-3 border-t border-b border-gray-200 dark:border-gray-800">

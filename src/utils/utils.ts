@@ -7,6 +7,7 @@
 
 import {GITHUB, KvData, KvStore} from "./constants.ts";
 import {Octokit} from "@octokit/core";
+import {GitHubUserProfile} from "../plugins/github.ts";
 
 /**
  * Fetch data from GitHub API
@@ -60,6 +61,31 @@ export async function getOrganizationData<T>(
   } catch (e) {
     console.error(`Error fetching or caching organization ${cacheKey}:`, e);
     throw new Error(`Failed to load organization ${cacheKey}.`);
+  }
+}
+
+/**
+ * Fetches the authenticated user's profile information from GitHub.
+ * @param {string} accessToken The GitHub access token for the user.
+ * @returns {Promise<GitHubUserProfile>} A promise that resolves to the user's profile data.
+ */
+export async function getUserData(
+  accessToken: string,
+): Promise<GitHubUserProfile> {
+  if (!accessToken) {
+    throw new Error("GitHub access token is required to fetch user data.");
+  }
+  try {
+    console.log("Fetching user data from GitHub API...");
+    const userData = await fetchFromGitHub<GitHubUserProfile>(
+      "/user",
+      accessToken,
+    );
+    console.log("Successfully fetched user data.");
+    return userData;
+  } catch (e) {
+    console.error("Error fetching user data from GitHub:", e);
+    throw new Error("Failed to fetch user data from GitHub.");
   }
 }
 

@@ -20,6 +20,14 @@ export interface Repo {
   description: string;
 }
 
+export interface GitHubUserProfile {
+  login: string;
+  id: number;
+  avatar_url: string;
+  html_url: string;
+  name: string | null;
+}
+
 export default {
   name: "github",
   routes: [

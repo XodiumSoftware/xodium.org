@@ -9,6 +9,7 @@
 
 import * as $_404 from "./routes/_404.tsx";
 import * as $_app from "./routes/_app.tsx";
+import * as $api_profile from "./routes/api/profile.ts";
 import * as $dashboard from "./routes/dashboard.tsx";
 import * as $index from "./routes/index.tsx";
 import * as $login from "./routes/login.tsx";
@@ -17,13 +18,19 @@ import * as $dashboard_1 from "./islands/dashboard.tsx";
 import * as $logout from "./islands/logout.tsx";
 import * as $sidebar from "./islands/sidebar.tsx";
 import * as $teamcards from "./islands/teamcards.tsx";
-import * as $typewriter from "./islands/typewriter.tsx";
 import type {Manifest} from "$fresh/server.ts";
+import * as $
+
+typewrit
+er
+from
+"./islands/typewriter.tsx";
 
 const manifest = {
   routes: {
     "./routes/_404.tsx": $_404,
     "./routes/_app.tsx": $_app,
+    "./routes/api/profile.ts": $api_profile,
     "./routes/dashboard.tsx": $dashboard,
     "./routes/index.tsx": $index,
     "./routes/login.tsx": $login,
