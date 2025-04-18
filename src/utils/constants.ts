@@ -7,7 +7,7 @@
 
 import {HOUR} from "$std/datetime/constants.ts";
 
-export const CONFIG = { version: "2.3.0" };
+export const CONFIG = {version: "2.3.1"};
 
 export const GITHUB = {
   api: {

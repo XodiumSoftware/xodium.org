@@ -4,8 +4,8 @@
  */
 
 import {useEffect, useState} from "preact/hooks";
-import {Member} from "../routes/api/orgs/github/members.ts";
 import {GITHUB} from "../utils/constants.ts";
+import {Member} from "../plugins/github.ts";
 
 export default function TeamCards() {
   const [members, setMembers] = useState<Member[]>([]);
@@ -19,7 +19,7 @@ export default function TeamCards() {
 
       try {
         const response = await fetch(
-          `/api/orgs/github/members?org=${GITHUB.org.name}`,
+          `/api/github/org/members?org=${GITHUB.org.name}`,
         );
         if (!response.ok) {
           console.error(
