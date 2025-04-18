@@ -18,13 +18,8 @@ import * as $dashboard_1 from "./islands/dashboard.tsx";
 import * as $logout from "./islands/logout.tsx";
 import * as $sidebar from "./islands/sidebar.tsx";
 import * as $teamcards from "./islands/teamcards.tsx";
+import * as $typewriter from "./islands/typewriter.tsx";
 import type {Manifest} from "$fresh/server.ts";
-import * as $
-
-typewrit
-er
-from
-"./islands/typewriter.tsx";
 
 const manifest = {
   routes: {

@@ -84,7 +84,9 @@ export default function UserProfile({ isCollapsed }: UserProfileProps) {
             <img
               src={profile.value?.avatar_url || "/default-avatar.png"}
               alt="User profile"
-              className="w-10 h-10 rounded-full object-cover mr-3 ring-2 ring-gray-200 dark:ring-gray-700"
+              className={`w-10 h-10 rounded-full object-cover ring-2 ring-gray-200 dark:ring-gray-700 ${
+                !isCollapsed ? "mr-3" : ""
+              }`}
             />
             {!isCollapsed && (
               <div className="flex flex-col">
