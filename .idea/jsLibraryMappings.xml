@@ -2,7 +2,7 @@
 <project version="4">
   <component name="JavaScriptLibraryMappings">
     <file url="file://$PROJECT_DIR$" libraries="{xodiumorg/node_modules}" />
-    <file url="PROJECT" libraries="{@types/tailwindcss, xodiumorg/node_modules}" />
+    <file url="PROJECT" libraries="{@types/fresh, @types/tailwindcss, xodiumorg/node_modules}" />
     <includedPredefinedLibrary name="HTTP Pre-Request and Response Handler" />
   </component>
 </project>
