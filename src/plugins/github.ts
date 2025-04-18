@@ -4,7 +4,7 @@
  */
 
 import {Plugin} from "$fresh/server.ts";
-import {createOrgDataHandler} from "../utils/utils.ts";
+import {createOrgDataHandler, createUserDataHandler} from "../utils/utils.ts";
 
 export interface Member {
   login: string;
@@ -43,6 +43,13 @@ export default {
       handler: createOrgDataHandler<Repo[]>(
         "repos",
         "/orgs/{org}/repos",
+      ),
+    },
+    {
+      path: "/api/github/user/profile",
+      handler: createUserDataHandler<GitHubUserProfile>(
+        "user",
+        "/user",
       ),
     },
   ],

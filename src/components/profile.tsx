@@ -3,60 +3,64 @@
  * All rights reserved.
  */
 
-import {useSignal} from "@preact/signals";
-import {useEffect} from "preact/hooks";
+import {useEffect, useState} from "preact/hooks";
+import {GitHubUserProfile} from "../plugins/github.ts";
 
 interface UserProfileProps {
   isCollapsed: boolean;
 }
 
-interface UserProfileData {
-  login: string;
-  name: string | null;
-  avatar_url: string;
-}
-
 export default function UserProfile({ isCollapsed }: UserProfileProps) {
-  const profile = useSignal<UserProfileData | null>(null);
-  const isLoading = useSignal(true);
-  const error = useSignal<Error | null>(null);
+  const [profile, setProfile] = useState<GitHubUserProfile | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        isLoading.value = true;
-        error.value = null;
+    (async () => {
+      setIsLoading(true);
+      setError(null);
 
-        // TODO: refactor.
-        const response = await fetch("/api/profile");
+      try {
+        const response = await fetch(`/api/github/user/profile`);
         if (!response.ok) {
-          const fetchError = new Error(
-            `Failed to fetch profile: ${response.statusText}`,
-            {
-              cause: { status: response.status },
-            },
+          console.error(
+            `Failed to fetch user profile: ${response.status} ${response.statusText}`,
           );
-          console.error("Error fetching user profile:", fetchError);
-          error.value = fetchError;
+          setError("Failed to load user profile.");
           return;
         }
 
-        const data = await response.json();
-        if (data.isLoggedIn && data.profile) profile.value = data.profile;
-      } catch (err) {
-        console.error("Error fetching user profile:", err);
-        error.value = err instanceof Error ? err : new Error("Unknown error");
+        const fetchedProfile: GitHubUserProfile = await response.json();
+        setProfile(fetchedProfile);
+      } catch (e) {
+        console.error("Error fetching user profile:", e);
+        setError("Failed to load user profile.");
       } finally {
-        isLoading.value = false;
+        setIsLoading(false);
       }
-    };
-    void fetchUserProfile();
+    })();
   }, []);
 
-  if (error.value && !isLoading.value) {
+  if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-3 border-t border-b border-gray-200 dark:border-gray-800">
-        <span className="text-red-500 text-sm">Failed to load profile</span>
+      <div className="flex items-center justify-center text-center text-gray-500">
+        Loading user profile...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center text-center text-red-500">
+        Error: {error}
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <div className="flex items-center justify-center text-center text-gray-500">
+        No user profile found.
       </div>
     );
   }
@@ -67,7 +71,7 @@ export default function UserProfile({ isCollapsed }: UserProfileProps) {
         isCollapsed ? "justify-center" : "px-4"
       } py-3 border-t border-b border-gray-200 dark:border-gray-800`}
     >
-      {isLoading.value
+      {isLoading
         ? (
           <div className="flex items-center">
             <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse mr-3" />
@@ -82,7 +86,7 @@ export default function UserProfile({ isCollapsed }: UserProfileProps) {
         : (
           <div className="flex items-center">
             <img
-              src={profile.value?.avatar_url || "/default-avatar.png"}
+              src={profile.avatar_url || "/default-avatar.png"}
               alt="User profile"
               className={`w-10 h-10 rounded-full object-cover ring-2 ring-gray-200 dark:ring-gray-700 ${
                 !isCollapsed ? "mr-3" : ""
@@ -91,10 +95,10 @@ export default function UserProfile({ isCollapsed }: UserProfileProps) {
             {!isCollapsed && (
               <div className="flex flex-col">
                 <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                  {profile.value?.name || profile.value?.login || "Guest"}
+                  {profile.name || profile.login || "Guest"}
                 </span>
                 <span className="text-xs text-gray-500 dark:text-gray-400">
-                  {profile.value?.login || ""}
+                  {profile.login || ""}
                 </span>
               </div>
             )}
