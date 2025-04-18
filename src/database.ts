@@ -63,3 +63,5 @@ export class Database {
     return await this.db.query(query, params);
   }
 }
+
+export const db = new Database();
