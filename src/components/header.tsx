@@ -57,20 +57,19 @@ export default function Header() {
           </a>
         </div>
         {/* Right side Header */}
-        {/* TODO: fix tooltips broken */}
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           <ul className="flex items-center space-x-4">
             {socialLinks.map(({ href, label, Icon, isExternal }) => (
               <li key={href}>
                 <a
-                  className="has-tooltip dark:text-white hover:text-[#CB2D3E]"
+                  className="dark:text-white hover:text-[#CB2D3E]"
                   href={href}
                   aria-label={label}
+                  title={label}
                   target={isExternal ? "_blank" : undefined}
                   rel={isExternal ? "noopener noreferrer" : undefined}
                 >
                   <Icon className="w-6 h-6" aria-hidden="true" />
-                  <span className="tooltip">{label}</span>
                 </a>
               </li>
             ))}

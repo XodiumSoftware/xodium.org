@@ -27,7 +27,7 @@ export default function UserProfile({ isCollapsed }: UserProfileProps) {
         isLoading.value = true;
         error.value = null;
 
-        // TODO: rethink this logic, doesnt make sense.
+        // TODO: refactor.
         const response = await fetch("/api/profile");
         if (!response.ok) {
           const fetchError = new Error(
