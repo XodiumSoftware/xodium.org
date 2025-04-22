@@ -9,6 +9,7 @@
       <w>sameorigin</w>
       <w>signin</w>
       <w>signout</w>
+      <w>surrealdb</w>
       <w>xodium</w>
     </words>
   </dictionary>
