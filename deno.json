@@ -9,28 +9,34 @@
     "preview": "deno run --unstable-kv -A src/main.ts",
     "update": "deno run -A -r https://fresh.deno.dev/update ."
   },
-  "lint": { "rules": { "tags": ["fresh", "recommended"] } },
+  "lint": {
+    "rules": {
+      "tags": [
+        "fresh",
+        "recommended"
+      ]
+    }
+  },
   "exclude": ["**/_fresh/*"],
   "imports": {
+    "@axiod/interfaces": "https://deno.land/x/axiod@0.26.2/interfaces.ts",
+    "@axiod/mod": "https://deno.land/x/axiod@0.26.2/mod.ts",
     "@deno/kv-oauth": "jsr:@deno/kv-oauth@^0.11.0",
-    "@std/cache": "jsr:@std/cache@^0.2.0",
-    "axiod/mod": "https://deno.land/x/axiod@0.26.2/mod.ts",
-    "axiod/interfaces": "https://deno.land/x/axiod@0.26.2/interfaces.ts",
-    "$fresh/": "https://deno.land/x/fresh@1.7.3/",
+    "@deno/surrealdb": "https://deno.land/x/surrealdb@v0.11.0/mod.ts",
+    "@deno/surrealdb/types": "https://deno.land/x/surrealdb@v0.11.0/src/types.ts",
     "@octokit/core": "https://esm.sh/@octokit/core@5.0.1",
-    "preact": "https://esm.sh/preact@10.22.0",
-    "preact/": "https://esm.sh/preact@10.22.0/",
     "@preact/signals": "https://esm.sh/*@preact/signals@1.2.2",
     "@preact/signals-core": "https://esm.sh/*@preact/signals-core@1.5.1",
-    "tailwindcss": "npm:tailwindcss@3.4.1",
-    "tailwindcss/": "npm:/tailwindcss@3.4.1/",
-    "tailwindcss/plugin": "npm:/tailwindcss@3.4.1/plugin.js",
+    "@std/cache": "jsr:@std/cache@^0.2.0",
+    "tailwindcss": "npm:/tailwindcss@3.4.1",
+    "$fresh/": "https://deno.land/x/fresh@1.7.3/",
     "$std/": "https://deno.land/std@0.216.0/",
-    "xodium/constants": "./modules/xodium.constants.ts",
-    "xodium/utils/github": "./modules/xodium.utils.github.ts",
-    "xodium/utils/localstorage": "./modules/xodium.utils.localstorage.ts",
-    "xodium/utils/teamcards": "./modules/xodium.utils.teamcards.tsx"
+    "preact": "https://esm.sh/preact@10.22.0",
+    "preact/": "https://esm.sh/preact@10.22.0/"
   },
-  "compilerOptions": { "jsx": "react-jsx", "jsxImportSource": "preact" },
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact"
+  },
   "nodeModulesDir": "auto"
 }
