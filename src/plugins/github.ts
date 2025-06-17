@@ -4,7 +4,7 @@
  */
 
 import {Plugin} from "$fresh/server.ts";
-import {createOrgDataHandler, createUserDataHandler} from "../utils/utils.ts";
+import {createOrgDataHandler} from "../utils/utils.ts";
 
 export interface Member {
   login: string;
@@ -18,14 +18,6 @@ export interface Repo {
   full_name: string;
   html_url: string;
   description: string;
-}
-
-export interface GitHubUserProfile {
-  login: string;
-  id: number;
-  avatar_url: string;
-  html_url: string;
-  name: string | null;
 }
 
 export default {
@@ -43,13 +35,6 @@ export default {
       handler: createOrgDataHandler<Repo[]>(
         "repos",
         "/orgs/{org}/repos",
-      ),
-    },
-    {
-      path: "/api/github/user/profile",
-      handler: createUserDataHandler<GitHubUserProfile>(
-        "user",
-        "/user",
       ),
     },
   ],

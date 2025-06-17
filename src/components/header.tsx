@@ -4,7 +4,6 @@
  */
 
 import GithubIcon from "./icons/github.tsx";
-import LoginIcon from "./icons/login.tsx";
 import WikiIcon from "./icons/wiki.tsx";
 
 export default function Header() {
@@ -20,12 +19,6 @@ export default function Header() {
       label: "Github",
       Icon: GithubIcon,
       isExternal: true,
-    },
-    {
-      href: "/dashboard",
-      label: "Login",
-      Icon: LoginIcon,
-      isExternal: false,
     },
   ];
   return (

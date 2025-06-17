@@ -3,12 +3,9 @@
  * All rights reserved.
  */
 
-/// <reference lib="deno.unstable" />
-
 import {STATUS_CODE} from "$fresh/server.ts";
 import {GITHUB, KvData, KvStore} from "./constants.ts";
 import {Octokit} from "@octokit/core";
-import {getSessionId} from "../plugins/oauth.ts";
 
 /**
  * Fetch data from GitHub API
@@ -115,79 +112,6 @@ export function createOrgDataHandler<T>(
       return new Response(e instanceof Error ? e.message : String(e), {
         status: STATUS_CODE.InternalServerError,
       });
-    }
-  };
-}
-
-interface SessionData {
-  accessToken: string;
-}
-
-/**
- * Creates a generic API route handler for fetching data related to the authenticated user.
- * @template T The expected type of the data to be fetched.
- * @param {string} dataType A string identifier for the type of data being fetched (used for caching).
- * @param {string} endpoint The GitHub API endpoint to fetch data from (e.g. "/user", "/user/orgs").
- * @returns {(request: Request) => Promise<Response>} A reusable API route handler.
- */
-export function createUserDataHandler<T>(
-  dataType: string,
-  endpoint: string,
-): (request: Request) => Promise<Response> {
-  return async (request: Request): Promise<Response> => {
-    const sessionId = await getSessionId(request);
-
-    if (!sessionId) {
-      return new Response(
-        JSON.stringify({error: "Not authenticated"}),
-        {
-          status: STATUS_CODE.Unauthorized,
-          headers: {"Content-Type": "application/json"},
-        },
-      );
-    }
-
-    try {
-      const sessionKey = ["site_sessions", sessionId];
-      const sessionResult = await KvStore.getItem<SessionData>(sessionKey);
-
-      if (!sessionResult?.accessToken) {
-        console.warn(`Access token not found for session ID: ${sessionId}`);
-        return new Response(
-          JSON.stringify({error: "Invalid session or token missing"}),
-          {
-            status: STATUS_CODE.Unauthorized,
-            headers: {"Content-Type": "application/json"},
-          },
-        );
-      }
-
-      const data = await getCachedData<T>(
-        dataType,
-        sessionId,
-        "user session",
-        endpoint,
-        sessionResult.accessToken,
-      );
-
-      return new Response(JSON.stringify(data), {
-        headers: {"Content-Type": "application/json"},
-      });
-    } catch (error) {
-      console.error(
-        `API Error in ${dataType} handler (Session: ${sessionId}):`,
-        error,
-      );
-      const errorMessage = error instanceof Error
-        ? error.message
-        : "Unknown error";
-      return new Response(
-        JSON.stringify({error: `Server error: ${errorMessage}`}),
-        {
-          status: STATUS_CODE.InternalServerError,
-          headers: {"Content-Type": "application/json"},
-        },
-      );
     }
   };
 }
