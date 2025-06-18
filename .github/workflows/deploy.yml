@@ -11,17 +11,17 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      id-token: write # Needed for auth with Deno Deploy
-      contents: read # Needed to clone the repository
+      id-token: write
+      contents: read
 
     steps:
       - name: Clone repository
         uses: actions/checkout@v4
 
       - name: Install Deno
-        uses: denoland/setup-deno@v2
+        uses: denoland/setup-deno@e95548e56dfa95d4e1a28d6f422fafe75c4c26fb
         with:
-          deno-version: v2.x
+          deno-version: vx.x.x
 
       - name: Build step
         run: "deno task build"
@@ -30,7 +30,7 @@ jobs:
           GITHUB_CLIENT_SECRET: ${{ secrets.OAUTH_CLIENT_SECRET }}
 
       - name: Upload to Deno Deploy
-        uses: denoland/deployctl@v1
+        uses: denoland/deployctl@7bded90d0d09cd99bbfb513966146315db97618b
         with:
           project: "xodium"
           entrypoint: "src/main.ts"
