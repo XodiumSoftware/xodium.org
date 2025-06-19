@@ -29,7 +29,7 @@ export default function Carousel({ images, interval = 5 }: CarouselProps) {
   }
 
   return (
-    <div className="relative w-full overflow-hidden max-h-screen">
+    <div className="relative w-full overflow-hidden">
       {/* Label */}
       <h2 className="absolute text-3xl sm:text-4xl font-bold tracking-tight bg-slate-100 dark:bg-slate-900 text-black dark:text-white p-3 rounded-br-lg z-10">
         Projects
