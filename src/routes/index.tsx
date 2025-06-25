@@ -8,7 +8,6 @@ import Header from "../components/header.tsx";
 import Typewriter from "../islands/typewriter.tsx";
 import Grid from "../components/grid.tsx";
 import TeamCards from "../islands/teamcards.tsx";
-import Carousel from "../islands/carousel.tsx";
 
 export default function Home() {
   return (
@@ -84,13 +83,7 @@ export default function Home() {
         id="projects"
         className="bg-slate-100 dark:bg-slate-900 pb-24 sm:pb-32"
       >
-        <Carousel
-          images={[
-            "https://placehold.co/800x400",
-            "https://placehold.co/800x400",
-            "https://placehold.co/800x400",
-          ]}
-        />
+        {/* TODO */}
       </section>
 
       {/* Team section */}
