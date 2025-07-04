@@ -10,6 +10,39 @@ import Grid from "../components/grid.tsx";
 import TeamCards from "../islands/teamcards.tsx";
 import ProjectCard from "../components/projectcard.tsx";
 
+const projects = [
+  {
+    title: "xBIM",
+    description: "All-in solution to BIM models, written in Rust",
+    link: "https://github.com/XodiumSoftware/xBIM",
+    language: "Rust",
+  },
+  {
+    title: "VanillaPlus",
+    description: "Minecraft plugin that enhances the base gameplay",
+    link: "https://github.com/XodiumSoftware/VanillaPlus",
+    language: "Kotlin",
+  },
+  {
+    title: "xodium.org",
+    description: " This organization's website ",
+    link: "https://github.com/XodiumSoftware/xodium.org",
+    language: "TypeScript",
+  },
+  {
+    title: "IllyriaRP",
+    description: " IllyriaRPG server custom resourcepack",
+    link: "https://github.com/XodiumSoftware/IllyriaRP",
+    language: "",
+  },
+  {
+    title: "Illyrion",
+    description: " Discord Bot for Personal use",
+    link: "https://github.com/XodiumSoftware/Illyrion",
+    language: "Python",
+  },
+];
+
 export default function Home() {
   return (
     <div>
@@ -82,14 +115,29 @@ export default function Home() {
       {/*Projects section*/}
       <section
         id="projects"
-        className="bg-slate-100 dark:bg-slate-900 pb-24 sm:pb-32"
+        className="bg-slate-100 dark:bg-slate-900 pb-24 sm:pb-32 px-6"
       >
-        <ProjectCard
-          title="xBIM"
-          description="All-in solution to BIM models, written in Rust"
-          link="https://github.com/XodiumSoftware/"
-          language="Rust"
-        />
+        <div className="mx-auto max-w-7xl">
+          <div className="max-w-2xl mx-auto text-center mb-12">
+            <h2 className="text-3xl font-bold tracking-tight text-black dark:text-white sm:text-4xl">
+              Our Projects
+            </h2>
+            <p className="mt-6 text-lg leading-8 text-gray-600 dark:text-slate-400">
+              Explore our open-source projects and contributions.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+            {projects.map((project, index) => (
+              <ProjectCard
+                key={index}
+                title={project.title}
+                description={project.description}
+                link={project.link}
+                language={project.language}
+              />
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* Team section */}
