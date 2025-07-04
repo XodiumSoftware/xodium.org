@@ -7,8 +7,8 @@ import Footer from "../components/footer.tsx";
 import Header from "../components/header.tsx";
 import Typewriter from "../islands/typewriter.tsx";
 import Grid from "../components/grid.tsx";
-import TeamCards from "../islands/teamcards.tsx";
-import ProjectCard from "../components/projectcard.tsx";
+import TeamGrid from "../islands/teamgrid.tsx";
+import ProjectGrid from "../islands/projectgrid.tsx";
 
 const projects = [
   {
@@ -126,16 +126,8 @@ export default function Home() {
               Explore our open-source projects and contributions.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
-            {projects.map((project, index) => (
-              <ProjectCard
-                key={index}
-                title={project.title}
-                description={project.description}
-                link={project.link}
-                language={project.language}
-              />
-            ))}
+          <div>
+            <ProjectGrid />
           </div>
         </div>
       </section>
@@ -154,7 +146,7 @@ export default function Home() {
               No matter the project, our team can handle it.
             </p>
           </div>
-          <TeamCards />
+          <TeamGrid />
         </div>
       </section>
       <Footer />
