@@ -42,7 +42,7 @@ export default function ProjectCard(
   { title, description, link, language }: ProjectCardProps,
 ) {
   return (
-    <a href={link} target="_blank" rel="noopener noreferrer">
+    <a href={link || "#"} target="_blank" rel="noopener noreferrer">
       <div className="card glass text-white shadow-2xl rounded-lg p-4 hover:outline hover:outline-[#CB2D3E] h-full">
         <div className="card-body flex flex-col justify-between h-full">
           <div>
