@@ -10,10 +10,10 @@
 import * as $_404 from "./routes/_404.tsx";
 import * as $_app from "./routes/_app.tsx";
 import * as $index from "./routes/index.tsx";
-import * as $carousel from "./islands/carousel.tsx";
-import * as $teamcards from "./islands/teamcards.tsx";
+import * as $projectgrid from "./islands/projectgrid.tsx";
+import * as $teamgrid from "./islands/teamgrid.tsx";
 import * as $typewriter from "./islands/typewriter.tsx";
-import type {Manifest} from "$fresh/server.ts";
+import type {Manifes t} from "$fresh/server.ts";
 
 const manifest = {
   routes: {
@@ -22,8 +22,8 @@ const manifest = {
     "./routes/index.tsx": $index,
   },
   islands: {
-    "./islands/carousel.tsx": $carousel,
-    "./islands/teamcards.tsx": $teamcards,
+    "./islands/projectgrid.tsx": $projectgrid,
+    "./islands/teamgrid.tsx": $teamgrid,
     "./islands/typewriter.tsx": $typewriter,
   },
   baseUrl: import.meta.url,

@@ -7,7 +7,8 @@ import Footer from "../components/footer.tsx";
 import Header from "../components/header.tsx";
 import Typewriter from "../islands/typewriter.tsx";
 import Grid from "../components/grid.tsx";
-import TeamCards from "../islands/teamcards.tsx";
+import ProjectGrid from "../islands/projectgrid.tsx";
+import TeamGrid from "../islands/teamgrid.tsx";
 
 export default function Home() {
   return (
@@ -78,19 +79,25 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Projects section */}
-      {/*<section*/}
-      {/*  id="projects"*/}
-      {/*  className="bg-slate-100 dark:bg-slate-900 pb-24 sm:pb-32"*/}
-      {/*>*/}
-      {/*  <Carousel*/}
-      {/*    images={[*/}
-      {/*      "https://placehold.co/800x400",*/}
-      {/*      "https://placehold.co/800x400",*/}
-      {/*      "https://placehold.co/800x400",*/}
-      {/*    ]}*/}
-      {/*  />*/}
-      {/*</section>*/}
+      {/*Projects section*/}
+      <section
+        id="projects"
+        className="bg-slate-100 dark:bg-slate-900 pb-24 sm:pb-32 px-6"
+      >
+        <div className="mx-auto max-w-7xl">
+          <div className="max-w-2xl mx-auto text-center mb-12">
+            <h2 className="text-3xl font-bold tracking-tight text-black dark:text-white sm:text-4xl">
+              Our Projects
+            </h2>
+            <p className="mt-6 text-lg leading-8 text-gray-600 dark:text-slate-400">
+              Explore our open-source projects and contributions.
+            </p>
+          </div>
+          <div>
+            <ProjectGrid />
+          </div>
+        </div>
+      </section>
 
       {/* Team section */}
       <section
@@ -106,7 +113,7 @@ export default function Home() {
               No matter the project, our team can handle it.
             </p>
           </div>
-          <TeamCards />
+          <TeamGrid />
         </div>
       </section>
       <Footer />

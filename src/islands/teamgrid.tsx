@@ -7,7 +7,7 @@ import {useEffect, useState} from "preact/hooks";
 import {GITHUB} from "../utils/constants.ts";
 import {Member} from "../plugins/github.ts";
 
-export default function TeamCards() {
+export default function TeamGrid() {
   const [members, setMembers] = useState<Member[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
