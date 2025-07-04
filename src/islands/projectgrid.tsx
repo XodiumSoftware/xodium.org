@@ -26,7 +26,7 @@ export default function ProjectGrid() {
           console.error(
             `Failed to fetch organization projects: ${response.status} ${response.statusText}`,
           );
-          setError("Failed to load team projects.");
+          setError("Failed to load projects.");
           return;
         }
 
