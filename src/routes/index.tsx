@@ -8,6 +8,7 @@ import Header from "../components/header.tsx";
 import Typewriter from "../islands/typewriter.tsx";
 import Grid from "../components/grid.tsx";
 import TeamCards from "../islands/teamcards.tsx";
+import ProjectCard from "../components/projectcard.tsx";
 
 export default function Home() {
   return (
@@ -83,7 +84,12 @@ export default function Home() {
         id="projects"
         className="bg-slate-100 dark:bg-slate-900 pb-24 sm:pb-32"
       >
-        {/* TODO */}
+        <ProjectCard
+          title="xBIM"
+          description="All-in solution to BIM models, written in Rust"
+          link="https://github.com/XodiumSoftware/"
+          language="Rust"
+        />
       </section>
 
       {/* Team section */}

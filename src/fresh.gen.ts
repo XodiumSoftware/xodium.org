@@ -12,13 +12,13 @@ import * as $_app from "./routes/_app.tsx";
 import * as $index from "./routes/index.tsx";
 import * as $teamcards from "./islands/teamcards.tsx";
 import * as $typewriter from "./islands/typewriter.tsx";
-import type {Manifest} from "$fresh/server.ts";
+import type {Manifes t} from "$fresh/server.ts";
 
 const manifest = {
   routes: {
     "./routes/_404.tsx": $_404,
     "./routes/_app.tsx": $_app,
-    "./routes /index.t sx": $index,
+    "./routes/index.tsx": $index,
   },
   islands: {
     "./islands/teamcards.tsx": $teamcards,
