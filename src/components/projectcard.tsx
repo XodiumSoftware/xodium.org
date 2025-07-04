@@ -25,6 +25,7 @@ function LanguageCircle({ language }: { language: string }) {
     C: "bg-[#555555]",
     "C++": "bg-[#f34b7d]",
     Kotlin: "bg-[#A97BFF]",
+    java: "bg-[#b07219]",
   };
 
   const color = colorMap[language] || "bg-gray-500";
@@ -47,7 +48,7 @@ export default function ProjectCard(
         <div className="card-body flex flex-col justify-between h-full">
           <div>
             <h1 className="card-title mb-2.5 text-[#CB2D3E]">
-              <GithubRepoIcon className="inline-block mr-2 text-gray-600 dark:text-slate-400"  />
+              <GithubRepoIcon className="inline-block mr-2 text-gray-600 dark:text-slate-400" />
               {title}
             </h1>
             <p className="mb-4 text-gray-600 dark:text-slate-400">
