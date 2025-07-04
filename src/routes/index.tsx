@@ -7,41 +7,8 @@ import Footer from "../components/footer.tsx";
 import Header from "../components/header.tsx";
 import Typewriter from "../islands/typewriter.tsx";
 import Grid from "../components/grid.tsx";
-import TeamGrid from "../islands/teamgrid.tsx";
 import ProjectGrid from "../islands/projectgrid.tsx";
-
-const projects = [
-  {
-    title: "xBIM",
-    description: "All-in solution to BIM models, written in Rust",
-    link: "https://github.com/XodiumSoftware/xBIM",
-    language: "Rust",
-  },
-  {
-    title: "VanillaPlus",
-    description: "Minecraft plugin that enhances the base gameplay",
-    link: "https://github.com/XodiumSoftware/VanillaPlus",
-    language: "Kotlin",
-  },
-  {
-    title: "xodium.org",
-    description: " This organization's website ",
-    link: "https://github.com/XodiumSoftware/xodium.org",
-    language: "TypeScript",
-  },
-  {
-    title: "IllyriaRP",
-    description: " IllyriaRPG server custom resourcepack",
-    link: "https://github.com/XodiumSoftware/IllyriaRP",
-    language: "",
-  },
-  {
-    title: "Illyrion",
-    description: " Discord Bot for Personal use",
-    link: "https://github.com/XodiumSoftware/Illyrion",
-    language: "Python",
-  },
-];
+import TeamGrid from "../islands/teamgrid.tsx";
 
 export default function Home() {
   return (
