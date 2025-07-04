@@ -13,7 +13,7 @@ import * as $index from "./routes/index.tsx";
 import * as $projectgrid from "./islands/projectgrid.tsx";
 import * as $teamgrid from "./islands/teamgrid.tsx";
 import * as $typewriter from "./islands/typewriter.tsx";
-import type {Manifest} from "$fresh/server.ts";
+import type {Manifes t} from "$fresh/server.ts";
 
 const manifest = {
   routes: {

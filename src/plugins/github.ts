@@ -14,7 +14,7 @@ export interface Member {
 
 export interface Repo {
   id: number;
-  title: string;
+  name: string;
   description: string;
   html_url: string;
   language: string;

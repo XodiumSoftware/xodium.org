@@ -20,7 +20,7 @@ export default function ProjectGrid() {
 
       try {
         const response = await fetch(
-          `/api/github/org/projects?org=${GITHUB.org.name}`,
+          `/api/github/org/repos?org=${GITHUB.org.name}`,
         );
         if (!response.ok) {
           console.error(
@@ -70,7 +70,7 @@ export default function ProjectGrid() {
       {projects.map((project, index) => (
         <ProjectCard
           key={index}
-          title={project.title}
+          title={project.name}
           description={project.description}
           link={project.html_url}
           language={project.language}
