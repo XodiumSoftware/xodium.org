@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2025. Xodium.
- * All rights reserved.
- */
-
 import {useEffect, useState} from "preact/hooks";
 import ProjectCard from "../components/projectcard.tsx";
 import {GITHUB} from "../utils/constants.ts";

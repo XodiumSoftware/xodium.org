@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2025. Xodium.
- * All rights reserved.
- */
-
 import {type PageProps} from "$fresh/server.ts";
 import Version from "../components/version.tsx";
 

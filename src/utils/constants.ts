@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2025. Xodium.
- * All rights reserved.
- */
-
 /// <reference lib="deno.unstable" />
 
 import {HOUR} from "$std/datetime/constants.ts";

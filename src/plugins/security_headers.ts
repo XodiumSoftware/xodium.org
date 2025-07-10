@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2025. Xodium.
- * All rights reserved.
- */
-
 import type {Plugin} from "$fresh/server.ts";
 
 export default {

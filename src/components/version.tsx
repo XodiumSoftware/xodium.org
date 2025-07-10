@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2025. Xodium.
- * All rights reserved.
- */
-
 import {CONFIG} from "../utils/constants.ts";
 
 export default function Version() {

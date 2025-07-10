@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2025. Xodium.
- * All rights reserved.
- */
-
 import {Plugin} from "$fresh/server.ts";
 import {createOrgDataHandler} from "../utils/utils.ts";
 

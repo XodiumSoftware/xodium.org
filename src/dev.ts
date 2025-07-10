@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2025. Xodium.
- * All rights reserved.
- */
-
 import dev from "$fresh/dev.ts";
 import config from "./fresh.config.ts";
 

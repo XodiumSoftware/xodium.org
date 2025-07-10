@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2025. Xodium.
- * All rights reserved.
- */
-
 export default function Footer() {
   const homePage = "/";
   const currentYear = new Date().getFullYear();

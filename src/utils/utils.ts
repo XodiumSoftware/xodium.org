@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2025. Xodium.
- * All rights reserved.
- */
-
 import {STATUS_CODE} from "$fresh/server.ts";
 import {GITHUB, KvData, KvStore} from "./constants.ts";
 import {Octokit} from "@octokit/core";
