@@ -3,6 +3,7 @@ import {Head} from "fresh/runtime";
 import {define} from "../utils.ts";
 import Counter from "../islands/Counter.tsx";
 
+// noinspection JSUnusedGlobalSymbols
 export default define.page(function Home(ctx) {
     const count = useSignal(3);
 

@@ -11,7 +11,7 @@ app.use(async (ctx) => {
     return await ctx.next();
 });
 
-// this is the same as the /api/:name route defined via a file. feel free to delete this!
+// This is the same as the /api/:name route defined via a file. Feel free to delete this!
 app.get("/api2/:name", (ctx) => {
     const name = ctx.params.name;
     return new Response(
@@ -19,7 +19,7 @@ app.get("/api2/:name", (ctx) => {
     );
 });
 
-// this can also be defined via a file. feel free to delete this!
+// This can also be defined via a file. Feel free to delete this!
 const exampleLoggerMiddleware = define.middleware((ctx) => {
     console.log(`${ctx.req.method} ${ctx.req.url}`);
     return ctx.next();
