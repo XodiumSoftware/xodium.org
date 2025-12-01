@@ -4,7 +4,7 @@ import Footer from "../components/footer.tsx";
 import Grid from "../components/grid.tsx";
 import Header from "../components/header.tsx";
 import ProjectGrid from "../islands/projectgrid.tsx";
-import Typewriter from "../islands/typewriter.tsx";
+import Typewriter from "../islands/typewriter.tsx"; // noinspection JSUnusedGlobalSymbols
 
 // noinspection JSUnusedGlobalSymbols
 export default define.page(() => (
@@ -26,7 +26,7 @@ export default define.page(() => (
       <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
         <div className="text-center">
           <h1 className="text-4xl font-bold tracking-tight text-black dark:text-white sm:text-6xl">
-            CODING&nbsp;
+            CODING&nbsp;{""}
             <span className="bg-gradient-to-r from-[#CB2D3E] to-[#EF473A] inline-block text-transparent bg-clip-text">
               <Typewriter
                 text={["MODULAR", "STRUCTURED", "EFFICIENT"]}
@@ -38,8 +38,9 @@ export default define.page(() => (
             </span>
           </h1>
           <p className="mt-6 text-lg leading-8 text-gray-600 dark:text-slate-400">
-            Open-Source&nbsp;<strong className="text-[#CB2D3E]">
-              (CAD)&nbsp;
+            Open-Source&nbsp;{""}
+            <strong className="text-[#CB2D3E]">
+              (CAD)&nbsp;{""}
             </strong>Software Company
           </p>
           <div className="mt-10 flex items-center justify-center gap-x-6">
@@ -59,7 +60,7 @@ export default define.page(() => (
                 type="button"
                 className="text-sm font-semibold leading-6 text-black dark:text-white hover:text-[#CB2D3E]"
               >
-                Documentation&nbsp;
+                Documentation&nbsp;{""}
                 <span aria-hidden="true">→</span>
               </button>
             </a>
