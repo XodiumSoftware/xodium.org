@@ -1,14 +1,14 @@
 import {createDefine} from "fresh";
-import {HOUR} from "https://jsr.io/@fresh/core/2.2.0/src/constants.ts";
 
 export interface State {
   shared: string;
 }
 
+export const SECOND = 1000;
+export const MINUTE = SECOND * 60;
+export const HOUR = MINUTE * 60;
 export const define = createDefine<State>();
-
 export const CONFIG = { version: "3.0.0" };
-
 export const GITHUB = {
   api: {
     url: "https://api.github.com",

@@ -1,6 +1,6 @@
 import {useEffect, useState} from "preact/hooks";
 import ProjectCard from "../components/projectcard.tsx";
-import {GITHUB} from "../utils/kvstore.ts";
+import {GITHUB} from "../utils.ts";
 import {Repo} from "../plugins/github.ts";
 
 export default function ProjectGrid() {
