@@ -1,7 +1,15 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "assignees": [
+    "illyrius666"
+  ],
   "automerge": true,
-  "automergeType": "pr",
-  "labels": ["Dependencies"]
+  "baseBranchPatterns": [
+    "dev"
+  ],
+  "extends": [
+    "config:recommended"
+  ],
+  "prHeader": "Dependencies Updater",
+  "commitMessagePrefix": "[ci-skip]"
 }

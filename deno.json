@@ -1,13 +1,11 @@
 {
-  "lock": false,
+  "nodeModulesDir": "manual",
   "tasks": {
-    "check": "deno fmt --check && deno lint && deno check **/*.ts && deno check **/*.tsx",
-    "cli": "echo \"import '\\$fresh/src/dev/cli.ts'\" | deno run --unstable-kv -A -",
-    "manifest": "deno task cli manifest $(pwd)",
-    "start": "deno run --unstable-kv --env -A --watch=src/static/,src/routes/ src/dev.ts",
-    "build": "deno run --unstable-kv -A src/dev.ts build",
-    "preview": "deno run --unstable-kv -A src/main.ts",
-    "update": "deno run -A -r https://fresh.deno.dev/update ."
+    "check": "deno fmt --check . && deno lint . && deno check",
+    "dev": "vite",
+    "build": "vite build",
+    "start": "deno serve -A _fresh/server.js",
+    "update": "deno run -A -r jsr:@fresh/update ."
   },
   "lint": {
     "rules": {
@@ -17,26 +15,48 @@
       ]
     }
   },
-  "exclude": ["**/_fresh/*"],
+  "exclude": [
+    "**/_fresh/*"
+  ],
   "imports": {
-    "@axiod/interfaces": "https://deno.land/x/axiod@0.26.2/interfaces.ts",
-    "@axiod/mod": "https://deno.land/x/axiod@0.26.2/mod.ts",
-    "@deno/kv-oauth": "jsr:@deno/kv-oauth@^0.11.0",
-    "@deno/surrealdb": "https://deno.land/x/surrealdb@v0.11.0/mod.ts",
-    "@deno/surrealdb/types": "https://deno.land/x/surrealdb@v0.11.0/src/types.ts",
-    "@octokit/core": "https://esm.sh/@octokit/core@5.0.1",
-    "@preact/signals": "https://esm.sh/*@preact/signals@1.2.2",
-    "@preact/signals-core": "https://esm.sh/*@preact/signals-core@1.5.1",
-    "@std/cache": "jsr:@std/cache@^0.2.0",
-    "tailwindcss": "npm:/tailwindcss@3.4.1",
-    "$fresh/": "https://deno.land/x/fresh@1.7.3/",
-    "$std/": "https://deno.land/std@0.216.0/",
-    "preact": "https://esm.sh/preact@10.22.0",
-    "preact/": "https://esm.sh/preact@10.22.0/"
+    "@/": "./",
+    "@std/datetime": "jsr:@std/datetime@^0.225.5",
+    "fresh": "jsr:@fresh/core@^2.2.0",
+    "preact": "npm:preact@^10.27.2",
+    "@preact/signals": "npm:@preact/signals@^2.5.1",
+    "@fresh/plugin-vite": "jsr:@fresh/plugin-vite@^1.0.8",
+    "vite": "npm:vite@^7.2.6",
+    "tailwindcss": "npm:tailwindcss@^4.1.17",
+    "@tailwindcss/vite": "npm:@tailwindcss/vite@^4.1.17",
+    "@octokit/core": "https://esm.sh/@octokit/core@5.0.1"
   },
   "compilerOptions": {
-    "jsx": "react-jsx",
-    "jsxImportSource": "preact"
-  },
-  "nodeModulesDir": "auto"
+    "lib": [
+      "dom",
+      "dom.asynciterable",
+      "dom.iterable",
+      "deno.ns"
+    ],
+    "jsx": "precompile",
+    "jsxImportSource": "preact",
+    "jsxPrecompileSkipElements": [
+      "a",
+      "img",
+      "source",
+      "body",
+      "html",
+      "head",
+      "title",
+      "meta",
+      "script",
+      "link",
+      "style",
+      "base",
+      "noscript",
+      "template"
+    ],
+    "types": [
+      "vite/client"
+    ]
+  }
 }
