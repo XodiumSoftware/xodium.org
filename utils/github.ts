@@ -1,6 +1,6 @@
-import {STATUS_CODE} from "$fresh/server.ts";
-import {GITHUB, KvData, KvStore} from "./constants.ts";
 import {Octokit} from "@octokit/core";
+import {GITHUB} from "../utils.ts";
+import {KvData, KvStore} from "./kvstore.ts";
 
 /**
  * Fetch data from GitHub API
@@ -88,7 +88,7 @@ export function createOrgDataHandler<T>(
     const param = url.searchParams.get("org");
     if (!param) {
       return new Response("Missing 'org' parameter", {
-        status: STATUS_CODE.BadRequest,
+        status: 400,
       });
     }
 
@@ -105,7 +105,7 @@ export function createOrgDataHandler<T>(
     } catch (e) {
       console.error(`Error in ${dataType} API route:`, e);
       return new Response(e instanceof Error ? e.message : String(e), {
-        status: STATUS_CODE.InternalServerError,
+        status: 500,
       });
     }
   };

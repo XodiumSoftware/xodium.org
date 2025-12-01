@@ -1,5 +1,5 @@
 import {useEffect, useState} from "preact/hooks";
-import {GITHUB} from "../utils/constants.ts";
+import {GITHUB} from "../utils/kvstore.ts";
 import {Member} from "../plugins/github.ts";
 
 export default function TeamGrid() {

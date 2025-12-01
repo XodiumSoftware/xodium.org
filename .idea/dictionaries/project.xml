@@ -6,6 +6,7 @@
       <w>noopener</w>
       <w>noreferrer</w>
       <w>nosniff</w>
+      <w>orgs</w>
       <w>sameorigin</w>
       <w>signin</w>
       <w>signout</w>

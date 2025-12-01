@@ -1,5 +1,6 @@
-import {Plugin} from "$fresh/server.ts";
-import {createOrgDataHandler} from "../utils/utils.ts";
+import {App} from "fresh";
+import {createOrgDataHandler} from "../utils/github.ts";
+import {State} from "../utils.ts";
 
 export interface Member {
   login: string;
@@ -15,22 +16,20 @@ export interface Repo {
   language: string;
 }
 
-export default {
-  name: "github",
-  routes: [
-    {
-      path: "/api/github/org/members",
-      handler: createOrgDataHandler<Member[]>(
-        "members",
-        "/orgs/{org}/members",
-      ),
-    },
-    {
-      path: "/api/github/org/repos",
-      handler: createOrgDataHandler<Repo[]>(
-        "repos",
-        "/orgs/{org}/repos",
-      ),
-    },
-  ],
-} as Plugin;
+export default function githubPlugin(app: App<State>) {
+  app.get(
+    "/api/github/org/members",
+    createOrgDataHandler<Member[]>(
+      "members",
+      "/orgs/{org}/members",
+    ),
+  );
+
+  app.get(
+    "/api/github/org/repos",
+    createOrgDataHandler<Repo[]>(
+      "repos",
+      "/orgs/{org}/repos",
+    ),
+  );
+}

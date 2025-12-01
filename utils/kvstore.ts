@@ -1,21 +1,5 @@
 /// <reference lib="deno.unstable" />
 
-import {HOUR} from "$std/datetime/constants.ts";
-
-export const CONFIG = { version: "2.5.0" };
-
-export const GITHUB = {
-  api: {
-    url: "https://api.github.com",
-    version: "2022-11-28",
-    members: { cacheExpiry: HOUR },
-  },
-  org: {
-    name: "XodiumSoftware",
-    user_agent: "XodiumSoftware/xodium.org",
-  },
-};
-
 /**
  * The structure for KV store data.
  */
