@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2025. Xodium.
- * All rights reserved.
- */
-
 import GithubIcon from "./icons/github.tsx";
 import WikiIcon from "./icons/wiki.tsx";
 

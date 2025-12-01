@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2025. Xodium.
- * All rights reserved.
- */
-
 import {JSX} from "preact";
 
 export default function WikiIcon(props: JSX.SVGAttributes<SVGSVGElement>) {

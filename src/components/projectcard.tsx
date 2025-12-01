@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2025. Xodium.
- * All rights reserved.
- */
-
 import GithubRepoIcon from "./icons/repo.tsx";
 
 interface ProjectCardProps {

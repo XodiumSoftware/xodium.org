@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2025. Xodium.
- * All rights reserved.
- */
-
 import {Head} from "$fresh/runtime.ts";
 import Footer from "../components/footer.tsx";
 import Grid from "../components/grid.tsx";

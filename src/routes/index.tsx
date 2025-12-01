@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2025. Xodium.
- * All rights reserved.
- */
-
 import Footer from "../components/footer.tsx";
 import Header from "../components/header.tsx";
 import Typewriter from "../islands/typewriter.tsx";

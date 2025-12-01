@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2025. Xodium.
- * All rights reserved.
- */
-
 import {useEffect, useState} from "preact/hooks";
 import {GITHUB} from "../utils/constants.ts";
 import {Member} from "../plugins/github.ts";

@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2025. Xodium.
- * All rights reserved.
- */
-
 import {useEffect, useState} from "preact/hooks";
 
 export interface TypewriterProps {
@@ -19,7 +14,7 @@ export default function Typewriter({
   loop,
   pause,
   unwrite,
-                                   }: TypewriterProps) {
+}: TypewriterProps) {
   const [displayed, setDisplayed] = useState("");
   const [letterIndex, setLetterIndex] = useState(0);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);

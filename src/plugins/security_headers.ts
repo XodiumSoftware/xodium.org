@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2025. Xodium.
- * All rights reserved.
- */
-
 import type {Plugin} from "$fresh/server.ts";
 
 export default {
@@ -36,7 +31,7 @@ export default {
           response.headers.set("X-XSS-Protection", "1; mode=block");
           response.headers.set(
             "Content-Security-Policy",
-              "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: avatars.githubusercontent.com; font-src 'self';",
+            "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: avatars.githubusercontent.com; font-src 'self';",
           );
           return response;
         },
