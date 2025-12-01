@@ -27,7 +27,7 @@ async function fetchFromGitHub<T>(
  * @template T The type of data to be returned
  * @param {string} cacheKey The key prefix to use for caching in Deno KV.
  * @param {string} identifier The specific identifier (e.g. org name, username, session ID) for this data.
- * @param {string} identifierType A descriptive name for the identifier type (e.g. "organisation", "user session") used for logging/errors.
+ * @param {string} identifierType A descriptive name for the identifier type (e.g. "organization", "user session") used for logging/errors.
  * @param {string} apiEndpoint The GitHub API endpoint to fetch data from.
  * @param {string | undefined} token The GitHub token to use.
  * @param {number} cacheExpiry The cache expiry time in milliseconds.
@@ -74,10 +74,10 @@ async function getCachedData<T>(
 }
 
 /**
- * Creates a generic API route handler for fetching different types of organisation data.
+ * Creates a generic API route handler for fetching different types of organization data.
  * @param {string} dataType The type of data being fetched (for caching purposes)
  * @param {string} endpoint The GitHub API endpoint path to call (without the org part)
- * @returns {(request: Request) => Promise<Response>} A reusable API route handler
+ * @returns {(request: Request) => Promise<Response>} A reusable API route handler.
  */
 export function createOrgDataHandler<T>(
   dataType: string,
