@@ -1,10 +1,17 @@
-import {App, csp, staticFiles, trailingSlashes} from "fresh";
+import {App, csp, csrf, staticFiles, trailingSlashes} from "fresh";
 import {type State} from "./utils.ts";
 import githubPlugin from "./plugins/github.ts";
 
 export const app = new App<State>();
+export const allowedOrigins = (origin: string | null): boolean =>
+  origin === "https://xodium.org" || origin?.endsWith(".xodium.org") === true;
 
 app.use(staticFiles());
+app.use(
+  csrf({
+    origin: allowedOrigins,
+  }),
+);
 app.use(csp({
   reportOnly: false,
   reportTo: "/api/csp",
