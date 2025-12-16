@@ -33,7 +33,7 @@ import {CONFIG} from "../utils.ts";
  */
 export default function Version() {
   return (
-    <div className="fixed bottom-0 m-2 text-base-content/60 text-sm">
+    <div className="fixed bottom-0 m-2 text-base-content/60 text-sm hidden 2xl:block">
       v{CONFIG.version}
     </div>
   );
