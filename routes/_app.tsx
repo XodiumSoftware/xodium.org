@@ -4,7 +4,7 @@ import {define} from "../utils.ts";
 // noinspection JSUnusedGlobalSymbols
 export default define.page(function App({ Component }) {
   return (
-    <html data-theme="dark">
+    <html data-theme="halloween">
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
