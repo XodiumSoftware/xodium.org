@@ -1,4 +1,8 @@
-@import "../node_modules/tailwindcss";
+@import "tailwindcss";
+
+@plugin "daisyui" {
+    themes: light --default, dark --prefersdark, halloween;
+}
 
 * {
     /*outline: 1px solid red !important;*/
