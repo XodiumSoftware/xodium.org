@@ -16,6 +16,10 @@ export interface Repo {
   language: string;
 }
 
+/**
+ * GitHub Plugin
+ * @param app
+ */
 export default function githubPlugin(app: App<State>) {
   app.get(
     "/api/github/org/members",
