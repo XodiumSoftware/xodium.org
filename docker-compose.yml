@@ -1,0 +1,22 @@
+services:
+  db:
+    image: ghcr.io/denoland/denokv:latest
+    container_name: xodiumdb
+    command: serve --access-token $${DENO_KV_ACCESS_TOKEN}
+    ports: [ "4512:4512" ]
+    environment:
+      DENO_KV_ACCESS_TOKEN: $${DENO_KV_ACCESS_TOKEN}
+    volumes: [ data:/data ]
+    restart: unless-stopped
+
+  web:
+    build: .
+    container_name: xodiumweb
+    ports: [ "8000:8000" ]
+    environment:
+      DENO_KV_ACCESS_TOKEN: $${DENO_KV_ACCESS_TOKEN}
+      DENO_KV_URL: "http://denokv:4512"
+    depends_on: [ db ]
+    restart: unless-stopped
+
+volumes: { data: }
