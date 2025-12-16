@@ -28,14 +28,6 @@ app.use(
         allowedOrigns,
     },
 )
-// app.use(csp({
-//     reportOnly: false,
-//     reportTo: "/api/csp",
-//     csp: [
-//         "script-src 'self' 'unsafe-inline'",
-//         "style-src 'self' 'unsafe-inline'",
-//     ],
-// }));
 app.use(trailingSlashes("never"));
 githubPlugin(app);
 app.fsRoutes();
