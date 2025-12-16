@@ -4,7 +4,7 @@ import Footer from "../components/footer.tsx";
 import Grid from "../components/grid.tsx";
 import Header from "../components/header.tsx";
 import ProjectGrid from "../islands/projectgrid.tsx";
-import Typewriter from "../islands/typewriter.tsx";
+import Typewriter from "../islands/typewriter.tsx"; // noinspection JSUnusedGlobalSymbols
 
 // noinspection JSUnusedGlobalSymbols
 export default define.page(() => (
@@ -45,19 +45,14 @@ export default define.page(() => (
           </p>
           <div className="mt-10 flex items-center justify-center gap-x-6">
             <a
-              className="btn btn-primary"
               href="https://github.com/XodiumSoftware"
+              className="btn btn-primary hover:btn-warning"
             >
               Get started
             </a>
-            <a href="https://wiki.xodium.org">
-              <button
-                type="button"
-                className="btn btn-ghost hover:text-primary"
-              >
-                Documentation&nbsp;{""}
-                <span aria-hidden="true">→</span>
-              </button>
+            <a href="https://wiki.xodium.org" className="hover:text-primary">
+              Documentation&nbsp;{""}
+              <span aria-hidden="true">→</span>
             </a>
           </div>
         </div>

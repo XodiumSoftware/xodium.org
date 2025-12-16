@@ -49,7 +49,7 @@ export default function Header() {
       <nav className="navbar max-w-7xl mx-auto">
         {/* Left side Header */}
         <div className="navbar-start gap-8">
-          <a href="" className="btn btn-ghost p-0">
+          <a href="" className="p-0">
             <img
               src="/favicon.svg"
               alt="Xodium Icon"
@@ -58,13 +58,13 @@ export default function Header() {
           </a>
           <a
             href="/#projects"
-            className="btn btn-ghost hover:text-primary text-sm font-semibold"
+            className="hover:text-primary text-sm font-semibold"
           >
             PROJECTS
           </a>
           <a
             href="/#team"
-            className="btn btn-ghost hover:text-primary text-sm font-semibold"
+            className="hover:text-primary text-sm font-semibold"
           >
             TEAM
           </a>
@@ -75,7 +75,7 @@ export default function Header() {
             {socialLinks.map(({ href, label, Icon, isExternal }) => (
               <li key={href}>
                 <a
-                  className="btn btn-ghost btn-circle hover:text-primary"
+                  className="hover:text-primary hover:bg-transparent"
                   href={href}
                   aria-label={label}
                   title={label}
