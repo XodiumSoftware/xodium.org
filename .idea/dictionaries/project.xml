@@ -13,6 +13,8 @@
       <w>signout</w>
       <w>surrealdb</w>
       <w>xodium</w>
+      <w>xodiumdb</w>
+      <w>xodiumweb</w>
     </words>
   </dictionary>
 </component>

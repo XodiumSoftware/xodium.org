@@ -4,7 +4,7 @@
     "check": "deno fmt --check . && deno lint . && deno check",
     "dev": "vite",
     "build": "vite build",
-    "start": "deno serve -A _fresh/server.js",
+    "start": "deno serve --unstable-kv -A _fresh/server.js",
     "update": "deno run -A -r jsr:@fresh/update ."
   },
   "lint": {
@@ -22,12 +22,12 @@
     "@/": "./",
     "@std/datetime": "jsr:@std/datetime@^0.225.5",
     "fresh": "jsr:@fresh/core@^2.2.0",
-    "preact": "npm:preact@^10.27.2",
+    "preact": "npm:preact@^10.28.0",
     "@preact/signals": "npm:@preact/signals@^2.5.1",
     "@fresh/plugin-vite": "jsr:@fresh/plugin-vite@^1.0.8",
-    "vite": "npm:vite@^7.2.6",
-    "tailwindcss": "npm:tailwindcss@^4.1.17",
-    "@tailwindcss/vite": "npm:@tailwindcss/vite@^4.1.17",
+    "vite": "npm:vite@^7.3.0",
+    "tailwindcss": "npm:tailwindcss@^4.1.18",
+    "@tailwindcss/vite": "npm:@tailwindcss/vite@^4.1.18",
     "@octokit/core": "https://esm.sh/@octokit/core@5.0.1"
   },
   "compilerOptions": {
