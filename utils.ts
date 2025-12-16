@@ -8,7 +8,7 @@ export const SECOND = 1000;
 export const MINUTE = SECOND * 60;
 export const HOUR = MINUTE * 60;
 export const define = createDefine<State>();
-export const CONFIG = {version: "3.0.5"};
+export const CONFIG = {version: "3.0.6"};
 export const GITHUB = {
   api: {
     url: "https://api.github.com",
