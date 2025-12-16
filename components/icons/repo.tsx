@@ -1,4 +1,4 @@
-import {JSX} from "preact";
+import type {SVGAttributes} from "preact/compat";
 
 /**
  * GithubRepoIcon Component
@@ -14,13 +14,8 @@ import {JSX} from "preact";
  * @example
  * // With custom styling
  * <GithubRepoIcon className="w-6 h-6 text-base-content/70" />
- *
- * @param {JSX.SVGAttributes<SVGSVGElement>} props - Standard SVG element attributes
- * @returns {JSX.Element} GitHub repository icon SVG
  */
-export default function GithubRepoIcon(
-  props: JSX.SVGAttributes<SVGSVGElement>,
-) {
+export default function GithubRepoIcon(props: SVGAttributes<SVGSVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

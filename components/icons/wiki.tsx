@@ -1,4 +1,4 @@
-import {JSX} from "preact";
+import type {SVGAttributes} from "preact/compat";
 
 /**
  * WikiIcon Component
@@ -14,11 +14,8 @@ import {JSX} from "preact";
  * @example
  * // With custom styling
  * <WikiIcon className="w-6 h-6 text-base-content/80" />
- *
- * @param {JSX.SVGAttributes<SVGSVGElement>} props - Standard SVG element attributes
- * @returns {JSX.Element} Wiki/document icon SVG
  */
-export default function WikiIcon(props: JSX.SVGAttributes<SVGSVGElement>) {
+export default function WikiIcon(props: SVGAttributes<SVGSVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
