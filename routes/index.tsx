@@ -4,7 +4,7 @@ import Footer from "../components/footer.tsx";
 import Grid from "../components/grid.tsx";
 import Header from "../components/header.tsx";
 import ProjectGrid from "../islands/projectgrid.tsx";
-import Typewriter from "../islands/typewriter.tsx"; // noinspection JSUnusedGlobalSymbols
+import Typewriter from "../islands/typewriter.tsx";
 
 // noinspection JSUnusedGlobalSymbols
 export default define.page(() => (

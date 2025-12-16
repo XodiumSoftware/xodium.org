@@ -58,13 +58,13 @@ export default function Header() {
           </a>
           <a
             href="/#projects"
-            className="btn btn-ghost text-sm font-semibold"
+            className="btn btn-ghost hover:text-primary text-sm font-semibold"
           >
             PROJECTS
           </a>
           <a
             href="/#team"
-            className="btn btn-ghost text-sm font-semibold"
+            className="btn btn-ghost hover:text-primary text-sm font-semibold"
           >
             TEAM
           </a>
@@ -75,7 +75,7 @@ export default function Header() {
             {socialLinks.map(({ href, label, Icon, isExternal }) => (
               <li key={href}>
                 <a
-                  className="btn btn-ghost btn-circle"
+                  className="btn btn-ghost btn-circle hover:text-primary"
                   href={href}
                   aria-label={label}
                   title={label}
