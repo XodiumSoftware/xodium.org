@@ -1,4 +1,6 @@
-@import "../node_modules/tailwindcss";
+@import "tailwindcss";
+
+@plugin "daisyui";
 
 * {
     /*outline: 1px solid red !important;*/
