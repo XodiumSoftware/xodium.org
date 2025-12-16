@@ -19,7 +19,7 @@ jobs:
     steps:
       - id: checkout
         name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - id: login_ghcr
         name: Log in to GitHub Container Registry
