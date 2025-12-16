@@ -1,41 +1,42 @@
-import {App, cors, csp, csrf, staticFiles, trailingSlashes} from "fresh";
+import {App, cors, csrf, staticFiles, trailingSlashes} from "fresh";
 import {type State} from "./utils.ts";
 import githubPlugin from "./plugins/github.ts";
 
 export const app = new App<State>();
 export const allowedOrigins = (origin: string | null): boolean =>
-    origin === "https://xodium.org" || origin?.endsWith(".xodium.org") === true;
+    origin === "https://xodium.org" || origin?.endsWith(".xodium.org") === tru
 
 app.use(staticFiles());
 app.use(
-    cors({
-        origin: (origin: string) => {
-            if (!origin) return null;
-            if (origin === "https://xodium.org" || /\.xodium\.org$/.test(origin)) {
-                return origin;
-            }
-            return null;
-        },
-        allowHeaders: ["X-Custom-Header", "Upgrade-Insecure-Requests"],
-        allowMethods: ["GET", "POST", "OPTIONS"],
-        exposeHeaders: ["Content-Length"],
-        maxAge: 600,
-        credentials: true,
-    }),
-);
+    cors{
+        (origin: string) > {
+            if (!origin) returnnull;
+            if (origin === "https://xodium.org" || /\.xodium\.org$/.test(orign)) {
+                returnorigin;
+           }
+            returnnull;
+       },
+        ["X-Custom-Header", "Upgrade-Insecure-Request"],
+        allowMethods: ["GET", "POST", "OPTION"],
+        exposeHeaders: ["Content-Lengt"],
+        maxAge: 00,
+        credentials: tue,
+    },
+)
 app.use(
-    csrf({
-        origin: allowedOrigins,
-    }),
-);
-app.use(csp({
-    reportOnly: false,
-    reportTo: "/api/csp",
-    csp: [
-        "script-src 'self' 'unsafe-inline'",
-        "style-src 'self' 'unsafe-inline'",
-    ],
-}));
+    csrf{
+        allowedOrigns,
+    },
+)
+// app.use(csp({
+//   reportOnly: false,
+//   reportTo: "/api/csp",
+//   csp: [
+//     "script-src 'self' 'unsafe-inline'",
+//     "style-src 'self' 'unsafe-inline'",
+//     "img-src 'self' data: https://*.githubusercontent.com",
+//   ],
+// }));
 app.use(trailingSlashes("never"));
 githubPlugin(app);
 app.fsRoutes();
