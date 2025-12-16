@@ -7,6 +7,16 @@ interface ProjectCardProps {
   language?: string;
 }
 
+/**
+ * LanguageCircle Component
+ *
+ * Displays a coloured badge representing a programming language.
+ * Uses a predefined colour mapping for common languages with fallback styling.
+ *
+ * @component
+ * @param {Object} props - Component props
+ * @param {string} props.language - The programming language to display
+ */
 function LanguageCircle({ language }: { language: string }) {
   const colorMap: { [key: string]: string } = {
     Rust: "bg-[#dea584]",
@@ -33,6 +43,28 @@ function LanguageCircle({ language }: { language: string }) {
   );
 }
 
+/**
+ * ProjectCard Component
+ *
+ * A card component for displaying project information with GitHub integration.
+ * Includes project title, description, language indicator, and external link.
+ *
+ * @component
+ * @example
+ * // Basic usage
+ * <ProjectCard
+ *   title="My Project"
+ *   description="A cool open-source project"
+ *   link="https://github.com/user/repo"
+ *   language="TypeScript"
+ * />
+ *
+ * @param {ProjectCardProps} props - Component properties
+ * @param {string} props.title - Project name
+ * @param {string} props.description - Project description
+ * @param {string} [props.link] - Optional external link (defaults to "#")
+ * @param {string} [props.language] - Optional programming language
+ */
 export default function ProjectCard(
   { title, description, link, language }: ProjectCardProps,
 ) {

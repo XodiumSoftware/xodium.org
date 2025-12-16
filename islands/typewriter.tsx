@@ -1,6 +1,6 @@
 import {useEffect, useState} from "preact/hooks";
 
-export interface TypewriterProps {
+interface TypewriterProps {
   text: string[];
   speed?: number;
   loop?: boolean;
@@ -8,6 +8,36 @@ export interface TypewriterProps {
   unwrite?: boolean;
 }
 
+/**
+ * Typewriter Component
+ *
+ * An animated text display component that simulates a typewriter effect.
+ * Types out text character by character, with optional deletion animation,
+ * looping, and configurable timing.
+ *
+ * @component
+ * @example
+ * // Basic typewriter with multiple texts
+ * <Typewriter text={["Hello", "World", "Welcome"]} />
+ *
+ * @example
+ * // With unwrite effect and custom speed
+ * <Typewriter
+ *   text={["Loading...", "Processing...", "Complete!"]}
+ *   speed={0.1}
+ *   unwrite={true}
+ *   loop={true}
+ *   pause={[1, 0.5]}
+ * />
+ *
+ * @param {TypewriterProps} props - Component properties
+ * @param {string[]} props.text - Array of strings to type out sequentially
+ * @param {number} [props.speed=0.05] - Typing speed in seconds per character (0.05 = 50ms)
+ * @param {boolean} [props.loop=false] - Whether to loop through texts continuously
+ * @param {number | [number, number]} [props.pause=1.5] - Pause duration in seconds
+ *   between texts. Can be a single number or [startPause, endPause] array
+ * @param {boolean} [props.unwrite=false] - Whether to delete text before moving to next
+ */
 export default function Typewriter({
   text,
   speed,

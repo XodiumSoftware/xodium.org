@@ -1,3 +1,19 @@
+/**
+ * Footer Component
+ *
+ * The application's footer section displaying copyright information
+ * and essential navigation links.
+ *
+ * @component
+ * @example
+ * // Basic usage
+ * <Footer />
+ *
+ * @remarks
+ * - Automatically updates the copyright year
+ * - External links open in new tabs with security attributes
+ * - Uses DaisyUI's footer component for consistent styling
+ */
 export default function Footer() {
   const homePage = "/";
   const currentYear = new Date().getFullYear();

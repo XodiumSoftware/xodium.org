@@ -1,6 +1,34 @@
 import GithubIcon from "./icons/github.tsx";
 import WikiIcon from "./icons/wiki.tsx";
 
+/**
+ * Header Component
+ *
+ * The main navigation header for the application.
+ * Includes the site logo, navigation links to key sections,
+ * and social media icons in the top right.
+ *
+ * @component
+ * @example
+ * // Basic usage
+ * <Header />
+ *
+ * @remarks
+ * - Uses DaisyUI's navbar component for responsive layout
+ * - Social links open in new tabs with security attributes
+ * - Fixed positioning ensures header stays visible while scrolling
+ *
+ * @styling
+ * - Layout: Split between left (logo/nav) and right (social)
+ * - Icons: Social icons use 24x24 (w-6 h-6) sizing
+ * - Colours: Uses DaisyUI's btn-ghost for transparent buttons
+ * - Spacing: Tailwind gap utilities for consistent spacing
+ *
+ * @accessibility
+ * - All interactive elements have appropriate aria-labels
+ * - Social icons include aria-hidden="true" on the SVG
+ * - External links include rel="noopener noreferrer" for security
+ */
 export default function Header() {
   const socialLinks = [
     {

@@ -10,7 +10,8 @@ services:
     restart: unless-stopped
 
   web:
-    image: ghcr.io/xodiumsoftware/xodium-web:latest
+    build: .
+
     container_name: xodiumweb
     ports: [ "8000:8000" ]
     environment:
