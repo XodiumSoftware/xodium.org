@@ -37,47 +37,49 @@ export default function TeamGrid() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center text-center text-gray-500">
-        Loading team members...
+      <div className="flex items-center justify-center text-center">
+        <span className="loading loading-spinner loading-lg text-primary">
+        </span>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center text-center text-red-500">
-        Error: {error}
+      <div className="flex items-center justify-center text-center">
+        <span className="text-error">{error}</span>
       </div>
     );
   }
 
   if (!members || members.length === 0) {
     return (
-      <div className="flex items-center justify-center text-center text-gray-500">
-        No team members found.
+      <div className="flex items-center justify-center text-center">
+        <span className="text-base-content/70">No team members found.</span>
       </div>
     );
   }
 
   return (
     <div>
-      <ul>
+      <ul className="menu">
         {members.map((member) => (
-          <li key={member.login} className="py-2">
+          <li key={member.login}>
             <a
               href={member.html_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex items-center space-x-4 hover:text-[#CB2D3E] dark:text-white dark:hover:text-[#CB2D3E]"
+              className="hover:text-primary"
               aria-label={`Link to ${member.login}'s GitHub profile`}
             >
-              <img
-                src={member.avatar_url}
-                alt={member.login}
-                width="50"
-                height="50"
-                className="rounded-full group-hover:ring-2 group-hover:ring-[#CB2D3E]"
-              />
+              <div className="avatar">
+                <div className="w-12 rounded-full ring-2 ring-transparent hover:ring-primary transition-all">
+                  <img
+                    src={member.avatar_url}
+                    alt={member.login}
+                  />
+                </div>
+              </div>
               <span className="font-medium">{member.login}</span>
             </a>
           </li>

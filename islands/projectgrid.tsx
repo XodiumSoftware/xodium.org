@@ -38,24 +38,25 @@ export default function ProjectGrid() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center text-center text-gray-500">
-        Loading projects...
+      <div className="flex items-center justify-center text-center">
+        <span className="loading loading-spinner loading-lg text-primary">
+        </span>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center text-center text-red-500">
-        Error: {error}
+      <div className="flex items-center justify-center text-center">
+        <span className="text-error">{error}</span>
       </div>
     );
   }
 
   if (!projects || projects.length === 0) {
     return (
-      <div className="flex items-center justify-center text-center text-gray-500">
-        No projects found.
+      <div className="flex items-center justify-center text-center">
+        <span className="text-base-content/70">No projects found.</span>
       </div>
     );
   }
