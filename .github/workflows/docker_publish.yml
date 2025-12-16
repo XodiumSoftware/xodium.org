@@ -1,0 +1,39 @@
+name: Xodium CI/CD - Build and Push Docker Image
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - id: checkout
+        name: Checkout code
+        uses: actions/checkout@v4
+
+      - id: login_ghcr
+        name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - id: build_image
+        name: Build Docker image
+        run: docker build -t ghcr.io/xodiumsoftware/xodium-web:latest .
+
+      - id: push_image
+        name: Push to GHCR
+        run: docker push ghcr.io/xodiumsoftware/xodium-web:latest
+
+      - id: cleanup
+        name: Cleanup
+        if: always()
+        run: docker logout ghcr.io
