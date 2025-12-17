@@ -2,7 +2,7 @@ import {define} from "../utils.ts";
 import TeamGrid from "../islands/teamgrid.tsx";
 import Footer from "../components/footer.tsx";
 import Grid from "../components/grid.tsx";
-import Header from "../components/header.tsx";
+import Header from "../islands/header.tsx";
 import ProjectGrid from "../islands/projectgrid.tsx";
 import Typewriter from "../islands/typewriter.tsx"; // noinspection JSUnusedGlobalSymbols
 

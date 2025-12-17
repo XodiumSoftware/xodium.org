@@ -1,5 +1,6 @@
-import GithubIcon from "./icons/github.tsx";
-import WikiIcon from "./icons/wiki.tsx";
+import GithubIcon from "../components/icons/github.tsx";
+import WikiIcon from "../components/icons/wiki.tsx";
+import {useEffect, useState} from "preact/hooks";
 
 /**
  * Header Component
@@ -30,6 +31,7 @@ import WikiIcon from "./icons/wiki.tsx";
  * - External links include rel="noopener noreferrer" for security
  */
 export default function Header() {
+  const [isScrolled, setIsScrolled] = useState(false);
   const socialLinks = [
     {
       href: "https://wiki.xodium.org",
@@ -44,8 +46,21 @@ export default function Header() {
       isExternal: true,
     },
   ];
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(globalThis.scrollY > 0);
+
+    globalThis.addEventListener("scroll", handleScroll);
+    return () => globalThis.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <header id="top" className="z-20 relative">
+    <header
+      id="top"
+      className={`z-20 relative sticky top-0 transition-all duration-300 ${
+        isScrolled ? "glass shadow-2xl shadow-black" : "bg-transparent"
+      }`}
+    >
       <nav className="navbar max-w-7xl mx-auto">
         {/* Left side Header */}
         <div className="navbar-start gap-8">
@@ -57,13 +72,13 @@ export default function Header() {
             />
           </a>
           <a
-            href="/#projects"
+            href="/static#projects"
             className="hover:text-primary text-sm font-semibold"
           >
             PROJECTS
           </a>
           <a
-            href="/#team"
+            href="/static#team"
             className="hover:text-primary text-sm font-semibold"
           >
             TEAM
