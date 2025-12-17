@@ -18,7 +18,7 @@ export interface Repo {
 
 /**
  * GitHub Plugin
- * @param app
+ * @param app - Fresh App instance
  */
 export default function githubPlugin(app: App<State>) {
   app.get(

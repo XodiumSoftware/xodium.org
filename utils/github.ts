@@ -1,10 +1,11 @@
 import {Octokit} from "@octokit/core";
-import {GITHUB} from "../utils.ts";
+import {GITHUB, State} from "../utils.ts";
 import {KvData, KvStore} from "./kvstore.ts";
+import {Context} from "fresh";
 
 /**
- * Fetch data from GitHub API
- * @template T The type of data to be fetched
+ * Fetch data from GitHub API.
+ * @template T The type of data to be fetched.
  * @param {string} endpoint The GitHub API endpoint to fetch data from.
  * @param {string | undefined} token The GitHub token to use.
  * @returns {Promise<T>} A promise that resolves to the fetched data.
@@ -24,7 +25,7 @@ async function fetchFromGitHub<T>(
 
 /**
  * Generic function to get data with caching.
- * @template T The type of data to be returned
+ * @template T The type of data to be returned.
  * @param {string} cacheKey The key prefix to use for caching in Deno KV.
  * @param {string} identifier The specific identifier (e.g. org name, username, session ID) for this data.
  * @param {string} identifierType A descriptive name for the identifier type (e.g. "organization", "user session") used for logging/errors.
@@ -75,16 +76,16 @@ async function getCachedData<T>(
 
 /**
  * Creates a generic API route handler for fetching different types of organization data.
- * @param {string} dataType The type of data being fetched (for caching purposes)
- * @param {string} endpoint The GitHub API endpoint path to call (without the org part)
- * @returns {(request: Request) => Promise<Response>} A reusable API route handler.
+ * @param {string} dataType The type of data being fetched (for caching purposes).
+ * @param {string} endpoint The GitHub API endpoint path to call (without the org part).
+ * @returns {(ctx: Context<State>) => Promise<Response>} The API route handler function.
  */
 export function createOrgDataHandler<T>(
   dataType: string,
   endpoint: string,
-): (request: Request) => Promise<Response> {
-  return async (request: Request): Promise<Response> => {
-    const url = new URL(request.url);
+): (ctx: Context<State>) => Promise<Response> {
+  return async (ctx: Context<State>): Promise<Response> => {
+    const url = new URL(ctx.req.url);
     const param = url.searchParams.get("org");
     if (!param) {
       return new Response("Missing 'org' parameter", {

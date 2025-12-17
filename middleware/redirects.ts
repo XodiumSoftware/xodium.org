@@ -10,7 +10,7 @@ export async function redirectMiddleware(
 ) {
   const url = new URL(ctx.req.url);
 
-  if (url.pathname !== "/") {
+  if (url.pathname !== "/" && !url.pathname.startsWith("/api")) {
     return Response.redirect(new URL("/", url.origin), 308);
   }
 
