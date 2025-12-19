@@ -72,13 +72,13 @@ export default function Header() {
             />
           </a>
           <a
-            href="/static#projects"
+              href="#projects"
             className="hover:text-primary text-sm font-semibold"
           >
             PROJECTS
           </a>
           <a
-            href="/static#team"
+              href="#team"
             className="hover:text-primary text-sm font-semibold"
           >
             TEAM
