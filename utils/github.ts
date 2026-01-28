@@ -1,7 +1,7 @@
 import {Octokit} from "@octokit/core";
 import {GITHUB, State} from "../utils.ts";
-import {KvData, KvStore} from "./kvstore.ts";
 import {Context} from "fresh";
+import {BrowserStore} from "../lib/storage.ts";
 
 /**
  * Fetch data from GitHub API.
@@ -11,16 +11,16 @@ import {Context} from "fresh";
  * @returns {Promise<T>} A promise that resolves to the fetched data.
  */
 async function fetchFromGitHub<T>(
-  endpoint: string,
-  token?: string,
+    endpoint: string,
+    token?: string,
 ): Promise<T> {
-  return (await new Octokit({
-    userAgent: GITHUB.org.user_agent,
-    baseUrl: GITHUB.api.url,
-    headers: { "X-GitHub-Api-Version": GITHUB.api.version },
-  }).request(`GET ${endpoint}`, {
-    headers: token ? { authorization: `token ${token}` } : {},
-  })).data as T;
+    return (await new Octokit({
+        userAgent: GITHUB.org.user_agent,
+        baseUrl: GITHUB.api.url,
+        headers: {"X-GitHub-Api-Version": GITHUB.api.version},
+    }).request(`GET ${endpoint}`, {
+        headers: token ? {authorization: `token ${token}`} : {},
+    })).data as T;
 }
 
 /**
@@ -35,43 +35,44 @@ async function fetchFromGitHub<T>(
  * @returns {Promise<T>} A promise that resolves to the fetched data.
  */
 async function getCachedData<T>(
-  cacheKey: string,
-  identifier: string,
-  identifierType: string,
-  apiEndpoint: string,
-  token?: string,
-  cacheExpiry: number = GITHUB.api.members.cacheExpiry,
+    cacheKey: string,
+    identifier: string,
+    identifierType: string,
+    apiEndpoint: string,
+    token?: string,
+    cacheExpiry: number = GITHUB.api.members.cacheExpiry,
 ): Promise<T> {
-  try {
-    const kvKey = [cacheKey, identifier];
-    const result = await KvStore.getItem<KvData<T>>(kvKey);
+    try {
+        const cached = await BrowserStore.getItem<T>(
+            [cacheKey, identifier],
+            cacheExpiry,
+        );
 
-    if (result && Date.now() - result.timestamp < cacheExpiry) {
-      console.log(
-        `Using cached data for ${cacheKey} (${identifierType}): ${identifier}`,
-      );
-      return result.data;
+        if (cached !== null) {
+            console.log(
+                `Using cached data from IndexedDB for ${cacheKey} (${identifierType}): ${identifier}`,
+            );
+            return cached;
+        }
+
+        console.log(
+            `Fetching data from GitHub for ${cacheKey} (${identifierType}): ${identifier}`,
+        );
+
+        const data = await fetchFromGitHub<T>(apiEndpoint, token);
+
+        await BrowserStore.setItem([cacheKey, identifier], data);
+
+        return data;
+    } catch (e) {
+        console.error(
+            `Error fetching or caching ${identifierType} ${cacheKey} (${identifier}):`,
+            e,
+        );
+        throw new Error(
+            `Failed to load ${identifierType} ${cacheKey} for ${identifier}.`,
+        );
     }
-
-    console.log(
-      `Fetching data from GitHub for ${cacheKey} (${identifierType}): ${identifier}`,
-    );
-    const data = await fetchFromGitHub<T>(apiEndpoint, token);
-    await KvStore.setItem(kvKey, {
-      data: data,
-      timestamp: Date.now(),
-    });
-
-    return data;
-  } catch (e) {
-    console.error(
-      `Error fetching or caching ${identifierType} ${cacheKey} (${identifier}):`,
-      e,
-    );
-    throw new Error(
-      `Failed to load ${identifierType} ${cacheKey} for ${identifier}.`,
-    );
-  }
 }
 
 /**
@@ -81,33 +82,33 @@ async function getCachedData<T>(
  * @returns {(ctx: Context<State>) => Promise<Response>} The API route handler function.
  */
 export function createOrgDataHandler<T>(
-  dataType: string,
-  endpoint: string,
+    dataType: string,
+    endpoint: string,
 ): (ctx: Context<State>) => Promise<Response> {
-  return async (ctx: Context<State>): Promise<Response> => {
-    const url = new URL(ctx.req.url);
-    const param = url.searchParams.get("org");
-    if (!param) {
-      return new Response("Missing 'org' parameter", {
-        status: 400,
-      });
-    }
+    return async (ctx: Context<State>): Promise<Response> => {
+        const url = new URL(ctx.req.url);
+        const param = url.searchParams.get("org");
+        if (!param) {
+            return new Response("Missing 'org' parameter", {
+                status: 400,
+            });
+        }
 
-    try {
-      const data = await getCachedData<T>(
-        dataType,
-        param,
-        "organization",
-        endpoint.replace("{org}", param),
-      );
-      return new Response(JSON.stringify(data), {
-        headers: { "Content-Type": "application/json" },
-      });
-    } catch (e) {
-      console.error(`Error in ${dataType} API route:`, e);
-      return new Response(e instanceof Error ? e.message : String(e), {
-        status: 500,
-      });
-    }
-  };
+        try {
+            const data = await getCachedData<T>(
+                dataType,
+                param,
+                "organization",
+                endpoint.replace("{org}", param),
+            );
+            return new Response(JSON.stringify(data), {
+                headers: {"Content-Type": "application/json"},
+            });
+        } catch (e) {
+            console.error(`Error in ${dataType} API route:`, e);
+            return new Response(e instanceof Error ? e.message : String(e), {
+                status: 500,
+            });
+        }
+    };
 }

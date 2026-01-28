@@ -4,7 +4,7 @@
     "check": "deno fmt --check . && deno lint . && deno check",
     "dev": "vite",
     "build": "vite build",
-    "start": "deno serve --unstable-kv -A _fresh/server.js",
+    "start": "deno serve -A _fresh/server.js",
     "update": "deno run -A -r jsr:@fresh/update ."
   },
   "lint": {
@@ -21,6 +21,8 @@
   "imports": {
     "@/": "./",
     "daisyui": "npm:daisyui@^5.5.14",
+    "dexie": "npm:dexie@^4.2.1",
+    "fake-indexeddb": "npm:fake-indexeddb@^6.2.5",
     "fresh": "jsr:@fresh/core@^2.2.0",
     "preact": "npm:preact@^10.28.0",
     "@preact/signals": "npm:@preact/signals@^2.5.1",
