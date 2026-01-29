@@ -1,7 +1,7 @@
 import {Octokit} from "@octokit/core";
 import {GITHUB, State} from "../utils.ts";
-import {KvData, KvStore} from "./kvstore.ts";
 import {Context} from "fresh";
+import {MemoryStore} from "./storage.ts";
 
 /**
  * Fetch data from GitHub API.
@@ -43,24 +43,25 @@ async function getCachedData<T>(
   cacheExpiry: number = GITHUB.api.members.cacheExpiry,
 ): Promise<T> {
   try {
-    const kvKey = [cacheKey, identifier];
-    const result = await KvStore.getItem<KvData<T>>(kvKey);
+    const cached = MemoryStore.getItem<T>(
+      [cacheKey, identifier],
+      { expiryMs: cacheExpiry },
+    );
 
-    if (result && Date.now() - result.timestamp < cacheExpiry) {
+    if (cached !== null) {
       console.log(
-        `Using cached data for ${cacheKey} (${identifierType}): ${identifier}`,
+        `Using cached data from IndexedDB for ${cacheKey} (${identifierType}): ${identifier}`,
       );
-      return result.data;
+      return cached;
     }
 
     console.log(
       `Fetching data from GitHub for ${cacheKey} (${identifierType}): ${identifier}`,
     );
+
     const data = await fetchFromGitHub<T>(apiEndpoint, token);
-    await KvStore.setItem(kvKey, {
-      data: data,
-      timestamp: Date.now(),
-    });
+
+    MemoryStore.setItem([cacheKey, identifier], data);
 
     return data;
   } catch (e) {
