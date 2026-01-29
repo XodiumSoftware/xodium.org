@@ -24,8 +24,6 @@ jobs:
       - id: setup-deno
         name: Setup Deno
         uses: denoland/setup-deno@v2.0.3
-        with:
-          deno-version: stable
 
       - id: build-app
         name: Build App
