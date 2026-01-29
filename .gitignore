@@ -5,6 +5,9 @@
 .env.production.local
 .env.local
 
+# Fresh cache
+_fresh/
+
 # npm + other dependencies
 node_modules/
 vendor/
