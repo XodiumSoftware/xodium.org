@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "cloudflare-vite-get-started",
+  "name": "xodium",
   "compatibility_date": "2025-04-03",
   "main": "./server.js"
 }
