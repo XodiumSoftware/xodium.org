@@ -8,7 +8,7 @@ RUN deno install
 
 COPY . .
 
-RUN deno run --unstable-kv -A npm:vite build
+RUN deno run -A npm:vite build
 
 EXPOSE 8000
 
