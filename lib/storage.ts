@@ -1,90 +1,58 @@
-import {Dexie, type EntityTable} from "dexie";
-
-if (typeof window === "undefined") {
-    const {default: indexedDB} = await import("fake-indexeddb");
-    const IDBKeyRange = (await import("fake-indexeddb/lib/FDBKeyRange")).default;
-
-    Dexie.dependencies.indexedDB = indexedDB;
-    Dexie.dependencies.IDBKeyRange = IDBKeyRange;
-}
-
-/** Interface representing a cached data item */
+/** Interface representing cached data with a key, data, and timestamp. */
 export interface CachedData<T> {
-    id?: number;
-    key: string;
-    data: T;
-    timestamp: number;
-    expiry?: number;
+  key: string;
+  data: T;
+  timestamp: number;
 }
 
-/** Dexie database for caching GitHub API responses */
-class GitHubCacheDB extends Dexie {
-    public cache!: EntityTable<CachedData<unknown>, "id">;
-
-    constructor() {
-        super("GitHubCache");
-
-        this.version(1).stores({
-            cache: "++id, &key, timestamp",
-        });
-    }
+/** Options for memory cache operations. */
+export interface MemoryCacheOptions {
+  expiryMs?: number;
 }
 
-const db = new GitHubCacheDB();
+const memoryCache = new Map<string, CachedData<unknown>>();
 
-/** BrowserStore provides methods to interact with IndexedDB for caching */
-export const BrowserStore = {
-    /**
-     * Retrieves an item from the cache if it exists and is not expired.
-     * @param keyParts - Array of strings to form the key.
-     * @param expiryMs - Expiry time in milliseconds (default is 1 hour).
-     * @return A promise that resolves to the cached data or null if not found/expired.
-     */
-    async getItem<T>(
-        keyParts: string[],
-        expiryMs: number = 60 * 60 * 1000,
-    ): Promise<T | null> {
-        try {
-            const key = generateKey(keyParts);
-            const result = await db.cache.where("key").equals(key).first();
+/** In-memory cache store with get, set, clear, and delete methods. */
+export const MemoryStore = {
+  /**
+   * Retrieves an item from the cache if it exists and is not expired.
+   * @param keyParts - Array of strings to form the key.
+   * @param options - Cache options (expiry).
+   * @returns Cached data or null if not found/expired.
+   */
+  getItem<T>(
+    keyParts: string[],
+    options: MemoryCacheOptions = {},
+  ): T | null {
+    const key = generateKey(keyParts);
+    const expiryMs = options.expiryMs ?? 60 * 60 * 1000;
+    const record = memoryCache.get(key) as CachedData<T> | undefined;
 
-            if (!result) return null;
+    if (!record) return null;
 
-            const now = Date.now();
-            if (now - result.timestamp < expiryMs) {
-                console.log(`Using cached data for key: ${key}`);
-                return result.data as T;
-            }
+    const now = Date.now();
 
-            await db.cache.where("key").equals(key).delete();
-            return null;
-        } catch (error) {
-            console.error("Error reading from IndexedDB:", error);
-            return null;
-        }
-    },
+    if (now - record.timestamp < expiryMs) return record.data;
 
-    /**
-     * Stores an item in the cache with the specified key parts.
-     * @param keyParts - Array of strings to form the key.
-     * @param value - The data to be cached.
-     * @return A promise that resolves when the operation is complete.
-     */
-    async setItem<T>(keyParts: string[], value: T): Promise<void> {
-        try {
-            const key = generateKey(keyParts);
-            const record: CachedData<T> = {
-                key,
-                data: value,
-                timestamp: Date.now(),
-            };
+    memoryCache.delete(key);
+    return null;
+  },
 
-            await db.cache.where("key").equals(key).delete();
-            await db.cache.add(record);
-        } catch (error) {
-            console.error("Error writing to IndexedDB:", error);
-        }
-    },
+  /**
+   * Stores an item in the cache with the specified key parts.
+   * @param keyParts - Array of strings to form the key.
+   * @param value - The data to be cached.
+   */
+  setItem<T>(keyParts: string[], value: T): void {
+    const key = generateKey(keyParts);
+    const record: CachedData<T> = {
+      key,
+      data: value,
+      timestamp: Date.now(),
+    };
+
+    memoryCache.set(key, record as CachedData<unknown>);
+  },
 };
 
 /**
@@ -93,5 +61,5 @@ export const BrowserStore = {
  * @returns A single string key.
  */
 function generateKey(keyParts: string[]): string {
-    return keyParts.join(":");
+  return keyParts.join(":");
 }
