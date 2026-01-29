@@ -50,13 +50,13 @@ async function getCachedData<T>(
 
     if (cached !== null) {
       console.log(
-        `Using cached data from IndexedDB for ${cacheKey} (${identifierType}): ${identifier}`,
+        `Using cached data for ${cacheKey} (${identifierType}): ${identifier}`,
       );
       return cached;
     }
 
     console.log(
-      `Fetching data from GitHub for ${cacheKey} (${identifierType}): ${identifier}`,
+      `Fetching data for ${cacheKey} (${identifierType}): ${identifier}`,
     );
 
     const data = await fetchFromGitHub<T>(apiEndpoint, token);
