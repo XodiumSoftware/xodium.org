@@ -1,7 +1,0 @@
-services:
-  web:
-    image: ghcr.io/xodiumsoftware/xodium-web:latest
-    container_name: xodiumweb
-    ports: [ "8000:8000" ]
-    depends_on: [ db ]
-    restart: unless-stopped
