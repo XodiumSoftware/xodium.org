@@ -3,6 +3,5 @@
   <component name="ExternalDependencies">
     <plugin id="Docker" />
     <plugin id="deno" />
-    <plugin id="ru.adelf.idea.dotenv" />
   </component>
 </project>
