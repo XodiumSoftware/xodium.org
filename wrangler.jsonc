@@ -1,9 +1,9 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "xodium",
-  "compatibility_date": "2025-04-03",
   "compatibility_flags": [
-    "nodejs-compat"
+    "nodejs_compat"
   ],
+  "compatibility_date": "2025-04-03",
   "main": "./server.js"
 }
