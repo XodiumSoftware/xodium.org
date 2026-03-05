@@ -1,4 +1,7 @@
 mod app;
+mod components {
+    pub mod footer;
+}
 
 use app::App;
 use leptos::prelude::*;
