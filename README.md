@@ -38,7 +38,7 @@
 
 <p align="right"><a href="#readme-top">▲</a></p>
 
-[built_with_shield_url]: https://skillicons.dev/icons?i=typescript,deno,github,githubactions
+[built_with_shield_url]: https://skillicons.dev/icons?i=rust,github,githubactions
 
 [built_with_url]: https://skillicons.dev
 
