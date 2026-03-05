@@ -1,6 +1,5 @@
-use crate::components::footer::Footer;
-use crate::components::grid::Grid;
 use leptos::prelude::*;
+use xodiumweb::components::Footer;
 
 #[component]
 pub fn App() -> impl IntoView {
