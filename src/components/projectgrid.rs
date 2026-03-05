@@ -33,7 +33,7 @@ async fn fetch_projects() -> Result<Vec<Repo>, String> {
 
 #[component]
 pub fn ProjectGrid() -> impl IntoView {
-    let projects = create_resource(|| (), |_| async { fetch_projects().await });
+    let projects = Resource::new(|| (), |_| async { fetch_projects().await });
 
     view! {
         <Suspense fallback=move || {
@@ -45,7 +45,7 @@ pub fn ProjectGrid() -> impl IntoView {
         }>
             {move || {
                 match projects.get() {
-                    None => view! {}.into_view(),
+                    None => ().into_view(),
                     Some(Err(err)) => {
 
                         view! {

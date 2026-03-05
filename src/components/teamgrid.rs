@@ -31,7 +31,7 @@ async fn fetch_members() -> Result<Vec<Member>, String> {
 
 #[component]
 pub fn TeamGrid() -> impl IntoView {
-    let members = create_resource(|| (), |_| async { fetch_members().await });
+    let members = Resource::new(|| (), |_| async { fetch_members().await });
 
     view! {
         <Suspense fallback=move || {
@@ -42,9 +42,8 @@ pub fn TeamGrid() -> impl IntoView {
             }
         }>
             {move || match members.get() {
-                None => view! {}.into_view(),
+                None => ().into_view(),
                 Some(Err(err)) => {
-
                     view! {
                         <div class="flex items-center justify-center text-center">
                             <span class="text-error">{err}</span>
@@ -54,7 +53,6 @@ pub fn TeamGrid() -> impl IntoView {
                 }
                 Some(Ok(members)) => {
                     if members.is_empty() {
-
                         view! {
                             <div class="flex items-center justify-center text-center">
                                 <span class="text-base-content/70">"No team members found."</span>

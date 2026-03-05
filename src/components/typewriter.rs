@@ -27,8 +27,7 @@ pub fn Typewriter(props: TypewriterProperties) -> impl IntoView {
     let unwrite = props.unwrite.unwrap_or(false);
     let text = props.text.clone();
 
-    // Use spawn_local for async recursion
-    on_mount(move || {
+    Effect::new(move || {
         spawn_local(async move {
             typewrite_loop(
                 text,
