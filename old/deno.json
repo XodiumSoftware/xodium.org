@@ -1,5 +1,5 @@
 {
-  "nodeModulesDir": "manual",
+  "nodeModulesDir": "auto",
   "tasks": {
     "check": "deno fmt --check . && deno lint . && deno check",
     "dev": "vite",
@@ -20,6 +20,7 @@
   ],
   "imports": {
     "@/": "./",
+    "@cloudflare/vite-plugin": "npm:@cloudflare/vite-plugin@^1.22.0",
     "daisyui": "npm:daisyui@^5.5.14",
     "dexie": "npm:dexie@^4.2.1",
     "fake-indexeddb": "npm:fake-indexeddb@^6.2.5",
@@ -30,7 +31,8 @@
     "vite": "npm:vite@^7.3.0",
     "tailwindcss": "npm:tailwindcss@^4.1.18",
     "@tailwindcss/vite": "npm:@tailwindcss/vite@^4.1.18",
-    "@octokit/core": "https://esm.sh/@octokit/core@5.0.1"
+    "@octokit/core": "https://esm.sh/@octokit/core@5.0.1",
+    "wrangler": "npm:wrangler@^4.61.0"
   },
   "compilerOptions": {
     "lib": [

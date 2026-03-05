@@ -1,5 +1,5 @@
 import {App} from "fresh";
-import {createOrgDataHandler} from "../utils/github.ts";
+import {createOrgDataHandler} from "../lib/github.ts";
 import {State} from "../utils.ts";
 
 export interface Member {
