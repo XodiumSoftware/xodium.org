@@ -1,4 +1,4 @@
-import GithubIcon from "../components/icons/github.tsx";
+import github_icon from "../components/icons/github.tsx";
 import WikiIcon from "../components/icons/wiki.tsx";
 import {useEffect, useState} from "preact/hooks";
 
@@ -42,7 +42,7 @@ export default function Header() {
     {
       href: "https://github.com/XodiumSoftware",
       label: "Github",
-      Icon: GithubIcon,
+      Icon: github_icon,
       isExternal: true,
     },
   ];
