@@ -5,6 +5,7 @@ use leptos::server_fn::serde::Deserialize;
 
 const GITHUB_ORG: &str = "XodiumSoftware";
 
+// TODO: rewrite so we dont need serde.
 #[derive(Clone, Debug, Deserialize)]
 pub struct Repo {
     pub name: String,
