@@ -1,5 +1,7 @@
 use leptos::prelude::*;
-use xodiumweb::components::Footer;
+use xodiumweb::footer::Footer;
+use xodiumweb::grid::Grid;
+use xodiumweb::header::Header;
 
 #[component]
 pub fn App() -> impl IntoView {

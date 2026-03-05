@@ -1,6 +1,7 @@
-use leptos::attr::icon;
 use leptos::prelude::*;
 use leptos::web_sys;
+use xodiumweb::github::GithubIcon;
+use xodiumweb::wiki::WikiIcon;
 
 #[derive(Clone)]
 struct SocialLink {
@@ -14,7 +15,6 @@ struct SocialLink {
 pub fn Header() -> impl IntoView {
     let (is_scrolled, set_is_scrolled) = create_signal(false);
 
-    // Attach a scroll listener
     let _scroll_listener = create_effect(move |_| {
         let cb = move |_ev: web_sys::Event| {
             set_is_scrolled.set(web_sys::window().unwrap().scroll_y().unwrap_or(0.0) > 0.0);
