@@ -1,7 +1,9 @@
+use crate::components::icons::github::GithubIcon;
+use crate::components::icons::wiki::WikiIcon;
 use leptos::prelude::*;
+use leptos::wasm_bindgen::closure::Closure;
+use leptos::wasm_bindgen::JsCast;
 use leptos::web_sys;
-use xodiumweb::github::GithubIcon;
-use xodiumweb::wiki::WikiIcon;
 
 #[derive(Clone)]
 struct SocialLink {

@@ -1,7 +1,7 @@
+use crate::footer::Footer;
+use crate::grid::Grid;
+use crate::header::Header;
 use leptos::prelude::*;
-use xodiumweb::footer::Footer;
-use xodiumweb::grid::Grid;
-use xodiumweb::header::Header;
 
 #[component]
 pub fn App() -> impl IntoView {
