@@ -1,8 +1,9 @@
+/*noinspection CssUnknownTarget*/
 @import "tailwindcss";
 
-@plugin "daisyui" {
-    themes: light --default, dark --prefersdark, halloween;
-}
+/*@plugin "daisyui" {*/
+/*    themes: light --default, dark --prefersdark, halloween;*/
+/*}*/
 
 * {
     /*outline: 1px solid red !important;*/
