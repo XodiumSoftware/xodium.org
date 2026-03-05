@@ -1,5 +1,5 @@
-use crate::components::icons::github::GithubIcon;
-use crate::components::icons::wiki::WikiIcon;
+use crate::components::icons::github::github_icon;
+use crate::components::icons::wiki::wiki_icon;
 use leptos::prelude::*;
 use leptos::wasm_bindgen::closure::Closure;
 use leptos::wasm_bindgen::JsCast;
@@ -10,14 +10,14 @@ struct SocialLink {
     href: &'static str,
     label: &'static str,
     is_external: bool,
-    icon: fn(Option<&str>) -> impl IntoView,
+    icon: fn(Option<&str>) -> AnyView,
 }
 
 #[component]
 pub fn Header() -> impl IntoView {
-    let (is_scrolled, set_is_scrolled) = create_signal(false);
+    let (is_scrolled, set_is_scrolled) = signal(false);
 
-    let _scroll_listener = create_effect(move |_| {
+    let _scroll_listener = Effect::new(move |_| {
         let cb = move |_ev: web_sys::Event| {
             set_is_scrolled.set(web_sys::window().unwrap().scroll_y().unwrap_or(0.0) > 0.0);
         };
@@ -34,13 +34,13 @@ pub fn Header() -> impl IntoView {
             href: "https://wiki.xodium.org",
             label: "Wiki",
             is_external: true,
-            icon: WikiIcon,
+            icon: wiki_icon,
         },
         SocialLink {
             href: "https://github.com/XodiumSoftware",
             label: "Github",
             is_external: true,
-            icon: GithubIcon,
+            icon: github_icon,
         },
     ];
 
@@ -92,7 +92,7 @@ pub fn Header() -> impl IntoView {
                                                 ""
                                             }
                                         >
-                                            <icon class=Some("w-6 h-6") />
+                                            {icon(Some("w-6 h-6"))}
                                         </a>
                                     </li>
                                 }

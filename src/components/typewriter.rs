@@ -86,8 +86,7 @@ pub fn Typewriter(props: TypewriterProperties) -> impl IntoView {
 
     view! {
         <div style="display:inline-block">
-            {move || displayed.get()}
-            <span class="cursor">"|"</span>
+            {move || displayed.get()} <span class="cursor">"|"</span>
             <style>
                 "
                 .cursor {

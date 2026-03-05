@@ -1,7 +1,6 @@
 use leptos::prelude::*;
 
-#[component]
-pub fn GithubIcon(class: Option<&'static str>) -> impl IntoView {
+pub fn github_icon(class: Option<&'static str>) -> impl IntoView {
     view! {
         <svg
             xmlns="http://www.w3.org/2000/svg"
