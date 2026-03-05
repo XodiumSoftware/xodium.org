@@ -1,7 +1,7 @@
 use leptos::prelude::*;
 
 #[component]
-pub fn github_icon(class: Option<&'static str>) -> impl IntoView {
+pub fn GithubIcon(class: Option<&'static str>) -> impl IntoView {
     view! {
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -20,7 +20,7 @@ pub fn github_icon(class: Option<&'static str>) -> impl IntoView {
 }
 
 #[component]
-pub fn github_repo_icon(class: Option<&'static str>) -> impl IntoView {
+pub fn GithubRepoIcon(class: Option<&'static str>) -> impl IntoView {
     view! {
         <svg
             xmlns="http://www.w3.org/2000/svg"

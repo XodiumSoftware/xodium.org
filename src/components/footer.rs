@@ -2,7 +2,7 @@ use chrono::Datelike;
 use leptos::prelude::*;
 
 #[component]
-pub fn footer() -> impl IntoView {
+pub fn Footer() -> impl IntoView {
     let home_page = "/";
     let current_year = chrono::Utc::now().year();
     let footer_links = vec![

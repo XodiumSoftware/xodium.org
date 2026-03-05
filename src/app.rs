@@ -1,4 +1,5 @@
 use crate::components::footer::Footer;
+use crate::components::grid::Grid;
 use leptos::prelude::*;
 
 #[component]
@@ -10,8 +11,7 @@ pub fn App() -> impl IntoView {
 
             // Landing section
             <section id="landing" class="relative isolate px-6 pt-14 lg:px-8 pb-24 sm:pb-32">
-                // TODO: Grid
-                <div>"TODO: Grid component"</div>
+                <Grid />
 
                 <div
                     class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
