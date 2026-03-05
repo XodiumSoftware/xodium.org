@@ -6,8 +6,7 @@ use leptos::prelude::*;
 pub fn App() -> impl IntoView {
     view! {
         <div>
-            // TODO: Header
-            <div>"TODO: Header component"</div>
+            <Header />
 
             // Landing section
             <section id="landing" class="relative isolate px-6 pt-14 lg:px-8 pb-24 sm:pb-32">

@@ -6,6 +6,7 @@ mod components {
     }
     pub mod footer;
     pub mod grid;
+    pub mod header;
     pub mod projectcard;
     pub mod version;
 }
