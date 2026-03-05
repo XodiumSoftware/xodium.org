@@ -42,7 +42,7 @@ pub fn TeamGrid() -> impl IntoView {
             }
         }>
             {move || match members.get() {
-                None => ().into_view(),
+                None => ().into_view().into_any(),
                 Some(Err(err)) => {
                     view! {
                         <div class="flex items-center justify-center text-center">
@@ -50,6 +50,7 @@ pub fn TeamGrid() -> impl IntoView {
                         </div>
                     }
                         .into_view()
+                        .into_any()
                 }
                 Some(Ok(members)) => {
                     if members.is_empty() {
@@ -59,6 +60,7 @@ pub fn TeamGrid() -> impl IntoView {
                             </div>
                         }
                             .into_view()
+                            .into_any()
                     } else {
                         view! {
                             <div>
@@ -75,15 +77,15 @@ pub fn TeamGrid() -> impl IntoView {
                                                         class="hover:text-primary"
                                                         aria-label=format!(
                                                             "Link to {}'s GitHub profile",
-                                                            member.login,
+                                                            &member.login,
                                                         )
                                                     >
                                                         <div class="avatar">
                                                             <div class="w-12 rounded-full ring-2 ring-transparent hover:ring-primary transition-all">
-                                                                <img src=member.avatar_url alt=member.login.clone() />
+                                                                <img src=member.avatar_url alt=&member.login />
                                                             </div>
                                                         </div>
-                                                        <span class="font-medium">{member.login}</span>
+                                                        <span class="font-medium">{&member.login}</span>
                                                     </a>
                                                 </li>
                                             }
@@ -93,6 +95,7 @@ pub fn TeamGrid() -> impl IntoView {
                             </div>
                         }
                             .into_view()
+                            .into_any()
                     }
                 }
             }}

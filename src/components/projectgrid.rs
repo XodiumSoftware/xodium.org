@@ -45,25 +45,25 @@ pub fn ProjectGrid() -> impl IntoView {
         }>
             {move || {
                 match projects.get() {
-                    None => ().into_view(),
+                    None => ().into_view().into_any(),
                     Some(Err(err)) => {
-
                         view! {
                             <div class="flex items-center justify-center text-center">
                                 <span class="text-error">{err}</span>
                             </div>
                         }
                             .into_view()
+                            .into_any()
                     }
                     Some(Ok(projects)) => {
                         if projects.is_empty() {
-
                             view! {
                                 <div class="flex items-center justify-center text-center">
                                     <span class="text-base-content/70">"No projects found."</span>
                                 </div>
                             }
                                 .into_view()
+                                .into_any()
                         } else {
                             view! {
                                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
@@ -83,6 +83,7 @@ pub fn ProjectGrid() -> impl IntoView {
                                 </div>
                             }
                                 .into_view()
+                                .into_any()
                         }
                     }
                 }
