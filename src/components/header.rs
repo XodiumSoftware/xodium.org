@@ -1,5 +1,3 @@
-use crate::components::icons::github::github_icon;
-use crate::components::icons::wiki::wiki_icon;
 use leptos::prelude::*;
 use leptos::wasm_bindgen::closure::Closure;
 use leptos::wasm_bindgen::JsCast;
@@ -10,7 +8,7 @@ struct SocialLink {
     href: &'static str,
     label: &'static str,
     is_external: bool,
-    icon: fn(Option<&str>) -> AnyView,
+    icon_path: &'static str,
 }
 
 #[component]
@@ -34,13 +32,13 @@ pub fn Header() -> impl IntoView {
             href: "https://wiki.xodium.org",
             label: "Wiki",
             is_external: true,
-            icon: wiki_icon,
+            icon_path: "../../public/icons/wiki.svg",
         },
         SocialLink {
             href: "https://github.com/XodiumSoftware",
             label: "Github",
             is_external: true,
-            icon: github_icon,
+            icon_path: "../../public/icons/wiki.svg",
         },
     ];
 
@@ -77,7 +75,6 @@ pub fn Header() -> impl IntoView {
                         {social_links
                             .into_iter()
                             .map(|link| {
-                                let icon = link.icon;
                                 view! {
                                     <li>
                                         <a
@@ -92,7 +89,12 @@ pub fn Header() -> impl IntoView {
                                                 ""
                                             }
                                         >
-                                            {icon(Some("w-6 h-6"))}
+                                            <img
+                                                src=link.icon_path
+                                                alt=link.label
+                                                class="w-6 h-6"
+                                                style="filter: invert(1);"
+                                            />
                                         </a>
                                     </li>
                                 }

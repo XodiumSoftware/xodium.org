@@ -1,4 +1,3 @@
-use crate::components::icons::github::GithubRepoIcon;
 use leptos::prelude::*;
 
 #[derive(Clone)]
@@ -39,7 +38,12 @@ pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
             <div class="card bg-base-200/50 backdrop-blur shadow-xl hover:ring-2 hover:ring-primary h-full transition-all">
                 <div class="card-body">
                     <h2 class="card-title text-primary">
-                        <GithubRepoIcon class=Some("w-5 h-5 text-base-content/60") />
+                        <img
+                            src="../../public/icons/github-repo.svg"
+                            alt="GitHub Repository"
+                            class="w-5 h-5 text-base-content/60"
+                            style="filter: invert(1);"
+                        />
                         {props.title}
                     </h2>
                     <p class="text-base-content/70 flex-grow">{props.description}</p>
