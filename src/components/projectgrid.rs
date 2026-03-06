@@ -1,12 +1,11 @@
 use crate::components::projectcard::{ProjectCard, ProjectCardProperties};
 use leptos::prelude::*;
 use leptos::server_fn::request::browser::Request;
-use leptos::server_fn::serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 const GITHUB_ORG: &str = "XodiumSoftware";
 
-// TODO: rewrite so we dont need serde.
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Repo {
     pub name: String,
     pub description: Option<String>,
@@ -34,7 +33,7 @@ async fn fetch_projects() -> Result<Vec<Repo>, String> {
 
 #[component]
 pub fn ProjectGrid() -> impl IntoView {
-    let projects = Resource::new(|| (), |_| async { fetch_projects().await });
+    let projects = LocalResource::new(|| async { fetch_projects().await });
 
     view! {
         <Suspense fallback=move || {

@@ -1,11 +1,10 @@
 use leptos::prelude::*;
 use leptos::server_fn::request::browser::Request;
-use leptos::server_fn::serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 const GITHUB_ORG: &str = "XodiumSoftware";
 
-// TODO: rewrite so we dont need serde.
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Member {
     pub login: String,
     pub html_url: String,
@@ -32,7 +31,7 @@ async fn fetch_members() -> Result<Vec<Member>, String> {
 
 #[component]
 pub fn TeamGrid() -> impl IntoView {
-    let members = Resource::new(|| (), |_| async { fetch_members().await });
+    let members = LocalResource::new(|| async { fetch_members().await });
 
     view! {
         <Suspense fallback=move || {
@@ -78,15 +77,15 @@ pub fn TeamGrid() -> impl IntoView {
                                                         class="hover:text-primary"
                                                         aria-label=format!(
                                                             "Link to {}'s GitHub profile",
-                                                            &member.login,
+                                                            member.login,
                                                         )
                                                     >
                                                         <div class="avatar">
                                                             <div class="w-12 rounded-full ring-2 ring-transparent hover:ring-primary transition-all">
-                                                                <img src=member.avatar_url alt=&member.login />
+                                                                <img src=member.avatar_url alt=member.login.clone() />
                                                             </div>
                                                         </div>
-                                                        <span class="font-medium">{&member.login}</span>
+                                                        <span class="font-medium">{member.login.clone()}</span>
                                                     </a>
                                                 </li>
                                             }
