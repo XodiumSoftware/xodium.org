@@ -25,9 +25,11 @@ pub fn Typewriter(props: TypewriterProperties) -> impl IntoView {
 
     let loop_enabled = props.loop_enabled.unwrap_or(false);
     let unwrite = props.unwrite.unwrap_or(false);
-    let text = props.text.clone();
+    let text = StoredValue::new(props.text);
 
     Effect::new(move || {
+        let text = text.get_value();
+
         spawn_local(async move {
             typewrite_loop(
                 text,
