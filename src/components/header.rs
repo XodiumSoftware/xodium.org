@@ -9,6 +9,7 @@ struct SocialLink {
     label: &'static str,
     is_external: bool,
     icon_path: &'static str,
+    hover_color: &'static str,
 }
 
 #[component]
@@ -33,18 +34,21 @@ pub fn Header() -> impl IntoView {
             label: "Wiki",
             is_external: true,
             icon_path: "/icons/wiki.svg",
+            hover_color: "group-hover:bg-primary",
         },
         SocialLink {
             href: "https://github.com/XodiumSoftware",
             label: "Github",
             is_external: true,
             icon_path: "/icons/github.svg",
+            hover_color: "group-hover:bg-primary",
         },
         SocialLink {
             href: "https://github.com/sponsors/illyrius666",
             label: "Sponsor",
             is_external: true,
             icon_path: "/icons/sponsor.svg",
+            hover_color: "group-hover:bg-pink-500",
         },
     ];
 
@@ -96,7 +100,7 @@ pub fn Header() -> impl IntoView {
                                             }
                                         >
                                             <span
-                                                class="w-6 h-6 block bg-base-content group-hover:bg-primary transition-colors"
+                                                class=format!("w-6 h-6 block bg-base-content {} transition-colors", link.hover_color)
                                                 style=format!(
                                                     "mask: url('{}') no-repeat center / contain",
                                                     link.icon_path,
