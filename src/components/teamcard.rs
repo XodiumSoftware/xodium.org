@@ -15,7 +15,7 @@ pub fn TeamCard(props: TeamCardProperties) -> impl IntoView {
                 href=props.html_url
                 target="_blank"
                 rel="noopener noreferrer"
-                class="group hover:text-primary btn-lift btn-outline-ghost"
+                class="group btn-lift bg-ghost hover:border-primary hover:text-primary"
                 aria-label=format!("Link to {}'s GitHub profile", props.login)
             >
                 <div class="avatar">

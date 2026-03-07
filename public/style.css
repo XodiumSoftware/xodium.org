@@ -41,6 +41,20 @@ html {
     border-color: oklch(var(--color-base-content)) !important;
 }
 
+.btn-outline-ghost:hover {
+    background-color: transparent !important;
+    color: oklch(var(--color-base-content)) !important;
+    border-color: oklch(var(--color-base-content)) !important;
+}
+
+.bg-ghost {
+    background-color: transparent !important;
+}
+
+.bg-ghost:hover {
+    background-color: transparent !important;
+}
+
 .btn-lift {
     border-radius: 0;
     border-width: 2px;
