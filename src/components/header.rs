@@ -1,6 +1,6 @@
 use leptos::prelude::*;
-use leptos::wasm_bindgen::JsCast;
 use leptos::wasm_bindgen::closure::Closure;
+use leptos::wasm_bindgen::JsCast;
 use leptos::web_sys;
 
 #[derive(Clone)]
@@ -78,7 +78,7 @@ pub fn Header() -> impl IntoView {
                                 view! {
                                     <li>
                                         <a
-                                            class="hover:text-primary hover:bg-transparent"
+                                            class="group hover:bg-transparent"
                                             href=link.href
                                             aria-label=link.label
                                             title=link.label
@@ -89,11 +89,12 @@ pub fn Header() -> impl IntoView {
                                                 ""
                                             }
                                         >
-                                            <img
-                                                src=link.icon_path
-                                                alt=link.label
-                                                class="w-6 h-6"
-                                                style="filter: invert(1);"
+                                            <span
+                                                class="w-6 h-6 block bg-base-content group-hover:bg-primary transition-colors"
+                                                style=format!(
+                                                    "mask: url('{}') no-repeat center / contain",
+                                                    link.icon_path,
+                                                )
                                             />
                                         </a>
                                     </li>
