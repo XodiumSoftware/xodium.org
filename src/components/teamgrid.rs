@@ -1,33 +1,5 @@
+use crate::github::fetch_members;
 use leptos::prelude::*;
-use leptos::server_fn::request::browser::Request;
-use serde::{Deserialize, Serialize};
-
-const GITHUB_ORG: &str = "XodiumSoftware";
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct Member {
-    pub login: String,
-    pub html_url: String,
-    pub avatar_url: String,
-}
-
-async fn fetch_members() -> Result<Vec<Member>, String> {
-    let url = format!("/api/github/org/members?org={}", GITHUB_ORG);
-
-    let response = Request::get(&url)
-        .send()
-        .await
-        .map_err(|_| "Failed to load team members.".to_string())?;
-
-    if !response.ok() {
-        return Err("Failed to load team members.".to_string());
-    }
-
-    response
-        .json::<Vec<Member>>()
-        .await
-        .map_err(|_| "Failed to parse team members.".to_string())
-}
 
 #[component]
 pub fn TeamGrid() -> impl IntoView {

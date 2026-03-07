@@ -1,6 +1,8 @@
 use crate::footer::Footer;
 use crate::grid::Grid;
 use crate::header::Header;
+use crate::projectgrid::ProjectGrid;
+use crate::teamgrid::TeamGrid;
 use crate::typewriter::{Typewriter, TypewriterProperties};
 use leptos::prelude::*;
 
@@ -80,8 +82,7 @@ pub fn App() -> impl IntoView {
                             "Explore our open-source projects and contributions."
                         </p>
                     </div>
-                    // TODO: ProjectGrid
-                    <div>"TODO: ProjectGrid component"</div>
+                    <ProjectGrid />
                 </div>
             </section>
 
@@ -96,8 +97,7 @@ pub fn App() -> impl IntoView {
                             "No matter the project, our team can handle it."
                         </p>
                     </div>
-                    // TODO: TeamGrid
-                    <div>"TODO: TeamGrid component"</div>
+                    <TeamGrid />
                 </div>
             </section>
 

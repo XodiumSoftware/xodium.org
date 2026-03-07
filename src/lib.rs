@@ -1,4 +1,5 @@
 mod app;
+pub mod github;
 mod components {
     pub mod footer;
     pub mod grid;
