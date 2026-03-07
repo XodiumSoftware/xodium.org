@@ -47,6 +47,11 @@ html {
     border-color: oklch(var(--color-base-content)) !important;
 }
 
+.btn-hover-warning:hover {
+    color: var(--color-warning) !important;
+    border-color: var(--color-warning) !important;
+}
+
 .bg-ghost {
     background-color: transparent !important;
 }
