@@ -1,3 +1,4 @@
+use crate::components::teamcard::{TeamCard, TeamCardProperties};
 use crate::github::fetch_members;
 use leptos::prelude::*;
 
@@ -35,36 +36,20 @@ pub fn TeamGrid() -> impl IntoView {
                             .into_any()
                     } else {
                         view! {
-                            <div>
-                                <ul class="menu">
-                                    {members
-                                        .into_iter()
-                                        .map(|member| {
-                                            view! {
-                                                <li>
-                                                    <a
-                                                        href=member.html_url
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                        class="hover:text-primary"
-                                                        aria-label=format!(
-                                                            "Link to {}'s GitHub profile",
-                                                            member.login,
-                                                        )
-                                                    >
-                                                        <div class="avatar">
-                                                            <div class="w-12 rounded-full ring-2 ring-transparent hover:ring-primary transition-all">
-                                                                <img src=member.avatar_url alt=member.login.clone() />
-                                                            </div>
-                                                        </div>
-                                                        <span class="font-medium">{member.login.clone()}</span>
-                                                    </a>
-                                                </li>
-                                            }
-                                        })
-                                        .collect_view()}
-                                </ul>
-                            </div>
+                            <ul class="menu">
+                                {members
+                                    .into_iter()
+                                    .map(|member| {
+                                        view! {
+                                            <TeamCard props=TeamCardProperties {
+                                                login: member.login,
+                                                html_url: member.html_url,
+                                                avatar_url: member.avatar_url,
+                                            } />
+                                        }
+                                    })
+                                    .collect_view()}
+                            </ul>
                         }
                             .into_view()
                             .into_any()

@@ -47,6 +47,7 @@ pub fn ProjectGrid() -> impl IntoView {
                                                     description: project.description.unwrap_or_default(),
                                                     link: Some(project.html_url),
                                                     language: project.language,
+                                                    stargazers_count: project.stargazers_count,
                                                 } />
                                             }
                                         })

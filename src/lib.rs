@@ -5,6 +5,7 @@ mod components {
     pub mod header;
     pub mod projectcard;
     pub mod projectgrid;
+    pub mod teamcard;
     pub mod teamgrid;
     pub mod typewriter;
     pub mod version;
