@@ -60,7 +60,7 @@ pub fn Header() -> impl IntoView {
                 // Left side
                 <div class="navbar-start gap-8">
                     <a href="#" class="p-0">
-                        <img src="/favicon.svg" alt="Xodium Icon" class="h-12 w-12" />
+                        <img src="/icons/favicon.svg" alt="Xodium Icon" class="h-12 w-12" />
                     </a>
                     <a href="#projects" class="hover:text-primary text-sm font-semibold">
                         "PROJECTS"
