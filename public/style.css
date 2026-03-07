@@ -1,0 +1,101 @@
+/*noinspection CssUnknownTarget*/
+@import "tailwindcss";
+
+/*noinspection CssInvalidAtRule*/
+@source not "./daisyui{,*}.mjs";
+
+/*noinspection CssInvalidAtRule*/
+@plugin "./daisyui.mjs" {
+    themes: halloween --default;
+}
+
+/*noinspection CssInvalidAtRule*/
+@plugin "./daisyui-theme.mjs";
+
+* {
+    /*outline: 1px solid red !important;*/
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+.lift {
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.lift:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.8);
+}
+
+.lift:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 0 rgba(0, 0, 0, 0.8);
+}
+
+/*noinspection ALL*/
+.btn-outline-ghost {
+    background-color: transparent !important;
+    color: oklch(var(--color-base-content)) !important;
+    border-color: oklch(var(--color-base-content)) !important;
+}
+
+.btn-outline-ghost:hover {
+    background-color: transparent !important;
+    color: oklch(var(--color-base-content)) !important;
+    border-color: oklch(var(--color-base-content)) !important;
+}
+
+.bg-ghost {
+    background-color: transparent !important;
+}
+
+.bg-ghost:hover {
+    background-color: transparent !important;
+}
+
+.btn-lift {
+    border-radius: 0;
+    border-width: 2px;
+    box-shadow: 4px 4px 0 0 rgba(0, 0, 0, 0.8);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.btn-lift:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 0 rgba(0, 0, 0, 0.8);
+}
+
+.btn-lift:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 0 rgba(0, 0, 0, 0.8);
+}
+
+.grid-bg {
+    background-image: linear-gradient(to right, #80808012 1px, transparent 1px),
+    linear-gradient(to bottom, #80808012 1px, transparent 1px);
+    background-size: 96px 96px;
+    mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 60%, transparent 100%);
+}
+
+.clip-organic-blob {
+    clip-path: polygon(
+        74.1% 44.1%,
+        100% 61.6%,
+        97.5% 26.9%,
+        85.5% 0.1%,
+        80.7% 2%,
+        72.5% 32.5%,
+        60.2% 62.4%,
+        52.4% 68.1%,
+        47.5% 58.3%,
+        45.2% 34.5%,
+        27.5% 76.7%,
+        0.1% 64.9%,
+        17.9% 100%,
+        27.6% 76.8%,
+        76.1% 97.7%,
+        74.1% 44.1%
+    );
+}
