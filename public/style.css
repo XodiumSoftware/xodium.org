@@ -20,6 +20,13 @@ html {
     scroll-behavior: smooth;
 }
 
+.grid-bg {
+    background-image: linear-gradient(to right, #80808012 1px, transparent 1px),
+    linear-gradient(to bottom, #80808012 1px, transparent 1px);
+    background-size: 96px 96px;
+    mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 60%, transparent 100%);
+}
+
 .clip-organic-blob {
     clip-path: polygon(
         74.1% 44.1%,
