@@ -1,6 +1,6 @@
 use leptos::prelude::*;
-use leptos::wasm_bindgen::closure::Closure;
 use leptos::wasm_bindgen::JsCast;
+use leptos::wasm_bindgen::closure::Closure;
 use leptos::web_sys;
 
 #[derive(Clone)]
@@ -47,11 +47,11 @@ pub fn Header() -> impl IntoView {
             id="top"
             class=move || {
                 format!(
-                    "z-20 relative sticky top-0 transition-all duration-300 {}",
+                    "z-20 relative sticky top-0 transition-all duration-300 border-b {}",
                     if is_scrolled.get() {
-                        "glass shadow-2xl shadow-black"
+                        "backdrop-blur-md bg-base-100/50 border-white/10 shadow-2xl shadow-black"
                     } else {
-                        "bg-transparent"
+                        "bg-transparent border-transparent"
                     },
                 )
             }
