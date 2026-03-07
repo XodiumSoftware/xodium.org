@@ -1,6 +1,6 @@
 use leptos::prelude::*;
-use leptos::wasm_bindgen::closure::Closure;
 use leptos::wasm_bindgen::JsCast;
+use leptos::wasm_bindgen::closure::Closure;
 use leptos::web_sys;
 
 #[derive(Clone)]
@@ -32,13 +32,13 @@ pub fn Header() -> impl IntoView {
             href: "https://wiki.xodium.org",
             label: "Wiki",
             is_external: true,
-            icon_path: "../../public/icons/wiki.svg",
+            icon_path: "/icons/wiki.svg",
         },
         SocialLink {
             href: "https://github.com/XodiumSoftware",
             label: "Github",
             is_external: true,
-            icon_path: "../../public/icons/wiki.svg",
+            icon_path: "/icons/github.svg",
         },
     ];
 
