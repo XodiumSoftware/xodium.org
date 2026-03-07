@@ -52,12 +52,12 @@ pub fn App() -> impl IntoView {
                         <div class="mt-10 flex items-center justify-center gap-x-6">
                             <a
                                 href="https://github.com/XodiumSoftware"
-                                class="btn btn-primary hover:btn-warning"
+                                class="btn btn-primary hover:btn-warning btn-lift"
                             >
-                                "Get started"
+                                "Get Started"
                             </a>
-                            <a href="https://wiki.xodium.org" class="hover:text-primary">
-                                "Documentation →"
+                            <a href="https://wiki.xodium.org" class="btn btn-outline btn-outline-ghost btn-lift">
+                                "Read Docs"
                             </a>
                         </div>
                     </div>

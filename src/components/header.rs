@@ -40,6 +40,12 @@ pub fn Header() -> impl IntoView {
             is_external: true,
             icon_path: "/icons/github.svg",
         },
+        SocialLink {
+            href: "https://github.com/sponsors/illyrius666",
+            label: "Sponsor",
+            is_external: true,
+            icon_path: "/icons/sponsor.svg",
+        },
     ];
 
     view! {
@@ -62,10 +68,10 @@ pub fn Header() -> impl IntoView {
                     <a href="#" class="p-0">
                         <img src="/icons/favicon.svg" alt="Xodium Icon" class="h-12 w-12" />
                     </a>
-                    <a href="#projects" class="hover:text-primary text-sm font-semibold">
+                    <a href="#projects" class="hover:text-primary text-sm font-semibold lift">
                         "PROJECTS"
                     </a>
-                    <a href="#team" class="hover:text-primary text-sm font-semibold">
+                    <a href="#team" class="hover:text-primary text-sm font-semibold lift">
                         "TEAM"
                     </a>
                 </div>
@@ -78,7 +84,7 @@ pub fn Header() -> impl IntoView {
                                 view! {
                                     <li>
                                         <a
-                                            class="group hover:bg-transparent"
+                                            class="group hover:bg-transparent lift rounded-none"
                                             href=link.href
                                             aria-label=link.label
                                             title=link.label
