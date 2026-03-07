@@ -19,7 +19,7 @@ jobs:
     steps:
       - id: checkout
         name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - id: setup-rust
         name: Setup Rust
@@ -33,7 +33,7 @@ jobs:
 
       - id: setup-trunk
         name: Setup Trunk
-        uses: jetli/trunk-action@v0.5.0
+        uses: jetli/trunk-action@v0.5.1
         with:
           version: latest
 
