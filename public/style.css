@@ -1,11 +1,15 @@
 /*noinspection CssUnknownTarget*/
 @import "tailwindcss";
 
+/*noinspection CssInvalidAtRule*/
 @source not "./daisyui{,*}.mjs";
 
+/*noinspection CssInvalidAtRule*/
 @plugin "./daisyui.mjs";
+
+/*noinspection CssInvalidAtRule*/
 @plugin "./daisyui-theme.mjs" {
-    themes: light --default, dark --prefersdark, halloween;
+    themes: halloween --default;
 }
 
 * {
