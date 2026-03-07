@@ -41,6 +41,15 @@ jobs:
         name: Build App
         run: trunk build --release
 
+      - id: create-pages-project
+        name: Create Cloudflare Pages Project
+        continue-on-error: true
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages project create xodiumorg --production-branch=main
+
       - id: deploy
         name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
