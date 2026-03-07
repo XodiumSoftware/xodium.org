@@ -41,12 +41,14 @@ html {
     border-color: oklch(var(--color-base-content)) !important;
 }
 
+/*noinspection ALL*/
 .btn-outline-ghost:hover {
     background-color: transparent !important;
     color: oklch(var(--color-base-content)) !important;
     border-color: oklch(var(--color-base-content)) !important;
 }
 
+/*noinspection ALL*/
 .btn-hover-warning:hover {
     color: var(--color-warning) !important;
     border-color: var(--color-warning) !important;
