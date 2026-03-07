@@ -1,6 +1,7 @@
 use crate::footer::Footer;
 use crate::grid::Grid;
 use crate::header::Header;
+use crate::typewriter::{Typewriter, TypewriterProperties};
 use leptos::prelude::*;
 
 #[component]
@@ -23,15 +24,28 @@ pub fn App() -> impl IntoView {
                 <div class="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
                     <div class="text-center">
                         <h1 class="text-4xl font-bold tracking-tight text-base-content sm:text-6xl">
-                            // TODO: Typewriter
                             "CODING "
                             <span class="bg-gradient-to-r from-primary to-secondary inline-block text-transparent bg-clip-text">
-                                "TODO: Typewriter component"
+                                <Typewriter props=TypewriterProperties {
+                                    text: vec![
+                                        "THE FUTURE".to_string(),
+                                        "WITH PASSION".to_string(),
+                                        "OPEN SOURCE".to_string(),
+                                        "FOR EVERYONE".to_string(),
+                                        "WITH PURPOSE".to_string(),
+                                        "BETTER TOOLS".to_string(),
+                                        "BEYOND LIMITS".to_string(),
+                                    ],
+                                    speed: Some(0.07),
+                                    loop_enabled: Some(true),
+                                    pause: Some((2.0, 1.0)),
+                                    unwrite: Some(true),
+                                } />
                             </span>
                         </h1>
                         <p class="mt-6 text-lg leading-8 text-base-content/70">
                             "Open-Source " <strong class="text-primary">(CAD)</strong>
-                            "Software Company"
+                            " Software Company"
                         </p>
                         <div class="mt-10 flex items-center justify-center gap-x-6">
                             <a

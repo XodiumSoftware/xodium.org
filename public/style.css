@@ -9,7 +9,7 @@
 
 /*noinspection CssInvalidAtRule*/
 @plugin "./daisyui-theme.mjs" {
-    themes: halloween --default;
+    themes: halloween;
 }
 
 * {
