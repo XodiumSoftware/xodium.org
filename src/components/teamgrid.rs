@@ -36,7 +36,7 @@ pub fn TeamGrid() -> impl IntoView {
                             .into_any()
                     } else {
                         view! {
-                            <ul class="menu">
+                            <ul class="menu gap-3">
                                 {members
                                     .into_iter()
                                     .map(|member| {

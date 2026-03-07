@@ -48,8 +48,8 @@ pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
     let stars = props.stargazers_count;
 
     view! {
-        <a href=link target="_blank" rel="noopener noreferrer">
-            <div class="card bg-base-200/50 backdrop-blur shadow-xl hover:ring-2 hover:ring-primary h-full transition-all">
+        <a href=link target="_blank" rel="noopener noreferrer" class="btn-lift hover:border-primary block h-full">
+            <div class="card bg-base-200/50 backdrop-blur h-full rounded-none">
                 <div class="card-body">
                     <h2 class="card-title text-primary">
                         <img

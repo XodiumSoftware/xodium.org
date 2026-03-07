@@ -94,7 +94,9 @@ pub fn App() -> impl IntoView {
                             "Meet our team"
                         </h2>
                         <p class="mt-6 text-lg leading-8 text-base-content/70">
-                            "No matter the project, our team can handle it."
+                            "No matter the project,"
+                            <br />
+                            "our team can handle it."
                         </p>
                     </div>
                     <TeamGrid />
