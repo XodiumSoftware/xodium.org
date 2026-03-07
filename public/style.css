@@ -5,12 +5,12 @@
 @source not "./daisyui{,*}.mjs";
 
 /*noinspection CssInvalidAtRule*/
-@plugin "./daisyui.mjs";
+@plugin "./daisyui.mjs" {
+    themes: halloween --default;
+}
 
 /*noinspection CssInvalidAtRule*/
-@plugin "./daisyui-theme.mjs" {
-    themes: halloween;
-}
+@plugin "./daisyui-theme.mjs";
 
 * {
     /*outline: 1px solid red !important;*/
