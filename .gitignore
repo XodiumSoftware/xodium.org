@@ -23,3 +23,7 @@ Cargo.lock
 # Added by cargo
 /dist
 /target
+
+/public/.daisyui-version
+/public/daisyui-theme.mjs
+/public/daisyui.mjs
