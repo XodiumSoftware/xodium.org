@@ -1,5 +1,4 @@
 mod app;
-pub mod github;
 mod components {
     pub mod footer;
     pub mod grid;
@@ -10,6 +9,8 @@ mod components {
     pub mod typewriter;
     pub mod version;
 }
+pub mod github;
 
 pub use app::*;
 pub use components::*;
+pub use github::*;
