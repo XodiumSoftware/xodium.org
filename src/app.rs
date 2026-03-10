@@ -56,7 +56,10 @@ pub fn App() -> impl IntoView {
                             >
                                 "Get Started"
                             </a>
-                            <a href="https://wiki.xodium.org" class="btn btn-outline btn-outline-ghost btn-hover-warning btn-lift">
+                            <a
+                                href="https://wiki.xodium.org"
+                                class="btn btn-outline btn-outline-ghost btn-hover-warning btn-lift"
+                            >
                                 "Read Docs"
                             </a>
                         </div>
@@ -94,9 +97,7 @@ pub fn App() -> impl IntoView {
                             "Meet our team"
                         </h2>
                         <p class="mt-6 text-lg leading-8 text-base-content/70">
-                            "No matter the project,"
-                            <br />
-                            "our team can handle it."
+                            "No matter the project," <br /> "our team can handle it."
                         </p>
                     </div>
                     <TeamGrid />

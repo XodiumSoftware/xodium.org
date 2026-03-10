@@ -100,7 +100,10 @@ pub fn Header() -> impl IntoView {
                                             }
                                         >
                                             <span
-                                                class=format!("w-6 h-6 block bg-base-content {} transition-colors", link.hover_color)
+                                                class=format!(
+                                                    "w-6 h-6 block bg-base-content {} transition-colors",
+                                                    link.hover_color,
+                                                )
                                                 style=format!(
                                                     "mask: url('{}') no-repeat center / contain",
                                                     link.icon_path,
