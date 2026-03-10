@@ -1,10 +1,9 @@
-use chrono::Datelike;
 use leptos::prelude::*;
 
 #[component]
 pub fn Footer() -> impl IntoView {
     let home_page = "/";
-    let current_year = chrono::Utc::now().year();
+    let current_year = js_sys::Date::new_0().get_full_year();
     let footer_links = vec![
         ("https://github.com/XodiumSoftware", "About"),
         ("https://www.gnu.org/licenses/agpl-3.0.html", "Licensing"),

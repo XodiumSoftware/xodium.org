@@ -1,4 +1,4 @@
-use leptos::server_fn::request::browser::Request;
+use gloo_net::http::Request;
 use leptos::web_sys;
 use serde::{Deserialize, Serialize};
 
