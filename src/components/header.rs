@@ -1,6 +1,7 @@
+use js_sys::Function;
 use leptos::prelude::*;
-use leptos::wasm_bindgen::JsCast;
 use leptos::wasm_bindgen::closure::Closure;
+use leptos::wasm_bindgen::JsCast;
 use leptos::web_sys;
 
 #[derive(Clone)]
@@ -16,15 +17,20 @@ struct SocialLink {
 pub fn Header() -> impl IntoView {
     let (is_scrolled, set_is_scrolled) = signal(false);
 
-    let _scroll_listener = Effect::new(move |_| {
-        let cb = move |_ev: web_sys::Event| {
-            set_is_scrolled.set(web_sys::window().unwrap().scroll_y().unwrap_or(0.0) > 0.0);
-        };
+    Effect::new(move |_| {
         let window = web_sys::window().unwrap();
-        let closure = Closure::wrap(Box::new(cb) as Box<dyn FnMut(_)>);
+        let closure = Closure::wrap(Box::new(move |_ev: web_sys::Event| {
+            set_is_scrolled.set(web_sys::window().unwrap().scroll_y().unwrap_or(0.0) > 0.0);
+        }) as Box<dyn FnMut(_)>);
+        let fn_ref: Function = closure.as_ref().unchecked_ref::<Function>().clone();
         window
-            .add_event_listener_with_callback("scroll", closure.as_ref().unchecked_ref())
+            .add_event_listener_with_callback("scroll", &fn_ref)
             .unwrap();
+        let win = window.clone();
+        on_cleanup(move || {
+            win.remove_event_listener_with_callback("scroll", &fn_ref)
+                .unwrap();
+        });
         closure.forget();
     });
 
