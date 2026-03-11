@@ -1,20 +1,21 @@
 use leptos::prelude::*;
-use phf::phf_map;
 
-static LANGUAGE_COLORS: phf::Map<&'static str, &'static str> = phf_map! {
-    "Rust" => "bg-[#dea584]",
-    "TypeScript" => "bg-[#3178c6]",
-    "JavaScript" => "bg-[#f1e05a]",
-    "Python" => "bg-[#3572A5]",
-    "HTML" => "bg-[#e34c26]",
-    "CSS" => "bg-[#563d7c]",
-    "Java" => "bg-[#b07219]",
-    "java" => "bg-[#b07219]",
-    "Go" => "bg-[#00ADD8]",
-    "C" => "bg-[#555555]",
-    "C++" => "bg-[#f34b7d]",
-    "Kotlin" => "bg-[#A97BFF]",
-};
+fn language_color(language: &str) -> &'static str {
+    match language {
+        "Rust" => "bg-[#dea584]",
+        "TypeScript" => "bg-[#3178c6]",
+        "JavaScript" => "bg-[#f1e05a]",
+        "Python" => "bg-[#3572A5]",
+        "HTML" => "bg-[#e34c26]",
+        "CSS" => "bg-[#563d7c]",
+        "Java" | "java" => "bg-[#b07219]",
+        "Go" => "bg-[#00ADD8]",
+        "C" => "bg-[#555555]",
+        "C++" => "bg-[#f34b7d]",
+        "Kotlin" => "bg-[#A97BFF]",
+        _ => "bg-base-content/50",
+    }
+}
 
 #[derive(Clone)]
 pub struct ProjectCardProperties {
@@ -27,11 +28,7 @@ pub struct ProjectCardProperties {
 
 #[component]
 fn LanguageCircle(language: String) -> impl IntoView {
-    let color = LANGUAGE_COLORS
-        .get(language.as_str())
-        .copied()
-        .unwrap_or("bg-base-content/50");
-
+    let color = language_color(&language);
     view! { <span class=format!("badge badge-sm {} mr-1", color) title=language /> }
 }
 

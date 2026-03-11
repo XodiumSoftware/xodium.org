@@ -49,9 +49,10 @@ pub fn Header() -> impl IntoView {
         window
             .add_event_listener_with_callback("scroll", &fn_ref)
             .unwrap();
-        let win = window.clone();
         on_cleanup(move || {
-            win.remove_event_listener_with_callback("scroll", &fn_ref)
+            web_sys::window()
+                .unwrap()
+                .remove_event_listener_with_callback("scroll", &fn_ref)
                 .unwrap();
         });
         closure.forget();

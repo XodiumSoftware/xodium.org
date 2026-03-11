@@ -5,7 +5,6 @@ edition = "2024"
 
 [dependencies]
 leptos = { version = "0.8.17", features = ["csr"] }
-phf = { version = "0.13.1", features = ["macros"] }
 gloo-net = { version = "0.6", features = ["http", "json"] }
 gloo-timers = { version = "0.3.0", features = ["futures"] }
 serde = { version = "1.0.228", features = ["derive"] }

@@ -8,7 +8,6 @@ const FOOTER_LINKS: &[(&str, &str)] = &[
 
 #[component]
 pub fn Footer() -> impl IntoView {
-    let home_page = "/";
     let current_year = js_sys::Date::new_0().get_full_year();
 
     view! {
@@ -16,7 +15,7 @@ pub fn Footer() -> impl IntoView {
             <aside class="grid-flow-col items-center">
                 <p class="font-bold">
                     {format!("© {} ", current_year)}
-                    <a href=home_page class="link link-hover link-primary">
+                    <a href="/" class="link link-hover link-primary">
                         "XODIUM™"
                     </a> ". Open-Source (CAD) Software Company."
                 </p>
@@ -26,12 +25,9 @@ pub fn Footer() -> impl IntoView {
                     .iter()
                     .copied()
                     .map(|(href, text)| {
-                        let target = if href.starts_with("http") { Some("_blank") } else { None };
-                        let rel = if href.starts_with("http") {
-                            Some("noopener noreferrer")
-                        } else {
-                            None
-                        };
+                        let is_external = href.starts_with("http");
+                        let target = if is_external { Some("_blank") } else { None };
+                        let rel = if is_external { Some("noopener noreferrer") } else { None };
                         view! {
                             <a href=href target=target rel=rel class="link link-hover link-primary">
                                 {text}
