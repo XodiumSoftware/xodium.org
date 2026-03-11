@@ -1,7 +1,7 @@
 use js_sys::Function;
 use leptos::prelude::*;
-use leptos::wasm_bindgen::closure::Closure;
 use leptos::wasm_bindgen::JsCast;
+use leptos::wasm_bindgen::closure::Closure;
 use leptos::web_sys;
 
 struct SocialLink {
@@ -28,7 +28,7 @@ const SOCIAL_LINKS: &[SocialLink] = &[
         hover_color: "group-hover:bg-primary",
     },
     SocialLink {
-        href: "https://github.com/sponsors/illyrius666",
+        href: "https://buymeacoffee.com/illyrius",
         label: "Sponsor",
         is_external: true,
         icon_path: "/icons/sponsor.svg",
