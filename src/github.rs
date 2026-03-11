@@ -8,6 +8,7 @@ const API_BASE: &str = "https://api.github.com";
 const CACHE_TTL_MS: f64 = 5.0 * 60.0 * 1000.0;
 const MAX_RETRIES: u32 = 3;
 const RETRY_BASE_MS: u64 = 1000;
+const PER_PAGE: usize = 100;
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Member {
@@ -91,13 +92,31 @@ async fn fetch<T: for<'de> Deserialize<'de> + Serialize>(endpoint: &str) -> Resu
     Err(last_err)
 }
 
+async fn fetch_all<T: for<'de> Deserialize<'de> + Serialize>(
+    endpoint: &str,
+) -> Result<Vec<T>, String> {
+    let sep = if endpoint.contains('?') { '&' } else { '?' };
+    let mut all = Vec::new();
+    let mut page = 1u32;
+    loop {
+        let page_endpoint = format!("{endpoint}{sep}page={page}&per_page={PER_PAGE}");
+        let items: Vec<T> = fetch(&page_endpoint).await?;
+        let done = items.len() < PER_PAGE;
+        all.extend(items);
+        if done {
+            break;
+        }
+        page += 1;
+    }
+    Ok(all)
+}
+
 pub async fn fetch_members() -> Result<Vec<Member>, String> {
-    fetch::<Vec<Member>>(&format!("/orgs/{ORG}/members?per_page=100")).await
+    fetch_all::<Member>(&format!("/orgs/{ORG}/members")).await
 }
 
 pub async fn fetch_repos() -> Result<Vec<Repo>, String> {
-    let mut repos =
-        fetch::<Vec<Repo>>(&format!("/orgs/{ORG}/repos?per_page=100&type=public")).await?;
+    let mut repos = fetch_all::<Repo>(&format!("/orgs/{ORG}/repos?type=public")).await?;
     repos.retain(|r| !r.fork);
     repos.sort_by(|a, b| b.stargazers_count.cmp(&a.stargazers_count));
     Ok(repos)
