@@ -27,6 +27,8 @@ fn cache_get<T: for<'de> Deserialize<'de>>(key: &str) -> Option<T> {
     let storage = web_sys::window()?.local_storage().ok()??;
     let ts: f64 = storage.get_item(&format!("{key}:ts")).ok()??.parse().ok()?;
     if js_sys::Date::now() - ts > CACHE_TTL_MS {
+        let _ = storage.remove_item(key);
+        let _ = storage.remove_item(&format!("{key}:ts"));
         return None;
     }
     let raw = storage.get_item(key).ok()??;
