@@ -4,7 +4,6 @@ use leptos::wasm_bindgen::closure::Closure;
 use leptos::wasm_bindgen::JsCast;
 use leptos::web_sys;
 
-#[derive(Clone)]
 struct SocialLink {
     href: &'static str,
     label: &'static str,
@@ -12,6 +11,30 @@ struct SocialLink {
     icon_path: &'static str,
     hover_color: &'static str,
 }
+
+const SOCIAL_LINKS: &[SocialLink] = &[
+    SocialLink {
+        href: "https://wiki.xodium.org",
+        label: "Wiki",
+        is_external: true,
+        icon_path: "/icons/wiki.svg",
+        hover_color: "group-hover:bg-primary",
+    },
+    SocialLink {
+        href: "https://github.com/XodiumSoftware",
+        label: "Github",
+        is_external: true,
+        icon_path: "/icons/github.svg",
+        hover_color: "group-hover:bg-primary",
+    },
+    SocialLink {
+        href: "https://github.com/sponsors/illyrius666",
+        label: "Sponsor",
+        is_external: true,
+        icon_path: "/icons/sponsor.svg",
+        hover_color: "group-hover:bg-pink-500",
+    },
+];
 
 #[component]
 pub fn Header() -> impl IntoView {
@@ -33,30 +56,6 @@ pub fn Header() -> impl IntoView {
         });
         closure.forget();
     });
-
-    let social_links = vec![
-        SocialLink {
-            href: "https://wiki.xodium.org",
-            label: "Wiki",
-            is_external: true,
-            icon_path: "/icons/wiki.svg",
-            hover_color: "group-hover:bg-primary",
-        },
-        SocialLink {
-            href: "https://github.com/XodiumSoftware",
-            label: "Github",
-            is_external: true,
-            icon_path: "/icons/github.svg",
-            hover_color: "group-hover:bg-primary",
-        },
-        SocialLink {
-            href: "https://github.com/sponsors/illyrius666",
-            label: "Sponsor",
-            is_external: true,
-            icon_path: "/icons/sponsor.svg",
-            hover_color: "group-hover:bg-pink-500",
-        },
-    ];
 
     view! {
         <header
@@ -88,8 +87,8 @@ pub fn Header() -> impl IntoView {
                 // Right side
                 <div class="navbar-end">
                     <ul class="menu menu-horizontal gap-2">
-                        {social_links
-                            .into_iter()
+                        {SOCIAL_LINKS
+                            .iter()
                             .map(|link| {
                                 view! {
                                     <li>
