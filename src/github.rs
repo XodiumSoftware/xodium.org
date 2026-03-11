@@ -1,10 +1,13 @@
 use gloo_net::http::Request;
 use leptos::web_sys;
 use serde::{Deserialize, Serialize};
+use std::time::Duration;
 
 const ORG: &str = "XodiumSoftware";
 const API_BASE: &str = "https://api.github.com";
 const CACHE_TTL_MS: f64 = 5.0 * 60.0 * 1000.0;
+const MAX_RETRIES: u32 = 3;
+const RETRY_BASE_MS: u64 = 1000;
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Member {
@@ -52,18 +55,40 @@ async fn fetch<T: for<'de> Deserialize<'de> + Serialize>(endpoint: &str) -> Resu
         return Ok(cached);
     }
 
-    let response = Request::get(&format!("{API_BASE}{endpoint}"))
-        .send()
-        .await
-        .map_err(|e| e.to_string())?;
+    let url = format!("{API_BASE}{endpoint}");
+    let mut last_err = String::new();
 
-    if !response.ok() {
-        return Err(format!("GitHub API returned {}", response.status()));
+    for attempt in 0..=MAX_RETRIES {
+        if attempt > 0 {
+            gloo_timers::future::sleep(Duration::from_millis(
+                RETRY_BASE_MS << (attempt - 1),
+            ))
+            .await;
+        }
+
+        let response = match Request::get(&url).send().await {
+            Ok(r) => r,
+            Err(e) => {
+                last_err = e.to_string();
+                continue;
+            }
+        };
+
+        if response.status() >= 500 {
+            last_err = format!("GitHub API returned {}", response.status());
+            continue;
+        }
+
+        if !response.ok() {
+            return Err(format!("GitHub API returned {}", response.status()));
+        }
+
+        let data = response.json::<T>().await.map_err(|e| e.to_string())?;
+        cache_set(&cache_key, &data);
+        return Ok(data);
     }
 
-    let data = response.json::<T>().await.map_err(|e| e.to_string())?;
-    cache_set(&cache_key, &data);
-    Ok(data)
+    Err(last_err)
 }
 
 pub async fn fetch_members() -> Result<Vec<Member>, String> {
