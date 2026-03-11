@@ -1,5 +1,6 @@
 mod app;
 mod components {
+    pub mod datagrid;
     pub mod footer;
     pub mod grid;
     pub mod header;
