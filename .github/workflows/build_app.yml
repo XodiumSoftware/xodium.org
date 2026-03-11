@@ -20,6 +20,8 @@ jobs:
       - id: checkout
         name: Checkout
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - id: setup-rust
         name: Setup Rust
