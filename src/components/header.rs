@@ -106,13 +106,10 @@ pub fn Header() -> impl IntoView {
                                         >
                                             <span
                                                 class=format!(
-                                                    "w-6 h-6 block bg-base-content {} transition-colors",
+                                                    "nav-icon w-6 h-6 block bg-base-content {} transition-colors",
                                                     link.hover_color,
                                                 )
-                                                style=format!(
-                                                    "mask: url('{}') no-repeat center / contain",
-                                                    link.icon_path,
-                                                )
+                                                style=format!("--mask-url: url('{}')", link.icon_path)
                                             />
                                         </a>
                                     </li>

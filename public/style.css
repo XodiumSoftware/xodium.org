@@ -86,6 +86,12 @@ html {
     mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 60%, transparent 100%);
 }
 
+/*noinspection ALL*/
+.nav-icon {
+    mask: var(--mask-url) no-repeat center / contain;
+    -webkit-mask: var(--mask-url) no-repeat center / contain;
+}
+
 .clip-organic-blob {
     clip-path: polygon(
         74.1% 44.1%,
