@@ -13,7 +13,6 @@ pub struct TypewriterProperties {
 
 #[component]
 pub fn Typewriter(props: TypewriterProperties) -> impl IntoView {
-    let displayed = RwSignal::new(String::new());
     let letter_index = RwSignal::new(0usize);
     let current_word_index = RwSignal::new(0usize);
     let is_deleting = RwSignal::new(false);
@@ -29,19 +28,19 @@ pub fn Typewriter(props: TypewriterProperties) -> impl IntoView {
 
     Effect::new(move || {
         let text = text.get_value();
-
         spawn_local(async move {
             typewrite_loop(
                 text,
-                displayed,
-                letter_index,
-                current_word_index,
-                is_deleting,
-                speed,
-                start_pause,
-                end_pause,
-                loop_enabled,
-                unwrite,
+                TypewriteState {
+                    letter_index,
+                    current_word_index,
+                    is_deleting,
+                    speed,
+                    start_pause,
+                    end_pause,
+                    loop_enabled,
+                    unwrite,
+                },
             )
             .await;
         });
@@ -49,7 +48,13 @@ pub fn Typewriter(props: TypewriterProperties) -> impl IntoView {
 
     view! {
         <div style="display:inline-block">
-            {move || displayed.get()} <span class="cursor">"|"</span>
+            {move || {
+                let word_idx = current_word_index.get();
+                let len = letter_index.get();
+                text.with_value(|t| {
+                    if t.is_empty() { String::new() } else { t[word_idx][..len].to_string() }
+                })
+            }} <span class="cursor">"|"</span>
             <style>
                 "
                 .cursor {
@@ -66,9 +71,7 @@ pub fn Typewriter(props: TypewriterProperties) -> impl IntoView {
     }
 }
 
-async fn typewrite_loop(
-    text: Vec<String>,
-    displayed: RwSignal<String>,
+struct TypewriteState {
     letter_index: RwSignal<usize>,
     current_word_index: RwSignal<usize>,
     is_deleting: RwSignal<bool>,
@@ -77,25 +80,35 @@ async fn typewrite_loop(
     end_pause: f64,
     loop_enabled: bool,
     unwrite: bool,
-) {
+}
+
+async fn typewrite_loop(text: Vec<String>, s: TypewriteState) {
     if text.is_empty() {
         return;
     }
 
+    let TypewriteState {
+        letter_index,
+        current_word_index,
+        is_deleting,
+        speed,
+        start_pause,
+        end_pause,
+        loop_enabled,
+        unwrite,
+    } = s;
+
     loop {
         let current_index = current_word_index.get_untracked();
-        let current_text = text[current_index].clone();
+        let current_len = text[current_index].len();
 
         if !is_deleting.get_untracked() {
             // Typing phase
-            while letter_index.get_untracked() < current_text.len() {
-                let next = current_text[..letter_index.get_untracked() + 1].to_string();
-                displayed.set(next);
+            while letter_index.get_untracked() < current_len {
                 letter_index.update(|i| *i += 1);
                 gloo_timers::future::sleep(Duration::from_millis(speed as u64)).await;
             }
 
-            // Pause at the end of the word
             gloo_timers::future::sleep(Duration::from_millis(start_pause as u64)).await;
 
             if unwrite {
@@ -103,7 +116,6 @@ async fn typewrite_loop(
             } else if loop_enabled || current_index < text.len() - 1 {
                 current_word_index.update(|i| *i = (*i + 1) % text.len());
                 letter_index.set(0);
-                displayed.set(String::new());
                 continue;
             } else {
                 break;
@@ -113,20 +125,16 @@ async fn typewrite_loop(
         if is_deleting.get_untracked() {
             // Deleting phase
             while letter_index.get_untracked() > 0 {
-                let next = current_text[..letter_index.get_untracked() - 1].to_string();
-                displayed.set(next);
                 letter_index.update(|i| *i -= 1);
                 gloo_timers::future::sleep(Duration::from_millis(speed as u64)).await;
             }
 
-            // Pause after deleting
             gloo_timers::future::sleep(Duration::from_millis(end_pause as u64)).await;
 
             is_deleting.set(false);
             if loop_enabled || current_index < text.len() - 1 {
                 current_word_index.update(|i| *i = (*i + 1) % text.len());
                 letter_index.set(0);
-                displayed.set(String::new());
             } else {
                 break;
             }
