@@ -12,7 +12,7 @@ pub fn Footer() -> impl IntoView {
 
     view! {
         <footer class="footer footer-center text-base-content p-4">
-            <aside class="grid-flow-col items-center">
+            <aside class="flex flex-col md:grid md:grid-flow-col items-center text-center">
                 <p class="font-bold">
                     {format!("© {} ", current_year)}
                     <a href="/" class="link link-hover link-primary">
@@ -20,7 +20,7 @@ pub fn Footer() -> impl IntoView {
                     </a> ". Open-Source (CAD) Software Company."
                 </p>
             </aside>
-            <nav class="grid grid-flow-col gap-4">
+            <nav class="flex flex-col md:grid md:grid-flow-col gap-4 items-center">
                 {FOOTER_LINKS
                     .iter()
                     .copied()
