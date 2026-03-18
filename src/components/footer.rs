@@ -11,31 +11,32 @@ pub fn Footer() -> impl IntoView {
     let current_year = js_sys::Date::new_0().get_full_year();
 
     view! {
-        <footer class="footer footer-center text-base-content p-4 px-6 lg:px-8 max-md:flex max-md:flex-col-reverse">
-            <aside class="grid-flow-col items-center w-full" style="container-type: inline-size">
-                <p class="font-bold text-[clamp(0.5rem,3.1cqw,1rem)] whitespace-nowrap">
-                    {format!("© {} ", current_year)}
-                    <a href="/" class="link link-hover link-primary">
-                        "XODIUM™"
-                    </a> ". Open-Source (CAD) Software Company."
-                </p>
-            </aside>
-            <nav class="grid grid-flow-col gap-4">
-                {FOOTER_LINKS
-                    .iter()
-                    .copied()
-                    .map(|(href, text)| {
-                        let is_external = href.starts_with("http");
-                        let target = if is_external { Some("_blank") } else { None };
-                        let rel = if is_external { Some("noopener noreferrer") } else { None };
-                        view! {
-                            <a href=href target=target rel=rel class="link link-hover link-primary">
-                                {text}
-                            </a>
-                        }
-                    })
-                    .collect::<Vec<_>>()}
-            </nav>
+        <footer class="text-base-content px-6 lg:px-8 py-4">
+            <div class="mx-auto max-w-7xl flex flex-col-reverse md:flex-row md:justify-between items-center gap-4">
+                <aside class="max-md:w-full" style="container-type: inline-size">
+                    <p class="font-bold whitespace-nowrap max-md:text-[clamp(0.5rem,3.1cqw,1rem)] max-md:text-center">
+                        {format!("© {} ", current_year)}
+                        <a href="/" class="link link-hover link-primary">"XODIUM™"</a>
+                        ". Open-Source (CAD) Software Company."
+                    </p>
+                </aside>
+                <nav class="flex flex-row gap-4">
+                    {FOOTER_LINKS
+                        .iter()
+                        .copied()
+                        .map(|(href, text)| {
+                            let is_external = href.starts_with("http");
+                            let target = if is_external { Some("_blank") } else { None };
+                            let rel = if is_external { Some("noopener noreferrer") } else { None };
+                            view! {
+                                <a href=href target=target rel=rel class="link link-hover link-primary">
+                                    {text}
+                                </a>
+                            }
+                        })
+                        .collect::<Vec<_>>()}
+                </nav>
+            </div>
         </footer>
     }
 }
