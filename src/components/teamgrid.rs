@@ -8,7 +8,7 @@ pub fn TeamGrid() -> impl IntoView {
     let resource = LocalResource::new(|| async { fetch_members().await });
     data_grid(resource, "No team members found.", |members: Vec<Member>| {
         view! {
-            <ul class="menu gap-3">
+            <ul class="menu gap-3 max-xl:w-full">
                 {members
                     .into_iter()
                     .map(|member| {

@@ -10,12 +10,12 @@ pub struct TeamCardProperties {
 #[component]
 pub fn TeamCard(props: TeamCardProperties) -> impl IntoView {
     view! {
-        <li>
+        <li class="max-xl:w-full">
             <a
                 href=props.html_url
                 target="_blank"
                 rel="noopener noreferrer"
-                class="group btn-lift bg-ghost hover:border-primary hover:text-primary"
+                class="group btn-lift bg-ghost hover:border-primary hover:text-primary max-xl:w-full"
                 aria-label=format!("Link to {}'s GitHub profile", props.login)
             >
                 <div class="avatar">

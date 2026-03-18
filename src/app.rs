@@ -91,8 +91,8 @@ pub fn App() -> impl IntoView {
 
             // Team section
             <section id="team" class="pb-24 sm:pb-32">
-                <div class="mx-auto grid max-w-7xl gap-x-8 gap-y-20 px-6 lg:px-8 xl:grid-cols-3">
-                    <div class="max-w-2xl">
+                <div class="mx-auto grid max-w-7xl gap-x-8 xl:gap-y-20 px-6 lg:px-8 xl:grid-cols-3">
+                    <div class="max-w-2xl mx-auto xl:mx-0 text-center xl:text-left mb-12 xl:mb-0">
                         <h2 class="text-3xl font-bold tracking-tight text-base-content sm:text-4xl">
                             "Meet our team"
                         </h2>
