@@ -26,7 +26,7 @@ pub fn App() -> impl IntoView {
                 <div class="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
                     <div class="text-center">
                         <h1 class="text-[clamp(1rem,6vw,3.75rem)] font-bold tracking-tight text-base-content whitespace-nowrap">
-                            "CODING "
+                            " CODING "
                             <span class="bg-gradient-to-r from-primary to-secondary inline-block text-transparent bg-clip-text">
                                 <Typewriter props=TypewriterProperties {
                                     text: vec![
