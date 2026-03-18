@@ -11,16 +11,16 @@ pub fn Footer() -> impl IntoView {
     let current_year = js_sys::Date::new_0().get_full_year();
 
     view! {
-        <footer class="footer footer-center text-base-content p-4">
-            <aside class="flex flex-col md:grid md:grid-flow-col items-center text-center">
-                <p class="font-bold">
+        <footer class="footer footer-center text-base-content p-4 px-6 lg:px-8 max-md:flex max-md:flex-col-reverse">
+            <aside class="grid-flow-col items-center w-full" style="container-type: inline-size">
+                <p class="font-bold text-[clamp(0.5rem,3.1cqw,1rem)] whitespace-nowrap">
                     {format!("© {} ", current_year)}
                     <a href="/" class="link link-hover link-primary">
                         "XODIUM™"
                     </a> ". Open-Source (CAD) Software Company."
                 </p>
             </aside>
-            <nav class="flex flex-col md:grid md:grid-flow-col gap-4 items-center">
+            <nav class="grid grid-flow-col gap-4">
                 {FOOTER_LINKS
                     .iter()
                     .copied()
