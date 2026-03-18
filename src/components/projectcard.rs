@@ -65,7 +65,7 @@ pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
             rel="noopener noreferrer"
             class="btn-lift hover:border-primary block h-full"
         >
-            <div class="card bg-base-200/50 backdrop-blur h-full rounded-none">
+            <div class="card bg-ghost h-full rounded-none">
                 <div class="card-body">
                     <h2 class="card-title text-primary">
                         <img
