@@ -31,7 +31,7 @@ jobs:
 
       - id: cache-rust
         name: Cache Rust
-        uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5
+        uses: Swatinem/rust-cache@f51f967e158417aafa338a1e46ab22095f07aa01
 
       - id: setup-trunk
         name: Setup Trunk
