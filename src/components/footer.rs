@@ -16,8 +16,9 @@ pub fn Footer() -> impl IntoView {
                 <aside class="max-md:w-full" style="container-type: inline-size">
                     <p class="font-bold whitespace-nowrap max-md:text-[clamp(0.5rem,3.1cqw,1rem)] max-md:text-center">
                         {format!("© {} ", current_year)}
-                        <a href="/" class="link link-hover link-primary">"XODIUM™"</a>
-                        ". Open-Source (CAD) Software Company."
+                        <a href="/" class="link link-hover link-primary">
+                            "XODIUM™"
+                        </a> ". Open-Source (CAD) Software Company."
                     </p>
                 </aside>
                 <nav class="flex flex-row gap-4">
@@ -29,7 +30,12 @@ pub fn Footer() -> impl IntoView {
                             let target = if is_external { Some("_blank") } else { None };
                             let rel = if is_external { Some("noopener noreferrer") } else { None };
                             view! {
-                                <a href=href target=target rel=rel class="link link-hover link-primary">
+                                <a
+                                    href=href
+                                    target=target
+                                    rel=rel
+                                    class="link link-hover link-primary"
+                                >
                                     {text}
                                 </a>
                             }
