@@ -14,13 +14,6 @@ struct SocialLink {
 
 const SOCIAL_LINKS: &[SocialLink] = &[
     SocialLink {
-        href: "https://wiki.xodium.org",
-        label: "Wiki",
-        is_external: true,
-        icon_path: "/icons/wiki.svg",
-        hover_color: "group-hover:bg-primary",
-    },
-    SocialLink {
         href: "https://github.com/XodiumSoftware",
         label: "Github",
         is_external: true,

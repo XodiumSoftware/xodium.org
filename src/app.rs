@@ -57,10 +57,10 @@ pub fn App() -> impl IntoView {
                                 "Get Started"
                             </a>
                             <a
-                                href="https://wiki.xodium.org"
+                                href="mailto:info@xodium.org"
                                 class="btn btn-outline btn-outline-ghost btn-hover-warning btn-lift"
                             >
-                                "Read Docs"
+                                "Join us"
                             </a>
                         </div>
                     </div>
