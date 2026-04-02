@@ -1,5 +1,10 @@
 [tools]
 tailwindcss = "4.1.13"
 
+[[hooks]]
+stage = "pre_build"
+command = "sh"
+command_arguments = ["scripts/fetch-daisyui.sh"]
+
 [build.wasm-opt]
 level = "z"
