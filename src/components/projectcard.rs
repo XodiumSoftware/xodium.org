@@ -24,6 +24,7 @@ pub struct ProjectCardProperties {
     pub link: Option<String>,
     pub language: Option<String>,
     pub stargazers_count: u32,
+    pub has_pages: bool,
 }
 
 #[component]
@@ -52,11 +53,34 @@ fn StarIcon() -> impl IntoView {
 }
 
 #[component]
+fn DocsIcon() -> impl IntoView {
+    view! {
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+        >
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+        </svg>
+    }
+}
+
+#[component]
 pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
     let link = props.link.clone().unwrap_or_else(|| "#".to_string());
     let stargazers_url = format!("{}/stargazers", link);
     let language_opt = props.language.clone();
     let stars = props.stargazers_count;
+    let docs_url = props
+        .has_pages
+        .then(|| format!("https://{}.xodium.org", props.title.to_lowercase()));
 
     view! {
         <a
@@ -93,6 +117,20 @@ pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
                                     })
                             }}
                         </div>
+                        <div class="flex items-center gap-3">
+                        {docs_url.map(|url| view! {
+                            <a
+                                href=url
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                on:click=|e| e.stop_propagation()
+                                class="flex items-center gap-1 text-base-content/60 hover:text-primary text-sm transition-colors"
+                                title="Documentation"
+                            >
+                                <DocsIcon />
+                                <span>"Docs"</span>
+                            </a>
+                        })}
                         {if stars > 0 {
                             view! {
                                 <a
@@ -116,6 +154,7 @@ pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
                             }
                                 .into_any()
                         }}
+                        </div>
                     </div>
                 </div>
             </div>

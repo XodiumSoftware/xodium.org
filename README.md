@@ -23,10 +23,12 @@
 
 ## Table of Contents
 
+- [Architecture](ARCHITECTURE.md)
 - [Built With](#built-with)
 - [Code of Conduct][code_of_conduct_url]
 - [Contributing][contributing_url]
 - [License][license_url]
+- [Security][security_url]
 
 ## Built With
 
@@ -42,20 +44,22 @@
 
 [built_with_url]: https://skillicons.dev
 
-[code_of_conduct_url]: https://github.com/XodiumSoftware/XodiumSoftware.github.io?tab=coc-ov-file
+[code_of_conduct_url]: https://github.com/XodiumSoftware/xodium.org?tab=coc-ov-file
 
-[contributing_url]: https://github.com/XodiumSoftware/XodiumSoftware.github.io/blob/main/CONTRIBUTING.md
+[contributing_url]: https://github.com/XodiumSoftware/xodium.org?tab=contributing-ov-file
 
-[contributors_shield_url]: https://img.shields.io/github/contributors/XodiumSoftware/XodiumSoftware.github.io?style=for-the-badge&color=blue
+[contributors_shield_url]: https://img.shields.io/github/contributors/XodiumSoftware/xodium.org?style=for-the-badge&color=blue
 
-[contributors_url]: https://github.com/XodiumSoftware/XodiumSoftware.github.io/graphs/contributors
+[contributors_url]: https://github.com/XodiumSoftware/xodium.org/graphs/contributors
 
-[issues_shield_url]: https://img.shields.io/github/issues/XodiumSoftware/XodiumSoftware.github.io?style=for-the-badge&color=yellow
+[issues_shield_url]: https://img.shields.io/github/issues/XodiumSoftware/xodium.org?style=for-the-badge&color=yellow
 
-[issues_url]: https://github.com/XodiumSoftware/XodiumSoftware.github.io/issues
+[issues_url]: https://github.com/XodiumSoftware/xodium.org/issues
 
-[license_url]: https://github.com/XodiumSoftware/XodiumSoftware.github.io?tab=AGPL-3.0-1-ov-file
+[license_url]: https://github.com/XodiumSoftware/xodium.org?tab=AGPL-3.0-1-ov-file
 
 [roadmap_shield_url]: https://img.shields.io/badge/Roadmap-Click%20Me!-purple.svg?style=for-the-badge
 
 [roadmap_url]: https://github.com/orgs/XodiumSoftware/projects/4
+
+[security_url]: https://github.com/XodiumSoftware/xodium.org?tab=security-ov-file

@@ -1,6 +1,6 @@
 use crate::components::datagrid::data_grid;
 use crate::components::projectcard::{ProjectCard, ProjectCardProperties};
-use crate::github::{fetch_repos, Repo};
+use crate::github::{Repo, fetch_repos};
 use leptos::prelude::*;
 
 #[component]
@@ -19,6 +19,7 @@ pub fn ProjectGrid() -> impl IntoView {
                                 link: Some(project.html_url),
                                 language: project.language,
                                 stargazers_count: project.stargazers_count,
+                                has_pages: project.has_pages,
                             } />
                         }
                     })

@@ -25,6 +25,7 @@ pub struct Repo {
     pub language: Option<String>,
     pub stargazers_count: u32,
     pub fork: bool,
+    pub has_pages: bool,
 }
 
 fn cache_get<T: for<'de> Deserialize<'de>>(key: &str) -> Option<T> {
@@ -61,10 +62,7 @@ async fn fetch<T: for<'de> Deserialize<'de> + Serialize>(endpoint: &str) -> Resu
 
     for attempt in 0..=MAX_RETRIES {
         if attempt > 0 {
-            gloo_timers::future::sleep(Duration::from_millis(
-                RETRY_BASE_MS << (attempt - 1),
-            ))
-            .await;
+            gloo_timers::future::sleep(Duration::from_millis(RETRY_BASE_MS << (attempt - 1))).await;
         }
 
         let response = match Request::get(&url).send().await {
