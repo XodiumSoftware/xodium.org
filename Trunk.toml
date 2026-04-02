@@ -6,5 +6,9 @@ stage = "pre_build"
 command = "sh"
 command_arguments = ["scripts/fetch-daisyui.sh"]
 
+[hooks.windows]
+command = "powershell"
+command_arguments = ["-ExecutionPolicy", "Bypass", "-File", "scripts/fetch-daisyui.ps1"]
+
 [build.wasm-opt]
 level = "z"
