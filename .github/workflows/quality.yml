@@ -25,6 +25,7 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9
         with:
+          toolchain: stable
           components: rustfmt
 
       - name: Check formatting
@@ -40,6 +41,7 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9
         with:
+          toolchain: stable
           targets: wasm32-unknown-unknown
           components: clippy
 
@@ -58,6 +60,8 @@ jobs:
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9
+        with:
+          toolchain: stable
 
       - name: Install cargo-deny
         run: cargo install cargo-deny --locked
