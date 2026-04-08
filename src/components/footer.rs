@@ -22,17 +22,15 @@ pub fn Footer() -> impl IntoView {
                         {format!("© {} ", current_year)}
                         <a href="/" class="link link-hover link-primary">
                             "XODIUM™"
-                        </a> ". Open-Source (CAD) Software Company."
-                    </p>
-                    <p class="text-sm text-base-content/50 text-center md:text-left">
-                        "Commit: "
+                        </a>
+                        ". Open-Source (CAD) Software Company. "
                         <a
                             href={commit_url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="link link-hover"
+                            class="link link-hover text-base-content/50"
                         >
-                            {GIT_SHA}
+                            {format!("#{}", GIT_SHA)}
                         </a>
                     </p>
                 </aside>
