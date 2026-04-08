@@ -56,6 +56,8 @@ jobs:
 
       - id: build-app
         name: Build App
+        env:
+          DAISYUI_VERSION: "5.5.19"
         run: trunk build --release
 
       - id: deploy
