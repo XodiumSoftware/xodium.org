@@ -1,6 +1,7 @@
 use crate::blueprintgrid::BlueprintGrid;
 use crate::footer::Footer;
 use crate::header::Header;
+use crate::linedraw::{LineDraw, LineDrawHero};
 use crate::projectgrid::ProjectGrid;
 use crate::teamgrid::TeamGrid;
 use crate::typewriter::{Typewriter, TypewriterProperties};
@@ -24,6 +25,7 @@ pub fn App() -> impl IntoView {
             <section id="landing" class="relative isolate px-6 pt-14 lg:px-8 pb-24 sm:pb-32">
                 <BlueprintGrid />
                 <WireframeShapes />
+                <LineDrawHero />
 
                 <div
                     class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
@@ -97,6 +99,9 @@ pub fn App() -> impl IntoView {
                     <ProjectGrid />
                 </div>
             </section>
+
+            // Line draw divider
+            <LineDraw />
 
             // Team section
             <section id="team" class="pb-24 sm:pb-32">

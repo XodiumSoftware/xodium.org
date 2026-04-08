@@ -9,6 +9,7 @@ mod components {
     pub mod projectgrid;
     pub mod teamcard;
     pub mod teamgrid;
+    pub mod linedraw;
     pub mod typewriter;
     pub mod wireframes;
 }
