@@ -36,14 +36,14 @@ jobs:
 
       - id: cache-trunk
         name: Cache Trunk
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cargo/bin/trunk
           key: ${{ runner.os }}-trunk-latest
 
       - id: cache-daisyui
         name: Cache DaisyUI
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: public/daisyui*.mjs
           key: ${{ runner.os }}-daisyui-${{ hashFiles('Trunk.toml') }}
