@@ -28,7 +28,7 @@ pub fn Footer() -> impl IntoView {
                             href={commit_url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="link link-hover text-base-content/50"
+                            class="link link-hover text-base-content/50 hover:link-primary"
                         >
                             {format!("#{}", GIT_SHA)}
                         </a>
