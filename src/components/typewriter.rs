@@ -49,7 +49,7 @@ pub fn Typewriter(props: TypewriterProperties) -> impl IntoView {
 
     let text_for_view = text.clone();
     view! {
-        <div style="display:inline-block">
+        <div style="display:inline-block" aria-live="polite" aria-atomic="true">
             {move || {
                 let word_idx = current_word_index.get();
                 let len = letter_index.get();
