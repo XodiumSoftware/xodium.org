@@ -1,6 +1,12 @@
 # IDE
 /.idea
 
+# AI assistants
+/.claude
+/.ai
+/.cursor
+/.copilot
+
 # Rust
 /target
 **/*.rs.bk
