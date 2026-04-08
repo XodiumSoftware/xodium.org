@@ -1,3 +1,4 @@
+use crate::corner_frame::CornerFrame;
 use leptos::prelude::*;
 
 fn language_color(language: &str) -> &'static str {
@@ -87,76 +88,78 @@ pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
             href=link
             target="_blank"
             rel="noopener noreferrer"
-            class="btn-lift hover:border-primary block h-full"
+            class="btn-lift hover:border-primary block h-full p-2"
         >
-            <div class="card bg-ghost h-full rounded-none">
-                <div class="card-body">
-                    <h2 class="card-title text-primary">
-                        <img
-                            src="/icons/github-repo.svg"
-                            alt="GitHub Repository"
-                            class="w-5 h-5 text-base-content/60 invert-icon"
-                        />
-                        {props.title}
-                    </h2>
-                    <p class="text-base-content/70 flex-grow">{props.description}</p>
+            <CornerFrame style="square" class="h-full">
+                <div class="card bg-ghost h-full rounded-none">
+                    <div class="card-body">
+                        <h2 class="card-title text-primary">
+                                <img
+                                    src="/icons/github-repo.svg"
+                                    alt="GitHub Repository"
+                                    class="w-5 h-5 text-base-content/60 invert-icon"
+                                />
+                                {props.title}
+                            </h2>
+                            <p class="text-base-content/70 flex-grow">{props.description}</p>
 
-                    <div class="card-actions justify-between items-center mt-auto">
-                        <div class="flex items-center gap-1 text-base-content/60 text-sm">
-                            {move || {
-                                language_opt
-                                    .clone()
-                                    .map(|language| {
-                                        view! {
-                                            <>
-                                                <LanguageCircle language=language.clone() />
-                                                <span>{language}</span>
-                                            </>
-                                        }
-                                    })
-                            }}
-                        </div>
-                        <div class="flex items-center gap-3">
-                        {docs_url.map(|url| view! {
-                            <a
-                                href=url
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                on:click=|e| e.stop_propagation()
-                                class="flex items-center gap-1 text-base-content/60 hover:text-primary text-sm transition-colors"
-                                title="Documentation"
-                            >
-                                <DocsIcon />
-                                <span>"Docs"</span>
-                            </a>
-                        })}
-                        {if stars > 0 {
-                            view! {
-                                <a
-                                    href=stargazers_url
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    on:click=|e| e.stop_propagation()
-                                    class="flex items-center gap-1 text-base-content/60 hover:text-primary text-sm transition-colors"
-                                >
-                                    <StarIcon />
-                                    <span>{stars}</span>
-                                </a>
-                            }
-                                .into_any()
-                        } else {
-                            view! {
+                            <div class="card-actions justify-between items-center mt-auto">
                                 <div class="flex items-center gap-1 text-base-content/60 text-sm">
-                                    <StarIcon />
-                                    <span>{stars}</span>
+                                    {move || {
+                                        language_opt
+                                            .clone()
+                                            .map(|language| {
+                                                view! {
+                                                    <>
+                                                        <LanguageCircle language=language.clone() />
+                                                        <span>{language}</span>
+                                                    </>
+                                                }
+                                            })
+                                    }}
                                 </div>
-                            }
-                                .into_any()
-                        }}
+                                <div class="flex items-center gap-3">
+                                {docs_url.map(|url| view! {
+                                    <a
+                                        href=url
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        on:click=|e| e.stop_propagation()
+                                        class="flex items-center gap-1 text-base-content/60 hover:text-primary text-sm transition-colors"
+                                        title="Documentation"
+                                    >
+                                        <DocsIcon />
+                                        <span>"Docs"</span>
+                                    </a>
+                                })}
+                                {if stars > 0 {
+                                    view! {
+                                        <a
+                                            href=stargazers_url
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            on:click=|e| e.stop_propagation()
+                                            class="flex items-center gap-1 text-base-content/60 hover:text-primary text-sm transition-colors"
+                                        >
+                                            <StarIcon />
+                                            <span>{stars}</span>
+                                        </a>
+                                    }
+                                        .into_any()
+                                } else {
+                                    view! {
+                                        <div class="flex items-center gap-1 text-base-content/60 text-sm">
+                                            <StarIcon />
+                                            <span>{stars}</span>
+                                        </div>
+                                    }
+                                        .into_any()
+                                }}
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                </CornerFrame>
         </a>
     }
 }

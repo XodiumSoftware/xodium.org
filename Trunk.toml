@@ -7,7 +7,7 @@ DAISYUI_VERSION = "5.5.19"
 [[hooks]]
 stage = "pre_build"
 command = "sh"
-command_arguments = ["scripts/fetch-daisyui.sh"]
+command_arguments = ["-c", "DAISYUI_VERSION=5.5.19 scripts/fetch-daisyui.sh"]
 
 [hooks.windows]
 command = "powershell"

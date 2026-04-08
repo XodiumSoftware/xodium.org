@@ -1,5 +1,6 @@
 mod app;
 mod components {
+    pub mod corner_frame;
     pub mod datagrid;
     pub mod footer;
     pub mod grid;
