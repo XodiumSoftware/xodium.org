@@ -10,6 +10,12 @@
     <!-- Content Security Policy -->
     <meta content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://api.github.com; img-src 'self' https: data:; font-src 'self';" http-equiv="Content-Security-Policy"/>
 
+    <!-- DNS Prefetch and Preconnect for GitHub API -->
+    <link href="https://api.github.com" rel="dns-prefetch"/>
+    <link crossorigin="" href="https://api.github.com" rel="preconnect"/>
+    <link href="https://avatars.githubusercontent.com" rel="dns-prefetch"/>
+    <link crossorigin="" href="https://avatars.githubusercontent.com" rel="preconnect"/>
+
     <!-- Open Graph / Social Media -->
     <meta content="Xodium Software" property="og:title"/>
     <meta content="Open source CAD software organization. Building innovative tools for the engineering community." property="og:description"/>
