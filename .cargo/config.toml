@@ -1,5 +1,18 @@
+[build]
+target = "wasm32-unknown-unknown"
+
 [target.wasm32-unknown-unknown]
 rustflags = [
-    "--cfg",
-    "erase_components",
+    "--cfg", "erase_components",
+    "-C", "target-cpu=mvp",
 ]
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[unstable]
+sparse-registry = true
