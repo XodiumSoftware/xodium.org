@@ -116,6 +116,72 @@ html {
     }
 }
 
+/* Wireframe shapes animations */
+.wireframe-float-slow {
+    animation: wireframeFloat 12s ease-in-out infinite;
+}
+
+.wireframe-float-medium {
+    animation: wireframeFloat 8s ease-in-out infinite;
+}
+
+.wireframe-float-fast {
+    animation: wireframeFloat 6s ease-in-out infinite;
+}
+
+.wireframe-pulse {
+    animation: wireframePulse 4s ease-in-out infinite;
+}
+
+.wireframe-rotate-slow {
+    animation: wireframeRotate 20s linear infinite;
+}
+
+@keyframes wireframeFloat {
+    0%, 100% {
+        transform: translateY(0) translateX(0);
+    }
+    25% {
+        transform: translateY(-15px) translateX(5px);
+    }
+    50% {
+        transform: translateY(-5px) translateX(-5px);
+    }
+    75% {
+        transform: translateY(-20px) translateX(3px);
+    }
+}
+
+@keyframes wireframePulse {
+    0%, 100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.6;
+        transform: scale(1.1);
+    }
+}
+
+@keyframes wireframeRotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .wireframe-float-slow,
+    .wireframe-float-medium,
+    .wireframe-float-fast,
+    .wireframe-pulse,
+    .wireframe-rotate-slow {
+        animation: none;
+    }
+}
+
 /*noinspection ALL*/
 .nav-icon {
     mask: var(--mask-url) no-repeat center / contain;

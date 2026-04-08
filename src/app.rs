@@ -4,6 +4,7 @@ use crate::header::Header;
 use crate::projectgrid::ProjectGrid;
 use crate::teamgrid::TeamGrid;
 use crate::typewriter::{Typewriter, TypewriterProperties};
+use crate::wireframes::WireframeShapes;
 use leptos::prelude::*;
 
 #[component]
@@ -22,6 +23,7 @@ pub fn App() -> impl IntoView {
             // Landing section
             <section id="landing" class="relative isolate px-6 pt-14 lg:px-8 pb-24 sm:pb-32">
                 <BlueprintGrid />
+                <WireframeShapes />
 
                 <div
                     class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
