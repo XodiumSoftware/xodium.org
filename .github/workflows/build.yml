@@ -34,6 +34,20 @@ jobs:
         name: Cache Rust
         uses: Swatinem/rust-cache@f51f967e158417aafa338a1e46ab22095f07aa01
 
+      - id: cache-trunk
+        name: Cache Trunk
+        uses: actions/cache@v4
+        with:
+          path: ~/.cargo/bin/trunk
+          key: ${{ runner.os }}-trunk-latest
+
+      - id: cache-daisyui
+        name: Cache DaisyUI
+        uses: actions/cache@v4
+        with:
+          path: public/daisyui*.mjs
+          key: ${{ runner.os }}-daisyui-${{ hashFiles('Trunk.toml') }}
+
       - id: setup-trunk
         name: Setup Trunk
         uses: jetli/trunk-action@1346cc09eace4beb84e403e199a471346d4684c9
