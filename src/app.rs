@@ -1,3 +1,4 @@
+use crate::dimensionline::{DimensionLine, DimensionLineProperties};
 use crate::footer::Footer;
 use crate::grid::Grid;
 use crate::header::Header;
@@ -88,6 +89,12 @@ pub fn App() -> impl IntoView {
                         <h2 class="text-3xl font-bold tracking-tight text-base-content sm:text-4xl">
                             "Our Projects"
                         </h2>
+                        <div class="mt-4">
+                            <DimensionLine props=DimensionLineProperties {
+                                label: "SECTION 01".to_string(),
+                                length: Some(100),
+                            } />
+                        </div>
                         <p class="mt-6 text-lg leading-8 text-base-content/70">
                             "Explore our open-source projects and contributions."
                         </p>
@@ -103,6 +110,12 @@ pub fn App() -> impl IntoView {
                         <h2 class="text-3xl font-bold tracking-tight text-base-content sm:text-4xl">
                             "Meet our team"
                         </h2>
+                        <div class="mt-4 flex xl:justify-start justify-center">
+                            <DimensionLine props=DimensionLineProperties {
+                                label: "SECTION 02".to_string(),
+                                length: Some(100),
+                            } />
+                        </div>
                         <p class="mt-6 text-lg leading-8 text-base-content/70">
                             "No matter the project," <br /> "our team can handle it."
                         </p>
