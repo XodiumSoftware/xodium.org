@@ -1,6 +1,7 @@
 use leptos::prelude::*;
 use leptos::task::spawn_local;
 use std::time::Duration;
+use wasm_bindgen::JsCast;
 
 #[derive(Clone)]
 pub struct TypewriterProperties {
@@ -9,6 +10,17 @@ pub struct TypewriterProperties {
     pub loop_enabled: Option<bool>,
     pub pause: Option<(f64, f64)>,
     pub unwrite: Option<bool>,
+}
+
+fn prefers_reduced_motion() -> bool {
+    web_sys::window()
+        .and_then(|w| {
+            w.match_media("(prefers-reduced-motion: reduce)")
+                .ok()
+                .flatten()
+        })
+        .map(|m| m.matches())
+        .unwrap_or(false)
 }
 
 #[component]
@@ -26,8 +38,18 @@ pub fn Typewriter(props: TypewriterProperties) -> impl IntoView {
     let unwrite = props.unwrite.unwrap_or(false);
     let text = props.text;
     let text_for_effect = text.clone();
+    let reduced_motion = prefers_reduced_motion();
 
     Effect::new(move |_| {
+        // Skip animation if user prefers reduced motion
+        if reduced_motion {
+            if !text_for_effect.is_empty() {
+                // Show first word fully
+                letter_index.set(text_for_effect[0].len());
+            }
+            return;
+        }
+
         let text = text_for_effect.clone();
         spawn_local(async move {
             typewrite_loop(
@@ -48,6 +70,7 @@ pub fn Typewriter(props: TypewriterProperties) -> impl IntoView {
     });
 
     let text_for_view = text.clone();
+    let show_cursor = !reduced_motion;
     view! {
         <div style="display:inline-block" aria-live="polite" aria-atomic="true">
             {move || {
@@ -58,7 +81,10 @@ pub fn Typewriter(props: TypewriterProperties) -> impl IntoView {
                 } else {
                     text_for_view[word_idx][..len].to_string()
                 }
-            }} <span class="cursor">"|"</span>
+            }}
+            {show_cursor.then(|| view! {
+                <span class="cursor">"|"</span>
+            })}
             <style>
                 "
                 .cursor {
