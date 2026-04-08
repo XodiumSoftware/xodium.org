@@ -9,7 +9,6 @@ mod components {
     pub mod teamcard;
     pub mod teamgrid;
     pub mod typewriter;
-    pub mod version;
 }
 pub mod github;
 

@@ -6,9 +6,13 @@ const FOOTER_LINKS: &[(&str, &str)] = &[
     ("mailto:info@xodium.org", "Contact"),
 ];
 
+const GIT_SHA: &str = env!("GIT_SHA");
+const GITHUB_REPO_URL: &str = "https://github.com/XodiumSoftware/xodium.org/commit";
+
 #[component]
 pub fn Footer() -> impl IntoView {
     let current_year = js_sys::Date::new_0().get_full_year();
+    let commit_url = format!("{}/{}", GITHUB_REPO_URL, GIT_SHA);
 
     view! {
         <footer class="text-base-content px-6 lg:px-8 py-4">
@@ -19,6 +23,17 @@ pub fn Footer() -> impl IntoView {
                         <a href="/" class="link link-hover link-primary">
                             "XODIUM™"
                         </a> ". Open-Source (CAD) Software Company."
+                    </p>
+                    <p class="text-sm text-base-content/50 text-center md:text-left">
+                        "Commit: "
+                        <a
+                            href={commit_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="link link-hover"
+                        >
+                            {GIT_SHA}
+                        </a>
                     </p>
                 </aside>
                 <nav class="flex flex-row gap-4">
