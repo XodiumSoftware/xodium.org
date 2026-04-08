@@ -5,6 +5,7 @@ use crate::hexgrid::HexPattern;
 use crate::linedraw::{LineDraw, LineDrawHero};
 use crate::parallax::ParallaxLanding;
 use crate::projectgrid::ProjectGrid;
+use crate::sectionfade::FadeOverlay;
 use crate::teambg::TeamBackground;
 use crate::teamgrid::TeamGrid;
 use crate::typewriter::{Typewriter, TypewriterProperties};
@@ -95,6 +96,7 @@ pub fn App() -> impl IntoView {
             // Projects section
             <section id="projects" class="relative pb-24 sm:pb-32 px-6">
                 <HexPattern />
+                <FadeOverlay />
                 <div class="mx-auto max-w-7xl relative z-10">
                     <div class="max-w-2xl mx-auto text-center mb-12">
                         <h2 class="text-3xl font-bold tracking-tight text-base-content sm:text-4xl">
@@ -114,6 +116,7 @@ pub fn App() -> impl IntoView {
             // Team section
             <section id="team" class="relative pb-24 sm:pb-32">
                 <TeamBackground />
+                <FadeOverlay />
                 <div class="relative z-10 mx-auto grid max-w-7xl gap-x-8 xl:gap-y-20 px-6 lg:px-8 xl:grid-cols-3">
                     <div class="max-w-2xl mx-auto xl:mx-0 text-center xl:text-left mb-12 xl:mb-0">
                         <h2 class="text-3xl font-bold tracking-tight text-base-content sm:text-4xl">

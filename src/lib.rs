@@ -11,6 +11,7 @@ mod components {
     pub mod projectcard;
     pub mod projectgrid;
     pub mod sectiondivider;
+    pub mod sectionfade;
     pub mod teambg;
     pub mod teamcard;
     pub mod teamgrid;
