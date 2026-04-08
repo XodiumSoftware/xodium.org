@@ -24,10 +24,11 @@ pub fn Typewriter(props: TypewriterProperties) -> impl IntoView {
 
     let loop_enabled = props.loop_enabled.unwrap_or(false);
     let unwrite = props.unwrite.unwrap_or(false);
-    let text = StoredValue::new(props.text);
+    let text = props.text;
+    let text_for_effect = text.clone();
 
-    Effect::new(move || {
-        let text = text.get_value();
+    Effect::new(move |_| {
+        let text = text_for_effect.clone();
         spawn_local(async move {
             typewrite_loop(
                 text,
@@ -46,14 +47,17 @@ pub fn Typewriter(props: TypewriterProperties) -> impl IntoView {
         });
     });
 
+    let text_for_view = text.clone();
     view! {
         <div style="display:inline-block">
             {move || {
                 let word_idx = current_word_index.get();
                 let len = letter_index.get();
-                text.with_value(|t| {
-                    if t.is_empty() { String::new() } else { t[word_idx][..len].to_string() }
-                })
+                if text_for_view.is_empty() {
+                    String::new()
+                } else {
+                    text_for_view[word_idx][..len].to_string()
+                }
             }} <span class="cursor">"|"</span>
             <style>
                 "
