@@ -1,6 +1,6 @@
 use crate::components::datagrid::data_grid;
 use crate::components::teamcard::{TeamCard, TeamCardProperties};
-use crate::github::{fetch_members, Member};
+use crate::github::{Member, fetch_members};
 use leptos::prelude::*;
 
 #[component]

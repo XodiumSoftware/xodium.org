@@ -160,7 +160,10 @@ mod tests {
         let member: Member = serde_json::from_str(json).unwrap();
         assert_eq!(member.login, "testuser");
         assert_eq!(member.html_url, "https://github.com/testuser");
-        assert_eq!(member.avatar_url, "https://avatars.githubusercontent.com/u/123?v=4");
+        assert_eq!(
+            member.avatar_url,
+            "https://avatars.githubusercontent.com/u/123?v=4"
+        );
     }
 
     #[wasm_bindgen_test]
