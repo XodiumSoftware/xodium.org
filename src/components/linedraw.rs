@@ -42,17 +42,12 @@ pub fn LineDraw(
                     <line x1="1175" y1="30" x2="1185" y2="30" />
                 </g>
 
-                // Dimension text (appears after line draws via CSS delay)
-                <text
-                    x="600" y="50"
-                    text-anchor="middle"
-                    fill="var(--color-primary)"
-                    font-size="12"
-                    font-family="monospace"
-                    class="cad-dimension-text"
-                >
-                    "SECTION"
-                </text>
+                // Measurement markers
+                <g stroke="var(--color-primary)" stroke-width="1" fill="none" stroke-opacity="0.3">
+                    <line x1="300" y1="25" x2="300" y2="35" />
+                    <line x1="600" y1="25" x2="600" y2="35" />
+                    <line x1="900" y1="25" x2="900" y2="35" />
+                </g>
             </svg>
         </div>
     }
