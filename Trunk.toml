@@ -1,6 +1,9 @@
 [tools]
 tailwindcss = "4.1.13"
 
+[env]
+DAISYUI_VERSION = "5.5.19"
+
 [[hooks]]
 stage = "pre_build"
 command = "sh"

@@ -1,7 +1,13 @@
 #!/usr/bin/env sh
 set -eu
 
-DAISYUI_VERSION="5.5.19"
+# DAISYUI_VERSION is expected to be set via Trunk.toml [env] section
+if [ -z "${DAISYUI_VERSION:-}" ]; then
+    echo "Error: DAISYUI_VERSION environment variable is not set" >&2
+    echo "This script should be run via Trunk which sets the variable from Trunk.toml" >&2
+    exit 1
+fi
+
 BASE_URL="https://github.com/saadeghi/daisyui/releases/download/v${DAISYUI_VERSION}"
 SENTINEL="public/.daisyui-version"
 
