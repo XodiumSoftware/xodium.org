@@ -6,9 +6,9 @@ use crate::linedraw::{LineDraw, LineDrawHero};
 use crate::parallax::ParallaxLanding;
 use crate::projectgrid::ProjectGrid;
 use crate::sectionfade::FadeOverlay;
+use crate::codeblock::CodeBlock;
 use crate::teambg::TeamBackground;
 use crate::teamgrid::TeamGrid;
-use crate::typewriter::{Typewriter, TypewriterProperties};
 use crate::wireframes::WireframeShapes;
 use leptos::prelude::*;
 
@@ -39,47 +39,14 @@ pub fn App() -> impl IntoView {
                     <div class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-primary to-secondary opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem] clip-organic-blob"></div>
                 </div>
 
-                <div class="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
-                    <div class="text-center">
-                        <h1 class="text-[clamp(1rem,6vw,3.75rem)] font-bold tracking-tight text-base-content whitespace-nowrap">
-                            " CODING "
-                            <span class="bg-gradient-to-r from-primary to-secondary inline-block text-transparent bg-clip-text">
-                                <Typewriter props=TypewriterProperties {
-                                    text: vec![
-                                        "THE FUTURE".to_string(),
-                                        "WITH PASSION".to_string(),
-                                        "OPEN SOURCE".to_string(),
-                                        "FOR EVERYONE".to_string(),
-                                        "WITH PURPOSE".to_string(),
-                                        "BETTER TOOLS".to_string(),
-                                        "BEYOND LIMITS".to_string(),
-                                    ],
-                                    speed: Some(0.07),
-                                    loop_enabled: Some(true),
-                                    pause: Some((2.0, 1.0)),
-                                    unwrite: Some(true),
-                                } />
-                            </span>
-                        </h1>
-                        <p class="mt-6 text-lg leading-8 text-base-content/70">
-                            "Open-Source " <strong class="text-primary">(CAD)</strong>
-                            " Software Company"
-                        </p>
-                        <div class="mt-10 flex items-center justify-center gap-x-6">
-                            <a
-                                href="https://github.com/XodiumSoftware"
-                                class="btn btn-primary hover:btn-warning btn-lift"
-                            >
-                                "Get Started"
-                            </a>
-                            <a
-                                href="mailto:info@xodium.org"
-                                class="btn btn-outline btn-outline-ghost btn-hover-warning btn-lift"
-                            >
-                                "Join us"
-                            </a>
-                        </div>
-                    </div>
+                <div class="mx-auto max-w-2xl py-24 sm:py-32 lg:py-40">
+                    <h1 class="text-center text-4xl sm:text-5xl font-bold tracking-tight text-base-content mb-8">
+                        "We are "
+                        <span class="bg-gradient-to-r from-primary to-secondary inline-block text-transparent bg-clip-text">
+                            "Xodium"
+                        </span>
+                    </h1>
+                    <CodeBlock />
                 </div>
 
                 <div

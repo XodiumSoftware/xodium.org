@@ -11,11 +11,11 @@ mod components {
     pub mod projectcard;
     pub mod projectgrid;
     pub mod sectiondivider;
+    pub mod codeblock;
     pub mod sectionfade;
     pub mod teambg;
     pub mod teamcard;
     pub mod teamgrid;
-    pub mod typewriter;
     pub mod wireframes;
 }
 pub mod github;
