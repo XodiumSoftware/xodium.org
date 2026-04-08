@@ -113,6 +113,10 @@ html {
     );
 }
 
+.invert-icon {
+    filter: invert(1);
+}
+
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
     *,

@@ -95,8 +95,7 @@ pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
                         <img
                             src="/icons/github-repo.svg"
                             alt="GitHub Repository"
-                            class="w-5 h-5 text-base-content/60"
-                            style="filter: invert(1);"
+                            class="w-5 h-5 text-base-content/60 invert-icon"
                         />
                         {props.title}
                     </h2>
