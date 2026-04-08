@@ -3,18 +3,22 @@ use leptos::task::spawn_local;
 use std::time::Duration;
 
 const ASCII_ART: &str = r#"
- __  __  _____  ____  ____  __  __  ____
- \\ \\/ / | ____||  _ \\|  _ \\|  \\/  || ___|
-  \\  /  | |__  | |_)|| | | || \\  /||___ \
-  /  \\  |  ___||  _ <| |_| || |\\/| ||___) |
- /_/\\_\\| |    | | \\ \\____/ |_|  |_||____/
+         ,-.--,  _,.---._                 .=-.-.                   ___   
+.--.-.  /=/, .',-.' , -  `.   _,..---._  /==/_ /.--.-. .-.-..-._ .'=.'\  
+\==\ -\/=/- / /==/_,  ,  - \/==/,   -  \|==|, |/==/ -|/=/  /==/ \|==|  | 
+ \==\ `-' ,/ |==|   .=.     |==|   _   _\==|  ||==| ,||=| -|==|,|  / - | 
+  |==|,  - | |==|_ : ;=:  - |==|  .=.   |==|- ||==|- | =/  |==|  \/  , | 
+ /==/   ,   \|==| , '='     |==|,|   | -|==| ,||==|,  \/ - |==|- ,   _ | 
+/==/, .--, - \\==\ -    ,_ /|==|  '='   /==|- ||==|-   ,   /==| _ /\   | 
+\==\- \/=/ , / '.='. -   .' |==|-,   _`//==/. //==/ , _  .'/==/  / / , / 
+ `--`-'  `--`    `--`--''   `-.`.____.' `--`-` `--`..---'  `--`./  `--`  
 "#;
 
 const COMPANY_VALUES: &[&str] = &[
-    "// Building open-source tools for developers",
-    "// Crafting CAD software with precision",
-    "// Empowering creativity through code",
-    "// Made with passion",
+    "Building open-source tools for developers",
+    "Crafting CAD software with precision",
+    "Empowering creativity through code",
+    "Made with passion",
 ];
 
 #[component]
@@ -90,12 +94,12 @@ pub fn CodeBlock() -> impl IntoView {
                 </div>
 
                 // Terminal content
-                <div class="p-4 sm:p-6 font-mono text-xs sm:text-sm min-h-[200px]">
+                <div class="p-4 sm:p-6 font-mono text-xs sm:text-sm" style="min-height: 280px;">
                     // ASCII Art
                     {move || {
                         if show_ascii.get() {
                             view! {
-                                <pre class="text-primary/90 leading-none mb-4 overflow-x-auto">
+                                <pre class="text-primary/90 leading-none mb-4 text-[0.6rem] sm:text-xs whitespace-pre">
                                     {ASCII_ART}
                                 </pre>
                             }.into_any()
@@ -108,12 +112,14 @@ pub fn CodeBlock() -> impl IntoView {
                         let current = current_line.get();
                         let cursor = cursor_visible.get();
                         let all_lines = lines.get();
+                        let menu_visible = show_buttons.get();
 
                         view! {
                             <>
                                 {all_lines.iter().enumerate().map(|(i, line)| {
                                     let is_current = i == current;
-                                    let show_cursor = is_current && cursor;
+                                    // Only show cursor on current line if menu is NOT visible
+                                    let show_cursor = is_current && cursor && !menu_visible;
 
                                     view! {
                                         <div class="text-primary/80 leading-relaxed">
@@ -144,7 +150,7 @@ pub fn CodeBlock() -> impl IntoView {
                     }}
                 </div>
 
-                // Command prompt / CTA area
+                // CTA Buttons area
                 <div
                     class={move || {
                         if show_buttons.get() {
