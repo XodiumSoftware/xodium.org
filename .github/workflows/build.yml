@@ -19,7 +19,7 @@ jobs:
     steps:
       - id: checkout
         name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0
 
@@ -36,14 +36,14 @@ jobs:
 
       - id: cache-trunk
         name: Cache Trunk
-        uses: actions/cache@v5
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
         with:
           path: ~/.cargo/bin/trunk
           key: ${{ runner.os }}-trunk-latest
 
       - id: cache-daisyui
         name: Cache DaisyUI
-        uses: actions/cache@v5
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
         with:
           path: public/daisyui*.mjs
           key: ${{ runner.os }}-daisyui-${{ hashFiles('Trunk.toml') }}
@@ -62,7 +62,7 @@ jobs:
 
       - id: deploy
         name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@da0e0dfe58b7a431659754fdf3f186c529afbe65
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
