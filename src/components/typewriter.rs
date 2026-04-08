@@ -1,7 +1,6 @@
 use leptos::prelude::*;
 use leptos::task::spawn_local;
 use std::time::Duration;
-use wasm_bindgen::JsCast;
 
 #[derive(Clone)]
 pub struct TypewriterProperties {
@@ -14,12 +13,9 @@ pub struct TypewriterProperties {
 
 fn prefers_reduced_motion() -> bool {
     web_sys::window()
-        .and_then(|w| {
-            w.match_media("(prefers-reduced-motion: reduce)")
-                .ok()
-                .flatten()
-        })
-        .map(|m| m.matches())
+        .and_then(|w| w.match_media("(prefers-reduced-motion: reduce)").ok())
+        .flatten()
+        .map(|m: web_sys::MediaQueryList| m.matches())
         .unwrap_or(false)
 }
 
