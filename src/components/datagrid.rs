@@ -1,14 +1,16 @@
 use leptos::prelude::*;
 
-pub fn data_grid<T, IV, F>(
+pub fn data_grid<T, IV, F, R>(
     resource: LocalResource<Result<Vec<T>, String>>,
     empty_message: &'static str,
     render: F,
+    on_retry: Option<R>,
 ) -> impl IntoView
 where
     T: Clone + Send + Sync + 'static,
     IV: IntoView + 'static,
     F: Fn(Vec<T>) -> IV + Copy + Send + Sync + 'static,
+    R: Fn() + Clone + Send + Sync + 'static,
 {
     view! {
         <Suspense fallback=move || {
@@ -21,9 +23,20 @@ where
             {move || match resource.get() {
                 None => ().into_any(),
                 Some(Err(err)) => {
+                    let retry_view = on_retry.clone().map(|retry| {
+                        view! {
+                            <button
+                                class="btn btn-primary btn-sm mt-4"
+                                on:click=move |_| retry()
+                            >
+                                "Retry"
+                            </button>
+                        }
+                    });
                     view! {
-                        <div class="flex items-center justify-center text-center">
+                        <div class="flex flex-col items-center justify-center text-center">
                             <span class="text-error">{err}</span>
+                            {retry_view}
                         </div>
                     }
                         .into_any()
