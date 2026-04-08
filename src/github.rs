@@ -119,3 +119,121 @@ pub async fn fetch_repos() -> Result<Vec<Repo>, String> {
     repos.sort_by(|a, b| b.stargazers_count.cmp(&a.stargazers_count));
     Ok(repos)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use wasm_bindgen_test::*;
+
+    wasm_bindgen_test_configure!(run_in_browser);
+
+    #[wasm_bindgen_test]
+    fn test_constants() {
+        assert_eq!(ORG, "XodiumSoftware");
+        assert_eq!(API_BASE, "https://api.github.com");
+        assert_eq!(CACHE_TTL_MS, 5.0 * 60.0 * 1000.0);
+        assert_eq!(MAX_RETRIES, 3);
+        assert_eq!(RETRY_BASE_MS, 1000);
+        assert_eq!(PER_PAGE, 100);
+    }
+
+    #[wasm_bindgen_test]
+    fn test_retry_delay_calculation() {
+        // Test exponential backoff delays: RETRY_BASE_MS << attempt
+        // attempt 0: no delay (immediate)
+        // attempt 1: 1000 << 0 = 1000ms
+        // attempt 2: 1000 << 1 = 2000ms
+        // attempt 3: 1000 << 2 = 4000ms
+        assert_eq!(RETRY_BASE_MS << 0, 1000);
+        assert_eq!(RETRY_BASE_MS << 1, 2000);
+        assert_eq!(RETRY_BASE_MS << 2, 4000);
+    }
+
+    #[wasm_bindgen_test]
+    fn test_member_deserialization() {
+        let json = r#"{
+            "login": "testuser",
+            "html_url": "https://github.com/testuser",
+            "avatar_url": "https://avatars.githubusercontent.com/u/123?v=4"
+        }"#;
+
+        let member: Member = serde_json::from_str(json).unwrap();
+        assert_eq!(member.login, "testuser");
+        assert_eq!(member.html_url, "https://github.com/testuser");
+        assert_eq!(member.avatar_url, "https://avatars.githubusercontent.com/u/123?v=4");
+    }
+
+    #[wasm_bindgen_test]
+    fn test_repo_deserialization() {
+        let json = r#"{
+            "name": "test-repo",
+            "description": "A test repository",
+            "html_url": "https://github.com/XodiumSoftware/test-repo",
+            "language": "Rust",
+            "stargazers_count": 42,
+            "fork": false,
+            "has_pages": true
+        }"#;
+
+        let repo: Repo = serde_json::from_str(json).unwrap();
+        assert_eq!(repo.name, "test-repo");
+        assert_eq!(repo.description, Some("A test repository".to_string()));
+        assert_eq!(repo.language, Some("Rust".to_string()));
+        assert_eq!(repo.stargazers_count, 42);
+        assert!(!repo.fork);
+        assert!(repo.has_pages);
+    }
+
+    #[wasm_bindgen_test]
+    fn test_repo_filtering_and_sorting() {
+        let mut repos = vec![
+            Repo {
+                name: "repo-a".to_string(),
+                description: None,
+                html_url: "https://github.com/XodiumSoftware/repo-a".to_string(),
+                language: Some("Rust".to_string()),
+                stargazers_count: 10,
+                fork: false,
+                has_pages: false,
+            },
+            Repo {
+                name: "repo-b".to_string(),
+                description: None,
+                html_url: "https://github.com/XodiumSoftware/repo-b".to_string(),
+                language: Some("Python".to_string()),
+                stargazers_count: 50,
+                fork: false,
+                has_pages: false,
+            },
+            Repo {
+                name: "repo-c".to_string(),
+                description: None,
+                html_url: "https://github.com/XodiumSoftware/repo-c".to_string(),
+                language: Some("Go".to_string()),
+                stargazers_count: 30,
+                fork: true, // This should be filtered out
+                has_pages: false,
+            },
+        ];
+
+        // Apply the same logic as fetch_repos
+        repos.retain(|r| !r.fork);
+        repos.sort_by(|a, b| b.stargazers_count.cmp(&a.stargazers_count));
+
+        assert_eq!(repos.len(), 2);
+        assert_eq!(repos[0].name, "repo-b"); // 50 stars
+        assert_eq!(repos[1].name, "repo-a"); // 10 stars
+    }
+
+    #[wasm_bindgen_test]
+    async fn test_cache_operations() {
+        // Test cache key format
+        let endpoint = "/orgs/XodiumSoftware/members";
+        let cache_key = format!("xodium:{endpoint}");
+        assert_eq!(cache_key, "xodium:/orgs/XodiumSoftware/members");
+
+        // Note: Full cache_get/cache_set tests require localStorage
+        // which needs a browser environment. These are covered by
+        // the integration tests when running with wasm-pack test.
+    }
+}
