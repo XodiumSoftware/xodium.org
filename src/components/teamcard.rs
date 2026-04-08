@@ -20,7 +20,7 @@ pub fn TeamCard(props: TeamCardProperties) -> impl IntoView {
             >
                 <div class="avatar">
                     <div class="w-12 rounded-full">
-                        <img src=props.avatar_url alt=props.login.clone() />
+                        <img src=props.avatar_url alt=props.login.clone() loading="lazy" decoding="async" />
                     </div>
                 </div>
                 <span class="font-medium">{props.login.clone()}</span>
