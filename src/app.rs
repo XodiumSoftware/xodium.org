@@ -1,5 +1,5 @@
+use crate::blueprintgrid::BlueprintGrid;
 use crate::footer::Footer;
-use crate::grid::Grid;
 use crate::header::Header;
 use crate::projectgrid::ProjectGrid;
 use crate::teamgrid::TeamGrid;
@@ -21,7 +21,7 @@ pub fn App() -> impl IntoView {
             <main id="main-content">
             // Landing section
             <section id="landing" class="relative isolate px-6 pt-14 lg:px-8 pb-24 sm:pb-32">
-                <Grid />
+                <BlueprintGrid />
 
                 <div
                     class="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"

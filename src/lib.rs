@@ -1,9 +1,9 @@
 mod app;
 mod components {
-    pub mod corner_frame;
+    pub mod blueprintgrid;
+    pub mod cornerframe;
     pub mod datagrid;
     pub mod footer;
-    pub mod grid;
     pub mod header;
     pub mod projectcard;
     pub mod projectgrid;
