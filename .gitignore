@@ -1,5 +1,13 @@
 # IDE
 /.idea
+/.vscode
+/.vs
+/.eclipse
+/.nbproject
+/.settings
+*.iml
+.project
+.classpath
 
 # AI assistants
 /.claude
