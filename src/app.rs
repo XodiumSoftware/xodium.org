@@ -40,12 +40,6 @@ pub fn App() -> impl IntoView {
                 </div>
 
                 <div class="mx-auto max-w-2xl py-24 sm:py-32 lg:py-40">
-                    <h1 class="text-center text-4xl sm:text-5xl font-bold tracking-tight text-base-content mb-8">
-                        "We are "
-                        <span class="bg-gradient-to-r from-primary to-secondary inline-block text-transparent bg-clip-text">
-                            "Xodium"
-                        </span>
-                    </h1>
                     <CodeBlock />
                 </div>
 

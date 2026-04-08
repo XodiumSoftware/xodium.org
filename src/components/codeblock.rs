@@ -2,15 +2,24 @@ use leptos::prelude::*;
 use leptos::task::spawn_local;
 use std::time::Duration;
 
+const ASCII_ART: &str = r#"
+ __  __  _____  ____  ____  __  __  ____
+ \\ \\/ / | ____||  _ \\|  _ \\|  \\/  || ___|
+  \\  /  | |__  | |_)|| | | || \\  /||___ \
+  /  \\  |  ___||  _ <| |_| || |\\/| ||___) |
+ /_/\\_\\| |    | | \\ \\____/ |_|  |_||____/
+"#;
+
 const COMPANY_VALUES: &[&str] = &[
     "// Building open-source tools for developers",
     "// Crafting CAD software with precision",
     "// Empowering creativity through code",
-    "// Made with passion by Xodium",
+    "// Made with passion",
 ];
 
 #[component]
 pub fn CodeBlock() -> impl IntoView {
+    let (show_ascii, set_show_ascii) = signal(false);
     let (lines, set_lines) = signal(Vec::<String>::new());
     let (current_line, set_current_line) = signal(0usize);
     let (cursor_visible, set_cursor_visible) = signal(true);
@@ -26,10 +35,14 @@ pub fn CodeBlock() -> impl IntoView {
         });
     });
 
-    // Type out lines
+    // Show ASCII art first, then type out lines
     Effect::new(move |_| {
         spawn_local(async move {
             // Initial delay
+            gloo_timers::future::sleep(Duration::from_millis(500)).await;
+            set_show_ascii.set(true);
+
+            // Wait for ASCII to be visible
             gloo_timers::future::sleep(Duration::from_millis(800)).await;
 
             for (i, &line) in COMPANY_VALUES.iter().enumerate() {
@@ -77,7 +90,20 @@ pub fn CodeBlock() -> impl IntoView {
                 </div>
 
                 // Terminal content
-                <div class="p-4 sm:p-6 font-mono text-sm sm:text-base min-h-[160px]">
+                <div class="p-4 sm:p-6 font-mono text-xs sm:text-sm min-h-[200px]">
+                    // ASCII Art
+                    {move || {
+                        if show_ascii.get() {
+                            view! {
+                                <pre class="text-primary/90 leading-none mb-4 overflow-x-auto">
+                                    {ASCII_ART}
+                                </pre>
+                            }.into_any()
+                        } else {
+                            ().into_any()
+                        }
+                    }}
+
                     {move || {
                         let current = current_line.get();
                         let cursor = cursor_visible.get();
@@ -91,7 +117,7 @@ pub fn CodeBlock() -> impl IntoView {
 
                                     view! {
                                         <div class="text-primary/80 leading-relaxed">
-                                            <span class="text-secondary/60 mr-2">"$"</span>
+                                            <span class="text-secondary/60 mr-2">"$xodium > "</span>
                                             {line.clone()}
                                             {show_cursor.then(|| view! {
                                                 <span class="inline-block w-2 h-4 bg-primary/60 ml-0.5 align-middle"></span>
@@ -104,7 +130,7 @@ pub fn CodeBlock() -> impl IntoView {
                                 {if all_lines.len() < COMPANY_VALUES.len() && all_lines.len() == current {
                                     view! {
                                         <div class="text-primary/80 leading-relaxed">
-                                            <span class="text-secondary/60 mr-2">"$"</span>
+                                            <span class="text-secondary/60 mr-2">"$xodium > "</span>
                                             {cursor.then(|| view! {
                                                 <span class="inline-block w-2 h-4 bg-primary/60 ml-0.5 align-middle"></span>
                                             })}
