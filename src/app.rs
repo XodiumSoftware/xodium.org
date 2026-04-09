@@ -84,16 +84,19 @@ pub fn App() -> impl IntoView {
                 <FadeOverlay />
                 <div class="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
                     <div class="team-deck-container">
-                        // Title card - front
-                        <div class="team-card team-card-title p-2">
-                            <CornerFrame style="square" black=true class="h-full w-full flex items-center justify-center">
-                                <h2 class="text-3xl font-bold tracking-tight text-transparent bg-base-100 bg-clip-text whitespace-nowrap">
-                                    "THE TEAM"
-                                </h2>
-                            </CornerFrame>
-                        </div>
-                        // Team cards stack behind
-                        <TeamGrid />
+                        // All cards in one rotating group
+                        <ul class="team-cards-list">
+                            // Title card - first item
+                            <li class="team-card team-card-title">
+                                <CornerFrame style="square" black=true class="h-full w-full flex items-center justify-center">
+                                    <h2 class="text-3xl font-bold tracking-tight text-transparent bg-base-100 bg-clip-text whitespace-nowrap">
+                                        "THE TEAM"
+                                    </h2>
+                                </CornerFrame>
+                            </li>
+                            // Team member cards
+                            <TeamGrid />
+                        </ul>
                     </div>
                 </div>
             </section>

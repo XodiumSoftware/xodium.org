@@ -319,8 +319,7 @@ html {
 }
 
 .team-card-title {
-    z-index: 100;
-    transform: translateZ(50px);
+    /* Now part of carousel - styles handled by .team-card and li:nth-child(1) */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -371,7 +370,11 @@ html {
 
 .team-deck-container .team-cards-list li:nth-child(1) {
     --angle: 0deg;
-    z-index: 90;
+    z-index: 100;
+}
+
+.team-deck-container .team-cards-list li:nth-child(1) .cornerframe {
+    background-color: #d0d0d0;
 }
 
 .team-deck-container .team-cards-list li:nth-child(2) {

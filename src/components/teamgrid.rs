@@ -11,20 +11,18 @@ pub fn TeamGrid() -> impl IntoView {
         "No team members found.",
         |members: Vec<Member>| {
             view! {
-                <ul class="team-cards-list">
-                    {members
-                        .into_iter()
-                        .map(|member| {
-                            view! {
-                                <TeamCard props=TeamCardProperties {
-                                    login: member.login,
-                                    html_url: member.html_url,
-                                    avatar_url: member.avatar_url,
-                                } />
-                            }
-                        })
-                        .collect_view()}
-                </ul>
+                {members
+                    .into_iter()
+                    .map(|member| {
+                        view! {
+                            <TeamCard props=TeamCardProperties {
+                                login: member.login,
+                                html_url: member.html_url,
+                                avatar_url: member.avatar_url,
+                            } />
+                        }
+                    })
+                    .collect_view()}
             }
         },
         None::<fn()>,
