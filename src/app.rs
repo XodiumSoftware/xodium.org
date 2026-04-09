@@ -61,11 +61,13 @@ pub fn App() -> impl IntoView {
                 <FadeOverlay />
                 <div class="mx-auto max-w-7xl relative z-10">
                     <div class="flex gap-8 items-stretch">
-                        <CornerFrame style="square" black=true class="flex-shrink-0 bg-[#d0d0d0] p-4">
-                            <h2 class="text-3xl font-bold tracking-tight text-transparent bg-base-100 bg-clip-text sm:text-4xl [writing-mode:vertical-rl] rotate-180 whitespace-nowrap">
-                                "PROJECTS"
-                            </h2>
-                        </CornerFrame>
+                        <div class="flex-shrink-0 flex items-center bg-[#d0d0d0] p-4 relative">
+                            <CornerFrame style="square" black=true>
+                                <h2 class="text-3xl font-bold tracking-tight text-transparent bg-base-100 bg-clip-text sm:text-4xl [writing-mode:vertical-rl] rotate-180 whitespace-nowrap">
+                                    "PROJECTS"
+                                </h2>
+                            </CornerFrame>
+                        </div>
                         <div class="flex-1 min-w-0">
                             <ProjectGrid />
                         </div>
@@ -83,11 +85,13 @@ pub fn App() -> impl IntoView {
                 <div class="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
                     <div class="team-deck-container">
                         // Title card - front
-                        <CornerFrame style="square" black=true class="team-card team-card-title p-2 h-full w-full flex items-center justify-center">
-                            <h2 class="text-2xl font-bold tracking-tight text-transparent bg-base-100 bg-clip-text whitespace-nowrap">
-                                "THE TEAM"
-                            </h2>
-                        </CornerFrame>
+                        <div class="team-card team-card-title p-2">
+                            <CornerFrame style="square" black=true class="h-full w-full flex items-center justify-center">
+                                <h2 class="text-2xl font-bold tracking-tight text-transparent bg-base-100 bg-clip-text whitespace-nowrap">
+                                    "THE TEAM"
+                                </h2>
+                            </CornerFrame>
+                        </div>
                         // Team cards stack behind
                         <TeamGrid />
                     </div>
