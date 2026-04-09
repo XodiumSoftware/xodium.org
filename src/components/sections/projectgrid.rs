@@ -1,5 +1,5 @@
-use crate::components::datagrid::data_grid;
-use crate::components::projectcard::{ProjectCard, ProjectCardProperties};
+use crate::components::cards::projectcard::{ProjectCard, ProjectCardProperties};
+use crate::components::ui::datagrid::data_grid;
 use crate::github::{Repo, fetch_repos};
 use leptos::prelude::*;
 

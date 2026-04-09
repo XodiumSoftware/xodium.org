@@ -1,4 +1,4 @@
-use crate::components::cornerframe::CornerFrame;
+use crate::components::ui::cornerframe::CornerFrame;
 use crate::github::fetch_members;
 use leptos::prelude::*;
 

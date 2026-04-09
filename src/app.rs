@@ -1,15 +1,4 @@
-use crate::blueprintgrid::BlueprintGrid;
-use crate::codeblock::CodeBlock;
-use crate::cornerframe::CornerFrame;
-use crate::footer::Footer;
-use crate::header::Header;
-use crate::hexgrid::HexPattern;
-use crate::linedraw::{LineDraw, LineDrawHero};
-use crate::parallax::ParallaxLanding;
-use crate::projectgrid::ProjectGrid;
-use crate::sectionfade::FadeOverlay;
-use crate::teamdeck::TeamDeckSection;
-use crate::wireframes::WireframeShapes;
+use crate::components::*;
 use leptos::prelude::*;
 
 #[component]

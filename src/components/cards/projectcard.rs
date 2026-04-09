@@ -1,4 +1,4 @@
-use crate::cornerframe::CornerFrame;
+use crate::components::ui::cornerframe::CornerFrame;
 use leptos::prelude::*;
 
 fn language_color(language: &str) -> &'static str {
