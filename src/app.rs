@@ -1,5 +1,6 @@
 use crate::blueprintgrid::BlueprintGrid;
 use crate::codeblock::CodeBlock;
+use crate::cornerframe::CornerFrame;
 use crate::footer::Footer;
 use crate::header::Header;
 use crate::hexgrid::HexPattern;
@@ -82,10 +83,12 @@ pub fn App() -> impl IntoView {
                 <div class="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
                     <div class="team-deck-container">
                         // Title card - front
-                        <div class="team-card team-card-title flex items-center justify-center gap-4 p-3">
-                            <h2 class="text-2xl font-bold tracking-tight text-transparent bg-base-100 bg-clip-text whitespace-nowrap">
-                                "THE TEAM"
-                            </h2>
+                        <div class="team-card team-card-title p-2">
+                            <CornerFrame style="square" class="h-full w-full flex items-center justify-center">
+                                <h2 class="text-2xl font-bold tracking-tight text-transparent bg-base-100 bg-clip-text whitespace-nowrap">
+                                    "THE TEAM"
+                                </h2>
+                            </CornerFrame>
                         </div>
                         // Team cards stack behind
                         <TeamGrid />
