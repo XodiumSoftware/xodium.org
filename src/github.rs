@@ -115,7 +115,9 @@ pub async fn fetch_members() -> Result<Vec<Member>, String> {
     let mut members = fetch_all::<Member>(&format!("/orgs/{ORG}/members")).await?;
 
     // Fetch all admins (owners) using role filter
-    let owners: Vec<Member> = fetch_all::<Member>(&format!("/orgs/{ORG}/members?role=admin")).await.unwrap_or_default();
+    let owners: Vec<Member> = fetch_all::<Member>(&format!("/orgs/{ORG}/members?role=admin"))
+        .await
+        .unwrap_or_default();
     let owner_logins: HashSet<String> = owners.into_iter().map(|m| m.login).collect();
 
     // Mark role for each member
