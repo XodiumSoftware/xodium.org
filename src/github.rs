@@ -1,6 +1,7 @@
 use gloo_net::http::Request;
 use leptos::web_sys;
 use serde::{Deserialize, Serialize};
+use std::collections::HashSet;
 use std::time::Duration;
 
 const ORG: &str = "XodiumSoftware";
@@ -16,11 +17,6 @@ pub struct Member {
     pub html_url: String,
     pub avatar_url: String,
     pub role: Option<String>,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-struct Membership {
-    role: String,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -118,12 +114,17 @@ async fn fetch_all<T: for<'de> Deserialize<'de> + Serialize>(
 pub async fn fetch_members() -> Result<Vec<Member>, String> {
     let mut members = fetch_all::<Member>(&format!("/orgs/{ORG}/members")).await?;
 
-    // Fetch role for each member
+    // Fetch all admins (owners) using role filter
+    let owners: Vec<Member> = fetch_all::<Member>(&format!("/orgs/{ORG}/members?role=admin")).await.unwrap_or_default();
+    let owner_logins: HashSet<String> = owners.into_iter().map(|m| m.login).collect();
+
+    // Mark role for each member
     for member in &mut members {
-        let membership: Result<Membership, String> = fetch(
-            &format!("/orgs/{ORG}/memberships/{}", member.login)
-        ).await;
-        member.role = membership.ok().map(|m| m.role);
+        member.role = if owner_logins.contains(&member.login) {
+            Some("Owner".to_string())
+        } else {
+            Some("Member".to_string())
+        };
     }
 
     Ok(members)
