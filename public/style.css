@@ -358,61 +358,102 @@ html {
     height: 100%;
 }
 
-/* Team cards in a carousel circle - using CSS variables for rotation */
+/* Team cards - stacked with only edges showing, spread on hover */
 .team-deck-container .team-cards-list {
     transform-style: preserve-3d;
 }
 
 .team-deck-container .team-cards-list li {
     --angle: 0deg;
-    transform: rotateY(var(--angle)) translateZ(350px) rotateY(calc(var(--angle) * -1));
+    --z-pos: 0px;
+    transform: rotateY(var(--angle)) translateZ(var(--z-pos)) rotateY(calc(var(--angle) * -1));
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+/* Title card - front and center */
 .team-deck-container .team-cards-list li:nth-child(1) {
     --angle: 0deg;
+    --z-pos: 0px;
     z-index: 100;
 }
 
-.team-deck-container .team-cards-list li:nth-child(1) .cornerframe {
-    background-color: #d0d0d0;
-}
-
+/* Team cards stacked behind, peeking out from edges */
 .team-deck-container .team-cards-list li:nth-child(2) {
     --angle: 45deg;
+    --z-pos: -100px;
     z-index: 80;
 }
 
 .team-deck-container .team-cards-list li:nth-child(3) {
     --angle: 90deg;
+    --z-pos: -150px;
     z-index: 70;
 }
 
 .team-deck-container .team-cards-list li:nth-child(4) {
     --angle: 135deg;
+    --z-pos: -100px;
     z-index: 60;
 }
 
 .team-deck-container .team-cards-list li:nth-child(5) {
     --angle: 180deg;
+    --z-pos: -50px;
     z-index: 50;
 }
 
 .team-deck-container .team-cards-list li:nth-child(6) {
     --angle: 225deg;
+    --z-pos: -100px;
     z-index: 40;
 }
 
 .team-deck-container .team-cards-list li:nth-child(7) {
     --angle: 270deg;
+    --z-pos: -150px;
     z-index: 30;
 }
 
 .team-deck-container .team-cards-list li:nth-child(8) {
     --angle: 315deg;
+    --z-pos: -100px;
     z-index: 20;
 }
 
-/* On hover, rotate the parent container only - cards follow naturally */
+/* On hover - spread cards out into full carousel */
+.team-deck-container:hover .team-cards-list li:nth-child(1) {
+    --z-pos: 350px;
+}
+
+.team-deck-container:hover .team-cards-list li:nth-child(2) {
+    --z-pos: 350px;
+}
+
+.team-deck-container:hover .team-cards-list li:nth-child(3) {
+    --z-pos: 350px;
+}
+
+.team-deck-container:hover .team-cards-list li:nth-child(4) {
+    --z-pos: 350px;
+}
+
+.team-deck-container:hover .team-cards-list li:nth-child(5) {
+    --z-pos: 350px;
+}
+
+.team-deck-container:hover .team-cards-list li:nth-child(6) {
+    --z-pos: 350px;
+}
+
+.team-deck-container:hover .team-cards-list li:nth-child(7) {
+    --z-pos: 350px;
+}
+
+.team-deck-container:hover .team-cards-list li:nth-child(8) {
+    --z-pos: 350px;
+}
+
+/* On hover, rotate the carousel */
 .team-deck-container:hover .team-cards-list {
     animation: carousel-rotate 10s linear infinite;
 }
@@ -424,11 +465,6 @@ html {
     to {
         transform: rotateY(-360deg);
     }
-}
-
-/* Cards always face forward - counter-rotation is baked into the transform */
-.team-deck-container:hover .team-cards-list li {
-    /* No individual animation needed - the parent rotation carries them */
 }
 
 /* Pause on card hover */
