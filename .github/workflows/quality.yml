@@ -15,24 +15,8 @@ permissions:
   contents: read
 
 jobs:
-  fmt:
-    name: Rustfmt
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9
-        with:
-          toolchain: stable
-          components: rustfmt
-
-      - name: Check formatting
-        run: cargo fmt --all -- --check
-
-  clippy:
-    name: Clippy
+  quality:
+    name: Quality Checks
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -43,35 +27,28 @@ jobs:
         with:
           toolchain: stable
           targets: wasm32-unknown-unknown
-          components: clippy
+          components: rustfmt,clippy
 
       - name: Cache Rust
         uses: Swatinem/rust-cache@82a92a6e8fbeee089604da2575dc567ae9ddeaab
 
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+
       - name: Run Clippy
         run: cargo clippy --target wasm32-unknown-unknown -- -D warnings
 
-  deps:
-    name: Check dependencies
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9
-        with:
-          toolchain: stable
-
-      - name: Install cargo-deny
-        run: cargo install cargo-deny --locked
-
       - name: Check for vulnerabilities
-        run: cargo deny check advisories
+        uses: EmbarkStudios/cargo-deny-action@3fd3802e88374d3fe9159b834c7714ec57d6c979
+        with:
+          command: check advisories
         continue-on-error: true
 
-      - name: Check for unused dependencies
+      - name: Install cargo-binstall
+        uses: cargo-bins/cargo-binstall@0b24824336e2b3800b0f89d9e08b2c08bfa3dcdd
+
+      - name: Install and run cargo-machete
         run: |
-          cargo install cargo-machete --locked
+          cargo binstall cargo-machete --no-confirm
           cargo machete
         continue-on-error: true
