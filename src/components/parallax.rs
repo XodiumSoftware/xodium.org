@@ -18,10 +18,10 @@ pub fn ParallaxLanding() -> impl IntoView {
     // Set up scroll listener
     Effect::new(move |_| {
         let on_scroll = move || {
-            if let Some(window) = web_sys::window() {
-                if let Ok(scroll) = window.scroll_y() {
-                    set_scroll_y.set(scroll as f64);
-                }
+            if let Some(window) = web_sys::window()
+                && let Ok(scroll) = window.scroll_y()
+            {
+                set_scroll_y.set(scroll);
             }
         };
 

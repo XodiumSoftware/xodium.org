@@ -79,16 +79,17 @@ pub fn App() -> impl IntoView {
             <section id="team" class="relative py-24 sm:py-32">
                 <TeamBackground />
                 <FadeOverlay />
-                <div class="relative z-10 mx-auto grid max-w-7xl gap-x-8 xl:gap-y-20 px-6 lg:px-8 xl:grid-cols-3">
-                    <div class="max-w-2xl mx-auto xl:mx-0 text-center xl:text-left mb-12 xl:mb-0">
-                        <h2 class="text-3xl font-bold tracking-tight text-base-content sm:text-4xl">
-                            "Meet our team"
-                        </h2>
-                        <p class="mt-6 text-lg leading-8 text-base-content/70">
-                            "No matter the project," <br /> "our team can handle it."
-                        </p>
+                <div class="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
+                    <div class="flex gap-8 items-stretch">
+                        <div class="flex-shrink-0 flex items-center bg-[#d0d0d0] p-4 relative">
+                            <h2 class="text-3xl font-bold tracking-tight text-transparent bg-base-100 bg-clip-text sm:text-4xl whitespace-nowrap">
+                                "THE TEAM"
+                            </h2>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <TeamGrid />
+                        </div>
                     </div>
-                    <TeamGrid />
                 </div>
             </section>
             </main>
