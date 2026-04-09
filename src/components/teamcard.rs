@@ -15,15 +15,15 @@ pub fn TeamCard(props: TeamCardProperties) -> impl IntoView {
                 href=props.html_url
                 target="_blank"
                 rel="noopener noreferrer"
-                class="group btn-lift bg-ghost hover:border-primary hover:text-primary"
+                class="group flex flex-col items-center justify-center h-full w-full bg-ghost hover:border-primary hover:text-primary border-2 border-base-content/80"
                 aria-label=format!("Link to {}'s GitHub profile", props.login)
             >
-                <div class="avatar">
-                    <div class="w-12 rounded-full">
+                <div class="avatar mb-4">
+                    <div class="w-20 rounded-full">
                         <img src=props.avatar_url alt=props.login.clone() loading="lazy" decoding="async" />
                     </div>
                 </div>
-                <span class="font-medium">{props.login.clone()}</span>
+                <span class="font-medium text-lg">{props.login.clone()}</span>
             </a>
         </li>
     }
