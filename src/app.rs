@@ -26,7 +26,7 @@ pub fn App() -> impl IntoView {
 
             <main id="main-content">
             // Landing section
-            <section id="landing" class="relative isolate px-6 pt-14 lg:px-8 pb-24 sm:pb-32">
+            <section id="landing" class="relative isolate px-6 py-24 sm:py-32 lg:px-8">
                 <BlueprintGrid />
                 <WireframeShapes />
                 <LineDrawHero />
@@ -55,7 +55,7 @@ pub fn App() -> impl IntoView {
             <LineDraw />
 
             // Projects section
-            <section id="projects" class="relative pb-24 sm:pb-32 px-6">
+            <section id="projects" class="relative py-24 sm:py-32 px-6">
                 <HexPattern />
                 <FadeOverlay />
                 <div class="mx-auto max-w-7xl relative z-10">
@@ -75,7 +75,7 @@ pub fn App() -> impl IntoView {
             <LineDraw />
 
             // Team section
-            <section id="team" class="relative pb-24 sm:pb-32">
+            <section id="team" class="relative py-24 sm:py-32">
                 <TeamBackground />
                 <FadeOverlay />
                 <div class="relative z-10 mx-auto grid max-w-7xl gap-x-8 xl:gap-y-20 px-6 lg:px-8 xl:grid-cols-3">

@@ -11,7 +11,7 @@ command_arguments = ["-c", "DAISYUI_VERSION=5.5.19 scripts/fetch-daisyui.sh"]
 
 [hooks.windows]
 command = "powershell"
-command_arguments = ["-ExecutionPolicy", "Bypass", "-File", "scripts/fetch-daisyui.ps1"]
+command_arguments = ["-ExecutionPolicy", "Bypass", "-Command", "$env:DAISYUI_VERSION='5.5.19'; & 'scripts/fetch-daisyui.ps1'"]
 
 [build.wasm-opt]
 level = "z"
