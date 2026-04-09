@@ -358,336 +358,42 @@ html {
     overflow: visible !important;
 }
 
+/* Member cards have dark background */
+.team-deck-card:not(.team-deck-title) {
+    background-color: #1a1a1a;
+}
+
 .team-deck-bg {
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at center, var(--color-primary) 0%, transparent 70%);
-    opacity: 0.1;
+    background: none;
 }
 
-/* 3D Card Deck for Team Section */
-.team-deck-container {
-    perspective: 1200px;
-    transform-style: preserve-3d;
-    min-height: 500px;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/*noinspection ALL*/
-.team-card {
+/* Hover zone at right edge - triggers deck rotation */
+.deck-hover-zone {
     position: absolute;
-    width: 240px;
+    right: calc(50% - 120px - 80px); /* Center - half card width - offset to edge */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 80px;
     height: 336px;
-    transform-style: preserve-3d;
-    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    /* Pokemon card proportions but with hard corners */
-    border-radius: 0;
-    border-width: 2px;
-    border-style: solid;
-    border-color: oklch(var(--color-base-content) / 0.8);
-    box-shadow: 4px 4px 0 0 rgba(0, 0, 0, 0.8);
-    background-color: #d0d0d0;
-    overflow: hidden;
+    z-index: 95;
+    cursor: pointer;
 }
 
-.team-card-title {
-    /* Now part of carousel - styles handled by .team-card and li:nth-child(1) */
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.team-deck-wrapper:has(.deck-hover-zone:hover) .team-deck-card[data-deck-pos="1"] {
+    animation: card-edge-bounce 0.6s ease-in-out infinite;
 }
 
-/* Make team grid items become cards */
-.team-cards-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.team-deck-wrapper:has(.deck-hover-zone:active) .team-deck-card[data-deck-pos="1"] {
+    animation: none;
 }
 
-.team-deck-container .team-cards-list li {
-    position: absolute;
-    width: 240px;
-    height: 336px;
-    transform-style: preserve-3d;
-    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
-    overflow: hidden;
-}
-
-/* Title card needs overflow visible for cornerframe */
-.team-deck-container .team-cards-list li:nth-child(1) {
-    overflow: visible;
-}
-
-.team-cards-list a {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-}
-
-/* Card deck - title front, others stacked behind with edges showing */
-.team-deck-container .team-cards-list {
-    transform-style: preserve-3d;
-    position: relative;
-    width: 240px;
-    height: 336px;
-    margin: 0 auto;
-}
-
-.team-deck-container .team-cards-list li {
-    position: absolute;
-    width: 240px;
-    height: 336px;
-    transform-style: preserve-3d;
-    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), z-index 0s;
-}
-
-/* Title card - front and center */
-.team-deck-container .team-cards-list li:nth-child(1) {
-    transform: translateX(0) translateZ(0px);
-    z-index: 100;
-}
-
-/* Card 2 - peeking from right edge */
-.team-deck-container .team-cards-list li:nth-child(2) {
-    transform: translateX(60px) translateZ(-50px) rotateY(-5deg);
-    z-index: 90;
-}
-
-/* Cards 3-8 - hidden initially */
-.team-deck-container .team-cards-list li:nth-child(3),
-.team-deck-container .team-cards-list li:nth-child(4),
-.team-deck-container .team-cards-list li:nth-child(5),
-.team-deck-container .team-cards-list li:nth-child(6),
-.team-deck-container .team-cards-list li:nth-child(7),
-.team-deck-container .team-cards-list li:nth-child(8) {
-    opacity: 0;
-    pointer-events: none;
-    transform: translateX(0) translateZ(-300px);
-}
-
-/* Hover card 2 - start automatic deck rotation [1,2,3,4,5,6,7,8] -> [2,3,4,5,6,7,8,1] */
-.team-deck-container .team-cards-list:has(li:nth-child(2):hover) {
-    animation: deck-rotate-2 8s linear infinite;
-}
-
-@keyframes deck-rotate-2 {
-    0% {
-        transform: rotateY(0deg);
-    }
-    12.5% {
-        transform: rotateY(45deg);
-    }
-    25% {
-        transform: rotateY(90deg);
-    }
-    37.5% {
-        transform: rotateY(135deg);
+@keyframes card-edge-bounce {
+    0%, 100% {
+        transform: translateX(80px) translateZ(-30px) rotateY(-3deg);
     }
     50% {
-        transform: rotateY(180deg);
+        transform: translateX(95px) translateZ(-30px) rotateY(-3deg);
     }
-    62.5% {
-        transform: rotateY(225deg);
-    }
-    75% {
-        transform: rotateY(270deg);
-    }
-    87.5% {
-        transform: rotateY(315deg);
-    }
-    100% {
-        transform: rotateY(360deg);
-    }
-}
-
-/* Hover card 3 - card 2 goes back, card 4 reveals */
-.team-deck-container .team-cards-list:has(li:nth-child(3):hover) li:nth-child(1) {
-    transform: translateX(0) translateZ(-250px);
-    opacity: 0;
-    z-index: 1;
-}
-
-.team-deck-container .team-cards-list:has(li:nth-child(3):hover) li:nth-child(2) {
-    transform: translateX(-60px) translateZ(-50px) rotateY(5deg);
-    z-index: 90;
-    opacity: 1;
-}
-
-.team-deck-container .team-cards-list:has(li:nth-child(3):hover) li:nth-child(3) {
-    transform: translateX(0) translateZ(0px);
-    z-index: 100;
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.team-deck-container .team-cards-list:has(li:nth-child(3):hover) li:nth-child(4) {
-    transform: translateX(60px) translateZ(-50px) rotateY(-5deg);
-    z-index: 90;
-    opacity: 1;
-    pointer-events: auto;
-}
-
-/* Hover card 4 */
-.team-deck-container .team-cards-list:has(li:nth-child(4):hover) li:nth-child(1) {
-    transform: translateX(0) translateZ(-250px);
-    opacity: 0;
-    z-index: 1;
-}
-
-.team-deck-container .team-cards-list:has(li:nth-child(4):hover) li:nth-child(-n+3) {
-    transform: translateX(-60px) translateZ(-50px) rotateY(5deg);
-    z-index: 90;
-    opacity: 1;
-}
-
-.team-deck-container .team-cards-list:has(li:nth-child(4):hover) li:nth-child(3) {
-    transform: translateX(-60px) translateZ(-100px) rotateY(5deg);
-    z-index: 80;
-}
-
-.team-deck-container .team-cards-list:has(li:nth-child(4):hover) li:nth-child(4) {
-    transform: translateX(0) translateZ(0px);
-    z-index: 100;
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.team-deck-container .team-cards-list:has(li:nth-child(4):hover) li:nth-child(5) {
-    transform: translateX(60px) translateZ(-50px) rotateY(-5deg);
-    z-index: 90;
-    opacity: 1;
-    pointer-events: auto;
-}
-
-/* Hover card 5 */
-.team-deck-container .team-cards-list:has(li:nth-child(5):hover) li:nth-child(1) {
-    transform: translateX(0) translateZ(-250px);
-    opacity: 0;
-    z-index: 1;
-}
-
-.team-deck-container .team-cards-list:has(li:nth-child(5):hover) li:nth-child(5) {
-    transform: translateX(0) translateZ(0px);
-    z-index: 100;
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.team-deck-container .team-cards-list:has(li:nth-child(5):hover) li:nth-child(6) {
-    transform: translateX(60px) translateZ(-50px) rotateY(-5deg);
-    z-index: 90;
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.team-deck-container .team-cards-list:has(li:nth-child(5):hover) li:nth-child(2),
-.team-deck-container .team-cards-list:has(li:nth-child(5):hover) li:nth-child(3),
-.team-deck-container .team-cards-list:has(li:nth-child(5):hover) li:nth-child(4) {
-    transform: translateX(-60px) translateZ(-100px) rotateY(5deg);
-    z-index: 80;
-    opacity: 1;
-}
-
-/* Hover card 6 */
-.team-deck-container .team-cards-list:has(li:nth-child(6):hover) li:nth-child(1) {
-    transform: translateX(0) translateZ(-250px);
-    opacity: 0;
-    z-index: 1;
-}
-
-.team-deck-container .team-cards-list:has(li:nth-child(6):hover) li:nth-child(6) {
-    transform: translateX(0) translateZ(0px);
-    z-index: 100;
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.team-deck-container .team-cards-list:has(li:nth-child(6):hover) li:nth-child(7) {
-    transform: translateX(60px) translateZ(-50px) rotateY(-5deg);
-    z-index: 90;
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.team-deck-container .team-cards-list:has(li:nth-child(6):hover) li:nth-child(2),
-.team-deck-container .team-cards-list:has(li:nth-child(6):hover) li:nth-child(3),
-.team-deck-container .team-cards-list:has(li:nth-child(6):hover) li:nth-child(4),
-.team-deck-container .team-cards-list:has(li:nth-child(6):hover) li:nth-child(5) {
-    transform: translateX(-60px) translateZ(-100px) rotateY(5deg);
-    z-index: 80;
-    opacity: 1;
-}
-
-/* Hover card 7 */
-.team-deck-container .team-cards-list:has(li:nth-child(7):hover) li:nth-child(1) {
-    transform: translateX(0) translateZ(-250px);
-    opacity: 0;
-    z-index: 1;
-}
-
-.team-deck-container .team-cards-list:has(li:nth-child(7):hover) li:nth-child(7) {
-    transform: translateX(0) translateZ(0px);
-    z-index: 100;
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.team-deck-container .team-cards-list:has(li:nth-child(7):hover) li:nth-child(8) {
-    transform: translateX(60px) translateZ(-50px) rotateY(-5deg);
-    z-index: 90;
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.team-deck-container .team-cards-list:has(li:nth-child(7):hover) li:nth-child(2),
-.team-deck-container .team-cards-list:has(li:nth-child(7):hover) li:nth-child(3),
-.team-deck-container .team-cards-list:has(li:nth-child(7):hover) li:nth-child(4),
-.team-deck-container .team-cards-list:has(li:nth-child(7):hover) li:nth-child(5),
-.team-deck-container .team-cards-list:has(li:nth-child(7):hover) li:nth-child(6) {
-    transform: translateX(-60px) translateZ(-100px) rotateY(5deg);
-    z-index: 80;
-    opacity: 1;
-}
-
-/* Hover card 8 - last card */
-.team-deck-container .team-cards-list:has(li:nth-child(8):hover) li:nth-child(1) {
-    transform: translateX(0) translateZ(-250px);
-    opacity: 0;
-    z-index: 1;
-}
-
-.team-deck-container .team-cards-list:has(li:nth-child(8):hover) li:nth-child(8) {
-    transform: translateX(0) translateZ(0px);
-    z-index: 100;
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.team-deck-container .team-cards-list:has(li:nth-child(8):hover) li:nth-child(2),
-.team-deck-container .team-cards-list:has(li:nth-child(8):hover) li:nth-child(3),
-.team-deck-container .team-cards-list:has(li:nth-child(8):hover) li:nth-child(4),
-.team-deck-container .team-cards-list:has(li:nth-child(8):hover) li:nth-child(5),
-.team-deck-container .team-cards-list:has(li:nth-child(8):hover) li:nth-child(6),
-.team-deck-container .team-cards-list:has(li:nth-child(8):hover) li:nth-child(7) {
-    transform: translateX(-60px) translateZ(-100px) rotateY(5deg);
-    z-index: 80;
-    opacity: 1;
-}
-
-.team-deck-container .team-cards-list li {
-    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
