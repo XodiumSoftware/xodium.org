@@ -33,10 +33,7 @@ pub fn TeamDeckSection() -> impl IntoView {
                                                 view! {
                                                     <li
                                                         class="team-deck-card"
-                                                        style=move || {
-                                                            let pos = (idx + rotation.get()) % count;
-                                                            format!("--deck-pos: {}", pos)
-                                                        }
+                                                        data-deck-pos=move || (idx + rotation.get()) % count
                                                         on:mouseenter=move |_| {
                                                             // Only advance when hovering card at position 1
                                                             let current_pos = (idx + rotation.get()) % count;
@@ -80,7 +77,7 @@ pub fn TeamDeckSection() -> impl IntoView {
                         // Title card (always present, rotates through positions)
                         <li
                             class="team-deck-card team-deck-title"
-                            style=move || format!("--deck-pos: {}", rotation.get() % 8)
+                            data-deck-pos=move || rotation.get() % 8
                         >
                             <CornerFrame
                                 style="square"

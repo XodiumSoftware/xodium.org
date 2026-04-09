@@ -327,14 +327,14 @@ html {
 }
 
 /* Position 0: Front and center */
-.team-deck-card[style*="--deck-pos: 0"] {
+.team-deck-card[data-deck-pos="0"] {
     transform: translateX(0) translateZ(0px);
     opacity: 1;
     z-index: 100;
 }
 
 /* Position 1: Peeking from right edge (hover target) */
-.team-deck-card[style*="--deck-pos: 1"] {
+.team-deck-card[data-deck-pos="1"] {
     transform: translateX(80px) translateZ(-30px) rotateY(-3deg);
     opacity: 1;
     z-index: 90;
@@ -342,12 +342,12 @@ html {
 }
 
 /* Positions 2+: Hidden behind */
-.team-deck-card[style*="--deck-pos: 2"],
-.team-deck-card[style*="--deck-pos: 3"],
-.team-deck-card[style*="--deck-pos: 4"],
-.team-deck-card[style*="--deck-pos: 5"],
-.team-deck-card[style*="--deck-pos: 6"],
-.team-deck-card[style*="--deck-pos: 7"] {
+.team-deck-card[data-deck-pos="2"],
+.team-deck-card[data-deck-pos="3"],
+.team-deck-card[data-deck-pos="4"],
+.team-deck-card[data-deck-pos="5"],
+.team-deck-card[data-deck-pos="6"],
+.team-deck-card[data-deck-pos="7"] {
     opacity: 0;
     pointer-events: none;
     transform: translateX(0) translateZ(-300px);
