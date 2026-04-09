@@ -59,15 +59,16 @@ pub fn App() -> impl IntoView {
                 <HexPattern />
                 <FadeOverlay />
                 <div class="mx-auto max-w-7xl relative z-10">
-                    <div class="max-w-2xl mx-auto text-center mb-12">
-                        <h2 class="text-3xl font-bold tracking-tight text-base-content sm:text-4xl">
-                            "Our Projects"
-                        </h2>
-                        <p class="mt-6 text-lg leading-8 text-base-content/70">
-                            "Explore our open-source projects and contributions."
-                        </p>
+                    <div class="flex gap-8 items-stretch">
+                        <div class="flex-shrink-0 flex items-center bg-[#d0d0d0] p-4 relative">
+                            <h2 class="text-3xl font-bold tracking-tight text-transparent bg-base-100 bg-clip-text sm:text-4xl [writing-mode:vertical-rl] rotate-180 whitespace-nowrap">
+                                "PROJECTS"
+                            </h2>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <ProjectGrid />
+                        </div>
                     </div>
-                    <ProjectGrid />
                 </div>
             </section>
 

@@ -35,6 +35,7 @@ html {
 }
 
 /*noinspection ALL*/
+/*noinspection CssUnresolvedCustomProperty,CssInvalidPropertyValue*/
 .btn-outline-ghost {
     background-color: transparent !important;
     color: oklch(var(--color-base-content)) !important;
@@ -49,6 +50,7 @@ html {
 }
 
 /*noinspection ALL*/
+/*noinspection CssUnresolvedCustomProperty*/
 .btn-hover-warning:hover {
     color: var(--color-warning) !important;
     border-color: var(--color-warning) !important;
@@ -80,10 +82,10 @@ html {
 }
 
 /* Blueprint grid styles */
+/*noinspection CssUnresolvedCustomProperty*/
 .blueprint-grid {
-    background-image:
-        linear-gradient(to right, var(--color-primary) 1px, transparent 1px),
-        linear-gradient(to bottom, var(--color-primary) 1px, transparent 1px);
+    background-image: linear-gradient(to right, var(--color-primary) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-primary) 1px, transparent 1px);
     background-size: 60px 60px;
     background-position: center;
     opacity: 0.08;
@@ -94,10 +96,12 @@ html {
 }
 
 /* Team background radial gradient */
+/*noinspection CssUnresolvedCustomProperty*/
 .bg-gradient-radial {
     background: radial-gradient(circle at center, var(--tw-gradient-from) 0%, var(--tw-gradient-to) 70%);
 }
 
+/*noinspection CssUnresolvedCustomProperty*/
 .blueprint-scanline {
     background: linear-gradient(
         to bottom,
@@ -111,8 +115,12 @@ html {
 }
 
 @keyframes scanline {
-    0% { transform: translateY(-100%); }
-    100% { transform: translateY(100vh); }
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(100vh);
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -257,10 +265,6 @@ html {
     );
 }
 
-.invert-icon {
-    filter: invert(1);
-}
-
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
     *,
@@ -278,3 +282,4 @@ html {
         transform: none !important;
     }
 }
+
