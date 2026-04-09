@@ -61,8 +61,8 @@ pub fn App() -> impl IntoView {
                 <FadeOverlay />
                 <div class="mx-auto max-w-7xl relative z-10">
                     <div class="flex gap-8 items-stretch">
-                        <div class="flex-shrink-0 flex items-center bg-[#d0d0d0] p-4 relative">
-                            <CornerFrame style="square" black=true>
+                        <div class="flex-shrink-0 flex items-center bg-[#d0d0d0] p-2 relative">
+                            <CornerFrame style="square" black=true class="h-full w-full flex items-center justify-center">
                                 <h2 class="text-3xl font-bold tracking-tight text-transparent bg-base-100 bg-clip-text sm:text-4xl [writing-mode:vertical-rl] rotate-180 whitespace-nowrap">
                                     "PROJECTS"
                                 </h2>
@@ -87,7 +87,7 @@ pub fn App() -> impl IntoView {
                         // Title card - front
                         <div class="team-card team-card-title p-2">
                             <CornerFrame style="square" black=true class="h-full w-full flex items-center justify-center">
-                                <h2 class="text-2xl font-bold tracking-tight text-transparent bg-base-100 bg-clip-text whitespace-nowrap">
+                                <h2 class="text-3xl font-bold tracking-tight text-transparent bg-base-100 bg-clip-text whitespace-nowrap">
                                     "THE TEAM"
                                 </h2>
                             </CornerFrame>
