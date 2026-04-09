@@ -80,15 +80,17 @@ pub fn App() -> impl IntoView {
                 <TeamBackground />
                 <FadeOverlay />
                 <div class="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
-                    <div class="flex gap-8 items-stretch">
-                        <div class="flex-shrink-0 flex items-center bg-[#d0d0d0] p-4 relative">
-                            <h2 class="text-3xl font-bold tracking-tight text-transparent bg-base-100 bg-clip-text sm:text-4xl whitespace-nowrap">
-                                "THE TEAM"
-                            </h2>
+                    <div class="team-deck-container">
+                        // Title card - front
+                        <div class="team-card team-card-title">
+                            <div class="flex items-center justify-center h-full w-full bg-[#d0d0d0] p-4 border-2 border-base-content/30">
+                                <h2 class="text-3xl font-bold tracking-tight text-transparent bg-base-100 bg-clip-text sm:text-4xl whitespace-nowrap">
+                                    "THE TEAM"
+                                </h2>
+                            </div>
                         </div>
-                        <div class="flex-1 min-w-0">
-                            <TeamGrid />
-                        </div>
+                        // Team cards stack behind
+                        <TeamGrid />
                     </div>
                 </div>
             </section>

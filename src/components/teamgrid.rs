@@ -11,7 +11,7 @@ pub fn TeamGrid() -> impl IntoView {
         "No team members found.",
         |members: Vec<Member>| {
             view! {
-                <ul class="menu gap-3 max-xl:w-full">
+                <ul class="team-cards-list">
                     {members
                         .into_iter()
                         .map(|member| {
