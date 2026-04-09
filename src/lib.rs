@@ -15,6 +15,7 @@ mod components {
     pub mod sectionfade;
     pub mod teambg;
     pub mod teamcard;
+    pub mod teamdeck;
     pub mod teamgrid;
     pub mod wireframes;
 }

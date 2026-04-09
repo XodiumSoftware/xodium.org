@@ -284,10 +284,85 @@ html {
 
     .team-deck-container,
     .team-card,
-    .team-cards-list {
+    .team-cards-list,
+    .team-deck,
+    .team-deck-card {
         animation: none !important;
         transform: none !important;
     }
+}
+
+/* New Team Deck System with step rotation */
+.team-deck-wrapper {
+    perspective: 1200px;
+    transform-style: preserve-3d;
+    min-height: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.team-deck {
+    position: relative;
+    width: 240px;
+    height: 336px;
+    transform-style: preserve-3d;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.team-deck-card {
+    position: absolute;
+    width: 240px;
+    height: 336px;
+    border-radius: 0;
+    border: 2px solid oklch(var(--color-base-content) / 0.8);
+    box-shadow: 4px 4px 0 0 rgba(0, 0, 0, 0.8);
+    background-color: #d0d0d0;
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+/* Position 0: Front and center */
+.team-deck-card[style*="--deck-pos: 0"] {
+    transform: translateX(0) translateZ(0px);
+    opacity: 1;
+    z-index: 100;
+}
+
+/* Position 1: Peeking from right edge (hover target) */
+.team-deck-card[style*="--deck-pos: 1"] {
+    transform: translateX(80px) translateZ(-30px) rotateY(-3deg);
+    opacity: 1;
+    z-index: 90;
+    pointer-events: auto;
+}
+
+/* Positions 2+: Hidden behind */
+.team-deck-card[style*="--deck-pos: 2"],
+.team-deck-card[style*="--deck-pos: 3"],
+.team-deck-card[style*="--deck-pos: 4"],
+.team-deck-card[style*="--deck-pos: 5"],
+.team-deck-card[style*="--deck-pos: 6"],
+.team-deck-card[style*="--deck-pos: 7"] {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(0) translateZ(-300px);
+}
+
+/* Title card overflow visible for cornerframe */
+.team-deck-title {
+    overflow: visible !important;
+}
+
+.team-deck-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, var(--color-primary) 0%, transparent 70%);
+    opacity: 0.1;
 }
 
 /* 3D Card Deck for Team Section */
@@ -404,26 +479,39 @@ html {
     transform: translateX(0) translateZ(-300px);
 }
 
-/* Hover card 2 - bring to front, push title back, reveal card 3 */
-.team-deck-container .team-cards-list:has(li:nth-child(2):hover) li:nth-child(1) {
-    transform: translateX(0) translateZ(-250px);
-    opacity: 0;
-    pointer-events: none;
-    z-index: 1;
+/* Hover card 2 - start automatic deck rotation [1,2,3,4,5,6,7,8] -> [2,3,4,5,6,7,8,1] */
+.team-deck-container .team-cards-list:has(li:nth-child(2):hover) {
+    animation: deck-rotate-2 8s linear infinite;
 }
 
-.team-deck-container .team-cards-list:has(li:nth-child(2):hover) li:nth-child(2) {
-    transform: translateX(0) translateZ(0px);
-    z-index: 100;
-    opacity: 1;
-    pointer-events: auto;
-}
-
-.team-deck-container .team-cards-list:has(li:nth-child(2):hover) li:nth-child(3) {
-    transform: translateX(60px) translateZ(-50px) rotateY(-5deg);
-    z-index: 90;
-    opacity: 1;
-    pointer-events: auto;
+@keyframes deck-rotate-2 {
+    0% {
+        transform: rotateY(0deg);
+    }
+    12.5% {
+        transform: rotateY(45deg);
+    }
+    25% {
+        transform: rotateY(90deg);
+    }
+    37.5% {
+        transform: rotateY(135deg);
+    }
+    50% {
+        transform: rotateY(180deg);
+    }
+    62.5% {
+        transform: rotateY(225deg);
+    }
+    75% {
+        transform: rotateY(270deg);
+    }
+    87.5% {
+        transform: rotateY(315deg);
+    }
+    100% {
+        transform: rotateY(360deg);
+    }
 }
 
 /* Hover card 3 - card 2 goes back, card 4 reveals */

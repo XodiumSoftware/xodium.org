@@ -8,8 +8,7 @@ use crate::linedraw::{LineDraw, LineDrawHero};
 use crate::parallax::ParallaxLanding;
 use crate::projectgrid::ProjectGrid;
 use crate::sectionfade::FadeOverlay;
-use crate::teambg::TeamBackground;
-use crate::teamgrid::TeamGrid;
+use crate::teamdeck::TeamDeckSection;
 use crate::wireframes::WireframeShapes;
 use leptos::prelude::*;
 
@@ -79,27 +78,7 @@ pub fn App() -> impl IntoView {
             <LineDraw />
 
             // Team section
-            <section id="team" class="relative py-24 sm:py-32">
-                <TeamBackground />
-                <FadeOverlay />
-                <div class="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
-                    <div class="team-deck-container">
-                        // All cards in one rotating group
-                        <ul class="team-cards-list">
-                            // Title card - first item
-                            <li class="team-card team-card-title p-2">
-                                <CornerFrame style="square" black=true class="h-full w-full flex items-center justify-center">
-                                    <h2 class="text-3xl font-bold tracking-tight text-transparent bg-base-100 bg-clip-text whitespace-nowrap">
-                                        "THE TEAM"
-                                    </h2>
-                                </CornerFrame>
-                            </li>
-                            // Team member cards
-                            <TeamGrid />
-                        </ul>
-                    </div>
-                </div>
-            </section>
+            <TeamDeckSection />
             </main>
 
             <Footer />
