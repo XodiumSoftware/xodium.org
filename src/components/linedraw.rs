@@ -3,9 +3,7 @@ use leptos::prelude::*;
 /// CAD line drawing animation - SVG path that draws like a CAD line being drafted
 /// Uses CSS animation triggered on component mount
 #[component]
-pub fn LineDraw(
-    #[prop(default = "")] class: &'static str,
-) -> impl IntoView {
+pub fn LineDraw(#[prop(default = "")] class: &'static str) -> impl IntoView {
     view! {
         <div class={format!("relative w-full h-16 overflow-hidden {}", class)}>
             <svg
@@ -95,9 +93,7 @@ pub fn LineDrawHero() -> impl IntoView {
 
 /// Simple animated line between two points
 #[component]
-pub fn LineDrawSimple(
-    #[prop(default = "")] class: &'static str,
-) -> impl IntoView {
+pub fn LineDrawSimple(#[prop(default = "")] class: &'static str) -> impl IntoView {
     view! {
         <div class={format!("relative w-full h-8 {}", class)}>
             <svg

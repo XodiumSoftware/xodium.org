@@ -5,7 +5,8 @@ use leptos::prelude::*;
 pub fn SectionDivider(
     #[prop(default = "")] class: &'static str,
     /// Variant: "angle" (diagonal slash), "zigzag" (technical zigzag), "arrow" (directional)
-    #[prop(default = "angle")] variant: &'static str,
+    #[prop(default = "angle")]
+    variant: &'static str,
 ) -> impl IntoView {
     match variant {
         "zigzag" => view! {

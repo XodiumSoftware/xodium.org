@@ -6,12 +6,10 @@ pub fn SectionFade(
     children: Children,
     #[prop(default = "")] class: &'static str,
     /// Height of the fade (in pixels)
-    #[prop(default = 80)] fade_height: i32,
+    #[prop(default = 80)]
+    fade_height: i32,
 ) -> impl IntoView {
-    let fade_class = format!(
-        "absolute inset-x-0 h-{} pointer-events-none",
-        fade_height
-    );
+    let fade_class = format!("absolute inset-x-0 h-{} pointer-events-none", fade_height);
 
     view! {
         <div class={format!("relative {}", class)}>
@@ -38,7 +36,8 @@ pub fn SectionFade(
 pub fn FadeOverlay(
     #[prop(default = "")] position: &'static str,
     /// Height of the fade in tailwind spacing
-    #[prop(default = "20")] height: &'static str,
+    #[prop(default = "20")]
+    height: &'static str,
 ) -> impl IntoView {
     match position {
         "top" => view! {

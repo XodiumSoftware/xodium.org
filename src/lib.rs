@@ -1,6 +1,7 @@
 mod app;
 mod components {
     pub mod blueprintgrid;
+    pub mod codeblock;
     pub mod cornerframe;
     pub mod datagrid;
     pub mod footer;
@@ -11,7 +12,6 @@ mod components {
     pub mod projectcard;
     pub mod projectgrid;
     pub mod sectiondivider;
-    pub mod codeblock;
     pub mod sectionfade;
     pub mod teambg;
     pub mod teamcard;

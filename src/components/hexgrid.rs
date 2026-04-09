@@ -13,10 +13,7 @@ pub fn HexGrid(children: Children) -> impl IntoView {
 
 /// Individual hexagonal card wrapper
 #[component]
-pub fn HexCard(
-    children: Children,
-    #[prop(optional)] class: &'static str,
-) -> impl IntoView {
+pub fn HexCard(children: Children, #[prop(optional)] class: &'static str) -> impl IntoView {
     view! {
         <div class={format!("hex-card {}", class)}>
             <div class="hex-card-inner">
@@ -28,9 +25,7 @@ pub fn HexCard(
 
 /// Hexagon background pattern for sections
 #[component]
-pub fn HexPattern(
-    #[prop(optional)] class: &'static str,
-) -> impl IntoView {
+pub fn HexPattern(#[prop(optional)] class: &'static str) -> impl IntoView {
     view! {
         <div class={format!("absolute inset-0 pointer-events-none overflow-hidden {}", class)}>
             <svg
