@@ -99,9 +99,11 @@ pub fn CodeBlock() -> impl IntoView {
                     {move || {
                         if show_ascii.get() {
                             view! {
-                                <pre class="text-primary/90 leading-none mb-4 text-[0.6rem] sm:text-xs whitespace-pre">
-                                    {ASCII_ART}
-                                </pre>
+                                <div class="w-full overflow-x-auto">
+                                    <pre class="text-primary/90 leading-none mb-4 text-[0.5rem] sm:text-xs whitespace-pre origin-left scale-[0.75] sm:scale-100 inline-block">
+                                        {ASCII_ART}
+                                    </pre>
+                                </div>
                             }.into_any()
                         } else {
                             ().into_any()
