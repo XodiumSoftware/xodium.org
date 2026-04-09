@@ -349,6 +349,11 @@ html {
     overflow: hidden;
 }
 
+/* Title card needs overflow visible for cornerframe */
+.team-deck-container .team-cards-list li:nth-child(1) {
+    overflow: visible;
+}
+
 .team-cards-list a {
     display: flex;
     flex-direction: column;
