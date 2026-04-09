@@ -15,7 +15,7 @@ pub fn App() -> impl IntoView {
 
             <main id="main-content">
             // Landing section
-            <section id="landing" class="relative isolate px-6 py-24 sm:py-32 lg:px-8">
+            <section id="landing" class="relative isolate px-6 py-[8dvh] sm:py-[10dvh] lg:px-8">
                 <BlueprintGrid />
                 <WireframeShapes />
                 <LineDrawHero />
@@ -28,7 +28,7 @@ pub fn App() -> impl IntoView {
                     <div class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-primary to-secondary opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem] clip-organic-blob"></div>
                 </div>
 
-                <div class="mx-auto max-w-2xl py-24 sm:py-32 lg:py-40">
+                <div class="mx-auto max-w-2xl py-[6dvh] sm:py-[8dvh] lg:py-[10dvh]">
                     <CodeBlock />
                 </div>
 
