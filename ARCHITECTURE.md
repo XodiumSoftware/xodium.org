@@ -45,44 +45,44 @@ Components are organized into submodules by function:
 
 #### Sections (`src/components/sections/`)
 
-| Component           | File               | Role                                                                         |
-|---------------------|--------------------|------------------------------------------------------------------------------|
-| `Header`            | `header.rs`        | Sticky navbar with logo and navigation links.                                |
-| `Footer`            | `footer.rs`        | Site footer with links and copyright.                                        |
-| `ProjectGrid`       | `projectgrid.rs`   | Fetches repos via `LocalResource` → `fetch_repos()`, renders `ProjectCard`s. |
-| `TeamDeckSection`   | `teamdeck.rs`      | Fetches members via `LocalResource` → `fetch_members()`, renders `TeamCard`s.|
+| Component         | File             | Role                                                                          |
+|-------------------|------------------|-------------------------------------------------------------------------------|
+| `Header`          | `header.rs`      | Sticky navbar with logo and navigation links.                                 |
+| `Footer`          | `footer.rs`      | Site footer with links and copyright.                                         |
+| `ProjectGrid`     | `projectgrid.rs` | Fetches repos via `LocalResource` → `fetch_repos()`, renders `ProjectCard`s.  |
+| `TeamDeckSection` | `teamdeck.rs`    | Fetches members via `LocalResource` → `fetch_members()`, renders `TeamCard`s. |
 
 #### Cards (`src/components/cards/`)
 
-| Component     | File             | Role                                                                                 |
-|---------------|------------------|--------------------------------------------------------------------------------------|
-| `ProjectCard` | `projectcard.rs` | Card for a single repo: name, description, language badge, star count, visibility.   |
-| `TeamCard`    | `teamcard.rs`    | Member avatar + login with role badge, linking to GitHub profile.                    |
+| Component     | File             | Role                                                                               |
+|---------------|------------------|------------------------------------------------------------------------------------|
+| `ProjectCard` | `projectcard.rs` | Card for a single repo: name, description, language badge, star count, visibility. |
+| `TeamCard`    | `teamcard.rs`    | Member avatar + login with role badge, linking to GitHub profile.                  |
 
 #### Visual Effects (`src/components/effects/`)
 
-| Component         | File                | Role                                                               |
-|-------------------|---------------------|--------------------------------------------------------------------|
-| `BlueprintGrid`   | `blueprintgrid.rs`  | Animated SVG blueprint-style grid background.                      |
-| `WireframeShapes`| `wireframes.rs`     | Floating wireframe geometric shapes (cube, pyramid, cylinder).     |
-| `ParallaxLanding`| `parallax.rs`       | Parallax scroll effect for the landing section.                    |
-| `HexPattern`     | `hexgrid.rs`        | Hexagonal grid overlay pattern.                                    |
-| `FadeOverlay`    | `sectionfade.rs`    | Gradient fade overlay for section transitions.                     |
+| Component         | File               | Role                                                           |
+|-------------------|--------------------|----------------------------------------------------------------|
+| `BlueprintGrid`   | `blueprintgrid.rs` | Animated SVG blueprint-style grid background.                  |
+| `WireframeShapes` | `wireframes.rs`    | Floating wireframe geometric shapes (cube, pyramid, cylinder). |
+| `ParallaxLanding` | `parallax.rs`      | Parallax scroll effect for the landing section.                |
+| `HexPattern`      | `hexgrid.rs`       | Hexagonal grid overlay pattern.                                |
+| `FadeOverlay`     | `sectionfade.rs`   | Gradient fade overlay for section transitions.                 |
 
 #### Animations (`src/components/animations/`)
 
-| Component       | File              | Role                                                      |
-|-----------------|-------------------|-----------------------------------------------------------|
-| `LineDraw`      | `linedraw.rs`     | Animated horizontal line divider between sections.          |
-| `LineDrawHero`  | `linedraw.rs`     | Hero variant of line draw animation.                      |
+| Component      | File          | Role                                               |
+|----------------|---------------|----------------------------------------------------|
+| `LineDraw`     | `linedraw.rs` | Animated horizontal line divider between sections. |
+| `LineDrawHero` | `linedraw.rs` | Hero variant of line draw animation.               |
 
 #### UI Primitives (`src/components/ui/`)
 
-| Component       | File              | Role                                                                |
-|-----------------|-------------------|---------------------------------------------------------------------|
-| `CodeBlock`     | `codeblock.rs`    | Animated typewriter-style code display with syntax highlighting.    |
-| `CornerFrame`   | `cornerframe.rs`  | Decorative corner frame wrapper for content sections.               |
-| `data_grid`     | `datagrid.rs`     | Generic `Suspense` wrapper for async data with loading/error states.|
+| Component     | File             | Role                                                                 |
+|---------------|------------------|----------------------------------------------------------------------|
+| `CodeBlock`   | `codeblock.rs`   | Animated typewriter-style code display with syntax highlighting.     |
+| `CornerFrame` | `cornerframe.rs` | Decorative corner frame wrapper for content sections.                |
+| `data_grid`   | `datagrid.rs`    | Generic `Suspense` wrapper for async data with loading/error states. |
 
 ### GitHub API (`src/github.rs`)
 
