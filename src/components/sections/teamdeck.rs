@@ -62,7 +62,7 @@ pub fn TeamDeckSection() -> impl IntoView {
                                                                 class="h-full w-full flex flex-col items-center justify-center"
                                                             >
                                                                 <div class="avatar mb-4">
-                                                                    <div class="w-20 rounded-full">
+                                                                    <div class="w-20 rounded-full ring-2 ring-primary ring-offset-2 ring-offset-base-100">
                                                                         <img
                                                                             src=member.avatar_url
                                                                             alt=member.login.clone()
@@ -71,9 +71,14 @@ pub fn TeamDeckSection() -> impl IntoView {
                                                                         />
                                                                     </div>
                                                                 </div>
-                                                                <span class="font-medium text-lg">
+                                                                <span class="font-bold text-lg">
                                                                     {member.login}
                                                                 </span>
+                                                                {member.role.clone().map(|role| view! {
+                                                                    <span class="text-sm text-base-content/60 mt-1">
+                                                                        {role}
+                                                                    </span>
+                                                                })}
                                                             </CornerFrame>
                                                         </a>
                                                     </li>
@@ -89,6 +94,12 @@ pub fn TeamDeckSection() -> impl IntoView {
                             data-deck-pos=move || {
                                 let total = count.get();
                                 rotation.get() % total
+                            }
+                            on:click=move |_| {
+                                let total = count.get();
+                                if total > 0 {
+                                    set_rotation.set((rotation.get() + total - 1) % total);
+                                }
                             }
                         >
                             <div class="h-full w-full p-2">

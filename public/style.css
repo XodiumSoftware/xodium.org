@@ -381,11 +381,13 @@ html {
     cursor: pointer;
 }
 
-.team-deck-wrapper:has(.deck-hover-zone:hover) .team-deck-card[data-deck-pos="1"] {
+.team-deck-wrapper:has(.deck-hover-zone:hover) .team-deck-card[data-deck-pos="1"],
+.team-deck-wrapper:has(.team-deck-card.team-deck-title[data-deck-pos="0"]:hover) .team-deck-card[data-deck-pos="1"] {
     animation: card-edge-bounce 0.6s ease-in-out infinite;
 }
 
-.team-deck-wrapper:has(.deck-hover-zone:active) .team-deck-card[data-deck-pos="1"] {
+.team-deck-wrapper:has(.deck-hover-zone:active) .team-deck-card[data-deck-pos="1"],
+.team-deck-wrapper:has(.team-deck-card.team-deck-title[data-deck-pos="0"]:active) .team-deck-card[data-deck-pos="1"] {
     animation: none;
 }
 

@@ -15,6 +15,12 @@ pub struct Member {
     pub login: String,
     pub html_url: String,
     pub avatar_url: String,
+    pub role: Option<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+struct Membership {
+    role: String,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -110,7 +116,17 @@ async fn fetch_all<T: for<'de> Deserialize<'de> + Serialize>(
 }
 
 pub async fn fetch_members() -> Result<Vec<Member>, String> {
-    fetch_all::<Member>(&format!("/orgs/{ORG}/members")).await
+    let mut members = fetch_all::<Member>(&format!("/orgs/{ORG}/members")).await?;
+
+    // Fetch role for each member
+    for member in &mut members {
+        let membership: Result<Membership, String> = fetch(
+            &format!("/orgs/{ORG}/memberships/{}", member.login)
+        ).await;
+        member.role = membership.ok().map(|m| m.role);
+    }
+
+    Ok(members)
 }
 
 pub async fn fetch_repos() -> Result<Vec<Repo>, String> {
