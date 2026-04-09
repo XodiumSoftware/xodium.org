@@ -5,6 +5,7 @@ pub fn CornerFrame(
     children: Children,
     #[prop(default = "angle")] style: &'static str,
     #[prop(default = "")] class: &'static str,
+    #[prop(default = false)] black: bool,
 ) -> impl IntoView {
     // Determine bracket characters based on style
     let (bracket_tl, bracket_tr, bracket_bl, bracket_br) = match style {
@@ -13,8 +14,11 @@ pub fn CornerFrame(
         _ => ("⟨", "⟩", "⟨", "⟩"), // angle brackets (default)
     };
 
-    let corner_class =
-        "absolute text-primary/40 font-mono text-sm leading-none pointer-events-none select-none";
+    let corner_class = if black {
+        "absolute text-black font-mono text-sm leading-none pointer-events-none select-none"
+    } else {
+        "absolute text-primary/40 font-mono text-sm leading-none pointer-events-none select-none"
+    };
 
     view! {
         <div class={format!("relative {}", class)}>
