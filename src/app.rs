@@ -82,12 +82,10 @@ pub fn App() -> impl IntoView {
                 <div class="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
                     <div class="team-deck-container">
                         // Title card - front
-                        <div class="team-card team-card-title">
-                            <div class="flex items-center justify-center h-full w-full bg-[#d0d0d0] p-4 border-2 border-base-content/30">
-                                <h2 class="text-3xl font-bold tracking-tight text-transparent bg-base-100 bg-clip-text sm:text-4xl whitespace-nowrap">
-                                    "THE TEAM"
-                                </h2>
-                            </div>
+                        <div class="team-card team-card-title flex items-center justify-center gap-4 p-3">
+                            <h2 class="text-2xl font-bold tracking-tight text-transparent bg-base-100 bg-clip-text whitespace-nowrap">
+                                "THE TEAM"
+                            </h2>
                         </div>
                         // Team cards stack behind
                         <TeamGrid />

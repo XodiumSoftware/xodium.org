@@ -302,17 +302,25 @@ html {
 
 .team-card {
     position: absolute;
-    width: 280px;
-    height: 160px;
     transform-style: preserve-3d;
     transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    border: 2px solid oklch(var(--color-base-content) / 0.3);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    /* Match team card btn-lift styling */
+    border-radius: 0;
+    border-width: 2px;
+    border-style: solid;
+    border-color: oklch(var(--color-base-content) / 0.8);
+    box-shadow: 4px 4px 0 0 rgba(0, 0, 0, 0.8);
+    background-color: #d0d0d0;
 }
 
 .team-card-title {
     z-index: 100;
     transform: translateZ(50px);
+    /* Match team card content sizing */
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Make team grid items become cards */
@@ -332,10 +340,11 @@ html {
 
 .team-deck-container .team-cards-list li {
     position: absolute;
-    width: 280px;
-    height: 160px;
     transform-style: preserve-3d;
     transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    /* Remove fixed size, let content determine size */
+    width: auto;
+    height: auto;
 }
 
 .team-cards-list a {
