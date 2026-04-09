@@ -317,6 +317,7 @@ html {
     width: 240px;
     height: 336px;
     border-radius: 0;
+    /*noinspection CssUnresolvedCustomProperty*/
     border: 2px solid oklch(var(--color-base-content) / 0.8);
     box-shadow: 4px 4px 0 0 rgba(0, 0, 0, 0.8);
     background-color: #d0d0d0;
@@ -353,7 +354,7 @@ html {
     transform: translateX(0) translateZ(-300px);
 }
 
-/* Title card overflow visible for cornerframe */
+/* Title card overflow visible for corner-frame */
 .team-deck-title {
     overflow: visible !important;
 }
