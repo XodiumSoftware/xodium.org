@@ -4,7 +4,7 @@ This file provides guidance when working with code in this repository.
 
 ## Project Overview
 
-xodium.org is the Xodium Software organization website. Built with Rust + Leptos (CSR), compiled to WebAssembly via Trunk, and deployed to GitHub Pages.
+xodium.org is the Xodium Software organization website. Built with Rust + Leptos (CSR), compiled to WebAssembly via Trunk, and deployed to Cloudflare Pages.
 
 ## Build & Run Commands
 
