@@ -135,7 +135,7 @@ pub async fn fetch_members() -> Result<Vec<Member>, String> {
 pub async fn fetch_repos() -> Result<Vec<Repo>, String> {
     let mut repos = fetch_all::<Repo>(&format!("/orgs/{ORG}/repos?type=public")).await?;
     repos.retain(|r| !r.fork);
-    repos.sort_by(|a, b| b.stargazers_count.cmp(&a.stargazers_count));
+    repos.sort_by_key(|b| std::cmp::Reverse(b.stargazers_count));
     Ok(repos)
 }
 
