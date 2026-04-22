@@ -163,7 +163,7 @@ mod tests {
         // attempt 1: 1000 << 0 = 1000ms
         // attempt 2: 1000 << 1 = 2000ms
         // attempt 3: 1000 << 2 = 4000ms
-        assert_eq!(RETRY_BASE_MS << 0, 1000);
+        assert_eq!(RETRY_BASE_MS, 1000);
         assert_eq!(RETRY_BASE_MS << 1, 2000);
         assert_eq!(RETRY_BASE_MS << 2, 4000);
     }
@@ -240,7 +240,7 @@ mod tests {
 
         // Apply the same logic as fetch_repos
         repos.retain(|r| !r.fork);
-        repos.sort_by(|a, b| b.stargazers_count.cmp(&a.stargazers_count));
+        repos.sort_by_key(|b| std::cmp::Reverse(b.stargazers_count));
 
         assert_eq!(repos.len(), 2);
         assert_eq!(repos[0].name, "repo-b"); // 50 stars
