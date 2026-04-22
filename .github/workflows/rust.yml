@@ -36,8 +36,12 @@ jobs:
         uses: actions-rust-lang/setup-rust-toolchain@d197c158264056996cfba74a9c2d93886346edc3
         with:
           toolchain: stable
-          targets: wasm32-unknown-unknown
           components: rustfmt, clippy
+
+      - id: install_wasm_target
+        name: Install WASM Target
+        run: rustup target add wasm32-unknown-unknown
+        shell: bash
 
       - id: run_sccache_cache
         name: Run sccache-cache
@@ -102,7 +106,11 @@ jobs:
         uses: actions-rust-lang/setup-rust-toolchain@d197c158264056996cfba74a9c2d93886346edc3
         with:
           toolchain: stable
-          targets: wasm32-unknown-unknown
+
+      - id: install_wasm_target
+        name: Install WASM Target
+        run: rustup target add wasm32-unknown-unknown
+        shell: bash
 
       - id: run_sccache_cache
         name: Run sccache-cache
