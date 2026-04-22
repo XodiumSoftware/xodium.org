@@ -1,0 +1,153 @@
+name: Xodium CI/CD
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+  SCCACHE_GHA_ENABLED: "true"
+  RUSTC_WRAPPER: "sccache"
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    environment:
+      name: "${{ github.ref_name }}"
+    steps:
+      - id: checkout
+        name: Checkout
+        uses: actions/checkout@v6.0.2
+
+      - id: setup_rust
+        name: Setup Rust
+        uses: actions-rust-lang/setup-rust-toolchain@d197c158264056996cfba74a9c2d93886346edc3
+        with:
+          toolchain: stable
+          targets: wasm32-unknown-unknown
+          components: rustfmt, clippy
+
+      - id: run_sccache_cache
+        name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@7d986dd989559c6ecdb630a3fd2557667be217ad
+
+      - id: cache_dependencies
+        name: Cache dependencies
+        uses: actions/cache@v5.0.5
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - id: cache_trunk
+        name: Cache Trunk
+        uses: actions/cache@v5.0.5
+        with:
+          path: ~/.cargo/bin/trunk
+          key: ${{ runner.os }}-trunk-latest
+
+      - id: cache_daisyui
+        name: Cache DaisyUI
+        uses: actions/cache@v5.0.5
+        with:
+          path: public/daisyui*.mjs
+          key: ${{ runner.os }}-daisyui-${{ hashFiles('Trunk.toml') }}
+
+      - id: run_lint
+        name: Run Lint
+        run: |
+          cargo clippy --all-targets --all-features -- -D warnings
+          cargo fmt --all -- --check
+        shell: bash
+
+      - id: install_cargo_binstall
+        name: Install cargo-binstall
+        uses: cargo-bins/cargo-binstall@v1.10.1
+
+      - id: run_cargo_machete
+        name: Run cargo-machete
+        run: |
+          cargo binstall cargo-machete --no-confirm
+          cargo machete
+
+  build:
+    name: Build
+    needs: [ lint ]
+    runs-on: ubuntu-latest
+    environment:
+      name: "${{ github.ref_name }}"
+    steps:
+      - id: checkout
+        name: Checkout
+        uses: actions/checkout@v6.0.2
+        with:
+          fetch-depth: 0
+
+      - id: setup_rust
+        name: Setup Rust
+        uses: actions-rust-lang/setup-rust-toolchain@d197c158264056996cfba74a9c2d93886346edc3
+        with:
+          toolchain: stable
+          targets: wasm32-unknown-unknown
+
+      - id: run_sccache_cache
+        name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@7d986dd989559c6ecdb630a3fd2557667be217ad
+
+      - id: cache_dependencies
+        name: Cache dependencies
+        uses: actions/cache@v5.0.5
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - id: cache_trunk
+        name: Cache Trunk
+        uses: actions/cache@v5.0.5
+        with:
+          path: ~/.cargo/bin/trunk
+          key: ${{ runner.os }}-trunk-latest
+
+      - id: cache_daisyui
+        name: Cache DaisyUI
+        uses: actions/cache@v5.0.5
+        with:
+          path: public/daisyui*.mjs
+          key: ${{ runner.os }}-daisyui-${{ hashFiles('Trunk.toml') }}
+
+      - id: setup_trunk
+        name: Setup Trunk
+        uses: jetli/trunk-action@v0.5.0
+        with:
+          version: latest
+
+      - id: build_app
+        name: Build App
+        env:
+          DAISYUI_VERSION: "5.5.19"
+        run: trunk build --release
+
+      - id: deploy
+        name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3.14.0
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=xodiumorg --branch=${{ github.ref_name }} --commit-dirty=true
