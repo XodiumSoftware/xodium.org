@@ -1,17 +1,5 @@
 [tools]
-tailwindcss = "4.1.13"
-
-[env]
-DAISYUI_VERSION = "5.5.19"
-
-[[hooks]]
-stage = "pre_build"
-command = "sh"
-command_arguments = ["-c", "DAISYUI_VERSION=5.5.19 scripts/fetch-daisyui.sh"]
-
-[hooks.windows]
-command = "powershell"
-command_arguments = ["-ExecutionPolicy", "Bypass", "-Command", "$env:DAISYUI_VERSION='5.5.19'; & 'scripts/fetch-daisyui.ps1'"]
+tailwindcss = "2.8.3"
 
 [build.wasm-opt]
 level = "z"
