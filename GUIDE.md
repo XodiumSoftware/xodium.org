@@ -14,7 +14,6 @@
 
 - [Rust](https://rustup.rs/) (latest stable version)
 - [Trunk](https://trunkrs.dev/) — WASM web app bundler
-- [DaisyUI](https://daisyui.com/) — Tailwind CSS plugin (auto-installed)
 
 ### Install Trunk
 
@@ -100,10 +99,10 @@ To deploy manually to Cloudflare Pages:
 
 For GitHub Actions deployment, set these secrets:
 
-| Secret | Description |
-|--------|-------------|
-| `CLOUDFLARE_API_TOKEN` | Cloudflare API token with Pages edit permissions |
-| `CLOUDFLARE_ACCOUNT_ID` | Your Cloudflare account ID |
+| Secret                  | Description                                      |
+|-------------------------|--------------------------------------------------|
+| `CLOUDFLARE_API_TOKEN`  | Cloudflare API token with Pages edit permissions |
+| `CLOUDFLARE_ACCOUNT_ID` | Your Cloudflare account ID                       |
 
 ## Project Structure
 
