@@ -1,16 +1,9 @@
 /*noinspection CssUnknownTarget*/
 @import "tailwindcss";
 
-/*noinspection CssInvalidAtRule*/
-@source not "./daisyui{,*}.mjs";
-
-/*noinspection CssInvalidAtRule*/
-@plugin "./daisyui.mjs" {
+@plugin "daisyui" {
     themes: halloween --default;
 }
-
-/*noinspection CssInvalidAtRule*/
-@plugin "./daisyui-theme.mjs";
 
 * {
     /*outline: 1px solid red !important;*/
