@@ -17,7 +17,6 @@
 
 [![Contributors][contributors_shield_url]][contributors_url]
 [![Issues][issues_shield_url]][issues_url]
-[![CI][ci_shield_url]][ci_url]
 [![Roadmap][roadmap_shield_url]][roadmap_url]
 
 </div>
@@ -45,10 +44,6 @@
 [built_with_shield_url]: https://skillicons.dev/icons?i=rust,github,githubactions
 
 [built_with_url]: https://skillicons.dev
-
-[ci_shield_url]: https://img.shields.io/github/actions/workflow/status/XodiumSoftware/xodium.org/build.yml?style=for-the-badge&label=Build
-
-[ci_url]: https://github.com/XodiumSoftware/xodium.org/actions/workflows/build.yml
 
 [code_of_conduct_url]: https://github.com/XodiumSoftware/xodium.org?tab=coc-ov-file
 
