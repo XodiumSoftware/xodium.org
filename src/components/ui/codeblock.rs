@@ -79,7 +79,7 @@ pub fn CodeBlock() -> impl IntoView {
     view! {
         <div class="w-full max-w-2xl mx-auto">
             // Terminal window
-            <div class="backdrop-blur-md bg-base-100/50 rounded-lg overflow-hidden shadow-2xl border border-white/10">
+            <div class="backdrop-blur-sm bg-base-300/50 rounded-lg overflow-hidden shadow-2xl border border-white/10">
                 // Terminal header
                 <div class="bg-base-200 px-4 py-2 flex items-center gap-2 border-b border-base-content/5">
                     <div class="flex gap-1.5">
