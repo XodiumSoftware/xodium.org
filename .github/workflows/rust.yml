@@ -2,9 +2,9 @@ name: Xodium CI/CD
 
 on:
   push:
-    branches: [ main, dev ]
+    branches: [main, dev]
   pull_request:
-    branches: [ main, dev ]
+    branches: [main, dev]
   workflow_dispatch:
 
 permissions:
@@ -78,12 +78,12 @@ jobs:
       - id: run_cargo_machete
         name: Run cargo-machete
         run: |
-          cargo binstall cargo-machete --no-confirm
+          cargo binstall cargo-machete --no-confirm --force
           cargo machete
 
   build:
     name: Build
-    needs: [ lint ]
+    needs: [lint]
     runs-on: ubuntu-latest
     environment:
       name: "${{ github.ref_name }}"
