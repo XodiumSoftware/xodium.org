@@ -102,9 +102,8 @@ pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
                                 />
                                 {props.title}
                             </h2>
-                            <p class="text-base-content/70 flex-grow">{props.description}</p>
 
-                            <div class="flex flex-wrap gap-1 mt-2 mb-2">
+                            <div class="flex flex-wrap gap-1 mb-2">
                                 {props
                                     .topics
                                     .iter()
@@ -117,6 +116,8 @@ pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
                                     })
                                     .collect_view()}
                             </div>
+
+                            <p class="text-base-content/70 flex-grow">{props.description}</p>
 
                             <div class="card-actions justify-between items-center mt-auto">
                                 <div class="flex items-center gap-1 text-base-content/60 text-sm">
