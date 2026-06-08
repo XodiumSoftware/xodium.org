@@ -1,4 +1,5 @@
 use crate::components::ui::cornerframe::CornerFrame;
+use crate::github::Repo;
 use leptos::prelude::*;
 
 fn language_color(language: &str) -> &'static str {
@@ -27,6 +28,20 @@ pub struct ProjectCardProperties {
     pub stargazers_count: u32,
     pub has_pages: bool,
     pub topics: Vec<String>,
+}
+
+impl From<Repo> for ProjectCardProperties {
+    fn from(repo: Repo) -> Self {
+        Self {
+            title: repo.name,
+            description: repo.description.unwrap_or_default(),
+            link: Some(repo.html_url),
+            language: repo.language,
+            stargazers_count: repo.stargazers_count,
+            has_pages: repo.has_pages,
+            topics: repo.topics,
+        }
+    }
 }
 
 #[component]

@@ -1,4 +1,4 @@
-use crate::components::cards::projectcard::{ProjectCard, ProjectCardProperties};
+use crate::components::cards::projectcard::ProjectCard;
 use crate::components::ui::datagrid::data_grid;
 use crate::github::{Repo, fetch_repos};
 use leptos::prelude::*;
@@ -25,15 +25,7 @@ pub fn ProjectGrid() -> impl IntoView {
                         .into_iter()
                         .map(|project| {
                             view! {
-                                <ProjectCard props=ProjectCardProperties {
-                                    title: project.name,
-                                    description: project.description.unwrap_or_default(),
-                                    link: Some(project.html_url),
-                                    language: project.language,
-                                    stargazers_count: project.stargazers_count,
-                                    has_pages: project.has_pages,
-                                    topics: project.topics,
-                                } />
+                                <ProjectCard props=project.into() />
                             }
                         })
                         .collect_view()}
