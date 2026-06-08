@@ -1,13 +1,11 @@
-/*noinspection CssUnknownTarget*/
 @import "tailwindcss";
 
+/*noinspection CssUnknownTarget*/
 @plugin "daisyui" {
     themes: halloween --default;
 }
 
-* {
-    /*outline: 1px solid red !important;*/
-}
+/* Debug: * { outline: 1px solid red !important; } */
 
 html {
     scroll-behavior: smooth;
