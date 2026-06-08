@@ -5,16 +5,6 @@ use leptos::wasm_bindgen::JsCast;
 use leptos::wasm_bindgen::closure::Closure;
 use leptos::web_sys;
 
-/// Parallax container that manages scroll-based layer movement
-#[component]
-pub fn ParallaxContainer(children: Children) -> impl IntoView {
-    view! {
-        <div class="relative overflow-hidden">
-            {children()}
-        </div>
-    }
-}
-
 /// Parallax background for the landing section
 #[component]
 pub fn ParallaxLanding() -> impl IntoView {
@@ -109,22 +99,6 @@ mod tests {
                 .unwrap()
                 .is_some(),
             "ParallaxLanding should render transform layers"
-        );
-    }
-
-    #[wasm_bindgen_test]
-    fn test_parallax_container_mounts() {
-        mount_to_body(|| {
-            view! {
-                <ParallaxContainer>
-                    <div id="parallax-child">"child"</div>
-                </ParallaxContainer>
-            }
-        });
-        let document = web_sys::window().unwrap().document().unwrap();
-        assert!(
-            document.get_element_by_id("parallax-child").is_some(),
-            "ParallaxContainer should render children"
         );
     }
 }

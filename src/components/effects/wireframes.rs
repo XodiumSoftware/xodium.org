@@ -122,16 +122,3 @@ pub fn WireframeShapes() -> impl IntoView {
         </div>
     }
 }
-
-/// Alternative: Wireframe shapes with parallax scroll effect
-#[component]
-pub fn WireframeShapesParallax() -> impl IntoView {
-    view! {
-        <div class="absolute inset-0 h-full w-full pointer-events-none overflow-hidden">
-            {/* Layer 1 - Slowest */}
-            <div class="wireframe-parallax-layer" data-speed="0.2">
-                <WireframeShapes />
-            </div>
-        </div>
-    }
-}

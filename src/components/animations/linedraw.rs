@@ -91,28 +91,6 @@ pub fn LineDrawHero() -> impl IntoView {
     }
 }
 
-/// Simple animated line between two points
-#[component]
-pub fn LineDrawSimple(#[prop(default = "")] class: &'static str) -> impl IntoView {
-    view! {
-        <div class={format!("relative w-full h-8 {}", class)}>
-            <svg
-                class="absolute inset-0 w-full h-full"
-                viewBox="0 0 100 10"
-                preserveAspectRatio="none"
-            >
-                <line
-                    x1="0" y1="5" x2="100" y2="5"
-                    class="cad-line-simple"
-                    stroke="var(--color-primary)"
-                    stroke-width="1"
-                    stroke-opacity="0.4"
-                />
-            </svg>
-        </div>
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -138,16 +116,6 @@ mod tests {
         assert!(
             document.query_selector("svg").unwrap().is_some(),
             "LineDrawHero should render an SVG"
-        );
-    }
-
-    #[wasm_bindgen_test]
-    fn test_line_draw_simple_mounts() {
-        mount_to_body(|| view! { <LineDrawSimple class="test-simple" /> });
-        let document = web_sys::window().unwrap().document().unwrap();
-        assert!(
-            document.query_selector("svg").unwrap().is_some(),
-            "LineDrawSimple should render an SVG"
         );
     }
 }
