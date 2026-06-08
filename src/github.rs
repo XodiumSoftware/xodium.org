@@ -116,9 +116,15 @@ pub async fn fetch_members() -> Result<Vec<Member>, String> {
     let mut members = fetch_all::<Member>(&format!("/orgs/{ORG}/members")).await?;
 
     // Fetch all admins (owners) using role filter
-    let owners: Vec<Member> = fetch_all::<Member>(&format!("/orgs/{ORG}/members?role=admin"))
-        .await
-        .unwrap_or_default();
+    let owners = match fetch_all::<Member>(&format!("/orgs/{ORG}/members?role=admin")).await {
+        Ok(o) => o,
+        Err(e) => {
+            web_sys::console::warn_1(
+                &format!("Failed to fetch owner roles from GitHub API: {e}. All members will be labeled as 'Member'.").into()
+            );
+            Vec::new()
+        }
+    };
     let owner_logins: HashSet<String> = owners.into_iter().map(|m| m.login).collect();
 
     // Mark role for each member
