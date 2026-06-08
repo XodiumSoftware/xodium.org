@@ -1,4 +1,13 @@
+use js_sys::Function;
 use leptos::prelude::*;
+use leptos::wasm_bindgen::JsCast;
+use leptos::wasm_bindgen::closure::Closure;
+use leptos::web_sys;
+
+/// SAFETY: WASM is single-threaded, so Send/Sync are trivially satisfied.
+struct SendWrapper<T>(T);
+unsafe impl<T> Send for SendWrapper<T> {}
+unsafe impl<T> Sync for SendWrapper<T> {}
 
 /// Parallax container that manages scroll-based layer movement
 #[component]
@@ -17,19 +26,31 @@ pub fn ParallaxLanding() -> impl IntoView {
 
     // Set up scroll listener
     Effect::new(move |_| {
-        let on_scroll = move || {
-            if let Some(window) = web_sys::window()
-                && let Ok(scroll) = window.scroll_y()
-            {
+        let window = web_sys::window().unwrap();
+
+        let closure = SendWrapper(Closure::wrap(Box::new(move |_ev: web_sys::Event| {
+            if let Ok(scroll) = web_sys::window().unwrap().scroll_y() {
                 set_scroll_y.set(scroll);
             }
-        };
+        }) as Box<dyn FnMut(_)>));
+
+        let fn_ref: Function = closure.0.as_ref().unchecked_ref::<Function>().clone();
+        window
+            .add_event_listener_with_callback("scroll", &fn_ref)
+            .unwrap();
 
         // Initial call
-        on_scroll();
+        if let Ok(scroll) = window.scroll_y() {
+            set_scroll_y.set(scroll);
+        }
 
-        // Note: In a real implementation, you'd add an event listener here
-        // For simplicity, we're just using the initial position
+        on_cleanup(move || {
+            web_sys::window()
+                .unwrap()
+                .remove_event_listener_with_callback("scroll", &fn_ref)
+                .unwrap();
+            drop(closure);
+        });
     });
 
     // Different layers move at different speeds
