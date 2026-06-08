@@ -112,6 +112,14 @@ pub fn TeamDeckSection() -> impl IntoView {
                         </li>
                     </ul>
                 </div>
+                // Keyboard hint below the deck
+                <div class="mt-6 flex items-center justify-center gap-2 text-sm text-base-content/50 font-mono select-none">
+                    <span>"Press"</span>
+                    <kbd class="inline-flex items-center justify-center px-2 py-0.5 min-w-[1.5rem] rounded border border-base-content/20 bg-base-200 shadow-[0_2px_0_0_rgba(0,0,0,0.3)] text-xs font-sans">"Space"</kbd>
+                    <span>"or"</span>
+                    <kbd class="inline-flex items-center justify-center px-2 py-0.5 min-w-[1.5rem] rounded border border-base-content/20 bg-base-200 shadow-[0_2px_0_0_rgba(0,0,0,0.3)] text-xs font-sans">"Enter"</kbd>
+                    <span>"to rotate"</span>
+                </div>
             </div>
         </section>
     }
