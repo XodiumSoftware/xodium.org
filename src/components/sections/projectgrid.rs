@@ -5,7 +5,16 @@ use leptos::prelude::*;
 
 #[component]
 pub fn ProjectGrid() -> impl IntoView {
-    let resource = LocalResource::new(|| async { fetch_repos().await });
+    let (retry_count, set_retry_count) = signal(0u32);
+    let resource = LocalResource::new(move || {
+        let _ = retry_count.get();
+        async move { fetch_repos().await }
+    });
+
+    let retry = move || {
+        set_retry_count.update(|n| *n += 1);
+    };
+
     data_grid(
         resource,
         "No projects found.",
@@ -31,6 +40,6 @@ pub fn ProjectGrid() -> impl IntoView {
                 </div>
             }
         },
-        None::<fn()>,
+        Some(retry),
     )
 }
