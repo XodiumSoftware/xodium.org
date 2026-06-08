@@ -1,5 +1,7 @@
 use leptos::prelude::*;
 use leptos::task::spawn_local;
+use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
 
 const ASCII_ART: &str = r#"
@@ -28,26 +30,45 @@ pub fn CodeBlock() -> impl IntoView {
     let (current_line, set_current_line) = signal(0usize);
     let (cursor_visible, set_cursor_visible) = signal(true);
     let (show_buttons, set_show_buttons) = signal(false);
+    let cancelled = Arc::new(AtomicBool::new(false));
 
-    // Cursor blink effect
+    // Cursor blink + typewriter effects share one cancellation flag
     Effect::new(move |_| {
+        let c_blink_cleanup = Arc::clone(&cancelled);
+        let c_blink_task = Arc::clone(&cancelled);
+        let c_type_cleanup = Arc::clone(&cancelled);
+        let c_type_task = Arc::clone(&cancelled);
+
+        on_cleanup(move || {
+            c_blink_cleanup.store(true, Ordering::Relaxed);
+            c_type_cleanup.store(true, Ordering::Relaxed);
+        });
+
+        // Cursor blink loop
         spawn_local(async move {
             loop {
                 gloo_timers::future::sleep(Duration::from_millis(530)).await;
+                if c_blink_task.load(Ordering::Relaxed) {
+                    break;
+                }
                 set_cursor_visible.update(|v| *v = !*v);
             }
         });
-    });
 
-    // Show ASCII art first, then type out lines
-    Effect::new(move |_| {
+        // Show ASCII art first, then type out lines
         spawn_local(async move {
             // Initial delay
             gloo_timers::future::sleep(Duration::from_millis(500)).await;
+            if c_type_task.load(Ordering::Relaxed) {
+                return;
+            }
             set_show_ascii.set(true);
 
             // Wait for ASCII to be visible
             gloo_timers::future::sleep(Duration::from_millis(800)).await;
+            if c_type_task.load(Ordering::Relaxed) {
+                return;
+            }
 
             for (i, &line) in COMPANY_VALUES.iter().enumerate() {
                 set_current_line.set(i);
@@ -64,14 +85,23 @@ pub fn CodeBlock() -> impl IntoView {
                         }
                     });
                     gloo_timers::future::sleep(Duration::from_millis(30)).await;
+                    if c_type_task.load(Ordering::Relaxed) {
+                        return;
+                    }
                 }
 
                 // Pause between lines
                 gloo_timers::future::sleep(Duration::from_millis(400)).await;
+                if c_type_task.load(Ordering::Relaxed) {
+                    return;
+                }
             }
 
             // Show buttons after typing complete
             gloo_timers::future::sleep(Duration::from_millis(600)).await;
+            if c_type_task.load(Ordering::Relaxed) {
+                return;
+            }
             set_show_buttons.set(true);
         });
     });
