@@ -18,6 +18,13 @@ pub fn TeamDeckSection() -> impl IntoView {
         set_retry_count.update(|n| *n += 1);
     };
 
+    let rotate = move || {
+        let total = count.get();
+        if total > 0 {
+            set_rotation.set((rotation.get() + total - 1) % total);
+        }
+    };
+
     view! {
         <section id="team" class="relative py-24 sm:py-32">
             <div class="team-deck-bg" />
@@ -26,10 +33,14 @@ pub fn TeamDeckSection() -> impl IntoView {
                     // Click zone at the right edge - triggers rotation
                     <div
                         class="deck-hover-zone"
-                        on:click=move |_| {
-                            let total = count.get();
-                            if total > 0 {
-                                set_rotation.set((rotation.get() + total - 1) % total);
+                        tabindex="0"
+                        role="button"
+                        aria-label="Rotate team deck"
+                        on:click=move |_| rotate()
+                        on:keydown=move |ev| {
+                            if ev.key() == "Enter" || ev.key() == " " {
+                                ev.prevent_default();
+                                rotate();
                             }
                         }
                     />
@@ -95,14 +106,18 @@ pub fn TeamDeckSection() -> impl IntoView {
                         // Title card (always present, rotates through positions)
                         <li
                             class="team-deck-card team-deck-title"
+                            tabindex="0"
+                            role="button"
+                            aria-label="Rotate team deck"
                             data-deck-pos=move || {
                                 let total = count.get();
                                 rotation.get() % total
                             }
-                            on:click=move |_| {
-                                let total = count.get();
-                                if total > 0 {
-                                    set_rotation.set((rotation.get() + total - 1) % total);
+                            on:click=move |_| rotate()
+                            on:keydown=move |ev| {
+                                if ev.key() == "Enter" || ev.key() == " " {
+                                    ev.prevent_default();
+                                    rotate();
                                 }
                             }
                         >
