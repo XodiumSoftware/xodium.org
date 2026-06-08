@@ -37,19 +37,21 @@ pub fn Header() -> impl IntoView {
 
     // Scroll listener for backdrop blur
     Effect::new(move |_| {
-        let window = web_sys::window().unwrap();
+        let window = web_sys::window().expect("window should exist in browser");
         let closure = SendWrapper(Closure::wrap(Box::new(move |_ev: web_sys::Event| {
-            set_is_scrolled.set(web_sys::window().unwrap().scroll_y().unwrap_or(0.0) > 0.0);
+            let scrolled = web_sys::window()
+                .map(|w| w.scroll_y().unwrap_or(0.0) > 0.0)
+                .unwrap_or(false);
+            set_is_scrolled.set(scrolled);
         }) as Box<dyn FnMut(_)>));
         let fn_ref: Function = closure.0.as_ref().unchecked_ref::<Function>().clone();
         window
             .add_event_listener_with_callback("scroll", &fn_ref)
-            .unwrap();
+            .expect("should be able to add scroll listener");
         on_cleanup(move || {
-            web_sys::window()
-                .unwrap()
-                .remove_event_listener_with_callback("scroll", &fn_ref)
-                .unwrap();
+            if let Some(window) = web_sys::window() {
+                let _ = window.remove_event_listener_with_callback("scroll", &fn_ref);
+            }
             drop(closure);
         });
     });
