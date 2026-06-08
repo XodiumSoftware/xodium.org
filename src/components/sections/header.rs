@@ -33,7 +33,9 @@ const SOCIAL_LINKS: &[SocialLink] = &[
 #[component]
 pub fn Header() -> impl IntoView {
     let (is_scrolled, set_is_scrolled) = signal(false);
+    let (active_section, set_active_section) = signal(String::new());
 
+    // Scroll listener for backdrop blur
     Effect::new(move |_| {
         let window = web_sys::window().unwrap();
         let closure = SendWrapper(Closure::wrap(Box::new(move |_ev: web_sys::Event| {
@@ -48,10 +50,53 @@ pub fn Header() -> impl IntoView {
                 .unwrap()
                 .remove_event_listener_with_callback("scroll", &fn_ref)
                 .unwrap();
-            // closure is dropped here after the listener is removed, preventing memory leaks
             drop(closure);
         });
     });
+
+    // IntersectionObserver to track which section is in view
+    Effect::new(move |_| {
+        let window = web_sys::window().unwrap();
+        let document = window.document().unwrap();
+
+        let closure = SendWrapper(Closure::wrap(Box::new(move |entries: js_sys::Array| {
+            for entry in entries.iter() {
+                if let Ok(entry) = entry.dyn_into::<web_sys::IntersectionObserverEntry>() {
+                    if entry.is_intersecting() {
+                        if let Some(target) = entry.target().dyn_ref::<web_sys::Element>() {
+                            let id = target.id();
+                            if !id.is_empty() {
+                                set_active_section.set(id);
+                            }
+                        }
+                    }
+                }
+            }
+        }) as Box<dyn FnMut(_)>));
+
+        let options = web_sys::IntersectionObserverInit::new();
+        options.set_threshold(&js_sys::Array::of1(&js_sys::Number::from(0.5)));
+
+        let observer = web_sys::IntersectionObserver::new_with_options(
+            closure.0.as_ref().unchecked_ref(),
+            &options,
+        )
+        .unwrap();
+
+        if let Some(el) = document.get_element_by_id("projects") {
+            observer.observe(&el);
+        }
+        if let Some(el) = document.get_element_by_id("team") {
+            observer.observe(&el);
+        }
+
+        on_cleanup(move || {
+            observer.disconnect();
+            drop(closure);
+        });
+    });
+
+    let is_active = move |id: &str| active_section.get() == id;
 
     view! {
         <header
@@ -73,10 +118,18 @@ pub fn Header() -> impl IntoView {
                     <a href="#" class="p-0">
                         <img src="/icons/favicon.svg" alt="Xodium Icon" class="h-12 w-12" />
                     </a>
-                    <a href="#projects" class="hover:text-primary text-sm font-semibold lift">
+                    <a
+                        href="#projects"
+                        class="hover:text-primary text-sm font-semibold lift"
+                        aria-current=move || if is_active("projects") { Some("true") } else { None }
+                    >
                         "PROJECTS"
                     </a>
-                    <a href="#team" class="hover:text-primary text-sm font-semibold lift">
+                    <a
+                        href="#team"
+                        class="hover:text-primary text-sm font-semibold lift"
+                        aria-current=move || if is_active("team") { Some("true") } else { None }
+                    >
                         "TEAM"
                     </a>
                 </div>
