@@ -14,9 +14,12 @@ trunk build --release
 
 # Serve locally with hot-reload
 trunk serve
+
+# Run WASM tests in headless browser
+wasm-pack test --headless --chrome
 ```
 
-There are no automated tests in this project.
+There are automated tests in `src/github.rs`, `src/components/cards/projectcard.rs`, and `src/app.rs` using `wasm-bindgen-test`.
 
 ## Architecture
 
@@ -56,7 +59,7 @@ Components are organized into submodules by function:
 
 | Component     | File             | Role                                                                               |
 |---------------|------------------|------------------------------------------------------------------------------------|
-| `ProjectCard` | `projectcard.rs` | Card for a single repo: name, description, language badge, star count, visibility. |
+| `ProjectCard` | `projectcard.rs` | Card for a single repo: name, description, language badge, topic tags, star count, visibility. |
 | `TeamCard`    | `teamcard.rs`    | Member avatar + login with role badge, linking to GitHub profile.                  |
 
 #### Visual Effects (`src/components/effects/`)

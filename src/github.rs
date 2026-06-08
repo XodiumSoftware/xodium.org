@@ -28,6 +28,7 @@ pub struct Repo {
     pub stargazers_count: u32,
     pub fork: bool,
     pub has_pages: bool,
+    pub topics: Vec<String>,
 }
 
 fn cache_get<T: for<'de> Deserialize<'de>>(key: &str) -> Option<T> {
@@ -194,7 +195,8 @@ mod tests {
             "language": "Rust",
             "stargazers_count": 42,
             "fork": false,
-            "has_pages": true
+            "has_pages": true,
+            "topics": ["cad", "cli", "rust"]
         }"#;
 
         let repo: Repo = serde_json::from_str(json).unwrap();
@@ -204,6 +206,7 @@ mod tests {
         assert_eq!(repo.stargazers_count, 42);
         assert!(!repo.fork);
         assert!(repo.has_pages);
+        assert_eq!(repo.topics, vec!["cad", "cli", "rust"]);
     }
 
     #[wasm_bindgen_test]
@@ -217,6 +220,7 @@ mod tests {
                 stargazers_count: 10,
                 fork: false,
                 has_pages: false,
+                topics: vec!["cad".to_string()],
             },
             Repo {
                 name: "repo-b".to_string(),
@@ -226,6 +230,7 @@ mod tests {
                 stargazers_count: 50,
                 fork: false,
                 has_pages: false,
+                topics: vec!["python".to_string()],
             },
             Repo {
                 name: "repo-c".to_string(),
@@ -235,6 +240,7 @@ mod tests {
                 stargazers_count: 30,
                 fork: true, // This should be filtered out
                 has_pages: false,
+                topics: vec![],
             },
         ];
 

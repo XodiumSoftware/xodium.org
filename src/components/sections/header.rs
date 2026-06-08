@@ -4,6 +4,11 @@ use leptos::wasm_bindgen::JsCast;
 use leptos::wasm_bindgen::closure::Closure;
 use leptos::web_sys;
 
+/// SAFETY: WASM is single-threaded, so Send/Sync are trivially satisfied.
+struct SendWrapper<T>(T);
+unsafe impl<T> Send for SendWrapper<T> {}
+unsafe impl<T> Sync for SendWrapper<T> {}
+
 struct SocialLink {
     href: &'static str,
     label: &'static str,
@@ -35,10 +40,10 @@ pub fn Header() -> impl IntoView {
 
     Effect::new(move |_| {
         let window = web_sys::window().unwrap();
-        let closure = Closure::wrap(Box::new(move |_ev: web_sys::Event| {
+        let closure = SendWrapper(Closure::wrap(Box::new(move |_ev: web_sys::Event| {
             set_is_scrolled.set(web_sys::window().unwrap().scroll_y().unwrap_or(0.0) > 0.0);
-        }) as Box<dyn FnMut(_)>);
-        let fn_ref: Function = closure.as_ref().unchecked_ref::<Function>().clone();
+        }) as Box<dyn FnMut(_)>));
+        let fn_ref: Function = closure.0.as_ref().unchecked_ref::<Function>().clone();
         window
             .add_event_listener_with_callback("scroll", &fn_ref)
             .unwrap();
@@ -47,8 +52,9 @@ pub fn Header() -> impl IntoView {
                 .unwrap()
                 .remove_event_listener_with_callback("scroll", &fn_ref)
                 .unwrap();
+            // closure is dropped here after the listener is removed, preventing memory leaks
+            drop(closure);
         });
-        closure.forget();
     });
 
     view! {

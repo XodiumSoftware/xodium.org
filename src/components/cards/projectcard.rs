@@ -26,6 +26,7 @@ pub struct ProjectCardProperties {
     pub language: Option<String>,
     pub stargazers_count: u32,
     pub has_pages: bool,
+    pub topics: Vec<String>,
 }
 
 #[component]
@@ -103,6 +104,20 @@ pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
                             </h2>
                             <p class="text-base-content/70 flex-grow">{props.description}</p>
 
+                            <div class="flex flex-wrap gap-1 mt-2 mb-2">
+                                {props
+                                    .topics
+                                    .iter()
+                                    .map(|topic| {
+                                        view! {
+                                            <span class="badge badge-xs badge-outline text-base-content/60">
+                                                {topic.clone()}
+                                            </span>
+                                        }
+                                    })
+                                    .collect_view()}
+                            </div>
+
                             <div class="card-actions justify-between items-center mt-auto">
                                 <div class="flex items-center gap-1 text-base-content/60 text-sm">
                                     {move || {
@@ -161,5 +176,37 @@ pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
                     </div>
                 </CornerFrame>
         </a>
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use wasm_bindgen_test::*;
+
+    wasm_bindgen_test_configure!(run_in_browser);
+
+    #[wasm_bindgen_test]
+    fn test_language_color() {
+        assert_eq!(language_color("Rust"), "bg-[#dea584]");
+        assert_eq!(language_color("TypeScript"), "bg-[#3178c6]");
+        assert_eq!(language_color("Python"), "bg-[#3572A5]");
+        assert_eq!(language_color("UnknownLang"), "bg-base-content/50");
+    }
+
+    #[wasm_bindgen_test]
+    fn test_project_card_properties() {
+        let props = ProjectCardProperties {
+            title: "test-repo".to_string(),
+            description: "A test repository".to_string(),
+            link: Some("https://github.com/test".to_string()),
+            language: Some("Rust".to_string()),
+            stargazers_count: 42,
+            has_pages: true,
+            topics: vec!["cad".to_string(), "cli".to_string()],
+        };
+        assert_eq!(props.title, "test-repo");
+        assert_eq!(props.topics.len(), 2);
+        assert!(props.has_pages);
     }
 }

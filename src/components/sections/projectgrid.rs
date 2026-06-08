@@ -23,6 +23,7 @@ pub fn ProjectGrid() -> impl IntoView {
                                     language: project.language,
                                     stargazers_count: project.stargazers_count,
                                     has_pages: project.has_pages,
+                                    topics: project.topics,
                                 } />
                             }
                         })

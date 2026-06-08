@@ -74,3 +74,39 @@ pub fn App() -> impl IntoView {
         </div>
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use leptos::mount::mount_to_body;
+    use wasm_bindgen_test::*;
+
+    wasm_bindgen_test_configure!(run_in_browser);
+
+    #[wasm_bindgen_test]
+    fn test_app_mounts_without_panic() {
+        // Mounting the App verifies all components render without panicking
+        mount_to_body(App);
+
+        let document = web_sys::window().unwrap().document().unwrap();
+        let body = document.body().unwrap();
+        assert!(!body.inner_html().is_empty());
+
+        // Verify key structural elements exist in the mounted DOM
+        assert!(
+            document.query_selector("header").unwrap().is_some(),
+            "Header should be rendered"
+        );
+        assert!(
+            document
+                .query_selector("main#main-content")
+                .unwrap()
+                .is_some(),
+            "Main content should be rendered"
+        );
+        assert!(
+            document.query_selector("footer").unwrap().is_some(),
+            "Footer should be rendered"
+        );
+    }
+}

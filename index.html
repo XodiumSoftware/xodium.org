@@ -1,32 +1,84 @@
-<!DOCTYPE html>
+<!doctype html>
 <html data-theme="halloween" lang="en">
-<head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <meta
-        content="Xodium Software - Open source CAD software organization. Building innovative tools for the engineering community."
-        name="description"/>
-    <meta content="Xodium, CAD, open source, software, engineering" name="keywords"/>
-    <meta content="Xodium Software" name="author"/>
+    <head>
+        <meta charset="utf-8" />
+        <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+        <meta
+            content="Xodium Software - Open source CAD software organization. Building innovative tools for the engineering community."
+            name="description"
+        />
+        <meta
+            content="Xodium, CAD, open source, software, engineering"
+            name="keywords"
+        />
+        <meta content="Xodium Software" name="author" />
 
-    <!-- Canonical URL -->
-    <link href="https://xodium.org" rel="canonical"/>
+        <!-- Canonical URL -->
+        <link href="https://xodium.org" rel="canonical" />
 
-    <!-- Content Security Policy -->
-    <meta
-        content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://api.github.com; img-src 'self' https: data:; font-src 'self';"
-        http-equiv="Content-Security-Policy"/>
+        <!-- Open Graph -->
+        <meta property="og:title" content="Xodium Software" />
+        <meta
+            property="og:description"
+            content="Open source CAD software organization. Building innovative tools for the engineering community."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://xodium.org" />
+        <meta
+            property="og:image"
+            content="https://gist.githubusercontent.com/illyrius666/a38f03b4fbe9b43faa2c5623137c1250/raw/3a1410e77807097bcfbcf963822b41fadd495d9f/xodium.svg"
+        />
 
-    <!-- DNS Prefetch and Preconnect for GitHub API -->
-    <link href="https://api.github.com" rel="dns-prefetch"/>
-    <link crossorigin="" href="https://api.github.com" rel="preconnect"/>
-    <link href="https://avatars.githubusercontent.com" rel="dns-prefetch"/>
-    <link crossorigin="" href="https://avatars.githubusercontent.com" rel="preconnect"/>
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Xodium Software" />
+        <meta
+            name="twitter:description"
+            content="Open source CAD software organization. Building innovative tools for the engineering community."
+        />
+        <meta
+            name="twitter:image"
+            content="https://gist.githubusercontent.com/illyrius666/a38f03b4fbe9b43faa2c5623137c1250/raw/3a1410e77807097bcfbcf963822b41fadd495d9f/xodium.svg"
+        />
 
-    <link data-trunk href="public/icons/favicon.svg" rel="icon" type="image/svg+xml"/>
-    <link data-trunk href="public/style.css" rel="tailwind-css-extra"/>
-    <link data-trunk href="public/icons" rel="copy-dir"/>
-    <title>Xodium</title>
-</head>
-<body class="bg-base-100 font-mono"></body>
+        <!-- JSON-LD Structured Data -->
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "Organization",
+                "name": "Xodium Software",
+                "url": "https://xodium.org",
+                "logo": "https://xodium.org/icons/favicon.svg",
+                "sameAs": ["https://github.com/XodiumSoftware"],
+                "description": "Open source CAD software organization. Building innovative tools for the engineering community."
+            }
+        </script>
+
+        <!-- Content Security Policy -->
+        <meta
+            content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://api.github.com; img-src 'self' https: data:; font-src 'self';"
+            http-equiv="Content-Security-Policy"
+        />
+
+        <!-- DNS Prefetch and Preconnect for GitHub API -->
+        <link href="https://api.github.com" rel="dns-prefetch" />
+        <link crossorigin="" href="https://api.github.com" rel="preconnect" />
+        <link href="https://avatars.githubusercontent.com" rel="dns-prefetch" />
+        <link
+            crossorigin=""
+            href="https://avatars.githubusercontent.com"
+            rel="preconnect"
+        />
+
+        <link
+            data-trunk
+            href="public/icons/favicon.svg"
+            rel="icon"
+            type="image/svg+xml"
+        />
+        <link data-trunk href="public/style.css" rel="tailwind-css-extra" />
+        <link data-trunk href="public/icons" rel="copy-dir" />
+        <title>Xodium</title>
+    </head>
+    <body class="bg-base-100 font-mono"></body>
 </html>
