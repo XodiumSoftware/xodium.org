@@ -1,12 +1,22 @@
 use crate::components::ui::cornerframe::CornerFrame;
-use crate::github::fetch_members;
+use crate::components::ui::datagrid::data_grid;
+use crate::github::{Member, fetch_members};
 use leptos::prelude::*;
 
 #[component]
 pub fn TeamDeckSection() -> impl IntoView {
     let (rotation, set_rotation) = signal(0usize);
-    let (count, set_count) = signal(8usize); // Default to 8 positions
-    let resource = LocalResource::new(|| async { fetch_members().await });
+    let (count, set_count) = signal(8usize);
+    let (retry_count, set_retry_count) = signal(0u32);
+
+    let resource = LocalResource::new(move || {
+        let _ = retry_count.get();
+        async move { fetch_members().await }
+    });
+
+    let retry = move || {
+        set_retry_count.update(|n| *n += 1);
+    };
 
     view! {
         <section id="team" class="relative py-24 sm:py-32">
@@ -24,70 +34,64 @@ pub fn TeamDeckSection() -> impl IntoView {
                         }
                     />
                     <ul class="team-deck">
-                        <Suspense fallback=|| view! {
-                            <li class="team-deck-card team-deck-title">
-                                "Loading..."
-                            </li>
-                        }>
-                            {move || {
-                                resource
-                                    .get()
-                                    .map(|members| {
-                                        let members = members.unwrap_or_default();
-                                        let member_count = members.len();
-                                        let total_count = member_count + 1; // +1 for title card
-                                        set_count.set(total_count.max(2));
+                        {data_grid(
+                            resource,
+                            "No team members found.",
+                            move |members: Vec<Member>| {
+                                let member_count = members.len();
+                                let total_count = member_count + 1;
+                                set_count.set(total_count.max(2));
 
-                                        members
-                                            .into_iter()
-                                            .enumerate()
-                                            .map(|(idx, member)| {
-                                                let card_idx = idx + 1; // Offset by 1 for title card
-                                                view! {
-                                                    <li
-                                                        class="team-deck-card"
-                                                        data-deck-pos=move || {
-                                                            let total = count.get();
-                                                            (card_idx + rotation.get()) % total
-                                                        }
-                                                    >
-                                                        <a
-                                                            href=member.html_url
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            class="group flex flex-col items-center justify-center h-full w-full bg-ghost hover:border-primary hover:text-primary border-2 border-base-content/80 p-2"
-                                                        >
-                                                            <CornerFrame
-                                                                style="square"
-                                                                class="h-full w-full flex flex-col items-center justify-center"
-                                                            >
-                                                                <div class="avatar mb-4">
-                                                                    <div class="w-20 rounded-full ring-2 ring-primary ring-offset-2 ring-offset-base-100">
-                                                                        <img
-                                                                            src=member.avatar_url
-                                                                            alt=member.login.clone()
-                                                                            loading="lazy"
-                                                                            decoding="async"
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                                <span class="font-bold text-lg">
-                                                                    {member.login}
-                                                                </span>
-                                                                {member.role.clone().map(|role| view! {
-                                                                    <span class="text-sm text-base-content/60 mt-1">
-                                                                        {role}
-                                                                    </span>
-                                                                })}
-                                                            </CornerFrame>
-                                                        </a>
-                                                    </li>
+                                members
+                                    .into_iter()
+                                    .enumerate()
+                                    .map(|(idx, member)| {
+                                        let card_idx = idx + 1;
+                                        view! {
+                                            <li
+                                                class="team-deck-card"
+                                                data-deck-pos=move || {
+                                                    let total = count.get();
+                                                    (card_idx + rotation.get()) % total
                                                 }
-                                            })
-                                            .collect_view()
+                                            >
+                                                <a
+                                                    href=member.html_url
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    class="group flex flex-col items-center justify-center h-full w-full bg-ghost hover:border-primary hover:text-primary border-2 border-base-content/80 p-2"
+                                                >
+                                                    <CornerFrame
+                                                        style="square"
+                                                        class="h-full w-full flex flex-col items-center justify-center"
+                                                    >
+                                                        <div class="avatar mb-4">
+                                                            <div class="w-20 rounded-full ring-2 ring-primary ring-offset-2 ring-offset-base-100">
+                                                                <img
+                                                                    src=member.avatar_url
+                                                                    alt=member.login.clone()
+                                                                    loading="lazy"
+                                                                    decoding="async"
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                        <span class="font-bold text-lg">
+                                                            {member.login}
+                                                        </span>
+                                                        {member.role.clone().map(|role| view! {
+                                                            <span class="text-sm text-base-content/60 mt-1">
+                                                                {role}
+                                                            </span>
+                                                        })}
+                                                    </CornerFrame>
+                                                </a>
+                                            </li>
+                                        }
                                     })
-                            }}
-                        </Suspense>
+                                    .collect_view()
+                            },
+                            Some(retry),
+                        )}
                         // Title card (always present, rotates through positions)
                         <li
                             class="team-deck-card team-deck-title"
