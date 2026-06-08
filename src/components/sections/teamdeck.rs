@@ -2,7 +2,12 @@ use crate::components::cards::teamcard::{TeamCard, TeamCardProperties};
 use crate::components::ui::cornerframe::CornerFrame;
 use crate::components::ui::datagrid::data_grid;
 use crate::github::{Member, fetch_members};
+use crate::utils::SendWrapper;
+use js_sys::Function;
 use leptos::prelude::*;
+use leptos::wasm_bindgen::JsCast;
+use leptos::wasm_bindgen::closure::Closure;
+use leptos::web_sys;
 
 #[component]
 pub fn TeamDeckSection() -> impl IntoView {
@@ -26,6 +31,30 @@ pub fn TeamDeckSection() -> impl IntoView {
         }
     };
 
+    // Document-level keyboard shortcut so Space/Enter always rotate the deck
+    Effect::new(move |_| {
+        let closure = SendWrapper(Closure::wrap(Box::new(move |ev: web_sys::KeyboardEvent| {
+            if ev.key() == "Enter" || ev.key() == " " {
+                ev.prevent_default();
+                rotate();
+            }
+        }) as Box<dyn FnMut(_)>));
+
+        let fn_ref: Function = closure.0.as_ref().unchecked_ref::<Function>().clone();
+        web_sys::window()
+            .unwrap()
+            .add_event_listener_with_callback("keydown", &fn_ref)
+            .unwrap();
+
+        on_cleanup(move || {
+            web_sys::window()
+                .unwrap()
+                .remove_event_listener_with_callback("keydown", &fn_ref)
+                .unwrap();
+            drop(closure);
+        });
+    });
+
     view! {
         <section id="team" class="relative py-24 sm:py-32">
             <div class="team-deck-bg" />
@@ -34,16 +63,9 @@ pub fn TeamDeckSection() -> impl IntoView {
                     // Click zone at the right edge - triggers rotation
                     <div
                         class="deck-hover-zone"
-                        tabindex="0"
                         role="button"
                         aria-label="Rotate team deck"
                         on:click=move |_| rotate()
-                        on:keydown=move |ev| {
-                            if ev.key() == "Enter" || ev.key() == " " {
-                                ev.prevent_default();
-                                rotate();
-                            }
-                        }
                     />
                     <ul class="team-deck">
                         {data_grid(
@@ -59,12 +81,22 @@ pub fn TeamDeckSection() -> impl IntoView {
                                     .enumerate()
                                     .map(|(idx, member)| {
                                         let card_idx = idx + 1;
+                                        let login = member.login.clone();
                                         view! {
                                             <li
                                                 class="team-deck-card"
+                                                tabindex="0"
+                                                role="button"
+                                                aria-label=format!("{} - rotate deck", login)
                                                 data-deck-pos=move || {
                                                     let total = count.get();
                                                     (card_idx + rotation.get()) % total
+                                                }
+                                                on:keydown=move |ev| {
+                                                    if ev.key() == "Enter" || ev.key() == " " {
+                                                        ev.prevent_default();
+                                                        rotate();
+                                                    }
                                                 }
                                             >
                                                 <TeamCard props=TeamCardProperties {
