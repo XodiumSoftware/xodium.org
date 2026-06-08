@@ -9,10 +9,14 @@ const FOOTER_LINKS: &[(&str, &str)] = &[
 const GIT_SHA: &str = env!("GIT_SHA");
 const GITHUB_REPO_URL: &str = "https://github.com/XodiumSoftware/xodium.org/commit";
 
+fn clean_sha() -> &'static str {
+    GIT_SHA.strip_suffix("-dirty").unwrap_or(GIT_SHA)
+}
+
 #[component]
 pub fn Footer() -> impl IntoView {
     let current_year = js_sys::Date::new_0().get_full_year();
-    let commit_url = format!("{}/{}", GITHUB_REPO_URL, GIT_SHA);
+    let commit_url = format!("{}/{}", GITHUB_REPO_URL, clean_sha());
 
     view! {
         <footer class="text-base-content px-6 lg:px-8 py-4">
