@@ -1,3 +1,4 @@
+use crate::components::cards::teamcard::{TeamCard, TeamCardProperties};
 use crate::components::ui::cornerframe::CornerFrame;
 use crate::components::ui::datagrid::data_grid;
 use crate::github::{Member, fetch_members};
@@ -66,36 +67,12 @@ pub fn TeamDeckSection() -> impl IntoView {
                                                     (card_idx + rotation.get()) % total
                                                 }
                                             >
-                                                <a
-                                                    href=member.html_url
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    class="group flex flex-col items-center justify-center h-full w-full bg-ghost hover:border-primary hover:text-primary border-2 border-base-content/80 p-2"
-                                                >
-                                                    <CornerFrame
-                                                        style="square"
-                                                        class="h-full w-full flex flex-col items-center justify-center"
-                                                    >
-                                                        <div class="avatar mb-4">
-                                                            <div class="w-20 rounded-full ring-2 ring-primary ring-offset-2 ring-offset-base-100">
-                                                                <img
-                                                                    src=member.avatar_url
-                                                                    alt=member.login.clone()
-                                                                    loading="lazy"
-                                                                    decoding="async"
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                        <span class="font-bold text-lg">
-                                                            {member.login}
-                                                        </span>
-                                                        {member.role.clone().map(|role| view! {
-                                                            <span class="text-sm text-base-content/60 mt-1">
-                                                                {role}
-                                                            </span>
-                                                        })}
-                                                    </CornerFrame>
-                                                </a>
+                                                <TeamCard props=TeamCardProperties {
+                                                    login: member.login,
+                                                    html_url: member.html_url,
+                                                    avatar_url: member.avatar_url,
+                                                    role: member.role,
+                                                } />
                                             </li>
                                         }
                                     })
