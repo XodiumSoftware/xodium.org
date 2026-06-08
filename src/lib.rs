@@ -4,6 +4,7 @@ mod app;
 pub mod components;
 
 pub mod github;
+pub mod utils;
 
 // Re-export commonly used items
 pub use app::*;

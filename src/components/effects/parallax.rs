@@ -1,13 +1,9 @@
+use crate::utils::SendWrapper;
 use js_sys::Function;
 use leptos::prelude::*;
 use leptos::wasm_bindgen::JsCast;
 use leptos::wasm_bindgen::closure::Closure;
 use leptos::web_sys;
-
-/// SAFETY: WASM is single-threaded, so Send/Sync are trivially satisfied.
-struct SendWrapper<T>(T);
-unsafe impl<T> Send for SendWrapper<T> {}
-unsafe impl<T> Sync for SendWrapper<T> {}
 
 /// Parallax container that manages scroll-based layer movement
 #[component]
