@@ -63,14 +63,13 @@ pub fn Header() -> impl IntoView {
 
         let closure = SendWrapper(Closure::wrap(Box::new(move |entries: js_sys::Array| {
             for entry in entries.iter() {
-                if let Ok(entry) = entry.dyn_into::<web_sys::IntersectionObserverEntry>() {
-                    if entry.is_intersecting() {
-                        if let Some(target) = entry.target().dyn_ref::<web_sys::Element>() {
-                            let id = target.id();
-                            if !id.is_empty() {
-                                set_active_section.set(id);
-                            }
-                        }
+                if let Ok(entry) = entry.dyn_into::<web_sys::IntersectionObserverEntry>()
+                    && entry.is_intersecting()
+                    && let Some(target) = entry.target().dyn_ref::<web_sys::Element>()
+                {
+                    let id = target.id();
+                    if !id.is_empty() {
+                        set_active_section.set(id);
                     }
                 }
             }
