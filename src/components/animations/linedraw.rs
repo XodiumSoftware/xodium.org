@@ -112,3 +112,42 @@ pub fn LineDrawSimple(#[prop(default = "")] class: &'static str) -> impl IntoVie
         </div>
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use leptos::mount::mount_to_body;
+    use wasm_bindgen_test::*;
+
+    wasm_bindgen_test_configure!(run_in_browser);
+
+    #[wasm_bindgen_test]
+    fn test_line_draw_mounts() {
+        mount_to_body(|| view! { <LineDraw class="test-line" /> });
+        let document = web_sys::window().unwrap().document().unwrap();
+        assert!(
+            document.query_selector("svg").unwrap().is_some(),
+            "LineDraw should render an SVG"
+        );
+    }
+
+    #[wasm_bindgen_test]
+    fn test_line_draw_hero_mounts() {
+        mount_to_body(LineDrawHero);
+        let document = web_sys::window().unwrap().document().unwrap();
+        assert!(
+            document.query_selector("svg").unwrap().is_some(),
+            "LineDrawHero should render an SVG"
+        );
+    }
+
+    #[wasm_bindgen_test]
+    fn test_line_draw_simple_mounts() {
+        mount_to_body(|| view! { <LineDrawSimple class="test-simple" /> });
+        let document = web_sys::window().unwrap().document().unwrap();
+        assert!(
+            document.query_selector("svg").unwrap().is_some(),
+            "LineDrawSimple should render an SVG"
+        );
+    }
+}

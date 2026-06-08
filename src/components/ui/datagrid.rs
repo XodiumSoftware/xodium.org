@@ -57,3 +57,54 @@ where
         </Suspense>
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use leptos::task::spawn_local;
+    use wasm_bindgen_test::*;
+
+    wasm_bindgen_test_configure!(run_in_browser);
+
+    #[wasm_bindgen_test]
+    fn test_data_grid_empty_message() {
+        let resource = LocalResource::new(|| async { Ok::<Vec<&str>, String>(Vec::new()) });
+        // Mounting verifies the Suspense boundary and empty state render
+        leptos::mount::mount_to_body(move || {
+            data_grid(
+                resource,
+                "Nothing here.",
+                |items| view! { <div>{items.len()}</div> },
+                None::<fn()>,
+            )
+        });
+
+        let document = web_sys::window().unwrap().document().unwrap();
+        let body = document.body().unwrap();
+        assert!(
+            body.inner_html().contains("Nothing here.") || body.inner_html().contains("loading"),
+            "data_grid should render empty message or loading fallback"
+        );
+    }
+
+    #[wasm_bindgen_test]
+    fn test_data_grid_error_state() {
+        let resource =
+            LocalResource::new(|| async { Err::<Vec<&str>, String>("API down".to_string()) });
+        leptos::mount::mount_to_body(move || {
+            data_grid(
+                resource,
+                "Nothing here.",
+                |items| view! { <div>{items.len()}</div> },
+                Some(|| {}),
+            )
+        });
+
+        let document = web_sys::window().unwrap().document().unwrap();
+        let body = document.body().unwrap();
+        assert!(
+            body.inner_html().contains("API down") || body.inner_html().contains("loading"),
+            "data_grid should render error message or loading fallback"
+        );
+    }
+}

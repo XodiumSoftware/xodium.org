@@ -90,3 +90,41 @@ pub fn ParallaxLanding() -> impl IntoView {
         </div>
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use leptos::mount::mount_to_body;
+    use wasm_bindgen_test::*;
+
+    wasm_bindgen_test_configure!(run_in_browser);
+
+    #[wasm_bindgen_test]
+    fn test_parallax_landing_mounts() {
+        mount_to_body(ParallaxLanding);
+        let document = web_sys::window().unwrap().document().unwrap();
+        assert!(
+            document
+                .query_selector(".will-change-transform")
+                .unwrap()
+                .is_some(),
+            "ParallaxLanding should render transform layers"
+        );
+    }
+
+    #[wasm_bindgen_test]
+    fn test_parallax_container_mounts() {
+        mount_to_body(|| {
+            view! {
+                <ParallaxContainer>
+                    <div id="parallax-child">"child"</div>
+                </ParallaxContainer>
+            }
+        });
+        let document = web_sys::window().unwrap().document().unwrap();
+        assert!(
+            document.get_element_by_id("parallax-child").is_some(),
+            "ParallaxContainer should render children"
+        );
+    }
+}
