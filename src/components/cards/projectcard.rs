@@ -32,9 +32,13 @@ pub struct ProjectCardProperties {
 
 impl From<Repo> for ProjectCardProperties {
     fn from(repo: Repo) -> Self {
+        let description = repo
+            .description
+            .filter(|d| !d.trim().is_empty())
+            .unwrap_or_else(|| "(No description)".to_string());
         Self {
             title: repo.name,
-            description: repo.description.unwrap_or_default(),
+            description,
             link: Some(repo.html_url),
             language: repo.language,
             stargazers_count: repo.stargazers_count,
