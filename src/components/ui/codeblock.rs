@@ -1,5 +1,6 @@
 use leptos::prelude::*;
 use leptos::task::spawn_local;
+use leptos::web_sys;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
@@ -32,6 +33,13 @@ pub fn CodeBlock() -> impl IntoView {
     let (show_buttons, set_show_buttons) = signal(false);
     let cancelled = Arc::new(AtomicBool::new(false));
 
+    // Synchronous check for prefers-reduced-motion before spawning effects
+    let prefers_reduced_motion = web_sys::window()
+        .and_then(|w| w.match_media("(prefers-reduced-motion: reduce)").ok())
+        .flatten()
+        .map(|mql| mql.matches())
+        .unwrap_or(false);
+
     // Cursor blink + typewriter effects share one cancellation flag
     Effect::new(move |_| {
         let c_blink_cleanup = Arc::clone(&cancelled);
@@ -44,8 +52,12 @@ pub fn CodeBlock() -> impl IntoView {
             c_type_cleanup.store(true, Ordering::Relaxed);
         });
 
-        // Cursor blink loop
+        // Cursor blink loop (skipped if reduced motion preferred)
         spawn_local(async move {
+            if prefers_reduced_motion {
+                set_cursor_visible.set(false);
+                return;
+            }
             loop {
                 gloo_timers::future::sleep(Duration::from_millis(530)).await;
                 if c_blink_task.load(Ordering::Relaxed) {
@@ -57,6 +69,14 @@ pub fn CodeBlock() -> impl IntoView {
 
         // Show ASCII art first, then type out lines
         spawn_local(async move {
+            if prefers_reduced_motion {
+                // Instant display — no delays, no typing animation
+                set_show_ascii.set(true);
+                set_lines.set(COMPANY_VALUES.iter().map(|s| s.to_string()).collect());
+                set_current_line.set(COMPANY_VALUES.len());
+                set_show_buttons.set(true);
+                return;
+            }
             // Initial delay
             gloo_timers::future::sleep(Duration::from_millis(500)).await;
             if c_type_task.load(Ordering::Relaxed) {
