@@ -105,9 +105,17 @@ All GitHub data fetching is centralized here.
 
 - `fetch<T>(endpoint)` — cache-then-network. Checks `localStorage` first (key `xodium:{endpoint}`, TTL 5 min via `{key}:ts` entry). Retries up to 3 times with exponential backoff on 5xx errors.
 
+### Shared Utilities (`src/utils.rs`)
+
+| Item | Role |
+|------|------|
+| `SendWrapper<T>` | Wraps `wasm_bindgen::closure::Closure` for use with APIs requiring `Send + Sync` (e.g. Leptos `on_cleanup`). Sound because WASM is single-threaded. |
+
 ### Props Convention
 
-Component properties are plain `#[derive(Clone)]` structs named `{Component}Properties` (e.g., `ProjectCardProperties`, `TeamCardProperties`). They are passed as a single `props` parameter.
+- `ProjectCardProperties` implements `From<Repo>` so `ProjectGrid` can map repos with `.into()` instead of a verbose manual struct literal.
+
+Component properties are plain `#[derive(Clone)]` structs named `{Component}Properties` (e.g. `ProjectCardProperties`, `TeamCardProperties`). They are passed as a single `props` parameter.
 
 ### Static Assets
 
