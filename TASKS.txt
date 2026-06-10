@@ -14,7 +14,7 @@
 
 ## Architecture & DX
 [x] 9. Replace defensive `web_sys` `.unwrap()` calls with `if let` fallbacks.
-[ ] 10. Wire `wasm-pack test --headless` into GitHub Actions CI.
+[x] 10. Wire `wasm-pack test --headless` into GitHub Actions CI.
 [ ] 11. Add WASM size budget check in CI (e.g., fail if > 500 KB).
 [ ] 12. Evaluate `leptos_i18n` scaffolding for future internationalization.
 [ ] 13. Add a minimal service worker for offline asset caching.
