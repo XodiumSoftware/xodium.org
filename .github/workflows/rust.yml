@@ -17,8 +17,6 @@ concurrency:
 
 env:
   CARGO_TERM_COLOR: always
-  SCCACHE_GHA_ENABLED: "true"
-  RUSTC_WRAPPER: "sccache"
 
 jobs:
   lint:
@@ -26,6 +24,9 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: "${{ github.ref_name }}"
+    env:
+      SCCACHE_GHA_ENABLED: "true"
+      RUSTC_WRAPPER: "sccache"
     steps:
       - id: checkout
         name: Checkout
@@ -127,6 +128,9 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: "${{ github.ref_name }}"
+    env:
+      SCCACHE_GHA_ENABLED: "true"
+      RUSTC_WRAPPER: "sccache"
     steps:
       - id: checkout
         name: Checkout
