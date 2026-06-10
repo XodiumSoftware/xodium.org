@@ -50,7 +50,7 @@
 
         <!-- Content Security Policy -->
         <meta
-            content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://api.github.com; img-src 'self' https: data:; font-src 'self';"
+            content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; connect-src 'self' https://api.github.com https://cloudflareinsights.com; img-src 'self' https: data:; font-src 'self';"
             http-equiv="Content-Security-Policy"
         />
 
@@ -74,5 +74,12 @@
         <link data-trunk href="public/icons" rel="copy-dir" />
         <title>Xodium</title>
     </head>
-    <body class="bg-base-100 font-mono"></body>
+    <body class="bg-base-100 font-mono">
+        <!-- Cloudflare Web Analytics — privacy-first, no cookies, no personal data collected -->
+        <script
+            defer
+            src="https://static.cloudflareinsights.com/beacon.min.js"
+            data-cf-beacon='{"token": "REPLACE_WITH_CF_ANALYTICS_TOKEN"}'
+        ></script>
+    </body>
 </html>

@@ -9,7 +9,7 @@
 ## High Impact / Medium Effort
 [ ] 6. Insert an About/Mission section between hero and projects.
 [x] 7. Scope `Enter`/`Space` keyboard listeners to the team deck container.
-[ ] 8. Add lightweight privacy-first analytics (Cloudflare / Plausible).
+[x] 8. Add lightweight privacy-first analytics (Cloudflare / Plausible).
 
 ## Architecture & DX
 [x] 9. Replace defensive `web_sys` `.unwrap()` calls with `if let` fallbacks.
