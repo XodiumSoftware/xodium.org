@@ -12,18 +12,20 @@ pub fn ParallaxLanding() -> impl IntoView {
 
     // Set up scroll listener
     Effect::new(move |_| {
-        let window = web_sys::window().unwrap();
+        let Some(window) = web_sys::window() else {
+            return;
+        };
 
         let closure = SendWrapper(Closure::wrap(Box::new(move |_ev: web_sys::Event| {
-            if let Ok(scroll) = web_sys::window().unwrap().scroll_y() {
-                set_scroll_y.set(scroll);
+            if let Some(w) = web_sys::window() {
+                if let Ok(scroll) = w.scroll_y() {
+                    set_scroll_y.set(scroll);
+                }
             }
         }) as Box<dyn FnMut(_)>));
 
         let fn_ref: Function = closure.0.as_ref().unchecked_ref::<Function>().clone();
-        window
-            .add_event_listener_with_callback("scroll", &fn_ref)
-            .unwrap();
+        let _ = window.add_event_listener_with_callback("scroll", &fn_ref);
 
         // Initial call
         if let Ok(scroll) = window.scroll_y() {
@@ -31,10 +33,9 @@ pub fn ParallaxLanding() -> impl IntoView {
         }
 
         on_cleanup(move || {
-            web_sys::window()
-                .unwrap()
-                .remove_event_listener_with_callback("scroll", &fn_ref)
-                .unwrap();
+            if let Some(window) = web_sys::window() {
+                let _ = window.remove_event_listener_with_callback("scroll", &fn_ref);
+            }
             drop(closure);
         });
     });

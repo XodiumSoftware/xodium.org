@@ -58,8 +58,12 @@ pub fn Header() -> impl IntoView {
 
     // IntersectionObserver to track which section is in view
     Effect::new(move |_| {
-        let window = web_sys::window().unwrap();
-        let document = window.document().unwrap();
+        let Some(window) = web_sys::window() else {
+            return;
+        };
+        let Some(document) = window.document() else {
+            return;
+        };
 
         let closure = SendWrapper(Closure::wrap(Box::new(move |entries: js_sys::Array| {
             for entry in entries.iter() {
@@ -78,11 +82,12 @@ pub fn Header() -> impl IntoView {
         let options = web_sys::IntersectionObserverInit::new();
         options.set_threshold(&js_sys::Array::of1(&js_sys::Number::from(0.5)));
 
-        let observer = web_sys::IntersectionObserver::new_with_options(
+        let Ok(observer) = web_sys::IntersectionObserver::new_with_options(
             closure.0.as_ref().unchecked_ref(),
             &options,
-        )
-        .unwrap();
+        ) else {
+            return;
+        };
 
         if let Some(el) = document.get_element_by_id("projects") {
             observer.observe(&el);

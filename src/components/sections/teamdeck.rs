@@ -41,16 +41,14 @@ pub fn TeamDeckSection() -> impl IntoView {
         }) as Box<dyn FnMut(_)>));
 
         let fn_ref: Function = closure.0.as_ref().unchecked_ref::<Function>().clone();
-        web_sys::window()
-            .unwrap()
-            .add_event_listener_with_callback("keydown", &fn_ref)
-            .unwrap();
+        if let Some(window) = web_sys::window() {
+            let _ = window.add_event_listener_with_callback("keydown", &fn_ref);
+        }
 
         on_cleanup(move || {
-            web_sys::window()
-                .unwrap()
-                .remove_event_listener_with_callback("keydown", &fn_ref)
-                .unwrap();
+            if let Some(window) = web_sys::window() {
+                let _ = window.remove_event_listener_with_callback("keydown", &fn_ref);
+            }
             drop(closure);
         });
     });
