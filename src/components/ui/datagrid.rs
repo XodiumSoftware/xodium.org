@@ -67,18 +67,32 @@ mod tests {
 
     wasm_bindgen_test_configure!(run_in_browser);
 
+    #[component]
+    fn TestEmptyGrid() -> impl IntoView {
+        let resource = LocalResource::new(|| async { Ok::<Vec<&str>, String>(Vec::new()) });
+        data_grid(
+            resource,
+            || "Nothing here.",
+            |items| view! { <div>{items.len()}</div> },
+            None::<fn()>,
+        )
+    }
+
+    #[component]
+    fn TestErrorGrid() -> impl IntoView {
+        let resource =
+            LocalResource::new(|| async { Err::<Vec<&str>, String>("API down".to_string()) });
+        data_grid(
+            resource,
+            || "Nothing here.",
+            |items| view! { <div>{items.len()}</div> },
+            Some(|| {}),
+        )
+    }
+
     #[wasm_bindgen_test]
     fn test_data_grid_empty_message() {
-        let resource = LocalResource::new(|| async { Ok::<Vec<&str>, String>(Vec::new()) });
-        // Mounting verifies the Suspense boundary and empty state render
-        leptos::mount::mount_to_body(move || {
-            data_grid(
-                resource,
-                || "Nothing here.",
-                |items| view! { <div>{items.len()}</div> },
-                None::<fn()>,
-            )
-        });
+        leptos::mount::mount_to_body(TestEmptyGrid);
 
         let document = web_sys::window().unwrap().document().unwrap();
         let body = document.body().unwrap();
@@ -90,16 +104,7 @@ mod tests {
 
     #[wasm_bindgen_test]
     fn test_data_grid_error_state() {
-        let resource =
-            LocalResource::new(|| async { Err::<Vec<&str>, String>("API down".to_string()) });
-        leptos::mount::mount_to_body(move || {
-            data_grid(
-                resource,
-                || "Nothing here.",
-                |items| view! { <div>{items.len()}</div> },
-                Some(|| {}),
-            )
-        });
+        leptos::mount::mount_to_body(TestErrorGrid);
 
         let document = web_sys::window().unwrap().document().unwrap();
         let body = document.body().unwrap();
