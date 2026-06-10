@@ -24,6 +24,8 @@ pub fn TeamCard(props: TeamCardProperties) -> impl IntoView {
                         <img
                             src=props.avatar_url
                             alt=props.login.clone()
+                            width="80"
+                            height="80"
                             loading="lazy"
                             decoding="async"
                         />

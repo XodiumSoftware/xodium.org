@@ -17,10 +17,10 @@ pub fn ParallaxLanding() -> impl IntoView {
         };
 
         let closure = SendWrapper(Closure::wrap(Box::new(move |_ev: web_sys::Event| {
-            if let Some(w) = web_sys::window() {
-                if let Ok(scroll) = w.scroll_y() {
-                    set_scroll_y.set(scroll);
-                }
+            if let Some(w) = web_sys::window()
+                && let Ok(scroll) = w.scroll_y()
+            {
+                set_scroll_y.set(scroll);
             }
         }) as Box<dyn FnMut(_)>));
 
