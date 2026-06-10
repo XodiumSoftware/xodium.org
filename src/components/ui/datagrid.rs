@@ -63,6 +63,8 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
+    use gloo_timers::future::sleep;
+    use std::time::Duration;
     use wasm_bindgen_test::*;
 
     wasm_bindgen_test_configure!(run_in_browser);
@@ -91,8 +93,9 @@ mod tests {
     }
 
     #[wasm_bindgen_test]
-    fn test_data_grid_empty_message() {
+    async fn test_data_grid_empty_message() {
         leptos::mount::mount_to_body(TestEmptyGrid);
+        sleep(Duration::from_millis(100)).await;
 
         let document = web_sys::window().unwrap().document().unwrap();
         let body = document.body().unwrap();
@@ -103,8 +106,9 @@ mod tests {
     }
 
     #[wasm_bindgen_test]
-    fn test_data_grid_error_state() {
+    async fn test_data_grid_error_state() {
         leptos::mount::mount_to_body(TestErrorGrid);
+        sleep(Duration::from_millis(100)).await;
 
         let document = web_sys::window().unwrap().document().unwrap();
         let body = document.body().unwrap();
