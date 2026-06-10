@@ -345,6 +345,14 @@ html {
     }
 }
 
+/* Mobile: finite shake so the animation stops after ~1.5s instead of looping forever */
+@media (hover: none) {
+    .logo-container:hover .logo-piece,
+    .logo-container:active .logo-piece {
+        animation: logo-shake 0.25s ease-in-out 6;
+    }
+}
+
 /* New Team Deck System with step rotation */
 .team-deck-wrapper {
     perspective: 1200px;

@@ -5,7 +5,7 @@
 [ ] 2. Bake GitHub repos/members JSON at build time; load instantly, refresh silently.
 [ ] 3. Self-host `og:image` instead of pointing to Gist.
 [ ] 4. Fix CLS by adding explicit `width`/`height` to avatar images.
-[ ] 5. Fix logo hover animation so it stops on mobile after a brief timer.
+[x] 5. Fix logo hover animation so it stops on mobile after a brief timer.
 
 ## High Impact / Medium Effort
 [ ] 6. Insert an About/Mission section between hero and projects.
