@@ -5,13 +5,35 @@ use leptos::wasm_bindgen::JsCast;
 use leptos::wasm_bindgen::closure::Closure;
 use leptos::web_sys;
 
-/// Parallax background for the landing section
+/// Parallax background for the landing section.
+/// Respects `prefers-reduced-motion` by disabling all layer transforms.
 #[component]
 pub fn ParallaxLanding() -> impl IntoView {
     let (scroll_y, set_scroll_y) = signal(0.0);
+    let (reduced_motion, set_reduced_motion) = signal(false);
 
-    // Set up scroll listener
+    // Detect prefers-reduced-motion at mount
     Effect::new(move |_| {
+        let Some(window) = web_sys::window() else {
+            return;
+        };
+
+        let prefers_reduced = window
+            .match_media("(prefers-reduced-motion: reduce)")
+            .ok()
+            .flatten()
+            .map(|m| m.matches())
+            .unwrap_or(false);
+
+        set_reduced_motion.set(prefers_reduced);
+    });
+
+    // Set up scroll listener only when motion is not reduced
+    Effect::new(move |_| {
+        if reduced_motion.get() {
+            return;
+        }
+
         let Some(window) = web_sys::window() else {
             return;
         };
@@ -40,10 +62,28 @@ pub fn ParallaxLanding() -> impl IntoView {
         });
     });
 
-    // Different layers move at different speeds
-    let layer1_transform = move || format!("translateY({}px)", scroll_y.get() * 0.1);
-    let layer2_transform = move || format!("translateY({}px)", scroll_y.get() * 0.3);
-    let layer3_transform = move || format!("translateY({}px)", scroll_y.get() * 0.5);
+    // Different layers move at different speeds — disabled when reduced motion is preferred
+    let layer1_transform = move || {
+        if reduced_motion.get() {
+            String::new()
+        } else {
+            format!("translateY({}px)", scroll_y.get() * 0.1)
+        }
+    };
+    let layer2_transform = move || {
+        if reduced_motion.get() {
+            String::new()
+        } else {
+            format!("translateY({}px)", scroll_y.get() * 0.3)
+        }
+    };
+    let layer3_transform = move || {
+        if reduced_motion.get() {
+            String::new()
+        } else {
+            format!("translateY({}px)", scroll_y.get() * 0.5)
+        }
+    };
 
     view! {
         <div class="absolute inset-0 pointer-events-none overflow-hidden">

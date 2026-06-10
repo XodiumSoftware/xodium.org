@@ -1,8 +1,7 @@
 # Improvement Backlog
 
 ## High Impact / Low Effort
-[ ] 1. Add `prefers-reduced-motion` fallback for parallax, wireframes, and team deck.
-[ ] 2. Bake GitHub repos/members JSON at build time; load instantly, refresh silently.
+[x] 1. Add `prefers-reduced-motion` fallback for parallax, wireframes, and team deck.
 [ ] 3. Self-host `og:image` instead of pointing to Gist.
 [x] 4. Fix CLS by adding explicit `width`/`height` to avatar images.
 [x] 5. Fix logo hover animation so it stops on mobile after a brief timer.

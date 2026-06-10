@@ -284,7 +284,10 @@ html {
     .team-deck,
     .team-deck-card {
         animation: none !important;
-        transform: none !important;
+    }
+
+    .team-deck-card {
+        transition: none !important;
     }
 }
 
