@@ -1,6 +1,8 @@
 use crate::components::ui::cornerframe::CornerFrame;
 use crate::github::Repo;
+use crate::i18n::*;
 use leptos::prelude::*;
+use leptos_i18n::t_string;
 
 fn language_color(language: &str) -> &'static str {
     match language {
@@ -95,6 +97,7 @@ fn DocsIcon() -> impl IntoView {
 
 #[component]
 pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
+    let i18n = use_i18n();
     let link = props.link.clone().unwrap_or_else(|| "#".to_string());
     let stargazers_url = format!("{}/stargazers", link);
     let language_opt = props.language.clone();
@@ -116,7 +119,7 @@ pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
                         <h2 class="card-title text-primary">
                                 <img
                                     src="/icons/github-repo.svg"
-                                    alt="GitHub Repository"
+                                    alt=move || t_string!(i18n, projects.card.repo_alt)
                                     class="w-5 h-5 text-base-content/60 invert"
                                 />
                                 {props.title}
@@ -164,7 +167,7 @@ pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
                                         title="Documentation"
                                     >
                                         <DocsIcon />
-                                        <span>"Docs"</span>
+                                        <span>{t!(i18n, projects.card.docs)}</span>
                                     </a>
                                 })}
                                 {if stars > 0 {

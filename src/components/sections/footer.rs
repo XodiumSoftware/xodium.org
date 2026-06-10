@@ -1,3 +1,4 @@
+use crate::i18n::*;
 use leptos::prelude::*;
 
 const FOOTER_LINKS: &[(&str, &str)] = &[
@@ -15,6 +16,7 @@ fn clean_sha() -> &'static str {
 
 #[component]
 pub fn Footer() -> impl IntoView {
+    let i18n = use_i18n();
     let current_year = js_sys::Date::new_0().get_full_year();
     let commit_url = format!("{}/{}", GITHUB_REPO_URL, clean_sha());
 
@@ -26,9 +28,9 @@ pub fn Footer() -> impl IntoView {
                         <p class="font-bold whitespace-nowrap max-md:text-[clamp(0.5rem,3.1cqw,1rem)]">
                             {format!("© {} ", current_year)}
                             <a href="/" class="link link-hover link-primary">
-                                "XODIUM™"
+                                {t!(i18n, footer.company_name)}
                             </a>
-                            ". Open-Source (CAD) Software Company."
+                            {t!(i18n, footer.tagline)}
                         </p>
                         <a
                             href={commit_url}

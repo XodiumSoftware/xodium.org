@@ -1,17 +1,20 @@
 use crate::components::*;
+use crate::i18n::*;
 use leptos::prelude::*;
 
 #[component]
 pub fn App() -> impl IntoView {
+    let i18n = use_i18n();
     view! {
-        <div>
-            <a
-                href="#main-content"
-                class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-content focus:rounded"
-            >
-                "Skip to main content"
-            </a>
-            <Header />
+        <I18nContextProvider>
+            <div>
+                <a
+                    href="#main-content"
+                    class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-content focus:rounded"
+                >
+                    {t!(i18n, skip_to_content)}
+                </a>
+                <Header />
 
             <main id="main-content">
             // Landing section
@@ -52,7 +55,7 @@ pub fn App() -> impl IntoView {
                         <div class="flex-shrink-0 flex items-center bg-[#d0d0d0] p-2 relative">
                             <CornerFrame style="square" black=true class="h-full w-full flex items-center justify-center">
                                 <h2 class="text-3xl font-bold tracking-tight text-transparent bg-base-100 bg-clip-text sm:text-4xl [writing-mode:vertical-rl] rotate-180 whitespace-nowrap">
-                                    "PROJECTS"
+                                    {t!(i18n, projects.title)}
                                 </h2>
                             </CornerFrame>
                         </div>
@@ -72,6 +75,7 @@ pub fn App() -> impl IntoView {
 
             <Footer />
         </div>
+        </I18nContextProvider>
     }
 }
 

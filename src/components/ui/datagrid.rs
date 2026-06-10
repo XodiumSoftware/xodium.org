@@ -1,8 +1,8 @@
 use leptos::prelude::*;
 
-pub fn data_grid<T, IV, F, R>(
+pub fn data_grid<T, IV, F, R, E, EV>(
     resource: LocalResource<Result<Vec<T>, String>>,
-    empty_message: &'static str,
+    empty_message: E,
     render: F,
     on_retry: Option<R>,
 ) -> impl IntoView
@@ -11,6 +11,8 @@ where
     IV: IntoView + 'static,
     F: Fn(Vec<T>) -> IV + Copy + Send + Sync + 'static,
     R: Fn() + Clone + Send + Sync + 'static,
+    E: Fn() -> EV + Clone + Send + Sync + 'static,
+    EV: IntoView + 'static,
 {
     view! {
         <Suspense fallback=move || {
@@ -45,7 +47,7 @@ where
                     if data.is_empty() {
                         view! {
                             <div class="flex items-center justify-center text-center">
-                                <span class="text-base-content/70">{empty_message}</span>
+                                <span class="text-base-content/70">{empty_message()}</span>
                             </div>
                         }
                             .into_any()
@@ -72,7 +74,7 @@ mod tests {
         leptos::mount::mount_to_body(move || {
             data_grid(
                 resource,
-                "Nothing here.",
+                || "Nothing here.",
                 |items| view! { <div>{items.len()}</div> },
                 None::<fn()>,
             )
@@ -93,7 +95,7 @@ mod tests {
         leptos::mount::mount_to_body(move || {
             data_grid(
                 resource,
-                "Nothing here.",
+                || "Nothing here.",
                 |items| view! { <div>{items.len()}</div> },
                 Some(|| {}),
             )

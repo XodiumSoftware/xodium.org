@@ -1,3 +1,4 @@
+use crate::i18n::*;
 use crate::utils::SendWrapper;
 use js_sys::Function;
 use leptos::prelude::*;
@@ -32,6 +33,7 @@ const SOCIAL_LINKS: &[SocialLink] = &[
 
 #[component]
 pub fn Header() -> impl IntoView {
+    let i18n = use_i18n();
     let (is_scrolled, set_is_scrolled) = signal(false);
     let (active_section, set_active_section) = signal(String::new());
 
@@ -160,14 +162,14 @@ pub fn Header() -> impl IntoView {
                         class="hover:text-primary text-sm font-semibold lift"
                         aria-current=move || if is_active("projects") { Some("true") } else { None }
                     >
-                        "PROJECTS"
+                        {t!(i18n, nav.projects)}
                     </a>
                     <a
                         href="#team"
                         class="hover:text-primary text-sm font-semibold lift"
                         aria-current=move || if is_active("team") { Some("true") } else { None }
                     >
-                        "TEAM"
+                        {t!(i18n, nav.team)}
                     </a>
                 </div>
                 // Right side

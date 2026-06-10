@@ -17,3 +17,4 @@
 [x] 11. Add WASM size budget check in CI (e.g., fail if > 500 KB).
 [x] 12. Evaluate `leptos_i18n` scaffolding for future internationalization.
     → See `docs/12_i18n_evaluation.md` for full findings.
+[x] 12.b Implement `leptos_i18n` i18n scaffolding.

@@ -1,6 +1,8 @@
+use crate::i18n::*;
 use leptos::prelude::*;
 use leptos::task::spawn_local;
 use leptos::web_sys;
+use leptos_i18n::tu_string;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
@@ -17,15 +19,16 @@ const ASCII_ART: &str = r#"
  `--`-'  `--`    `--`--''   `-.`.____.' `--`-` `--`..---'  `--`./  `--`
 "#;
 
-const COMPANY_VALUES: &[&str] = &[
-    "Building open-source tools for developers",
-    "Crafting CAD software with precision",
-    "Empowering creativity through code",
-    "Made with passion",
-];
-
 #[component]
 pub fn CodeBlock() -> impl IntoView {
+    let i18n = use_i18n();
+    let company_values = [
+        tu_string!(i18n, landing.value_1),
+        tu_string!(i18n, landing.value_2),
+        tu_string!(i18n, landing.value_3),
+        tu_string!(i18n, landing.value_4),
+    ];
+
     let (show_ascii, set_show_ascii) = signal(false);
     let (lines, set_lines) = signal(Vec::<String>::new());
     let (current_line, set_current_line) = signal(0usize);
@@ -72,8 +75,8 @@ pub fn CodeBlock() -> impl IntoView {
             if prefers_reduced_motion {
                 // Instant display — no delays, no typing animation
                 set_show_ascii.set(true);
-                set_lines.set(COMPANY_VALUES.iter().map(|s| s.to_string()).collect());
-                set_current_line.set(COMPANY_VALUES.len());
+                set_lines.set(company_values.iter().map(|s| s.to_string()).collect());
+                set_current_line.set(company_values.len());
                 set_show_buttons.set(true);
                 return;
             }
@@ -90,7 +93,7 @@ pub fn CodeBlock() -> impl IntoView {
                 return;
             }
 
-            for (i, &line) in COMPANY_VALUES.iter().enumerate() {
+            for (i, line) in company_values.iter().enumerate() {
                 set_current_line.set(i);
 
                 // Type each character
@@ -138,7 +141,7 @@ pub fn CodeBlock() -> impl IntoView {
                         <div class="w-3 h-3 rounded-full bg-success/80"></div>
                     </div>
                     <div class="flex-1 text-center text-xs text-base-content/50 font-mono">
-                        "xodium.sh"
+                        {t!(i18n, landing.terminal_title)}
                     </div>
                     <div class="w-14"></div>
                 </div>
@@ -185,7 +188,7 @@ pub fn CodeBlock() -> impl IntoView {
                                 }).collect::<Vec<_>>()}
 
                                 // Current empty line being typed
-                                {if all_lines.len() < COMPANY_VALUES.len() && all_lines.len() == current {
+                                {if all_lines.len() < company_values.len() && all_lines.len() == current {
                                     view! {
                                         <div class="text-primary/80 leading-relaxed">
                                             <span class="text-secondary/60 mr-2">"$xodium > "</span>
@@ -218,13 +221,13 @@ pub fn CodeBlock() -> impl IntoView {
                                 href="https://github.com/XodiumSoftware"
                                 class="btn btn-primary hover:btn-warning btn-lift"
                             >
-                                "Get Started"
+                                {t!(i18n, landing.cta_get_started)}
                             </a>
                             <a
                                 href="mailto:info@xodium.org"
                                 class="btn btn-outline btn-outline-ghost btn-hover-warning btn-lift"
                             >
-                                "Join us"
+                                {t!(i18n, landing.cta_join_us)}
                             </a>
                         </div>
                     </div>
