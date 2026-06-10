@@ -9,7 +9,7 @@
 
 ## High Impact / Medium Effort
 [ ] 6. Insert an About/Mission section between hero and projects.
-[ ] 7. Scope `Enter`/`Space` keyboard listeners to the team deck container.
+[x] 7. Scope `Enter`/`Space` keyboard listeners to the team deck container.
 [ ] 8. Add lightweight privacy-first analytics (Cloudflare / Plausible).
 
 ## Architecture & DX
@@ -18,4 +18,3 @@
 [x] 11. Add WASM size budget check in CI (e.g., fail if > 500 KB).
 [x] 12. Evaluate `leptos_i18n` scaffolding for future internationalization.
     → See `docs/12_i18n_evaluation.md` for full findings.
-[ ] 13. Add a minimal service worker for offline asset caching.

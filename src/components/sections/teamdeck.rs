@@ -2,12 +2,7 @@ use crate::components::cards::teamcard::{TeamCard, TeamCardProperties};
 use crate::components::ui::cornerframe::CornerFrame;
 use crate::components::ui::datagrid::data_grid;
 use crate::github::{Member, fetch_members};
-use crate::utils::SendWrapper;
-use js_sys::Function;
 use leptos::prelude::*;
-use leptos::wasm_bindgen::JsCast;
-use leptos::wasm_bindgen::closure::Closure;
-use leptos::web_sys;
 
 #[component]
 pub fn TeamDeckSection() -> impl IntoView {
@@ -31,33 +26,22 @@ pub fn TeamDeckSection() -> impl IntoView {
         }
     };
 
-    // Document-level keyboard shortcut so Space/Enter always rotate the deck
-    Effect::new(move |_| {
-        let closure = SendWrapper(Closure::wrap(Box::new(move |ev: web_sys::KeyboardEvent| {
-            if ev.key() == "Enter" || ev.key() == " " {
-                ev.prevent_default();
-                rotate();
-            }
-        }) as Box<dyn FnMut(_)>));
-
-        let fn_ref: Function = closure.0.as_ref().unchecked_ref::<Function>().clone();
-        if let Some(window) = web_sys::window() {
-            let _ = window.add_event_listener_with_callback("keydown", &fn_ref);
-        }
-
-        on_cleanup(move || {
-            if let Some(window) = web_sys::window() {
-                let _ = window.remove_event_listener_with_callback("keydown", &fn_ref);
-            }
-            drop(closure);
-        });
-    });
-
     view! {
         <section id="team" class="relative py-24 sm:py-32">
             <div class="team-deck-bg" />
             <div class="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
-                <div class="team-deck-wrapper">
+                <div
+                    class="team-deck-wrapper"
+                    tabindex="0"
+                    role="region"
+                    aria-label="Team deck"
+                    on:keydown=move |ev| {
+                        if ev.key() == "Enter" || ev.key() == " " {
+                            ev.prevent_default();
+                            rotate();
+                        }
+                    }
+                >
                     // Click zone at the right edge - triggers rotation
                     <div
                         class="deck-hover-zone"
@@ -90,12 +74,6 @@ pub fn TeamDeckSection() -> impl IntoView {
                                                     let total = count.get();
                                                     (card_idx + rotation.get()) % total
                                                 }
-                                                on:keydown=move |ev| {
-                                                    if ev.key() == "Enter" || ev.key() == " " {
-                                                        ev.prevent_default();
-                                                        rotate();
-                                                    }
-                                                }
                                             >
                                                 <TeamCard props=TeamCardProperties {
                                                     login: member.login,
@@ -121,12 +99,6 @@ pub fn TeamDeckSection() -> impl IntoView {
                                 rotation.get() % total
                             }
                             on:click=move |_| rotate()
-                            on:keydown=move |ev| {
-                                if ev.key() == "Enter" || ev.key() == " " {
-                                    ev.prevent_default();
-                                    rotate();
-                                }
-                            }
                         >
                             <div class="h-full w-full p-2">
                                 <CornerFrame
