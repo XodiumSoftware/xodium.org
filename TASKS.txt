@@ -5,21 +5,16 @@
 [ ] 2. Bake GitHub repos/members JSON at build time; load instantly, refresh silently.
 [ ] 3. Self-host `og:image` instead of pointing to Gist.
 [ ] 4. Fix CLS by adding explicit `width`/`height` to avatar images.
-[ ] 5. Show "Live Demo" badge on `ProjectCard` when `has_pages == true`.
-[ ] 6. Add `sitemap.xml` and `robots.txt` to `public/` for SEO.
-[ ] 7. Add daisyUI theme toggle (persist to `localStorage`).
+[ ] 5. Fix logo hover animation so it stops on mobile after a brief timer.
 
 ## High Impact / Medium Effort
-[ ] 8. Insert an About/Mission section between hero and projects.
-[ ] 9. Add project text filter + sort toggle (stars, last updated).
-[ ] 10. Surface `updated_at` / `license` on `ProjectCard`.
-[ ] 11. Scope `Enter`/`Space` keyboard listeners to the team deck container.
-[ ] 12. Add a scroll-to-top button for mobile.
-[ ] 13. Add lightweight privacy-first analytics (Cloudflare / Plausible).
+[ ] 6. Insert an About/Mission section between hero and projects.
+[ ] 7. Scope `Enter`/`Space` keyboard listeners to the team deck container.
+[ ] 8. Add lightweight privacy-first analytics (Cloudflare / Plausible).
 
 ## Architecture & DX
-[x] 14. Replace defensive `web_sys` `.unwrap()` calls with `if let` fallbacks.
-[ ] 15. Wire `wasm-pack test --headless` into GitHub Actions CI.
-[ ] 16. Add WASM size budget check in CI (e.g., fail if > 500 KB).
-[ ] 17. Evaluate `leptos_i18n` scaffolding for future internationalization.
-[ ] 18. Add a minimal service worker for offline asset caching.
+[x] 9. Replace defensive `web_sys` `.unwrap()` calls with `if let` fallbacks.
+[ ] 10. Wire `wasm-pack test --headless` into GitHub Actions CI.
+[ ] 11. Add WASM size budget check in CI (e.g., fail if > 500 KB).
+[ ] 12. Evaluate `leptos_i18n` scaffolding for future internationalization.
+[ ] 13. Add a minimal service worker for offline asset caching.
