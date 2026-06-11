@@ -49,7 +49,12 @@ pub fn TeamDeckSection() -> impl IntoView {
         let closure = SendWrapper(Closure::wrap(Box::new(move |entries: js_sys::Array| {
             for entry in entries.iter() {
                 if let Ok(entry) = entry.dyn_into::<web_sys::IntersectionObserverEntry>() {
-                    set_is_visible.set(entry.is_intersecting());
+                    if entry.is_intersecting() {
+                        set_is_visible.set(true);
+                    } else {
+                        set_is_visible.set(false);
+                        set_rotation.set(0);
+                    }
                 }
             }
         }) as Box<dyn FnMut(_)>));
