@@ -133,7 +133,9 @@ pub fn Header() -> impl IntoView {
                         }
                         on:click=move |ev: leptos::web_sys::MouseEvent| {
                             ev.prevent_default();
-                            let _ = js_sys::eval("window.scrollTo({top:0,behavior:'smooth'})");
+                            if let Some(window) = web_sys::window() {
+                                window.scroll_to_with_x_and_y(0.0, 0.0);
+                            }
                             if is_logo_active.get() {
                                 return;
                             }
