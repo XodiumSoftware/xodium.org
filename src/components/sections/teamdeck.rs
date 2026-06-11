@@ -3,7 +3,12 @@ use crate::components::ui::cornerframe::CornerFrame;
 use crate::components::ui::datagrid::data_grid;
 use crate::github::{Member, fetch_members};
 use crate::i18n::*;
+use crate::utils::SendWrapper;
+use js_sys::Function;
 use leptos::prelude::*;
+use leptos::wasm_bindgen::JsCast;
+use leptos::wasm_bindgen::closure::Closure;
+use leptos::web_sys;
 
 #[component]
 pub fn TeamDeckSection() -> impl IntoView {
@@ -11,6 +16,7 @@ pub fn TeamDeckSection() -> impl IntoView {
     let (rotation, set_rotation) = signal(0usize);
     let (count, set_count) = signal(8usize);
     let (retry_count, set_retry_count) = signal(0u32);
+    let (is_visible, set_is_visible) = signal(false);
 
     let resource = LocalResource::new(move || {
         let _ = retry_count.get();
@@ -28,6 +34,72 @@ pub fn TeamDeckSection() -> impl IntoView {
         }
     };
 
+    // Track when the team section is visible so keyboard shortcuts work on scroll
+    Effect::new(move |_| {
+        let Some(window) = web_sys::window() else {
+            return;
+        };
+        let Some(document) = window.document() else {
+            return;
+        };
+        let Some(section) = document.get_element_by_id("team") else {
+            return;
+        };
+
+        let closure = SendWrapper(Closure::wrap(Box::new(move |entries: js_sys::Array| {
+            for entry in entries.iter() {
+                if let Ok(entry) = entry.dyn_into::<web_sys::IntersectionObserverEntry>() {
+                    set_is_visible.set(entry.is_intersecting());
+                }
+            }
+        }) as Box<dyn FnMut(_)>));
+
+        let options = web_sys::IntersectionObserverInit::new();
+        options.set_threshold(&js_sys::Array::of1(&js_sys::Number::from(0.5)));
+
+        let Ok(observer) = web_sys::IntersectionObserver::new_with_options(
+            closure.0.as_ref().unchecked_ref(),
+            &options,
+        ) else {
+            return;
+        };
+
+        observer.observe(&section);
+
+        on_cleanup(move || {
+            observer.disconnect();
+            drop(closure);
+        });
+    });
+
+    // Global keydown listener that fires when the team section is in view
+    Effect::new(move |_| {
+        let Some(window) = web_sys::window() else {
+            return;
+        };
+        let rotate = rotate;
+        let is_visible = is_visible;
+
+        let closure = SendWrapper(Closure::wrap(Box::new(move |ev: web_sys::KeyboardEvent| {
+            if (ev.key() == "Enter" || ev.key() == " ") && is_visible.get() {
+                ev.prevent_default();
+                rotate();
+            }
+        }) as Box<dyn FnMut(_)>));
+
+        let fn_ref: Function = closure.0.as_ref().unchecked_ref::<Function>().clone();
+        window
+            .add_event_listener_with_callback("keydown", &fn_ref)
+            .expect("should be able to add keydown listener");
+
+        on_cleanup(move || {
+            if let Some(window) = web_sys::window() {
+                let _ = window.remove_event_listener_with_callback("keydown", &fn_ref);
+            }
+            drop(closure);
+        });
+    });
+
     view! {
         <section id="team" class="relative py-24 sm:py-32">
             <div class="team-deck-bg" />
@@ -37,12 +109,6 @@ pub fn TeamDeckSection() -> impl IntoView {
                     tabindex="0"
                     role="region"
                     aria-label=t_string!(i18n, team.deck_label)
-                    on:keydown=move |ev| {
-                        if ev.key() == "Enter" || ev.key() == " " {
-                            ev.prevent_default();
-                            rotate();
-                        }
-                    }
                 >
                     // Click zone at the right edge - triggers rotation
                     <div
