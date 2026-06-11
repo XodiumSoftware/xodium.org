@@ -1,6 +1,10 @@
 use crate::i18n::*;
+use crate::utils::SendWrapper;
+use js_sys::Function;
 use leptos::prelude::*;
 use leptos::task::spawn_local;
+use leptos::wasm_bindgen::JsCast;
+use leptos::wasm_bindgen::closure::Closure;
 use leptos::web_sys;
 use leptos_i18n::tu_string;
 use std::sync::Arc;
@@ -129,6 +133,47 @@ pub fn CodeBlock() -> impl IntoView {
         });
     });
 
+    // Global keydown shortcuts for CTA buttons
+    Effect::new(move |_| {
+        let Some(window) = web_sys::window() else {
+            return;
+        };
+        let Some(document) = window.document() else {
+            return;
+        };
+
+        let closure = SendWrapper(Closure::wrap(Box::new(move |ev: web_sys::KeyboardEvent| {
+            let key = ev.key().to_lowercase();
+            if key == "g" {
+                ev.prevent_default();
+                if let Some(el) = document.get_element_by_id("cta-get-started")
+                    && let Ok(html_el) = el.dyn_into::<web_sys::HtmlElement>()
+                {
+                    html_el.click();
+                }
+            } else if key == "j" {
+                ev.prevent_default();
+                if let Some(el) = document.get_element_by_id("cta-join-us")
+                    && let Ok(html_el) = el.dyn_into::<web_sys::HtmlElement>()
+                {
+                    html_el.click();
+                }
+            }
+        }) as Box<dyn FnMut(_)>));
+
+        let fn_ref: Function = closure.0.as_ref().unchecked_ref::<Function>().clone();
+        window
+            .add_event_listener_with_callback("keydown", &fn_ref)
+            .expect("should be able to add keydown listener");
+
+        on_cleanup(move || {
+            if let Some(window) = web_sys::window() {
+                let _ = window.remove_event_listener_with_callback("keydown", &fn_ref);
+            }
+            drop(closure);
+        });
+    });
+
     view! {
         <div class="w-full max-w-2xl mx-auto">
             // Terminal window
@@ -218,16 +263,22 @@ pub fn CodeBlock() -> impl IntoView {
                     <div class="border-t border-base-content/10 pt-4">
                         <div class="flex flex-col sm:flex-row gap-3 justify-center">
                             <a
+                                id="cta-get-started"
                                 href="https://github.com/XodiumSoftware"
                                 class="btn btn-primary hover:btn-warning btn-lift"
+                                target="_blank"
+                                rel="noopener noreferrer"
                             >
                                 {t!(i18n, landing.cta_get_started)}
+                                <kbd class="inline-flex items-center justify-center px-1.5 py-0.5 min-w-[1.25rem] rounded border border-base-content/20 bg-base-200 shadow-[0_2px_0_0_rgba(0,0,0,0.3)] text-[0.65rem] font-sans ml-2">"G"</kbd>
                             </a>
                             <a
+                                id="cta-join-us"
                                 href="mailto:info@xodium.org"
                                 class="btn btn-outline btn-outline-ghost btn-hover-warning btn-lift"
                             >
                                 {t!(i18n, landing.cta_join_us)}
+                                <kbd class="inline-flex items-center justify-center px-1.5 py-0.5 min-w-[1.25rem] rounded border border-base-content/20 bg-base-200 shadow-[0_2px_0_0_rgba(0,0,0,0.3)] text-[0.65rem] font-sans ml-2">"J"</kbd>
                             </a>
                         </div>
                     </div>
