@@ -117,7 +117,7 @@ pub fn TeamDeckSection() -> impl IntoView {
                     </ul>
                 </div>
                 // Keyboard hint below the deck
-                <div class="mt-6 flex items-center justify-center gap-2 text-sm text-base-content/50 font-mono select-none">
+                <div class="mt-6 hidden md:flex items-center justify-center gap-2 text-sm text-base-content/50 font-mono select-none">
                     <span>{t!(i18n, team.keyboard_hint_press)}</span>
                     <kbd class="inline-flex items-center justify-center px-2 py-0.5 min-w-[1.5rem] rounded border border-base-content/20 bg-base-200 shadow-[0_2px_0_0_rgba(0,0,0,0.3)] text-xs font-sans">{t!(i18n, team.keyboard_hint_space)}</kbd>
                     <span>{t!(i18n, team.keyboard_hint_or)}</span>
