@@ -270,7 +270,7 @@ pub fn CodeBlock() -> impl IntoView {
                                 rel="noopener noreferrer"
                             >
                                 {t!(i18n, landing.cta_get_started)}
-                                <kbd class="inline-flex items-center justify-center px-1.5 py-0.5 min-w-[1.25rem] rounded border border-base-content/20 bg-base-200 shadow-[0_2px_0_0_rgba(0,0,0,0.3)] text-[0.65rem] font-sans ml-2">"G"</kbd>
+                                <kbd class="inline-flex items-center justify-center px-1.5 py-0.5 min-w-[1.25rem] rounded border border-white/30 bg-white/10 text-white shadow-[0_2px_0_0_rgba(0,0,0,0.3)] text-xs font-sans ml-2">"G"</kbd>
                             </a>
                             <a
                                 id="cta-join-us"
@@ -278,7 +278,7 @@ pub fn CodeBlock() -> impl IntoView {
                                 class="btn btn-outline btn-outline-ghost btn-hover-warning btn-lift"
                             >
                                 {t!(i18n, landing.cta_join_us)}
-                                <kbd class="inline-flex items-center justify-center px-1.5 py-0.5 min-w-[1.25rem] rounded border border-base-content/20 bg-base-200 shadow-[0_2px_0_0_rgba(0,0,0,0.3)] text-[0.65rem] font-sans ml-2">"J"</kbd>
+                                <kbd class="inline-flex items-center justify-center px-1.5 py-0.5 min-w-[1.25rem] rounded border border-white/30 bg-white/10 text-white shadow-[0_2px_0_0_rgba(0,0,0,0.3)] text-xs font-sans ml-2">"J"</kbd>
                             </a>
                         </div>
                     </div>
