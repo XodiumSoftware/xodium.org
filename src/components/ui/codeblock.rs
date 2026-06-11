@@ -270,7 +270,7 @@ pub fn CodeBlock() -> impl IntoView {
                                 rel="noopener noreferrer"
                             >
                                 {t!(i18n, landing.cta_get_started)}
-                                <kbd class="inline-flex items-center justify-center px-1.5 py-0.5 min-w-[1.25rem] rounded border border-white/30 bg-white/10 text-white shadow-[0_2px_0_0_rgba(0,0,0,0.3)] text-xs font-sans ml-2">"G"</kbd>
+                                <kbd class="inline-flex items-center justify-center px-1.5 py-0.5 min-w-[1.25rem] rounded border border-black/30 bg-black/10 text-black shadow-[0_2px_0_0_rgba(0,0,0,0.3)] text-xs font-sans ml-2">"G"</kbd>
                             </a>
                             <a
                                 id="cta-join-us"
