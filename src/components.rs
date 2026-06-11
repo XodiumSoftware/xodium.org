@@ -2,7 +2,8 @@
 pub mod sections {
     pub mod footer;
     pub mod header;
-    pub mod projectgrid;
+    pub mod landing;
+    pub mod projects;
     pub mod teamdeck;
 }
 
@@ -36,7 +37,8 @@ pub mod ui {
 // Re-export commonly used components for convenience
 pub use sections::footer::Footer;
 pub use sections::header::Header;
-pub use sections::projectgrid::ProjectGrid;
+pub use sections::landing::LandingSection;
+pub use sections::projects::ProjectsSection;
 pub use sections::teamdeck::TeamDeckSection;
 
 pub use cards::projectcard::{ProjectCard, ProjectCardProperties};

@@ -35,9 +35,9 @@ The single-page layout is composed as follows:
 
 1. **Skip link** — accessibility anchor to `#main-content`
 2. **`Header`** — sticky navbar with logo and navigation
-3. **`#landing` section** — hero with `BlueprintGrid`, `WireframeShapes`, `LineDrawHero`, `ParallaxLanding`, gradient blobs, and `CodeBlock`
+3. **`#landing` section** — `LandingSection` with `BlueprintGrid`, `WireframeShapes`, `LineDrawHero`, `ParallaxLanding`, gradient blobs, and `CodeBlock`
 4. **Divider** — `LineDraw` animation
-5. **`#projects` section** — `HexPattern`, `FadeOverlay`, and `ProjectGrid` in a sidebar layout with vertical "PROJECTS" title
+5. **`#projects` section** — `ProjectsSection` with `HexPattern`, `FadeOverlay`, sidebar title, and repo grid
 6. **Divider** — `LineDraw` animation
 7. **`#team` section** — `TeamDeckSection`
 8. **`Footer`** — site footer
@@ -51,8 +51,9 @@ Components are organized into submodules by function:
 | Component         | File             | Role                                                                          |
 |-------------------|------------------|-------------------------------------------------------------------------------|
 | `Header`          | `header.rs`      | Sticky navbar with logo and navigation links.                                 |
+| `LandingSection`  | `landing.rs`     | Hero section with visual effects, gradient blobs, and animated `CodeBlock`.   |
 | `Footer`          | `footer.rs`      | Site footer with links and copyright.                                         |
-| `ProjectGrid`     | `projectgrid.rs` | Fetches repos via `LocalResource` → `fetch_repos()`, renders `ProjectCard`s.  |
+| `ProjectsSection` | `projects.rs`    | Fetches repos, renders `ProjectCard`s in a sidebar layout with vertical title.|
 | `TeamDeckSection` | `teamdeck.rs`    | Fetches members via `LocalResource` → `fetch_members()`, renders `TeamCard`s. |
 
 #### Cards (`src/components/cards/`)
@@ -113,7 +114,7 @@ All GitHub data fetching is centralized here.
 
 ### Props Convention
 
-- `ProjectCardProperties` implements `From<Repo>` so `ProjectGrid` can map repos with `.into()` instead of a verbose manual struct literal.
+- `ProjectCardProperties` implements `From<Repo>` so `ProjectsSection` can map repos with `.into()` instead of a verbose manual struct literal.
 
 Component properties are plain `#[derive(Clone)]` structs named `{Component}Properties` (e.g. `ProjectCardProperties`, `TeamCardProperties`). They are passed as a single `props` parameter.
 

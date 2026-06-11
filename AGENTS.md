@@ -67,9 +67,9 @@ The single-page application follows this structure:
 
 1. **Skip Link** — accessibility anchor to `#main-content`
 2. **`Header`** — sticky navbar with logo and navigation
-3. **`#landing`** — hero section with visual effects and code block
+3. **`#landing`** — hero section with `LandingSection`
 4. **Divider** — `LineDraw` animation
-5. **`#projects`** — sidebar layout with `ProjectGrid`
+5. **`#projects`** — sidebar layout with `ProjectsSection`
 6. **Divider** — `LineDraw` animation
 7. **`#team`** — `TeamDeckSection`
 8. **`Footer`** — site footer
@@ -83,9 +83,10 @@ Components are grouped by function in `src/components/`:
 | Component         | File             | Purpose                                      |
 |-------------------|------------------|----------------------------------------------|
 | `Header`          | `header.rs`      | Sticky navbar                                |
-| `Footer`          | `footer.rs`      | Site footer                                  |
-| `ProjectGrid`     | `projectgrid.rs` | Fetches GitHub repos, renders `ProjectCard`s |
+| `LandingSection`  | `landing.rs`     | Hero section with visual effects and code block |
+| `ProjectsSection` | `projects.rs`    | Fetches GitHub repos, renders `ProjectCard`s |
 | `TeamDeckSection` | `teamdeck.rs`    | Fetches org members, renders `TeamCard`s     |
+| `Footer`          | `footer.rs`      | Site footer                                  |
 
 #### Cards (`src/components/cards/`)
 
@@ -146,9 +147,10 @@ src/
     ├── mod.rs                 # Component module exports
     ├── sections/              # Page sections
     │   ├── header.rs
-    │   ├── footer.rs
-    │   ├── projectgrid.rs
-    │   └── teamdeck.rs
+    │   ├── landing.rs
+    │   ├── projects.rs
+    │   ├── teamdeck.rs
+    │   └── footer.rs
     ├── cards/                 # Card components
     │   ├── projectcard.rs
     │   └── teamcard.rs
@@ -210,7 +212,7 @@ fetch_repos().await.unwrap_or_default()
 view! {
     {data_grid(
         repos,
-        |repos| view! { <ProjectGrid repos/> },
+        |repos| view! { <ProjectsSection /> },
         "Loading projects...",
         "Failed to load projects"
     )}
@@ -297,7 +299,7 @@ To add a new page section:
 
 1. Create file in `src/components/sections/{section}.rs`
 2. Define `{Section}` component with `#[component]` macro
-3. Add to `src/components/sections/mod.rs` exports
+3. Add `pub mod {section}` and `pub use sections::{section}::{Section}` in `src/components.rs`
 4. Import in `src/app.rs` and add to `App` view
 5. Add `LineDraw` divider before/after if needed
 6. Update `ARCHITECTURE.md` section table
