@@ -131,7 +131,8 @@ pub fn Header() -> impl IntoView {
                         class=move || {
                             format!("p-0 logo-container{}", if is_logo_active.get() { " logo-active" } else { "" })
                         }
-                        on:click=move |_| {
+                        on:click=move |ev: leptos::web_sys::MouseEvent| {
+                            ev.prevent_default();
                             if is_logo_active.get() {
                                 return;
                             }

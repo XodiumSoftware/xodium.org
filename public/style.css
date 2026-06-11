@@ -371,6 +371,23 @@ html {
         animation: none;
     }
 
+    /* Re-enable expand + shake for JS-driven .logo-active */
+    .logo-container.logo-active .logo-piece-bl path {
+        transform: translate(-10px, 10px);
+    }
+
+    .logo-container.logo-active .logo-piece-tr path {
+        transform: translate(10px, -10px);
+    }
+
+    .logo-container.logo-active .logo-piece-br path {
+        transform: translate(10px, 10px);
+    }
+
+    .logo-container.logo-active .logo-piece-tl path {
+        transform: translate(-10px, -10px);
+    }
+
     .logo-container.logo-active .logo-piece {
         animation: logo-shake 0.25s ease-in-out 6;
     }
