@@ -234,6 +234,66 @@ html {
     }
 }
 
+/* Blueprint Card Loader animations */
+.blueprint-card-border {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    animation: blueprintDraw 1.2s ease-out forwards;
+}
+
+.blueprint-corner {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    animation: blueprintDraw 0.5s ease-out 0.4s forwards;
+}
+
+.blueprint-line {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    animation: blueprintDraw 0.7s ease-out 0.7s forwards;
+}
+
+.blueprint-scan-beam {
+    transform-box: fill-box;
+    transform-origin: top left;
+    animation: blueprintScanSweep 2s ease-in-out 1.5s infinite;
+}
+
+@keyframes blueprintDraw {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes blueprintScanSweep {
+    0% {
+        transform: translateY(0);
+        opacity: 0.2;
+    }
+    50% {
+        opacity: 0.35;
+    }
+    100% {
+        transform: translateY(176px);
+        opacity: 0.2;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .blueprint-card-border,
+    .blueprint-corner,
+    .blueprint-line {
+        animation: none;
+        stroke-dashoffset: 0;
+    }
+
+    .blueprint-scan-beam {
+        animation: none;
+        opacity: 0.2;
+        transform: translateY(88px);
+    }
+}
+
 /*noinspection ALL*/
 .nav-icon {
     mask: var(--mask-url) no-repeat center / contain;

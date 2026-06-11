@@ -24,6 +24,7 @@ pub mod effects {
 
 // Animation components
 pub mod animations {
+    pub mod blueprintloader;
     pub mod linedraw;
 }
 
@@ -50,6 +51,7 @@ pub use effects::parallax::ParallaxLanding;
 pub use effects::sectionfade::FadeOverlay;
 pub use effects::wireframes::WireframeShapes;
 
+pub use animations::blueprintloader::BlueprintCardLoader;
 pub use animations::linedraw::{LineDraw, LineDrawHero};
 
 pub use ui::codeblock::CodeBlock;

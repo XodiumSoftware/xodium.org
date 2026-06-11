@@ -14,14 +14,34 @@ where
     E: Fn() -> EV + Clone + Send + Sync + 'static,
     EV: IntoView + 'static,
 {
+    data_grid_with_fallback(resource, empty_message, render, on_retry, move || {
+        view! {
+            <div class="flex items-center justify-center text-center">
+                <span class="loading loading-spinner loading-lg text-primary" />
+            </div>
+        }
+    })
+}
+
+pub fn data_grid_with_fallback<T, IV, F, R, E, EV, FV, FVOut>(
+    resource: LocalResource<Result<Vec<T>, String>>,
+    empty_message: E,
+    render: F,
+    on_retry: Option<R>,
+    fallback: FV,
+) -> impl IntoView
+where
+    T: Clone + Send + Sync + 'static,
+    IV: IntoView + 'static,
+    F: Fn(Vec<T>) -> IV + Copy + Send + Sync + 'static,
+    R: Fn() + Clone + Send + Sync + 'static,
+    E: Fn() -> EV + Clone + Send + Sync + 'static,
+    EV: IntoView + 'static,
+    FV: Fn() -> FVOut + Clone + Send + Sync + 'static,
+    FVOut: IntoView + 'static,
+{
     view! {
-        <Suspense fallback=move || {
-            view! {
-                <div class="flex items-center justify-center text-center">
-                    <span class="loading loading-spinner loading-lg text-primary"></span>
-                </div>
-            }
-        }>
+        <Suspense fallback=move || { fallback() }>
             {move || match resource.get() {
                 None => ().into_any(),
                 Some(Err(err)) => {
