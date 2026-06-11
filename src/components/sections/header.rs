@@ -2,9 +2,11 @@ use crate::i18n::*;
 use crate::utils::SendWrapper;
 use js_sys::Function;
 use leptos::prelude::*;
+use leptos::task::spawn_local;
 use leptos::wasm_bindgen::JsCast;
 use leptos::wasm_bindgen::closure::Closure;
 use leptos::web_sys;
+use std::time::Duration;
 
 struct SocialLink {
     href: &'static str,
@@ -36,6 +38,7 @@ pub fn Header() -> impl IntoView {
     let i18n = use_i18n();
     let (is_scrolled, set_is_scrolled) = signal(false);
     let (active_section, set_active_section) = signal(String::new());
+    let (is_logo_active, set_is_logo_active) = signal(false);
 
     // Scroll listener for backdrop blur
     Effect::new(move |_| {
@@ -123,7 +126,22 @@ pub fn Header() -> impl IntoView {
             <nav class="navbar max-w-7xl mx-auto">
                 // Left side
                 <div class="navbar-start gap-8">
-                    <a href="#" class="p-0 logo-container">
+                    <a
+                        href="#"
+                        class=move || {
+                            format!("p-0 logo-container{}", if is_logo_active.get() { " logo-active" } else { "" })
+                        }
+                        on:click=move |_| {
+                            if is_logo_active.get() {
+                                return;
+                            }
+                            set_is_logo_active.set(true);
+                            spawn_local(async move {
+                                gloo_timers::future::sleep(Duration::from_millis(1500)).await;
+                                set_is_logo_active.set(false);
+                            });
+                        }
+                    >
                         <svg width="48" height="48" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-12 w-12">
                             <g class="logo-piece logo-piece-bl">
                                 <path d="M36.6562 73L15 94.6562V113H33.3438L55 91.3438V73H36.6562Z" stroke="url(#paint0_linear_0_1)" stroke-width="8"/>

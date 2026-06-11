@@ -306,23 +306,28 @@ html {
     transform-origin: center;
 }
 
-.logo-container:hover .logo-piece-bl path {
+.logo-container:hover .logo-piece-bl path,
+.logo-container.logo-active .logo-piece-bl path {
     transform: translate(-10px, 10px);
 }
 
-.logo-container:hover .logo-piece-tr path {
+.logo-container:hover .logo-piece-tr path,
+.logo-container.logo-active .logo-piece-tr path {
     transform: translate(10px, -10px);
 }
 
-.logo-container:hover .logo-piece-br path {
+.logo-container:hover .logo-piece-br path,
+.logo-container.logo-active .logo-piece-br path {
     transform: translate(10px, 10px);
 }
 
-.logo-container:hover .logo-piece-tl path {
+.logo-container:hover .logo-piece-tl path,
+.logo-container.logo-active .logo-piece-tl path {
     transform: translate(-10px, -10px);
 }
 
-.logo-container:hover .logo-piece {
+.logo-container:hover .logo-piece,
+.logo-container.logo-active .logo-piece {
     animation: logo-shake 0.25s ease-in-out infinite;
 }
 
@@ -348,10 +353,25 @@ html {
     }
 }
 
-/* Mobile: finite shake so the animation stops after ~1.5s instead of looping forever */
+/* Mobile: disable sticky hover/active states; rely on JS-driven .logo-active */
 @media (hover: none) {
+    .logo-container:hover .logo-piece-bl path,
+    .logo-container:hover .logo-piece-tr path,
+    .logo-container:hover .logo-piece-br path,
+    .logo-container:hover .logo-piece-tl path,
+    .logo-container:active .logo-piece-bl path,
+    .logo-container:active .logo-piece-tr path,
+    .logo-container:active .logo-piece-br path,
+    .logo-container:active .logo-piece-tl path {
+        transform: none;
+    }
+
     .logo-container:hover .logo-piece,
     .logo-container:active .logo-piece {
+        animation: none;
+    }
+
+    .logo-container.logo-active .logo-piece {
         animation: logo-shake 0.25s ease-in-out 6;
     }
 }
