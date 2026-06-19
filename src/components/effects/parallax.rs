@@ -1,8 +1,5 @@
-use crate::utils::SendWrapper;
-use js_sys::Function;
+use crate::utils::{prefers_reduced_motion, window_event_listener};
 use leptos::prelude::*;
-use leptos::wasm_bindgen::JsCast;
-use leptos::wasm_bindgen::closure::Closure;
 use leptos::web_sys;
 
 /// Parallax background for the landing section.
@@ -14,18 +11,7 @@ pub fn ParallaxLanding() -> impl IntoView {
 
     // Detect prefers-reduced-motion at mount
     Effect::new(move |_| {
-        let Some(window) = web_sys::window() else {
-            return;
-        };
-
-        let prefers_reduced = window
-            .match_media("(prefers-reduced-motion: reduce)")
-            .ok()
-            .flatten()
-            .map(|m| m.matches())
-            .unwrap_or(false);
-
-        set_reduced_motion.set(prefers_reduced);
+        set_reduced_motion.set(prefers_reduced_motion());
     });
 
     // Set up scroll listener only when motion is not reduced
@@ -34,31 +20,18 @@ pub fn ParallaxLanding() -> impl IntoView {
             return;
         }
 
-        let Some(window) = web_sys::window() else {
-            return;
-        };
+        if let Some(window) = web_sys::window() {
+            if let Ok(scroll) = window.scroll_y() {
+                set_scroll_y.set(scroll);
+            }
+        }
 
-        let closure = SendWrapper(Closure::wrap(Box::new(move |_ev: web_sys::Event| {
+        window_event_listener::<web_sys::Event, _>("scroll", move |_ev| {
             if let Some(w) = web_sys::window()
                 && let Ok(scroll) = w.scroll_y()
             {
                 set_scroll_y.set(scroll);
             }
-        }) as Box<dyn FnMut(_)>));
-
-        let fn_ref: Function = closure.0.as_ref().unchecked_ref::<Function>().clone();
-        let _ = window.add_event_listener_with_callback("scroll", &fn_ref);
-
-        // Initial call
-        if let Ok(scroll) = window.scroll_y() {
-            set_scroll_y.set(scroll);
-        }
-
-        on_cleanup(move || {
-            if let Some(window) = web_sys::window() {
-                let _ = window.remove_event_listener_with_callback("scroll", &fn_ref);
-            }
-            drop(closure);
         });
     });
 

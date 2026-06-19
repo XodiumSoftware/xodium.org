@@ -1,10 +1,8 @@
 use crate::i18n::*;
-use crate::utils::SendWrapper;
-use js_sys::Function;
+use crate::utils::{prefers_reduced_motion, window_event_listener};
 use leptos::prelude::*;
 use leptos::task::spawn_local;
 use leptos::wasm_bindgen::JsCast;
-use leptos::wasm_bindgen::closure::Closure;
 use leptos::web_sys;
 use leptos_i18n::tu_string;
 use std::sync::Arc;
@@ -13,7 +11,7 @@ use std::time::Duration;
 
 const ASCII_ART: &str = r#"
          ,-.--,  _,.---._                 .=-.-.                   ___
-.--.-.  /=/, .',-.' , -  `.   _,..---._  /==/_ /.--.-. .-.-..-._ .'=.'\
+.--.-.  /=/, .',-.' , -  `.   _,..---._  /==/_ /.--.-. .-.-..-._ .='.'\
 \==\ -\/=/- / /==/_,  ,  - \/==/,   -  \|==|, |/==/ -|/=/  /==/ \|==|  |
  \==\ `-' ,/ |==|   .=.     |==|   _   _\==|  ||==| ,||=| -|==|,|  / - |
   |==|,  - | |==|_ : ;=:  - |==|  .=.   |==|- ||==|- | =/  |==|  \/  , |
@@ -41,11 +39,7 @@ pub fn CodeBlock() -> impl IntoView {
     let cancelled = Arc::new(AtomicBool::new(false));
 
     // Synchronous check for prefers-reduced-motion before spawning effects
-    let prefers_reduced_motion = web_sys::window()
-        .and_then(|w| w.match_media("(prefers-reduced-motion: reduce)").ok())
-        .flatten()
-        .map(|mql| mql.matches())
-        .unwrap_or(false);
+    let prefers_reduced_motion = prefers_reduced_motion();
 
     // Cursor blink + typewriter effects share one cancellation flag
     Effect::new(move |_| {
@@ -135,14 +129,11 @@ pub fn CodeBlock() -> impl IntoView {
 
     // Global keydown shortcuts for CTA buttons
     Effect::new(move |_| {
-        let Some(window) = web_sys::window() else {
-            return;
-        };
-        let Some(document) = window.document() else {
+        let Some(document) = web_sys::window().and_then(|w| w.document()) else {
             return;
         };
 
-        let closure = SendWrapper(Closure::wrap(Box::new(move |ev: web_sys::KeyboardEvent| {
+        window_event_listener::<web_sys::KeyboardEvent, _>("keydown", move |ev| {
             let key = ev.key().to_lowercase();
             if key == "g" {
                 ev.prevent_default();
@@ -159,18 +150,6 @@ pub fn CodeBlock() -> impl IntoView {
                     html_el.click();
                 }
             }
-        }) as Box<dyn FnMut(_)>));
-
-        let fn_ref: Function = closure.0.as_ref().unchecked_ref::<Function>().clone();
-        window
-            .add_event_listener_with_callback("keydown", &fn_ref)
-            .expect("should be able to add keydown listener");
-
-        on_cleanup(move || {
-            if let Some(window) = web_sys::window() {
-                let _ = window.remove_event_listener_with_callback("keydown", &fn_ref);
-            }
-            drop(closure);
         });
     });
 

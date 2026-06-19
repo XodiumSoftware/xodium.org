@@ -3,11 +3,8 @@ use crate::components::ui::cornerframe::CornerFrame;
 use crate::components::ui::datagrid::data_grid;
 use crate::github::{Member, fetch_members};
 use crate::i18n::*;
-use crate::utils::SendWrapper;
-use js_sys::Function;
+use crate::utils::{observe_intersections, window_event_listener};
 use leptos::prelude::*;
-use leptos::wasm_bindgen::JsCast;
-use leptos::wasm_bindgen::closure::Closure;
 use leptos::web_sys;
 
 #[component]
@@ -46,62 +43,28 @@ pub fn TeamDeckSection() -> impl IntoView {
             return;
         };
 
-        let closure = SendWrapper(Closure::wrap(Box::new(move |entries: js_sys::Array| {
-            for entry in entries.iter() {
-                if let Ok(entry) = entry.dyn_into::<web_sys::IntersectionObserverEntry>() {
-                    if entry.is_intersecting() {
-                        set_is_visible.set(true);
-                    } else {
-                        set_is_visible.set(false);
-                        set_rotation.set(0);
-                    }
+        observe_intersections(&[section], move |entries| {
+            for entry in entries {
+                if entry.is_intersecting() {
+                    set_is_visible.set(true);
+                } else {
+                    set_is_visible.set(false);
+                    set_rotation.set(0);
                 }
             }
-        }) as Box<dyn FnMut(_)>));
-
-        let options = web_sys::IntersectionObserverInit::new();
-        options.set_threshold(&js_sys::Array::of1(&js_sys::Number::from(0.5)));
-
-        let Ok(observer) = web_sys::IntersectionObserver::new_with_options(
-            closure.0.as_ref().unchecked_ref(),
-            &options,
-        ) else {
-            return;
-        };
-
-        observer.observe(&section);
-
-        on_cleanup(move || {
-            observer.disconnect();
-            drop(closure);
         });
     });
 
     // Global keydown listener that fires when the team section is in view
     Effect::new(move |_| {
-        let Some(window) = web_sys::window() else {
-            return;
-        };
         let rotate = rotate;
         let is_visible = is_visible;
 
-        let closure = SendWrapper(Closure::wrap(Box::new(move |ev: web_sys::KeyboardEvent| {
+        window_event_listener::<web_sys::KeyboardEvent, _>("keydown", move |ev| {
             if (ev.key() == "Enter" || ev.key() == " ") && is_visible.get() {
                 ev.prevent_default();
                 rotate();
             }
-        }) as Box<dyn FnMut(_)>));
-
-        let fn_ref: Function = closure.0.as_ref().unchecked_ref::<Function>().clone();
-        window
-            .add_event_listener_with_callback("keydown", &fn_ref)
-            .expect("should be able to add keydown listener");
-
-        on_cleanup(move || {
-            if let Some(window) = web_sys::window() {
-                let _ = window.remove_event_listener_with_callback("keydown", &fn_ref);
-            }
-            drop(closure);
         });
     });
 

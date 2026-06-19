@@ -1,10 +1,8 @@
 use crate::i18n::*;
-use crate::utils::SendWrapper;
-use js_sys::Function;
+use crate::utils::{observe_intersections, window_event_listener};
 use leptos::prelude::*;
 use leptos::task::spawn_local;
 use leptos::wasm_bindgen::JsCast;
-use leptos::wasm_bindgen::closure::Closure;
 use leptos::web_sys;
 use std::time::Duration;
 
@@ -42,22 +40,11 @@ pub fn Header() -> impl IntoView {
 
     // Scroll listener for backdrop blur
     Effect::new(move |_| {
-        let window = web_sys::window().expect("window should exist in browser");
-        let closure = SendWrapper(Closure::wrap(Box::new(move |_ev: web_sys::Event| {
+        window_event_listener::<web_sys::Event, _>("scroll", move |_ev| {
             let scrolled = web_sys::window()
                 .map(|w| w.scroll_y().unwrap_or(0.0) > 0.0)
                 .unwrap_or(false);
             set_is_scrolled.set(scrolled);
-        }) as Box<dyn FnMut(_)>));
-        let fn_ref: Function = closure.0.as_ref().unchecked_ref::<Function>().clone();
-        window
-            .add_event_listener_with_callback("scroll", &fn_ref)
-            .expect("should be able to add scroll listener");
-        on_cleanup(move || {
-            if let Some(window) = web_sys::window() {
-                let _ = window.remove_event_listener_with_callback("scroll", &fn_ref);
-            }
-            drop(closure);
         });
     });
 
@@ -70,40 +57,22 @@ pub fn Header() -> impl IntoView {
             return;
         };
 
-        let closure = SendWrapper(Closure::wrap(Box::new(move |entries: js_sys::Array| {
-            for entry in entries.iter() {
-                if let Ok(entry) = entry.dyn_into::<web_sys::IntersectionObserverEntry>()
-                    && entry.is_intersecting()
-                    && let Some(target) = entry.target().dyn_ref::<web_sys::Element>()
-                {
-                    let id = target.id();
-                    if !id.is_empty() {
-                        set_active_section.set(id);
+        let elements: Vec<web_sys::Element> = ["projects", "team"]
+            .iter()
+            .filter_map(|id| document.get_element_by_id(id))
+            .collect();
+
+        observe_intersections(&elements, move |entries| {
+            for entry in entries {
+                if entry.is_intersecting() {
+                    if let Some(target) = entry.target().dyn_ref::<web_sys::Element>() {
+                        let id = target.id();
+                        if !id.is_empty() {
+                            set_active_section.set(id);
+                        }
                     }
                 }
             }
-        }) as Box<dyn FnMut(_)>));
-
-        let options = web_sys::IntersectionObserverInit::new();
-        options.set_threshold(&js_sys::Array::of1(&js_sys::Number::from(0.5)));
-
-        let Ok(observer) = web_sys::IntersectionObserver::new_with_options(
-            closure.0.as_ref().unchecked_ref(),
-            &options,
-        ) else {
-            return;
-        };
-
-        if let Some(el) = document.get_element_by_id("projects") {
-            observer.observe(&el);
-        }
-        if let Some(el) = document.get_element_by_id("team") {
-            observer.observe(&el);
-        }
-
-        on_cleanup(move || {
-            observer.disconnect();
-            drop(closure);
         });
     });
 

@@ -1,25 +1,9 @@
 use crate::components::ui::cornerframe::CornerFrame;
 use crate::github::Repo;
 use crate::i18n::*;
+use crate::utils::language_color;
 use leptos::prelude::*;
 use leptos_i18n::t_string;
-
-fn language_color(language: &str) -> &'static str {
-    match language {
-        "Rust" => "bg-[#dea584]",
-        "TypeScript" => "bg-[#3178c6]",
-        "JavaScript" => "bg-[#f1e05a]",
-        "Python" => "bg-[#3572A5]",
-        "HTML" => "bg-[#e34c26]",
-        "CSS" => "bg-[#563d7c]",
-        "Java" | "java" => "bg-[#b07219]",
-        "Go" => "bg-[#00ADD8]",
-        "C" => "bg-[#555555]",
-        "C++" => "bg-[#f34b7d]",
-        "Kotlin" => "bg-[#A97BFF]",
-        _ => "bg-base-content/50",
-    }
-}
 
 #[derive(Clone)]
 pub struct ProjectCardProperties {
@@ -125,79 +109,79 @@ pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
                                 {props.title}
                             </h2>
 
-                            <div class="flex flex-wrap gap-1 mb-2">
-                                {props
-                                    .topics
-                                    .iter()
-                                    .map(|topic| {
-                                        view! {
-                                            <span class="badge badge-xs badge-outline text-base-content/60">
-                                                {topic.clone()}
-                                            </span>
-                                        }
-                                    })
-                                    .collect_view()}
+                        <div class="flex flex-wrap gap-1 mb-2">
+                            {props
+                                .topics
+                                .iter()
+                                .map(|topic| {
+                                    view! {
+                                        <span class="badge badge-xs badge-outline text-base-content/60">
+                                            {topic.clone()}
+                                        </span>
+                                    }
+                                })
+                                .collect_view()}
+                        </div>
+
+                        <p class="text-base-content/70 flex-grow">{props.description}</p>
+
+                        <div class="card-actions justify-between items-center mt-auto">
+                            <div class="flex items-center gap-1 text-base-content/60 text-sm">
+                                {move || {
+                                    language_opt
+                                        .clone()
+                                        .map(|language| {
+                                            view! {
+                                                <>
+                                                    <LanguageCircle language=language.clone() />
+                                                    <span>{language}</span>
+                                                </>
+                                            }
+                                        })
+                                }}
                             </div>
-
-                            <p class="text-base-content/70 flex-grow">{props.description}</p>
-
-                            <div class="card-actions justify-between items-center mt-auto">
-                                <div class="flex items-center gap-1 text-base-content/60 text-sm">
-                                    {move || {
-                                        language_opt
-                                            .clone()
-                                            .map(|language| {
-                                                view! {
-                                                    <>
-                                                        <LanguageCircle language=language.clone() />
-                                                        <span>{language}</span>
-                                                    </>
-                                                }
-                                            })
-                                    }}
-                                </div>
-                                <div class="flex items-center gap-3">
-                                {docs_url.map(|url| view! {
+                            <div class="flex items-center gap-3">
+                            {docs_url.map(|url| view! {
+                                <a
+                                    href=url
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    on:click=|e| e.stop_propagation()
+                                    class="flex items-center gap-1 text-base-content/60 hover:text-primary text-sm transition-colors"
+                                    title="Documentation"
+                                >
+                                    <DocsIcon />
+                                    <span>{t!(i18n, projects.card.docs)}</span>
+                                </a>
+                            })}
+                            {if stars > 0 {
+                                view! {
                                     <a
-                                        href=url
+                                        href=stargazers_url
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         on:click=|e| e.stop_propagation()
                                         class="flex items-center gap-1 text-base-content/60 hover:text-primary text-sm transition-colors"
-                                        title="Documentation"
                                     >
-                                        <DocsIcon />
-                                        <span>{t!(i18n, projects.card.docs)}</span>
+                                        <StarIcon />
+                                        <span>{stars}</span>
                                     </a>
-                                })}
-                                {if stars > 0 {
-                                    view! {
-                                        <a
-                                            href=stargazers_url
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            on:click=|e| e.stop_propagation()
-                                            class="flex items-center gap-1 text-base-content/60 hover:text-primary text-sm transition-colors"
-                                        >
-                                            <StarIcon />
-                                            <span>{stars}</span>
-                                        </a>
-                                    }
-                                        .into_any()
-                                } else {
-                                    view! {
-                                        <div class="flex items-center gap-1 text-base-content/60 text-sm">
-                                            <StarIcon />
-                                            <span>{stars}</span>
-                                        </div>
-                                    }
-                                        .into_any()
-                                }}
-                                </div>
+                                }
+                                    .into_any()
+                            } else {
+                                view! {
+                                    <div class="flex items-center gap-1 text-base-content/60 text-sm">
+                                        <StarIcon />
+                                        <span>{stars}</span>
+                                    </div>
+                                }
+                                    .into_any()
+                            }}
                             </div>
                         </div>
                     </div>
-                </CornerFrame>
+                </div>
+            </CornerFrame>
         </a>
     }
 }
