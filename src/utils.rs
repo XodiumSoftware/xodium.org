@@ -60,7 +60,6 @@ where
         .add_event_listener_with_callback(event, &fn_ref)
         .ok()?;
 
-    let event = event; // move static borrow into closure
     leptos::prelude::on_cleanup(move || {
         if let Some(window) = leptos::web_sys::window() {
             let _ = window.remove_event_listener_with_callback(event, &fn_ref);

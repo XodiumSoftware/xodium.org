@@ -20,7 +20,8 @@ Use this skill when the user wants to add a new page section to the xodium.org s
 7. Update `ARCHITECTURE.md`:
    - Add the section to the Page Layout list.
    - Add the section to the Sections table.
-8. Run `trunk build` to verify compilation.
+8. Run `cargo clippy --all-targets --all-features -- -D warnings` to ensure no lint issues.
+9. Run `trunk build` to verify compilation.
 
 ## Conventions
 

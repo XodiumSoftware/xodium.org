@@ -42,4 +42,4 @@ Update `ARCHITECTURE.md` if the code change would confuse someone reading the do
 
 ## Verification
 
-After updating, run `trunk build` to confirm the code still compiles. If `ARCHITECTURE.md` references new files, verify those files exist.
+After updating, run `cargo clippy --all-targets --all-features -- -D warnings` to ensure no lint issues. Then run `trunk build` to confirm the code still compiles. If `ARCHITECTURE.md` references new files, verify those files exist.

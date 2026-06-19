@@ -53,4 +53,4 @@ Use this skill when writing or reviewing Leptos components in the xodium.org CSR
 
 ## Verification
 
-Run `trunk build` after component changes. There are no automated tests, so manual browser verification with `trunk serve` is required.
+Run `cargo clippy --all-targets --all-features -- -D warnings` after component changes to catch lint issues. Then run `trunk build` to verify the WASM bundle compiles. There are no automated tests, so manual browser verification with `trunk serve` is required.

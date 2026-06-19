@@ -30,7 +30,8 @@ Use this skill when the user wants to add a reusable component to the xodium.org
    - Add `pub mod {component};` to `src/components/{category}/mod.rs`.
    - Add `pub use {category}::{component}::{Component};` to `src/components/mod.rs`.
 7. If the component replaces or extends existing behavior, update any call sites.
-8. Run `trunk build` to verify compilation.
+8. Run `cargo clippy --all-targets --all-features -- -D warnings` to ensure no lint issues.
+9. Run `trunk build` to verify compilation.
 
 ## Conventions
 

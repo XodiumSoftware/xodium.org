@@ -20,10 +20,10 @@ pub fn ParallaxLanding() -> impl IntoView {
             return;
         }
 
-        if let Some(window) = web_sys::window() {
-            if let Ok(scroll) = window.scroll_y() {
-                set_scroll_y.set(scroll);
-            }
+        if let Some(window) = web_sys::window()
+            && let Ok(scroll) = window.scroll_y()
+        {
+            set_scroll_y.set(scroll);
         }
 
         window_event_listener::<web_sys::Event, _>("scroll", move |_ev| {

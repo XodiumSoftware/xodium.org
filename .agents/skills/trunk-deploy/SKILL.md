@@ -43,11 +43,12 @@ trunk build --release
 
 Before considering the site ready to deploy:
 
-1. `trunk build --release` completes with no errors or warnings.
-2. `cargo doc --no-deps` generates docs if public APIs changed.
-3. `ARCHITECTURE.md` is up to date if layout, components, or API behavior changed.
-4. Browser console has no WASM panics when running `trunk serve`.
-5. GitHub API rate limit is respected; cache behavior is verified if changed.
+1. `cargo clippy --all-targets --all-features -- -D warnings` passes with no warnings.
+2. `trunk build --release` completes with no errors or warnings.
+3. `cargo doc --no-deps` generates docs if public APIs changed.
+4. `ARCHITECTURE.md` is up to date if layout, components, or API behavior changed.
+5. Browser console has no WASM panics when running `trunk serve`.
+6. GitHub API rate limit is respected; cache behavior is verified if changed.
 
 ## Cloudflare Pages
 

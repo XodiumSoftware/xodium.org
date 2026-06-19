@@ -64,12 +64,12 @@ pub fn Header() -> impl IntoView {
 
         observe_intersections(&elements, move |entries| {
             for entry in entries {
-                if entry.is_intersecting() {
-                    if let Some(target) = entry.target().dyn_ref::<web_sys::Element>() {
-                        let id = target.id();
-                        if !id.is_empty() {
-                            set_active_section.set(id);
-                        }
+                if entry.is_intersecting()
+                    && let Some(target) = entry.target().dyn_ref::<web_sys::Element>()
+                {
+                    let id = target.id();
+                    if !id.is_empty() {
+                        set_active_section.set(id);
                     }
                 }
             }
