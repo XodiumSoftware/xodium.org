@@ -53,7 +53,7 @@ jobs:
 
       - id: cache_dependencies
         name: Cache dependencies
-        uses: actions/cache@v5.0.5
+        uses: actions/cache@v6.0.0
         with:
           path: |
             ~/.cargo/registry
@@ -63,7 +63,7 @@ jobs:
 
       - id: cache_trunk
         name: Cache Trunk
-        uses: actions/cache@v5.0.5
+        uses: actions/cache@v6.0.0
         with:
           path: ~/.cargo/bin/trunk
           key: ${{ runner.os }}-trunk-latest
@@ -110,7 +110,7 @@ jobs:
 
       - id: cache_dependencies
         name: Cache dependencies
-        uses: actions/cache@v5.0.5
+        uses: actions/cache@v6.0.0
         with:
           path: |
             ~/.cargo/registry
@@ -162,7 +162,7 @@ jobs:
 
       - id: cache_dependencies
         name: Cache dependencies
-        uses: actions/cache@v5.0.5
+        uses: actions/cache@v6.0.0
         with:
           path: |
             ~/.cargo/registry
@@ -172,7 +172,7 @@ jobs:
 
       - id: cache_trunk
         name: Cache Trunk
-        uses: actions/cache@v5.0.5
+        uses: actions/cache@v6.0.0
         with:
           path: ~/.cargo/bin/trunk
           key: ${{ runner.os }}-trunk-latest
