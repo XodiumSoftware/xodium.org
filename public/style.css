@@ -11,6 +11,17 @@ html {
     scroll-behavior: smooth;
 }
 
+/* Consistent, theme-aware focus indicator for keyboard navigation */
+:focus-visible {
+    outline: 2px solid oklch(var(--color-primary));
+    outline-offset: 2px;
+}
+
+/* Remove default focus outline where our custom :focus-visible takes over */
+:focus:not(:focus-visible) {
+    outline: none;
+}
+
 .lift {
     transition:
         transform 0.1s ease,
