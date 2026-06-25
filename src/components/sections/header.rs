@@ -48,7 +48,7 @@ pub fn Header() -> impl IntoView {
         });
     });
 
-    // IntersectionObserver to track which section is in view
+    // IntersectionObserver to track which section is most visible
     Effect::new(move |_| {
         let Some(window) = web_sys::window() else {
             return;
@@ -62,16 +62,26 @@ pub fn Header() -> impl IntoView {
             .filter_map(|id| document.get_element_by_id(id))
             .collect();
 
-        observe_intersections(&elements, move |entries| {
-            for entry in entries {
-                if entry.is_intersecting()
-                    && let Some(target) = entry.target().dyn_ref::<web_sys::Element>()
-                {
-                    let id = target.id();
-                    if !id.is_empty() {
-                        set_active_section.set(id);
+        observe_intersections(&elements, 0.25, move |entries| {
+            let best = entries
+                .iter()
+                .filter_map(|entry| {
+                    let ratio = entry.intersection_ratio();
+                    if ratio <= 0.0 {
+                        return None;
                     }
-                }
+                    let target = entry.target();
+                    let target = target.dyn_ref::<web_sys::Element>()?;
+                    let id = target.id();
+                    if id.is_empty() {
+                        return None;
+                    }
+                    Some((id, ratio))
+                })
+                .max_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal));
+
+            if let Some((id, _)) = best {
+                set_active_section.set(id);
             }
         });
     });

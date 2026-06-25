@@ -73,10 +73,16 @@ where
 /// Observe the intersection of a set of elements and call the provided
 /// callback whenever the observed state changes.
 ///
+/// `threshold` is a value between 0.0 and 1.0 that controls how much of an
+/// element must be visible before the observer fires. A threshold of 0.0
+/// fires as soon as a single pixel is visible; 1.0 requires the entire
+/// element to be visible.
+///
 /// The observer is disconnected when the surrounding effect is cleaned up.
 /// Returns `None` if the observer could not be created.
 pub fn observe_intersections<F>(
     elements: &[leptos::web_sys::Element],
+    threshold: f64,
     mut callback: F,
 ) -> Option<()>
 where
@@ -98,7 +104,8 @@ where
     let _ = &window; // keep the window reference alive for the closure lifetime
 
     let options = leptos::web_sys::IntersectionObserverInit::new();
-    options.set_threshold(&js_sys::Array::of1(&js_sys::Number::from(0.5)));
+    let threshold = threshold.clamp(0.0, 1.0);
+    options.set_threshold(&js_sys::Array::of1(&js_sys::Number::from(threshold)));
 
     let observer = leptos::web_sys::IntersectionObserver::new_with_options(
         closure.0.as_ref().unchecked_ref(),

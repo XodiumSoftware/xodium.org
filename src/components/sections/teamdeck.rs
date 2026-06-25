@@ -43,7 +43,7 @@ pub fn TeamDeckSection() -> impl IntoView {
             return;
         };
 
-        observe_intersections(&[section], move |entries| {
+        observe_intersections(&[section], 0.5, move |entries| {
             for entry in entries {
                 if entry.is_intersecting() {
                     set_is_visible.set(true);
