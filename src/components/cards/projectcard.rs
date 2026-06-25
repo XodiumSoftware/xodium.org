@@ -83,12 +83,20 @@ pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
     let i18n = use_i18n();
     let link = props.link.clone().unwrap_or_else(|| "#".to_string());
     let stargazers_url = format!("{}/stargazers", link);
-    let language_opt = props.language.clone();
-    let language_color_class = language_opt.as_deref().map(language_color);
     let stars = props.stargazers_count;
     let docs_url = props
         .has_pages
         .then(|| format!("https://{}.xodium.org", props.title.to_lowercase()));
+    let language_badge = props.language.as_ref().map(|language| {
+        let color = language_color(language);
+        let language = language.clone();
+        view! {
+            <>
+                <LanguageCircle language=language.clone() color=color />
+                <span>{language}</span>
+            </>
+        }
+    });
 
     view! {
         <article class="btn-lift hover:border-primary block h-full p-2">
@@ -129,17 +137,7 @@ pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
 
                         <div class="card-actions justify-between items-center mt-auto">
                             <div class="flex items-center gap-1 text-base-content/60 text-sm">
-                                {language_opt
-                                    .clone()
-                                    .zip(language_color_class)
-                                    .map(|(language, color)| {
-                                        view! {
-                                            <>
-                                                <LanguageCircle language=language.clone() color=color />
-                                                <span>{language}</span>
-                                            </>
-                                        }
-                                    })}
+                                {language_badge}
                             </div>
                             <div class="flex items-center gap-3">
                             {docs_url.map(|url| view! {

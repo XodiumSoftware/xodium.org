@@ -53,6 +53,17 @@ fn cache_set<T: Serialize>(key: &str, data: &T) {
     }
 }
 
+fn format_api_error(status: u16) -> String {
+    match status {
+        403 => "GitHub API rate limit reached. Please try again later.".to_string(),
+        404 => "Organization or resource not found on GitHub.".to_string(),
+        500 | 502 | 503 | 504 => {
+            "GitHub is temporarily unavailable. Please try again later.".to_string()
+        }
+        _ => format!("Failed to load data from GitHub (status {status}). Please try again later."),
+    }
+}
+
 async fn fetch<T: for<'de> Deserialize<'de> + Serialize>(endpoint: &str) -> Result<T, String> {
     let cache_key = format!("xodium:{endpoint}");
 
@@ -77,12 +88,12 @@ async fn fetch<T: for<'de> Deserialize<'de> + Serialize>(endpoint: &str) -> Resu
         };
 
         if response.status() >= 500 {
-            last_err = format!("GitHub API returned {}", response.status());
+            last_err = format_api_error(response.status());
             continue;
         }
 
         if !response.ok() {
-            return Err(format!("GitHub API returned {}", response.status()));
+            return Err(format_api_error(response.status()));
         }
 
         let data = response.json::<T>().await.map_err(|e| e.to_string())?;

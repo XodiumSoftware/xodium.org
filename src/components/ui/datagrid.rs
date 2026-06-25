@@ -1,4 +1,30 @@
 use leptos::prelude::*;
+use std::time::Duration;
+
+/// Spinner that only appears after a short delay to avoid flashes on fast networks.
+#[component]
+fn DelayedLoading() -> impl IntoView {
+    let (show, set_show) = signal(false);
+
+    Effect::new(move |_| {
+        leptos::task::spawn_local(async move {
+            gloo_timers::future::sleep(Duration::from_millis(300)).await;
+            set_show.set(true);
+        });
+    });
+
+    view! {
+        {move || {
+            show.get().then(|| {
+                view! {
+                    <div class="flex items-center justify-center text-center">
+                        <span class="loading loading-spinner loading-lg text-primary"></span>
+                    </div>
+                }
+            })
+        }}
+    }
+}
 
 pub fn data_grid<T, IV, F, R, E, EV>(
     resource: LocalResource<Result<Vec<T>, String>>,
@@ -16,13 +42,7 @@ where
     EV: IntoView + 'static,
 {
     view! {
-        <Suspense fallback=move || {
-            view! {
-                <div class="flex items-center justify-center text-center">
-                    <span class="loading loading-spinner loading-lg text-primary"></span>
-                </div>
-            }
-        }>
+        <Suspense fallback=DelayedLoading>
             {move || match resource.get() {
                 None => ().into_any(),
                 Some(Err(err)) => {

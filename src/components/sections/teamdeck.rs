@@ -137,7 +137,7 @@ pub fn TeamDeckSection() -> impl IntoView {
                     <ul class="team-deck">
                         {data_grid(
                             resource,
-                            move || t_string!(i18n, team.empty),
+                            move || t!(i18n, team.empty),
                             move |members: Vec<Member>| {
                                 let member_count = members.len();
                                 let total_count = member_count + 1;
