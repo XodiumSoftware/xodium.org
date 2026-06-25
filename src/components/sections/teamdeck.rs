@@ -5,6 +5,7 @@ use crate::github::{Member, fetch_members};
 use crate::i18n::*;
 use crate::utils::{observe_intersections, window_event_listener};
 use leptos::prelude::*;
+use leptos::wasm_bindgen::JsCast;
 use leptos::web_sys;
 
 #[component]
@@ -14,6 +15,7 @@ pub fn TeamDeckSection() -> impl IntoView {
     let (count, set_count) = signal(8usize);
     let (retry_count, set_retry_count) = signal(0u32);
     let (is_visible, set_is_visible) = signal(false);
+    let (should_focus_front, set_should_focus_front) = signal(false);
 
     let resource = LocalResource::new(move || {
         let _ = retry_count.get();
@@ -28,6 +30,7 @@ pub fn TeamDeckSection() -> impl IntoView {
         let total = count.get();
         if total > 0 {
             set_rotation.set((rotation.get() + total - 1) % total);
+            set_should_focus_front.set(true);
         }
     };
 
@@ -53,6 +56,40 @@ pub fn TeamDeckSection() -> impl IntoView {
                 }
             }
         });
+    });
+
+    // Move focus to the front card after each rotation
+    Effect::new(move |_| {
+        if !should_focus_front.get() {
+            return;
+        }
+        set_should_focus_front.set(false);
+
+        let Some(window) = web_sys::window() else {
+            return;
+        };
+        let Some(document) = window.document() else {
+            return;
+        };
+
+        let total = count.get();
+        let rot = rotation.get();
+        if total == 0 {
+            return;
+        }
+
+        // The title card is front when rotation % total == 0.
+        // Member card with 1-based index i is front when (i + rot) % total == 0.
+        let front_id = if rot % total == 0 {
+            "team-card-title".to_string()
+        } else {
+            let front_idx = (total - rot) % total;
+            format!("team-card-{}", front_idx)
+        };
+
+        if let Some(el) = document.get_element_by_id(&front_id) {
+            let _ = el.dyn_into::<web_sys::HtmlElement>().map(|h| h.focus());
+        }
     });
 
     // Global keydown listener that fires when the team section is in view
@@ -102,6 +139,7 @@ pub fn TeamDeckSection() -> impl IntoView {
                                         let login = member.login.clone();
                                         view! {
                                             <li
+                                                id=format!("team-card-{}", card_idx)
                                                 class="team-deck-card"
                                                 tabindex="0"
                                                 role="button"
@@ -127,6 +165,7 @@ pub fn TeamDeckSection() -> impl IntoView {
                         )}
                         // Title card (always present, rotates through positions)
                         <li
+                            id="team-card-title"
                             class="team-deck-card team-deck-title"
                             tabindex="0"
                             role="button"
