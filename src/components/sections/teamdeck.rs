@@ -98,9 +98,21 @@ pub fn TeamDeckSection() -> impl IntoView {
         let is_visible = is_visible;
 
         window_event_listener::<web_sys::KeyboardEvent, _>("keydown", move |ev| {
-            if (ev.key() == "Enter" || ev.key() == " ") && is_visible.get() {
+            if !is_visible.get() {
+                return;
+            }
+
+            let key = ev.key();
+            if key == " " {
                 ev.prevent_default();
                 rotate();
+            } else if key == "Enter" {
+                ev.prevent_default();
+                let _ = web_sys::window()
+                    .and_then(|w| w.document())
+                    .and_then(|d| d.active_element())
+                    .and_then(|el| el.dyn_into::<web_sys::HtmlElement>().ok())
+                    .map(|el| el.click());
             }
         });
     });
@@ -137,6 +149,7 @@ pub fn TeamDeckSection() -> impl IntoView {
                                     .map(|(idx, member)| {
                                         let card_idx = idx + 1;
                                         let login = member.login.clone();
+                                        let profile_url = member.html_url.clone();
                                         view! {
                                             <li
                                                 id=format!("team-card-{}", card_idx)
@@ -147,6 +160,9 @@ pub fn TeamDeckSection() -> impl IntoView {
                                                 data-deck-pos=move || {
                                                     let total = count.get();
                                                     (card_idx + rotation.get()) % total
+                                                }
+                                                on:click=move |_| {
+                                                    let _ = web_sys::window().map(|w| w.open_with_url(&profile_url));
                                                 }
                                             >
                                                 <TeamCard props=TeamCardProperties {
@@ -194,9 +210,10 @@ pub fn TeamDeckSection() -> impl IntoView {
                 <div class="mt-6 hidden md:flex items-center justify-center gap-2 text-sm text-base-content/50 font-mono select-none">
                     <span>{t!(i18n, team.keyboard_hint_press)}</span>
                     <kbd class="inline-flex items-center justify-center px-2 py-0.5 min-w-[1.5rem] rounded border border-base-content/20 bg-base-200 shadow-[0_2px_0_0_rgba(0,0,0,0.3)] text-xs font-sans">{t!(i18n, team.keyboard_hint_space)}</kbd>
-                    <span>{t!(i18n, team.keyboard_hint_or)}</span>
-                    <kbd class="inline-flex items-center justify-center px-2 py-0.5 min-w-[1.5rem] rounded border border-base-content/20 bg-base-200 shadow-[0_2px_0_0_rgba(0,0,0,0.3)] text-xs font-sans">{t!(i18n, team.keyboard_hint_enter)}</kbd>
                     <span>{t!(i18n, team.keyboard_hint_to_rotate)}</span>
+                    <span class="mx-1">"·"</span>
+                    <kbd class="inline-flex items-center justify-center px-2 py-0.5 min-w-[1.5rem] rounded border border-base-content/20 bg-base-200 shadow-[0_2px_0_0_rgba(0,0,0,0.3)] text-xs font-sans">{t!(i18n, team.keyboard_hint_enter)}</kbd>
+                    <span>{t!(i18n, team.keyboard_hint_enter_to_open)}</span>
                 </div>
             </div>
         </section>

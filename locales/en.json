@@ -33,9 +33,10 @@
         "deck_label": "Team deck",
         "keyboard_hint_press": "Press",
         "keyboard_hint_space": "Space",
-        "keyboard_hint_or": "or",
+        "keyboard_hint_to_rotate": "to rotate",
         "keyboard_hint_enter": "Enter",
-        "keyboard_hint_to_rotate": "to rotate"
+        "keyboard_hint_enter_to_open": "to open",
+        "keyboard_hint_or": "or"
     },
     "footer": {
         "about": "About",
