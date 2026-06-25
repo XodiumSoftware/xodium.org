@@ -5,6 +5,7 @@ pub fn data_grid<T, IV, F, R, E, EV>(
     empty_message: E,
     render: F,
     on_retry: Option<R>,
+    retry_label: &'static str,
 ) -> impl IntoView
 where
     T: Clone + Send + Sync + 'static,
@@ -31,7 +32,7 @@ where
                                 class="btn btn-primary btn-sm mt-4"
                                 on:click=move |_| retry()
                             >
-                                "Retry"
+                                {retry_label}
                             </button>
                         }
                     });

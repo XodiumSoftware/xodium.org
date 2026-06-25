@@ -56,6 +56,7 @@ pub fn ProjectsSection() -> impl IntoView {
                                 }
                             },
                             Some(retry),
+                            t_string!(i18n, projects.retry),
                         )}
                     </div>
                 </div>

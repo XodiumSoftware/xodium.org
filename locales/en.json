@@ -28,6 +28,7 @@
     "team": {
         "title": "THE TEAM",
         "empty": "No team members found.",
+        "retry": "Retry",
         "rotate_label": "Rotate team deck",
         "deck_label": "Team deck",
         "keyboard_hint_press": "Press",

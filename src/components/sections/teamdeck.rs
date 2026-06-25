@@ -123,6 +123,7 @@ pub fn TeamDeckSection() -> impl IntoView {
                                     .collect_view()
                             },
                             Some(retry),
+                            t_string!(i18n, team.retry),
                         )}
                         // Title card (always present, rotates through positions)
                         <li
