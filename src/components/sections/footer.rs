@@ -2,10 +2,28 @@ use crate::i18n::*;
 use crate::utils::clean_sha;
 use leptos::prelude::*;
 
-const FOOTER_LINKS: &[(&str, &str)] = &[
-    ("https://github.com/XodiumSoftware", "About"),
-    ("https://www.gnu.org/licenses/agpl-3.0.html", "Licensing"),
-    ("mailto:info@xodium.org", "Contact"),
+struct FooterLink {
+    href: &'static str,
+    label_key: &'static str,
+    is_external: bool,
+}
+
+const FOOTER_LINKS: &[FooterLink] = &[
+    FooterLink {
+        href: "https://github.com/XodiumSoftware",
+        label_key: "footer.about",
+        is_external: true,
+    },
+    FooterLink {
+        href: "https://www.gnu.org/licenses/agpl-3.0.html",
+        label_key: "footer.licensing",
+        is_external: true,
+    },
+    FooterLink {
+        href: "mailto:info@xodium.org",
+        label_key: "footer.contact",
+        is_external: true,
+    },
 ];
 
 const GIT_SHA: &str = env!("GIT_SHA");
@@ -42,19 +60,23 @@ pub fn Footer() -> impl IntoView {
                 <nav class="flex flex-row gap-4">
                     {FOOTER_LINKS
                         .iter()
-                        .copied()
-                        .map(|(href, text)| {
-                            let is_external = href.starts_with("http");
-                            let target = if is_external { Some("_blank") } else { None };
-                            let rel = if is_external { Some("noopener noreferrer") } else { None };
+                        .map(|link| {
+                            let label = match link.label_key {
+                                "footer.about" => t_string!(i18n, footer.about),
+                                "footer.licensing" => t_string!(i18n, footer.licensing),
+                                "footer.contact" => t_string!(i18n, footer.contact),
+                                _ => link.label_key,
+                            };
+                            let target = if link.is_external { Some("_blank") } else { None };
+                            let rel = if link.is_external { Some("noopener noreferrer") } else { None };
                             view! {
                                 <a
-                                    href=href
+                                    href=link.href
                                     target=target
                                     rel=rel
                                     class="link link-hover link-primary"
                                 >
-                                    {text}
+                                    {label}
                                 </a>
                             }
                         })
