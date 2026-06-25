@@ -24,7 +24,7 @@ fn InnerApp() -> impl IntoView {
             </a>
             <Header />
 
-        <main id="main-content">
+        <main id="main-content" tabindex="-1">
         <LandingSection />
 
         // Line divider between hero and projects
