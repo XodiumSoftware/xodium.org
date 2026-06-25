@@ -35,8 +35,7 @@ impl From<Repo> for ProjectCardProperties {
 }
 
 #[component]
-fn LanguageCircle(language: String) -> impl IntoView {
-    let color = language_color(&language);
+fn LanguageCircle(language: String, color: &'static str) -> impl IntoView {
     view! { <span class=format!("badge badge-sm {} mr-1", color) title=language /> }
 }
 
@@ -72,6 +71,7 @@ pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
     let link = props.link.clone().unwrap_or_else(|| "#".to_string());
     let stargazers_url = format!("{}/stargazers", link);
     let language_opt = props.language.clone();
+    let language_color_class = language_opt.as_deref().map(language_color);
     let stars = props.stargazers_count;
     let docs_url = props
         .has_pages
@@ -116,18 +116,17 @@ pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
 
                         <div class="card-actions justify-between items-center mt-auto">
                             <div class="flex items-center gap-1 text-base-content/60 text-sm">
-                                {move || {
-                                    language_opt
-                                        .clone()
-                                        .map(|language| {
-                                            view! {
-                                                <>
-                                                    <LanguageCircle language=language.clone() />
-                                                    <span>{language}</span>
-                                                </>
-                                            }
-                                        })
-                                }}
+                                {language_opt
+                                    .clone()
+                                    .zip(language_color_class)
+                                    .map(|(language, color)| {
+                                        view! {
+                                            <>
+                                                <LanguageCircle language=language.clone() color=color />
+                                                <span>{language}</span>
+                                            </>
+                                        }
+                                    })}
                             </div>
                             <div class="flex items-center gap-3">
                             {docs_url.map(|url| view! {
