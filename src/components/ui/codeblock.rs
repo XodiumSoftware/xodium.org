@@ -134,6 +134,24 @@ pub fn CodeBlock() -> impl IntoView {
         };
 
         window_event_listener::<web_sys::KeyboardEvent, _>("keydown", move |ev| {
+            if ev.repeat() {
+                return;
+            }
+
+            // Ignore shortcuts while typing in an input, textarea, or contenteditable element
+            if let Some(active) = document.active_element() {
+                let tag = active.tag_name().to_lowercase();
+                let is_editable = tag == "input"
+                    || tag == "textarea"
+                    || tag == "select"
+                    || active
+                        .get_attribute("contenteditable")
+                        .is_some_and(|v| !v.is_empty() && v != "false");
+                if is_editable {
+                    return;
+                }
+            }
+
             let key = ev.key().to_lowercase();
             if key == "g" {
                 ev.prevent_default();
