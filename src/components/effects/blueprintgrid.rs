@@ -121,39 +121,3 @@ pub fn BlueprintGrid() -> impl IntoView {
         </div>
     }
 }
-
-/// Alternative: Blueprint grid with animated scanline effect
-#[component]
-pub fn BlueprintGridAnimated() -> impl IntoView {
-    view! {
-        <div class="absolute inset-0 h-full w-full pointer-events-none overflow-hidden">
-            {/* Base grid pattern */}
-            <div class="absolute inset-0 blueprint-grid" />
-
-            {/* Scanline animation */}
-            <div class="absolute inset-0 blueprint-scanline" />
-
-            {/* Coordinate axes */}
-            <svg
-                class="absolute inset-0 w-full h-full"
-                xmlns="http://www.w3.org/2000/svg"
-            >
-                <line
-                    x1="0" y1="50%" x2="100%" y2="50%"
-                    stroke="var(--color-primary)"
-                    stroke-width="1"
-                    stroke-opacity="0.3"
-                />
-                <line
-                    x1="50%" y1="0" x2="50%" y2="100%"
-                    stroke="var(--color-primary)"
-                    stroke-width="1"
-                    stroke-opacity="0.3"
-                />
-            </svg>
-
-            {/* Radial mask */}
-            <div class="absolute inset-0 blueprint-mask" />
-        </div>
-    }
-}

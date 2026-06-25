@@ -1,28 +1,5 @@
 use leptos::prelude::*;
 
-/// Honeycomb hexagon grid layout for cards
-/// Creates a masonry-style hexagonal grid
-#[component]
-pub fn HexGrid(children: Children) -> impl IntoView {
-    view! {
-        <div class="hex-grid-container">
-            {children()}
-        </div>
-    }
-}
-
-/// Individual hexagonal card wrapper
-#[component]
-pub fn HexCard(children: Children, #[prop(optional)] class: &'static str) -> impl IntoView {
-    view! {
-        <div class={format!("hex-card {}", class)}>
-            <div class="hex-card-inner">
-                {children()}
-            </div>
-        </div>
-    }
-}
-
 /// Hexagon background pattern for sections
 #[component]
 pub fn HexPattern(#[prop(optional)] class: &'static str) -> impl IntoView {
