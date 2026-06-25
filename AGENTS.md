@@ -194,7 +194,35 @@ build.rs                       # Build script
 ```rust
 #[derive(Clone)]
 pub struct ProjectCardProperties {
-    pub repo: Repo,
+    pub title: String,
+    pub description: String,
+    pub link: Option<String>,
+    pub language: Option<String>,
+    pub stargazers_count: u32,
+    pub has_pages: bool,
+    pub topics: Vec<String>,
+}
+```
+
+**Props with `From` conversion:**
+
+```rust
+impl From<Repo> for ProjectCardProperties {
+    fn from(repo: Repo) -> Self {
+        let description = repo
+            .description
+            .filter(|d| !d.trim().is_empty())
+            .unwrap_or_else(|| "(No description)".to_string());
+        Self {
+            title: repo.name,
+            description,
+            link: Some(repo.html_url),
+            language: repo.language,
+            stargazers_count: repo.stargazers_count,
+            has_pages: repo.has_pages,
+            topics: repo.topics,
+        }
+    }
 }
 ```
 
@@ -211,10 +239,19 @@ fetch_repos().await.unwrap_or_default()
 ```rust
 view! {
     {data_grid(
-        repos,
-        |repos| view! { <ProjectsSection /> },
-        "Loading projects...",
-        "Failed to load projects"
+        resource,
+        move || "No projects found.",
+        |projects: Vec<Repo>| {
+            view! {
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {projects
+                        .into_iter()
+                        .map(|project| view! { <ProjectCard props=project.into() /> })
+                        .collect_view()}
+                </div>
+            }
+        },
+        Some(retry),
     )}
 }
 ```
