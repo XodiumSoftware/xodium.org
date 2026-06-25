@@ -22,6 +22,9 @@ leptos_i18n_build = "0.6.2"
 wasm-bindgen-test = "0.3"
 
 [package.metadata.cargo-machete]
+# wasm-bindgen is required at runtime by leptos/wasm-bindgen internals, but our
+# code only accesses it through leptos re-exports (e.g. leptos::wasm_bindgen::JsCast).
+# cargo-machete does not detect this indirect usage, so keep it ignored.
 ignored = ["wasm-bindgen"]
 
 [profile.release]
