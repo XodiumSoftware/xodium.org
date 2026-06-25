@@ -91,23 +91,25 @@ pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
         .then(|| format!("https://{}.xodium.org", props.title.to_lowercase()));
 
     view! {
-        <a
-            href=link
-            target="_blank"
-            rel="noopener noreferrer"
-            class="btn-lift hover:border-primary block h-full p-2"
-        >
+        <article class="btn-lift hover:border-primary block h-full p-2">
             <CornerFrame style="square" class="h-full">
                 <div class="card bg-ghost h-full rounded-none">
                     <div class="card-body">
                         <h2 class="card-title text-primary">
-                                <img
-                                    src="/icons/github-repo.svg"
-                                    alt=move || t_string!(i18n, projects.card.repo_alt)
-                                    class="w-5 h-5 text-base-content/60 invert"
-                                />
+                            <img
+                                src="/icons/github-repo.svg"
+                                alt=move || t_string!(i18n, projects.card.repo_alt)
+                                class="w-5 h-5 text-base-content/60 invert"
+                            />
+                            <a
+                                href=link
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
+                            >
                                 {props.title}
-                            </h2>
+                            </a>
+                        </h2>
 
                         <div class="flex flex-wrap gap-1 mb-2">
                             {props
@@ -146,7 +148,6 @@ pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
                                     href=url
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    on:click=|e| e.stop_propagation()
                                     class="flex items-center gap-1 text-base-content/60 hover:text-primary text-sm transition-colors"
                                     title="Documentation"
                                 >
@@ -160,7 +161,6 @@ pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
                                         href=stargazers_url
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        on:click=|e| e.stop_propagation()
                                         class="flex items-center gap-1 text-base-content/60 hover:text-primary text-sm transition-colors"
                                     >
                                         <StarIcon />
@@ -182,7 +182,7 @@ pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
                     </div>
                 </div>
             </CornerFrame>
-        </a>
+        </article>
     }
 }
 
