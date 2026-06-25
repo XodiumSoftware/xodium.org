@@ -1,3 +1,6 @@
+@source "../src";
+@source "../index.html";
+
 @import "tailwindcss";
 
 /*noinspection CssUnknownTarget*/
