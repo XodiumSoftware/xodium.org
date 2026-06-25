@@ -111,6 +111,11 @@ All GitHub data fetching is centralized here.
 | Item | Role |
 |------|------|
 | `SendWrapper<T>` | Wraps `wasm_bindgen::closure::Closure` for use with APIs requiring `Send + Sync` (e.g. Leptos `on_cleanup`). Sound because WASM is single-threaded. |
+| `prefers_reduced_motion()` | Returns `true` if the user has requested reduced motion via `prefers-reduced-motion: reduce`. |
+| `window_event_listener` | Adds a typed listener to `window`, cleaning it up automatically when the surrounding effect is dropped. |
+| `observe_intersections` | Creates an `IntersectionObserver` for the supplied elements with a configurable threshold, disconnecting on cleanup. |
+| `clean_sha(sha)` | Strips a `-dirty` suffix from a Git SHA, if present. |
+| `language_color(language)` | Maps known programming language names to Tailwind badge color classes. |
 
 ### Props Convention
 
