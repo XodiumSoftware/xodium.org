@@ -33,7 +33,11 @@ const GITHUB_REPO_URL: &str = "https://github.com/XodiumSoftware/xodium.org/comm
 pub fn Footer() -> impl IntoView {
     let i18n = use_i18n();
     let current_year = js_sys::Date::new_0().get_full_year();
-    let commit_url = format!("{GITHUB_REPO_URL}/{}", clean_sha(GIT_SHA));
+    let commit_url = if GIT_SHA == "unknown" {
+        None
+    } else {
+        Some(format!("{GITHUB_REPO_URL}/{}", clean_sha(GIT_SHA)))
+    };
 
     view! {
         <footer class="text-base-content px-6 lg:px-8 py-4">
@@ -47,14 +51,16 @@ pub fn Footer() -> impl IntoView {
                             </a>
                             {t_string!(i18n, footer.tagline)}
                         </p>
-                        <a
-                            href={commit_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="link link-hover text-base-content/50 hover:link-primary font-mono text-sm md:ml-1"
-                        >
-                            {format!("#{GIT_SHA}")}
-                        </a>
+                        {commit_url.map(|url| view! {
+                            <a
+                                href={url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="link link-hover text-base-content/50 hover:link-primary font-mono text-sm md:ml-1"
+                            >
+                                {format!("#{GIT_SHA}")}
+                            </a>
+                        })}
                     </div>
                 </aside>
                 <nav class="flex flex-row gap-4">
