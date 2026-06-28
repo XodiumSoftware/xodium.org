@@ -211,7 +211,7 @@ pub fn TeamDeckSection() -> impl IntoView {
                     <span>{t!(i18n, team.keyboard_hint_press)}</span>
                     <kbd class="inline-flex items-center justify-center px-2 py-0.5 min-w-[1.5rem] rounded border border-base-content/20 bg-base-200 shadow-kbd text-xs font-sans">{t!(i18n, team.keyboard_hint_space)}</kbd>
                     <span>{t!(i18n, team.keyboard_hint_to_rotate)}</span>
-                    <span class="mx-1">"·"</span>
+                    <span class="mx-1" aria-hidden="true">"·"</span>
                     <kbd class="inline-flex items-center justify-center px-2 py-0.5 min-w-[1.5rem] rounded border border-base-content/20 bg-base-200 shadow-kbd text-xs font-sans">{t!(i18n, team.keyboard_hint_enter)}</kbd>
                     <span>{t!(i18n, team.keyboard_hint_enter_to_open)}</span>
                 </div>

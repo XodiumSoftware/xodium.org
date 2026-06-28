@@ -203,6 +203,7 @@ pub fn Header() -> impl IntoView {
                                                     link.hover_color,
                                                 )
                                                 style=format!("--mask-url: url('{}')", link.icon_path)
+                                                aria-hidden="true"
                                             />
                                         </a>
                                     </li>
