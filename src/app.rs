@@ -1,5 +1,7 @@
-use crate::components::*;
-use crate::i18n::*;
+use crate::components::{
+    Footer, Header, LandingSection, LineDraw, ProjectsSection, TeamDeckSection,
+};
+use crate::i18n::{I18nContextProvider, t, use_i18n};
 use leptos::prelude::*;
 
 #[component]

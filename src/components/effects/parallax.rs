@@ -40,21 +40,21 @@ pub fn ParallaxLanding() -> impl IntoView {
         if reduced_motion.get() {
             String::new()
         } else {
-            format!("translateY({}px)", scroll_y.get() * 0.1)
+            format!("translateY({}px)", scroll_y.get().mul_add(0.1, 0.0))
         }
     };
     let layer2_transform = move || {
         if reduced_motion.get() {
             String::new()
         } else {
-            format!("translateY({}px)", scroll_y.get() * 0.3)
+            format!("translateY({}px)", scroll_y.get().mul_add(0.3, 0.0))
         }
     };
     let layer3_transform = move || {
         if reduced_motion.get() {
             String::new()
         } else {
-            format!("translateY({}px)", scroll_y.get() * 0.5)
+            format!("translateY({}px)", scroll_y.get().mul_add(0.5, 0.0))
         }
     };
 

@@ -4,7 +4,7 @@ use crate::components::effects::sectionfade::FadeOverlay;
 use crate::components::ui::cornerframe::CornerFrame;
 use crate::components::ui::datagrid::data_grid;
 use crate::github::{Repo, fetch_repos};
-use crate::i18n::*;
+use crate::i18n::{t, t_string, use_i18n};
 use leptos::prelude::*;
 
 #[component]

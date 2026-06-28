@@ -31,8 +31,7 @@ pub fn prefers_reduced_motion() -> bool {
     leptos::web_sys::window()
         .and_then(|w| w.match_media("(prefers-reduced-motion: reduce)").ok())
         .flatten()
-        .map(|mql| mql.matches())
-        .unwrap_or(false)
+        .is_some_and(|mql| mql.matches())
 }
 
 /// Add a listener to the browser `window` and automatically remove it when

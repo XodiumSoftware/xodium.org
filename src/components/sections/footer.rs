@@ -1,4 +1,4 @@
-use crate::i18n::*;
+use crate::i18n::{t_string, use_i18n};
 use crate::utils::clean_sha;
 use leptos::prelude::*;
 
@@ -33,7 +33,7 @@ const GITHUB_REPO_URL: &str = "https://github.com/XodiumSoftware/xodium.org/comm
 pub fn Footer() -> impl IntoView {
     let i18n = use_i18n();
     let current_year = js_sys::Date::new_0().get_full_year();
-    let commit_url = format!("{}/{}", GITHUB_REPO_URL, clean_sha(GIT_SHA));
+    let commit_url = format!("{GITHUB_REPO_URL}/{}", clean_sha(GIT_SHA));
 
     view! {
         <footer class="text-base-content px-6 lg:px-8 py-4">
@@ -41,11 +41,11 @@ pub fn Footer() -> impl IntoView {
                 <aside class="max-md:w-full max-md:text-center" style="container-type: inline-size">
                     <div class="flex flex-col md:flex-row md:items-center gap-1 md:gap-0">
                         <p class="font-bold whitespace-nowrap max-md:text-[clamp(0.5rem,3.1cqw,1rem)]">
-                            {format!("© {} ", current_year)}
+                            {format!("© {current_year} ")}
                             <a href="/" class="link link-hover link-primary">
-                                {t!(i18n, footer.company_name)}
+                                {t_string!(i18n, footer.company_name)}
                             </a>
-                            {t!(i18n, footer.tagline)}
+                            {t_string!(i18n, footer.tagline)}
                         </p>
                         <a
                             href={commit_url}
@@ -53,7 +53,7 @@ pub fn Footer() -> impl IntoView {
                             rel="noopener noreferrer"
                             class="link link-hover text-base-content/50 hover:link-primary font-mono text-sm md:ml-1"
                         >
-                            {format!("#{}", GIT_SHA)}
+                            {format!("#{GIT_SHA}")}
                         </a>
                     </div>
                 </aside>

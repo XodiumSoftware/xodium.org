@@ -2,7 +2,7 @@ use crate::components::cards::teamcard::{TeamCard, TeamCardProperties};
 use crate::components::ui::cornerframe::CornerFrame;
 use crate::components::ui::datagrid::data_grid;
 use crate::github::{Member, fetch_members};
-use crate::i18n::*;
+use crate::i18n::{t, t_string, use_i18n};
 use crate::utils::{observe_intersections, window_event_listener};
 use leptos::prelude::*;
 use leptos::wasm_bindgen::JsCast;
@@ -84,7 +84,7 @@ pub fn TeamDeckSection() -> impl IntoView {
             "team-card-title".to_string()
         } else {
             let front_idx = (total - rot) % total;
-            format!("team-card-{}", front_idx)
+            format!("team-card-{front_idx}")
         };
 
         if let Some(el) = document.get_element_by_id(&front_id) {
@@ -152,11 +152,11 @@ pub fn TeamDeckSection() -> impl IntoView {
                                         let profile_url = member.html_url.clone();
                                         view! {
                                             <li
-                                                id=format!("team-card-{}", card_idx)
+                                                id=format!("team-card-{card_idx}")
                                                 class="team-deck-card"
                                                 tabindex="0"
                                                 role="button"
-                                                aria-label=format!("{} - {}", login, t_string!(i18n, team.rotate_label))
+                                                aria-label=format!("{login} - {}", t_string!(i18n, team.rotate_label))
                                                 data-deck-pos=move || {
                                                     let total = count.get();
                                                     (card_idx + rotation.get()) % total

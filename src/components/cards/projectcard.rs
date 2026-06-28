@@ -1,9 +1,8 @@
 use crate::components::ui::cornerframe::CornerFrame;
 use crate::github::Repo;
-use crate::i18n::*;
+use crate::i18n::{t, t_string, use_i18n};
 use crate::utils::language_color;
 use leptos::prelude::*;
-use leptos_i18n::t_string;
 
 #[derive(Clone)]
 pub struct ProjectCardProperties {
@@ -82,7 +81,7 @@ fn DocsIcon() -> impl IntoView {
 pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
     let i18n = use_i18n();
     let link = props.link.clone().unwrap_or_else(|| "#".to_string());
-    let stargazers_url = format!("{}/stargazers", link);
+    let stargazers_url = format!("{link}/stargazers");
     let stars = props.stargazers_count;
     let docs_url = props
         .has_pages

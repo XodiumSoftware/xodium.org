@@ -1,4 +1,4 @@
-use crate::i18n::*;
+use crate::i18n::{t, use_i18n};
 use crate::utils::{prefers_reduced_motion, window_event_listener};
 use leptos::prelude::*;
 use leptos::task::spawn_local;
@@ -9,7 +9,7 @@ use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
 
-const ASCII_ART: &str = r#"
+const ASCII_ART: &str = r"
          ,-.--,  _,.---._                 .=-.-.                   ___
 .--.-.  /=/, .',-.' , -  `.   _,..---._  /==/_ /.--.-. .-.-..-._ .='.'\
 \==\ -\/=/- / /==/_,  ,  - \/==/,   -  \|==|, |/==/ -|/=/  /==/ \|==|  |
@@ -19,7 +19,7 @@ const ASCII_ART: &str = r#"
 /==/, .--, - \\==\ -    ,_ /|==|  '='   /==|- ||==|-   ,   /==| _ /\   |
 \==\- \/=/ , / '.='. -   .' |==|-,   _`//==/. //==/ , _  .'/==/  / / , /
  `--`-'  `--`    `--`--''   `-.`.____.' `--`-` `--`..---'  `--`./  `--`
-"#;
+";
 
 #[component]
 pub fn CodeBlock() -> impl IntoView {

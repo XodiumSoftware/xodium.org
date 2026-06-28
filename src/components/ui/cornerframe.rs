@@ -8,7 +8,7 @@ pub fn CornerFrame(
     #[prop(default = false)] black: bool,
 ) -> impl IntoView {
     // Determine bracket characters based on style
-    let (bracket_tl, bracket_tr, bracket_bl, bracket_br) = match style {
+    let (top_left, top_right, bottom_left, bottom_right) = match style {
         "square" => ("┌", "┐", "└", "┘"),
         "curly" => ("╭", "╮", "╰", "╯"),
         _ => ("⟨", "⟩", "⟨", "⟩"), // angle brackets (default)
@@ -23,20 +23,20 @@ pub fn CornerFrame(
     view! {
         <div class={format!("relative {}", class)}>
             // Top-left bracket
-            <span class={format!("{} -top-2 -left-1", corner_class)}>
-                {bracket_tl}
+            <span class={format!("{corner_class} -top-2 -left-1")}>
+                {top_left}
             </span>
             // Top-right bracket
-            <span class={format!("{} -top-2 -right-1", corner_class)}>
-                {bracket_tr}
+            <span class={format!("{corner_class} -top-2 -right-1")}>
+                {top_right}
             </span>
             // Bottom-left bracket
-            <span class={format!("{} -bottom-2 -left-1", corner_class)}>
-                {bracket_bl}
+            <span class={format!("{corner_class} -bottom-2 -left-1")}>
+                {bottom_left}
             </span>
             // Bottom-right bracket
-            <span class={format!("{} -bottom-2 -right-1", corner_class)}>
-                {bracket_br}
+            <span class={format!("{corner_class} -bottom-2 -right-1")}>
+                {bottom_right}
             </span>
             // Content
             {children()}
