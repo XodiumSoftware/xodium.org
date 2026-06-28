@@ -26,7 +26,7 @@ pub fn ProjectsSection() -> impl IntoView {
             <FadeOverlay />
             <div class="mx-auto max-w-7xl relative z-10">
                 <div class="flex gap-8 items-stretch">
-                    <div class="flex-shrink-0 flex items-center bg-[#d0d0d0] p-2 relative">
+                    <div class="flex-shrink-0 flex items-center bg-surface-light p-2 relative">
                         <CornerFrame
                             style="square"
                             black=true

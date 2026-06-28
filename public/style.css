@@ -8,6 +8,25 @@
     themes: halloween --default;
 }
 
+/* Semantic surface colors used by components that sit outside the main theme canvas. */
+:root {
+    --surface-light: #d0d0d0;
+    --surface-dark: #1a1a1a;
+    --kbd-shadow: 0 2px 0 0 rgba(0, 0, 0, 0.3);
+}
+
+@utility bg-surface-light {
+    background-color: var(--surface-light);
+}
+
+@utility bg-surface-dark {
+    background-color: var(--surface-dark);
+}
+
+@utility shadow-kbd {
+    box-shadow: var(--kbd-shadow);
+}
+
 html {
     scroll-behavior: smooth;
 }
@@ -432,13 +451,18 @@ html {
     border-radius: 0;
     border: 2px solid oklch(var(--color-base-content) / 0.8);
     box-shadow: 4px 4px 0 0 rgba(0, 0, 0, 0.8);
-    background-color: #d0d0d0;
+    background-color: var(--surface-light);
     transform-style: preserve-3d;
     transition:
         transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
         opacity 0.3s ease;
     overflow: hidden;
     cursor: pointer;
+}
+
+/* Member cards have dark background */
+.team-deck-card:not(.team-deck-title) {
+    background-color: var(--surface-dark);
 }
 
 /* Position 0: Front and center */
