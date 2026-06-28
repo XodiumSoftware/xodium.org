@@ -64,6 +64,10 @@ fn format_api_error(status: u16) -> String {
     }
 }
 
+fn format_network_error() -> String {
+    "Could not reach GitHub. Please check your network connection and try again.".to_string()
+}
+
 async fn fetch<T: for<'de> Deserialize<'de> + Serialize>(endpoint: &str) -> Result<T, String> {
     let cache_key = format!("xodium:{endpoint}");
 
@@ -73,6 +77,7 @@ async fn fetch<T: for<'de> Deserialize<'de> + Serialize>(endpoint: &str) -> Resu
 
     let url = format!("{API_BASE}{endpoint}");
     let mut last_err = String::new();
+    let mut network_failure_count: u32 = 0;
 
     for attempt in 0..=MAX_RETRIES {
         if attempt > 0 {
@@ -82,6 +87,7 @@ async fn fetch<T: for<'de> Deserialize<'de> + Serialize>(endpoint: &str) -> Resu
         let response = match Request::get(&url).send().await {
             Ok(r) => r,
             Err(e) => {
+                network_failure_count += 1;
                 last_err = e.to_string();
                 continue;
             }
@@ -101,7 +107,11 @@ async fn fetch<T: for<'de> Deserialize<'de> + Serialize>(endpoint: &str) -> Resu
         return Ok(data);
     }
 
-    Err(last_err)
+    if network_failure_count > 0 {
+        Err(format_network_error())
+    } else {
+        Err(last_err)
+    }
 }
 
 async fn fetch_all<T: for<'de> Deserialize<'de> + Serialize>(
