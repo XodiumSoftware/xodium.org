@@ -46,7 +46,8 @@ where
             {move || match resource.get() {
                 None => ().into_any(),
                 Some(Err(err)) => {
-                    let retry_view = on_retry.clone().map(|retry| {
+                    let retry_view = on_retry.as_ref().map(|retry| {
+                        let retry = retry.clone();
                         view! {
                             <button
                                 class="btn btn-primary btn-sm mt-4"

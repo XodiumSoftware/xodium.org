@@ -1,4 +1,4 @@
-use crate::i18n::*;
+use crate::i18n::{t, use_i18n};
 use crate::utils::{observe_intersections, window_event_listener};
 use leptos::prelude::*;
 use leptos::task::spawn_local;
@@ -108,7 +108,11 @@ pub fn Header() -> impl IntoView {
                     <a
                         href="#"
                         class=move || {
-                            format!("p-0 logo-container{}", if is_logo_active.get() { " logo-active" } else { "" })
+                            if is_logo_active.get() {
+                                "p-0 logo-container logo-active".to_string()
+                            } else {
+                                "p-0 logo-container".to_string()
+                            }
                         }
                         on:click=move |ev: leptos::web_sys::MouseEvent| {
                             ev.prevent_default();
@@ -199,6 +203,7 @@ pub fn Header() -> impl IntoView {
                                                     link.hover_color,
                                                 )
                                                 style=format!("--mask-url: url('{}')", link.icon_path)
+                                                aria-hidden="true"
                                             />
                                         </a>
                                     </li>

@@ -1,4 +1,4 @@
-use crate::i18n::*;
+use crate::i18n::{t, use_i18n};
 use crate::utils::{prefers_reduced_motion, window_event_listener};
 use leptos::prelude::*;
 use leptos::task::spawn_local;
@@ -9,7 +9,7 @@ use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
 
-const ASCII_ART: &str = r#"
+const ASCII_ART: &str = r"
          ,-.--,  _,.---._                 .=-.-.                   ___
 .--.-.  /=/, .',-.' , -  `.   _,..---._  /==/_ /.--.-. .-.-..-._ .='.'\
 \==\ -\/=/- / /==/_,  ,  - \/==/,   -  \|==|, |/==/ -|/=/  /==/ \|==|  |
@@ -19,7 +19,7 @@ const ASCII_ART: &str = r#"
 /==/, .--, - \\==\ -    ,_ /|==|  '='   /==|- ||==|-   ,   /==| _ /\   |
 \==\- \/=/ , / '.='. -   .' |==|-,   _`//==/. //==/ , _  .'/==/  / / , /
  `--`-'  `--`    `--`--''   `-.`.____.' `--`-` `--`..---'  `--`./  `--`
-"#;
+";
 
 #[component]
 pub fn CodeBlock() -> impl IntoView {
@@ -195,7 +195,7 @@ pub fn CodeBlock() -> impl IntoView {
                         if show_ascii.get() {
                             view! {
                                 <div class="w-full overflow-x-auto">
-                                    <pre class="text-primary/90 leading-none mb-4 text-[0.5rem] sm:text-xs whitespace-pre origin-left scale-[0.75] sm:scale-100 inline-block">
+                                    <pre class="text-primary/90 leading-none mb-4 text-[0.5rem] sm:text-xs whitespace-pre origin-left scale-[0.75] sm:scale-100 inline-block" aria-hidden="true">
                                         {ASCII_ART}
                                     </pre>
                                 </div>
@@ -265,17 +265,19 @@ pub fn CodeBlock() -> impl IntoView {
                                 class="btn btn-primary hover:btn-warning btn-lift"
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                accesskey="g"
                             >
                                 {t!(i18n, landing.cta_get_started)}
-                                <kbd class="inline-flex items-center justify-center px-1.5 py-0.5 min-w-[1.25rem] rounded border border-black/30 bg-black/10 text-black shadow-[0_2px_0_0_rgba(0,0,0,0.3)] text-xs font-sans ml-2">"G"</kbd>
+                                <kbd class="inline-flex items-center justify-center px-1.5 py-0.5 min-w-[1.25rem] rounded border border-black/30 bg-black/10 text-black shadow-kbd text-xs font-sans ml-2" aria-hidden="true">"G"</kbd>
                             </a>
                             <a
                                 id="cta-join-us"
                                 href="mailto:info@xodium.org"
                                 class="btn btn-outline btn-outline-ghost btn-hover-warning btn-lift"
+                                accesskey="j"
                             >
                                 {t!(i18n, landing.cta_join_us)}
-                                <kbd class="inline-flex items-center justify-center px-1.5 py-0.5 min-w-[1.25rem] rounded border border-white/30 bg-white/10 text-white shadow-[0_2px_0_0_rgba(0,0,0,0.3)] text-xs font-sans ml-2">"J"</kbd>
+                                <kbd class="inline-flex items-center justify-center px-1.5 py-0.5 min-w-[1.25rem] rounded border border-white/30 bg-white/10 text-white shadow-kbd text-xs font-sans ml-2" aria-hidden="true">"J"</kbd>
                             </a>
                         </div>
                     </div>

@@ -4,7 +4,7 @@ use crate::components::effects::sectionfade::FadeOverlay;
 use crate::components::ui::cornerframe::CornerFrame;
 use crate::components::ui::datagrid::data_grid;
 use crate::github::{Repo, fetch_repos};
-use crate::i18n::*;
+use crate::i18n::{t, t_string, use_i18n};
 use leptos::prelude::*;
 
 #[component]
@@ -26,7 +26,7 @@ pub fn ProjectsSection() -> impl IntoView {
             <FadeOverlay />
             <div class="mx-auto max-w-7xl relative z-10">
                 <div class="flex gap-8 items-stretch">
-                    <div class="flex-shrink-0 flex items-center bg-[#d0d0d0] p-2 relative">
+                    <div class="flex-shrink-0 flex items-center bg-surface-light p-2 relative">
                         <CornerFrame
                             style="square"
                             black=true
