@@ -309,13 +309,7 @@ GitHub API responses cached in `localStorage`:
 
 **Always update documentation when code changes:**
 
-1. **ARCHITECTURE.md** — Update if you:
-    - Add/remove components or sections
-    - Change the page layout
-    - Modify GitHub API integration
-    - Update styling approach
-
-2. **rustdoc comments** — Add/update if you:
+1. **rustdoc comments** — Add/update if you:
     - Add new public APIs
     - Change component interfaces
     - Add complex logic
@@ -339,7 +333,6 @@ To add a new page section:
 3. Add `pub mod {section}` and `pub use sections::{section}::{Section}` in `src/components.rs`
 4. Import in `src/app.rs` and add to `App` view
 5. Add `LineDraw` divider before/after if needed
-6. Update `ARCHITECTURE.md` section table
 
 ### Adding a New Component
 

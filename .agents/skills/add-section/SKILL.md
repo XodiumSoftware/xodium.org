@@ -1,6 +1,6 @@
 ---
 name: add-section
-description: Scaffold a new page section for the xodium.org Leptos CSR site, including component file, exports, App integration, divider, and ARCHITECTURE.md update.
+description: Scaffold a new page section for the xodium.org Leptos CSR site, including component file, exports, App integration, and divider.
 ---
 
 # Add a New Page Section
@@ -17,11 +17,8 @@ Use this skill when the user wants to add a new page section to the xodium.org s
    - Add `pub use sections::{section}::{Section};` to `src/components/mod.rs`.
 5. Import the section in `src/app.rs` and place it in the page layout where appropriate.
 6. Add a `LineDraw` divider before and/or after the section to match the existing layout pattern.
-7. Update `ARCHITECTURE.md`:
-   - Add the section to the Page Layout list.
-   - Add the section to the Sections table.
-8. Run `cargo clippy --all-targets --all-features -- -D warnings` to ensure no lint issues.
-9. Run `trunk build` to verify compilation.
+7. Run `cargo clippy --all-targets --all-features -- -D warnings` to ensure no lint issues.
+8. Run `trunk build` to verify compilation.
 
 ## Conventions
 
@@ -33,4 +30,4 @@ Use this skill when the user wants to add a new page section to the xodium.org s
 
 ## Example
 
-A new `MissionSection` would go in `src/components/sections/mission.rs`, be exported through `src/components/sections/mod.rs` and `src/components/mod.rs`, imported in `src/app.rs`, and documented in `ARCHITECTURE.md`.
+A new `MissionSection` would go in `src/components/sections/mission.rs`, be exported through `src/components/sections/mod.rs` and `src/components/mod.rs`, and imported in `src/app.rs`.

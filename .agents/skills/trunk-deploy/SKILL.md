@@ -46,7 +46,7 @@ Before considering the site ready to deploy:
 1. `cargo clippy --all-targets --all-features -- -D warnings` passes with no warnings.
 2. `trunk build --release` completes with no errors or warnings.
 3. `cargo doc --no-deps` generates docs if public APIs changed.
-4. `ARCHITECTURE.md` is up to date if layout, components, or API behavior changed.
+4. Rustdoc comments and `cargo doc --no-deps` are up to date if public APIs, components, or layout behavior changed.
 5. Browser console has no WASM panics when running `trunk serve`.
 6. GitHub API rate limit is respected; cache behavior is verified if changed.
 

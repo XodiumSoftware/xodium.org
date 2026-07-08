@@ -23,7 +23,7 @@ All GitHub data fetching is centralized in `src/github.rs`.
 3. Update the relevant types, functions, or endpoints in `src/github.rs`.
 4. If response structures change, update any component that consumes them (e.g., `ProjectCard`, `TeamCard`, `ProjectsSection`, `TeamDeckSection`).
 5. If the public function signature changes, update call sites in `src/components/sections/`.
-6. Adjust `ARCHITECTURE.md` if endpoints, cache TTL, or function descriptions changed.
+6. Update rustdoc comments in `src/github.rs` if endpoints, cache TTL, or function descriptions changed.
 7. Run `cargo clippy --all-targets --all-features -- -D warnings` to ensure no lint issues.
 8. Run `trunk build` to verify compilation.
 

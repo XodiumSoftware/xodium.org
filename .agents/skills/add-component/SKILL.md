@@ -43,4 +43,4 @@ Use this skill when the user wants to add a reusable component to the xodium.org
 
 ## Documentation
 
-Update `ARCHITECTURE.md` if the new component belongs to an existing table. Add it to the relevant category table with file path and purpose.
+Add rustdoc comments explaining the component's purpose and props. Keep the component's skill summary accurate if project conventions change.
