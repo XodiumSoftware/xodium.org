@@ -44,7 +44,7 @@ pub fn Footer() -> impl IntoView {
             <div class="mx-auto max-w-7xl flex flex-col-reverse md:flex-row md:justify-between items-center gap-4">
                 <aside class="max-md:w-full max-md:text-center" style="container-type: inline-size">
                     <div class="flex flex-col md:flex-row md:items-center gap-1 md:gap-0">
-                        <p class="font-bold whitespace-nowrap max-md:text-[clamp(0.5rem,3.1cqw,1rem)]">
+                        <p class="font-bold whitespace-nowrap max-md:text-[clamp(0.5rem,3.1cqw,1rem)] inline">
                             {format!("© {current_year} ")}
                             <a href="/" class="link link-hover link-primary">
                                 {t_string!(i18n, footer.company_name)}
@@ -56,9 +56,9 @@ pub fn Footer() -> impl IntoView {
                                 href={url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                class="link link-hover text-base-content/50 hover:link-primary font-mono text-sm md:ml-1"
+                                class="link link-hover text-base-content/50 hover:link-primary font-mono md:ml-1 whitespace-nowrap"
                             >
-                                {format!("#{GIT_SHA}")}
+                                {format!("Build: #{GIT_SHA}")}
                             </a>
                         })}
                     </div>
