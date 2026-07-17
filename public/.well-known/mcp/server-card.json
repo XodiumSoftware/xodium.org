@@ -1,0 +1,13 @@
+{
+    "$schema": "https://schemas.modelcontextprotocol.io/2025-10-17/server.schema.json",
+    "serverInfo": {
+        "name": "xodium-org",
+        "version": "0.1.0"
+    },
+    "endpoint": "https://xodium.org/mcp",
+    "capabilities": {
+        "tools": {},
+        "resources": {},
+        "prompts": {}
+    }
+}
