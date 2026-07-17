@@ -27,3 +27,7 @@
 /public/.daisyui-version
 /public/daisyui-theme.mjs
 /public/daisyui.mjs
+
+# Generated agent skills discovery
+/public/.well-known/agent-skills/**/*.md
+/public/.well-known/agent-skills/index.json

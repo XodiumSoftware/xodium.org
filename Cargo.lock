@@ -3553,6 +3553,7 @@ dependencies = [
  "leptos_i18n_build",
  "serde",
  "serde_json",
+ "sha2",
  "wasm-bindgen",
  "wasm-bindgen-test",
  "web-sys",

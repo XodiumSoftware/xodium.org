@@ -72,7 +72,168 @@
         />
         <link data-trunk href="public/style.css" rel="tailwind-css-extra" />
         <link data-trunk href="public/icons" rel="copy-dir" />
+        <link data-trunk href="public/sitemap.xml" rel="copy-file" />
+        <link data-trunk href="public/robots.txt" rel="copy-file" />
+        <link data-trunk href="public/auth.md" rel="copy-file" />
+        <link data-trunk href="public/.well-known" rel="copy-dir" />
+        <link data-trunk href="public/_headers" rel="copy-file" />
         <title>Xodium</title>
+
+        <!-- WebMCP: expose lightweight site tools to browser agents -->
+        <script>
+            (function () {
+                const modelContext = navigator.modelContext;
+                if (!modelContext) {
+                    return;
+                }
+                const register =
+                    typeof modelContext.registerTool === "function"
+                        ? modelContext.registerTool.bind(modelContext)
+                        : typeof modelContext.provideContext === "function"
+                          ? modelContext.provideContext.bind(modelContext)
+                          : null;
+                if (!register) {
+                    return;
+                }
+
+                function init() {
+                    const controller = new AbortController();
+                    const signal = controller.signal;
+
+                    register(
+                        {
+                            name: "navigate_to_section",
+                            description:
+                                "Scroll the page to a major section (landing, projects, or team).",
+                            inputSchema: {
+                                type: "object",
+                                properties: {
+                                    section: {
+                                        type: "string",
+                                        enum: ["landing", "projects", "team"],
+                                        description:
+                                            "The site section to scroll into view.",
+                                    },
+                                },
+                                required: ["section"],
+                            },
+                            execute: async ({ section }) => {
+                                const id =
+                                    section === "landing" ? "main-content" : section;
+                                const el = document.getElementById(id);
+                                if (el) {
+                                    el.scrollIntoView({ behavior: "smooth" });
+                                }
+                                return { success: !!el, section };
+                            },
+                        },
+                        { signal },
+                    );
+
+                    register(
+                        {
+                            name: "get_site_info",
+                            description:
+                                "Return a short summary of Xodium and useful links.",
+                            inputSchema: {
+                                type: "object",
+                                properties: {},
+                            },
+                            execute: async () => ({
+                                name: "Xodium Software",
+                                description:
+                                    "Open source CAD software organization.",
+                                url: "https://xodium.org/",
+                                github: "https://github.com/XodiumSoftware",
+                                contact: "mailto:info@xodium.org",
+                            }),
+                        },
+                        { signal },
+                    );
+
+                    register(
+                        {
+                            name: "list_projects",
+                            description:
+                                "List public GitHub repositories for XodiumSoftware.",
+                            inputSchema: {
+                                type: "object",
+                                properties: {
+                                    limit: {
+                                        type: "integer",
+                                        minimum: 1,
+                                        maximum: 100,
+                                        default: 30,
+                                    },
+                                },
+                            },
+                            execute: async ({ limit = 30 } = {}) => {
+                                const url =
+                                    "https://api.github.com/orgs/XodiumSoftware/repos?type=public&sort=stars&per_page=100";
+                                const response = await fetch(url, {
+                                    headers: { Accept: "application/vnd.github+json" },
+                                });
+                                if (!response.ok) {
+                                    throw new Error(
+                                        `GitHub API returned ${response.status}`,
+                                    );
+                                }
+                                const repos = await response.json();
+                                return repos
+                                    .filter((repo) => !repo.fork)
+                                    .sort((a, b) => b.stargazers_count - a.stargazers_count)
+                                    .slice(0, limit)
+                                    .map((repo) => ({
+                                        name: repo.name,
+                                        description: repo.description || "",
+                                        url: repo.html_url,
+                                        language: repo.language || "",
+                                        stars: repo.stargazers_count,
+                                    }));
+                            },
+                        },
+                        { signal },
+                    );
+
+                    register(
+                        {
+                            name: "list_team",
+                            description:
+                                "List public members of the XodiumSoftware GitHub organization.",
+                            inputSchema: {
+                                type: "object",
+                                properties: {},
+                            },
+                            execute: async () => {
+                                const url =
+                                    "https://api.github.com/orgs/XodiumSoftware/members?per_page=100";
+                                const response = await fetch(url, {
+                                    headers: { Accept: "application/vnd.github+json" },
+                                });
+                                if (!response.ok) {
+                                    throw new Error(
+                                        `GitHub API returned ${response.status}`,
+                                    );
+                                }
+                                const members = await response.json();
+                                return members.map((member) => ({
+                                    login: member.login,
+                                    profile: member.html_url,
+                                    avatar: member.avatar_url,
+                                }));
+                            },
+                        },
+                        { signal },
+                    );
+                }
+
+                if (document.readyState === "loading") {
+                    document.addEventListener("DOMContentLoaded", init);
+                } else {
+                    init();
+                }
+            })();
+        </script>
     </head>
     <body class="bg-base-100 font-mono"></body>
 </html>

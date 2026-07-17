@@ -1,0 +1,25 @@
+/
+  Link: </.well-known/api-catalog>; rel="api-catalog"
+  Link: </.well-known/agent-skills/index.json>; rel="item"; type="application/json"
+  Link: </auth.md>; rel="describedby"
+
+/sitemap.xml
+  Content-Type: application/xml
+
+/.well-known/api-catalog
+  Content-Type: application/linkset+json
+
+/.well-known/oauth-authorization-server
+  Content-Type: application/json
+
+/.well-known/oauth-protected-resource
+  Content-Type: application/json
+
+/.well-known/mcp/server-card.json
+  Content-Type: application/json
+
+/.well-known/agent-skills/index.json
+  Content-Type: application/json
+
+/auth.md
+  Content-Type: text/markdown

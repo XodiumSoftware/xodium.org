@@ -1,0 +1,21 @@
+{
+    "issuer": "https://xodium.org/",
+    "authorization_endpoint": "https://xodium.org/.well-known/oauth-authorization-server",
+    "token_endpoint": "https://xodium.org/.well-known/oauth-authorization-server",
+    "jwks_uri": "https://xodium.org/.well-known/oauth-authorization-server/jwks.json",
+    "grant_types_supported": [],
+    "response_types_supported": [],
+    "agent_auth": {
+        "skill": "https://isitagentready.com/.well-known/agent-skills/auth-md/SKILL.md",
+        "register_uri": "https://xodium.org/auth.md",
+        "identity_types_supported": [
+            "anonymous"
+        ],
+        "anonymous": {
+            "credential_types_supported": [
+                "none"
+            ],
+            "claim_uri": "https://xodium.org/auth.md"
+        }
+    }
+}
