@@ -1,6 +1,6 @@
-use crate::components::cards::teamcard::{TeamCard, TeamCardProperties};
-use crate::components::ui::cornerframe::CornerFrame;
-use crate::components::ui::datagrid::data_grid;
+use crate::components::cards::team::{TeamCard, TeamCardProperties};
+use crate::components::ui::corner_frame::CornerFrame;
+use crate::components::ui::data_grid::data_grid;
 use crate::github::{Member, fetch_members};
 use crate::utils::{observe_intersections, window_event_listener};
 use leptos::prelude::*;

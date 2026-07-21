@@ -1,8 +1,8 @@
-use crate::components::animations::linedraw::LineDrawHero;
-use crate::components::effects::blueprintgrid::BlueprintGrid;
-use crate::components::effects::parallax::ParallaxLanding;
-use crate::components::effects::wireframes::WireframeShapes;
-use crate::components::ui::codeblock::CodeBlock;
+use crate::components::animations::line_draw::LineDrawHero;
+use crate::components::ui::code_block::CodeBlock;
+use crate::components::ui::effects::blueprint_grid::BlueprintGrid;
+use crate::components::ui::effects::parallax::ParallaxLanding;
+use crate::components::ui::effects::wire_frames::WireframeShapes;
 use leptos::prelude::*;
 
 #[component]

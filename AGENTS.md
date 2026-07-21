@@ -58,7 +58,7 @@ trunk clean
 | File      | Purpose                                          |
 |-----------|--------------------------------------------------|
 | `main.rs` | WASM entry point, mounts `App` to `&lt;body&gt;` |
-| `lib.rs`  | Crate root, declares modules, re-exports         |
+| `lib.rs`  | Crate root; declares every module and re-export |
 | `app.rs`  | Root `App` component with full page layout       |
 
 ### Page Layout (`App` component)
@@ -85,40 +85,40 @@ Components are grouped by function in `src/components/`:
 | `Header`          | `header.rs`      | Sticky navbar                                |
 | `LandingSection`  | `landing.rs`     | Hero section with visual effects and code block |
 | `ProjectsSection` | `projects.rs`    | Fetches GitHub repos, renders `ProjectCard`s |
-| `TeamDeckSection` | `teamdeck.rs`    | Fetches org members, renders `TeamCard`s     |
-| `Footer`          | `footer.rs`      | Site footer                                  |
+| `TeamDeckSection` | `team_deck.rs`    | Fetches org members, renders `TeamCard`s     |
+| `Footer`          | `footer.rs`       | Site footer                                  |
 
-#### Cards (`src/components/cards/`)
+#### Cards (`src/cards/`)
 
 | Component     | File             | Purpose                                           |
 |---------------|------------------|---------------------------------------------------|
-| `ProjectCard` | `projectcard.rs` | Repo card with name, description, stars, language |
-| `TeamCard`    | `teamcard.rs`    | Member avatar, login, role badge                  |
+| `ProjectCard` | `project.rs`     | Repo card with name, description, stars, language |
+| `TeamCard`    | `team.rs`        | Member avatar, login, role badge                  |
 
-#### Visual Effects (`src/components/effects/`)
+#### Visual Effects (`src/ui/effects/`)
 
-| Component         | File               | Purpose                     |
-|-------------------|--------------------|-----------------------------|
-| `BlueprintGrid`   | `blueprintgrid.rs` | Animated SVG blueprint grid |
-| `WireframeShapes` | `wireframes.rs`    | Floating 3D wireframes      |
-| `ParallaxLanding` | `parallax.rs`      | Parallax scroll effect      |
-| `HexPattern`      | `hexgrid.rs`       | Hexagonal grid overlay      |
-| `FadeOverlay`     | `sectionfade.rs`   | Gradient fade transitions   |
+| Component         | File                  | Purpose                     |
+|-------------------|-----------------------|-----------------------------|
+| `BlueprintGrid`   | `blueprint_grid.rs`   | Animated SVG blueprint grid |
+| `WireframeShapes` | `wire_frames.rs`      | Floating 3D wireframes      |
+| `ParallaxLanding` | `parallax.rs`         | Parallax scroll effect      |
+| `HexPattern`      | `hex_grid.rs`         | Hexagonal grid overlay      |
+| `FadeOverlay`     | `section_fade.rs`     | Gradient fade transitions   |
 
-#### Animations (`src/components/animations/`)
+#### Animations (`src/animations/`)
 
 | Component      | File          | Purpose                   |
 |----------------|---------------|---------------------------|
-| `LineDraw`     | `linedraw.rs` | Section divider animation |
-| `LineDrawHero` | `linedraw.rs` | Hero variant              |
+| `LineDraw`     | `line_draw.rs` | Section divider animation |
+| `LineDrawHero` | `line_draw.rs` | Hero variant              |
 
-#### UI Primitives (`src/components/ui/`)
+#### UI Primitives (`src/ui/`)
 
 | Component     | File             | Purpose                           |
 |---------------|------------------|-----------------------------------|
-| `CodeBlock`   | `codeblock.rs`   | Animated typewriter code display  |
-| `CornerFrame` | `cornerframe.rs` | Decorative corner frame           |
-| `data_grid`   | `datagrid.rs`    | `Suspense` wrapper for async data |
+| `CodeBlock`   | `code_block.rs`  | Animated typewriter code display  |
+| `CornerFrame` | `corner_frame.rs`| Decorative corner frame           |
+| `data_grid`   | `data_grid.rs`   | `Suspense` wrapper for async data |
 
 ### GitHub API (`src/github.rs`)
 
@@ -143,29 +143,28 @@ src/
 ├── lib.rs                     # Crate root, module declarations
 ├── app.rs                     # Root App component
 ├── github.rs                  # GitHub API client
-└── components/
-    ├── mod.rs                 # Component module exports
-    ├── sections/              # Page sections
-    │   ├── header.rs
-    │   ├── landing.rs
-    │   ├── projects.rs
-    │   ├── teamdeck.rs
-    │   └── footer.rs
-    ├── cards/                 # Card components
-    │   ├── projectcard.rs
-    │   └── teamcard.rs
-    ├── effects/               # Visual effects
-    │   ├── blueprintgrid.rs
-    │   ├── wireframes.rs
-    │   ├── parallax.rs
-    │   ├── hexgrid.rs
-    │   └── sectionfade.rs
-    ├── animations/            # Animation components
-    │   └── linedraw.rs
-    └── ui/                    # UI primitives
-        ├── codeblock.rs
-        ├── cornerframe.rs
-        └── datagrid.rs
+├── utils.rs                   # Shared utilities
+├── sections/                  # Page sections
+│   ├── header.rs
+│   ├── landing.rs
+│   ├── projects.rs
+│   ├── team_deck.rs
+│   └── footer.rs
+├── cards/                     # Card components
+│   ├── project.rs
+│   └── team.rs
+├── animations/                # Animation components
+│   └── line_draw.rs
+└── ui/                        # UI primitives, effects, utilities
+    ├── code_block.rs
+    ├── corner_frame.rs
+    ├── data_grid.rs
+    └── effects/               # Visual effects
+        ├── blueprint_grid.rs
+        ├── hex_grid.rs
+        ├── parallax.rs
+        ├── section_fade.rs
+        └── wire_frames.rs
 
 public/
 ├── style.css                  # Tailwind + custom theme
@@ -178,6 +177,7 @@ build.rs                       # Build script
 
 ### Key Conventions
 
+- **Register modules and re-exports in `src/lib.rs` explicitly.** Do not use `mod.rs` files, and do not nest `mod` declarations inside other module files. Every module in the crate must be declared directly in the crate root (`src/lib.rs`). Use `#[path = "..."]` attributes when a module file lives in a subdirectory.
 - All Clippy warnings enabled
 - `unsafe_code` not needed (WASM sandbox)
 - **Props:** `#[derive(Clone)]` structs named `{Component}Properties`
@@ -328,19 +328,20 @@ GitHub Actions workflows in `.github/workflows/`:
 
 To add a new page section:
 
-1. Create file in `src/components/sections/{section}.rs`
+1. Create file in `src/sections/{section}.rs`
 2. Define `{Section}` component with `#[component]` macro
-3. Add `pub mod {section}` and `pub use sections::{section}::{Section}` in `src/components.rs`
-4. Import in `src/app.rs` and add to `App` view
-5. Add `LineDraw` divider before/after if needed
+3. Add the module declaration in `src/lib.rs` under the `sections` block with `#[path = "../sections/{section}.rs"]`
+4. Add a `pub use sections::{section}::{Section};` re-export in `src/lib.rs`
+5. Import in `src/app.rs` and add to `App` view
+6. Add `LineDraw` divider before/after if needed
 
 ### Adding a New Component
 
 1. Determine category (cards, effects, animations, ui)
 2. Create file in appropriate subdirectory
 3. Define component with props struct named `{Component}Properties`
-4. Export from submodule's `mod.rs`
-5. Re-export from `src/components/mod.rs`
+4. Add the module declaration in `src/lib.rs` under the appropriate block with `#[path = "..."]`
+5. Add a re-export in `src/lib.rs`
 6. Add rustdoc comments explaining purpose
 
 ## Memory System

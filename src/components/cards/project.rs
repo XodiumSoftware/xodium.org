@@ -1,4 +1,4 @@
-use crate::components::ui::cornerframe::CornerFrame;
+use crate::components::ui::corner_frame::CornerFrame;
 use crate::github::Repo;
 use crate::utils::language_color;
 use leptos::prelude::*;

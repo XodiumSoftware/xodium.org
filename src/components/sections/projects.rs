@@ -1,8 +1,8 @@
-use crate::components::cards::projectcard::ProjectCard;
-use crate::components::effects::hexgrid::HexPattern;
-use crate::components::effects::sectionfade::FadeOverlay;
-use crate::components::ui::cornerframe::CornerFrame;
-use crate::components::ui::datagrid::data_grid;
+use crate::components::cards::project::ProjectCard;
+use crate::components::ui::corner_frame::CornerFrame;
+use crate::components::ui::data_grid::data_grid;
+use crate::components::ui::effects::hex_grid::HexPattern;
+use crate::components::ui::effects::section_fade::FadeOverlay;
 use crate::github::{Repo, fetch_repos};
 use leptos::prelude::*;
 

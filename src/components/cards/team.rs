@@ -1,4 +1,4 @@
-use crate::components::ui::cornerframe::CornerFrame;
+use crate::components::ui::corner_frame::CornerFrame;
 use leptos::prelude::*;
 
 #[derive(Clone)]
