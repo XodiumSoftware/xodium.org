@@ -37,7 +37,7 @@ jobs:
 
       - id: setup_rust
         name: Setup Rust
-        uses: actions-rust-lang/setup-rust-toolchain@d197c158264056996cfba74a9c2d93886346edc3
+        uses: actions-rust-lang/setup-rust-toolchain@v1.17.0
         with:
           toolchain: stable
           components: rustfmt, clippy
@@ -49,7 +49,7 @@ jobs:
 
       - id: run_sccache_cache
         name: Run sccache-cache
-        uses: mozilla-actions/sccache-action@7d986dd989559c6ecdb630a3fd2557667be217ad
+        uses: mozilla-actions/sccache-action@v0.0.10
 
       - id: cache_dependencies
         name: Cache dependencies
@@ -77,7 +77,7 @@ jobs:
 
       - id: install_cargo_binstall
         name: Install cargo-binstall
-        uses: cargo-bins/cargo-binstall@dc19f1e48450eefe5a29b8da6c6b00a87d730b37
+        uses: cargo-bins/cargo-binstall@v1.21.0
 
       - id: run_cargo_machete
         name: Run cargo-machete
@@ -99,7 +99,7 @@ jobs:
 
       - id: setup_rust
         name: Setup Rust
-        uses: actions-rust-lang/setup-rust-toolchain@d197c158264056996cfba74a9c2d93886346edc3
+        uses: actions-rust-lang/setup-rust-toolchain@v1.17.0
         with:
           toolchain: stable
 
@@ -147,7 +147,7 @@ jobs:
 
       - id: setup_rust
         name: Setup Rust
-        uses: actions-rust-lang/setup-rust-toolchain@d197c158264056996cfba74a9c2d93886346edc3
+        uses: actions-rust-lang/setup-rust-toolchain@v1.17.0
         with:
           toolchain: stable
 
@@ -158,7 +158,7 @@ jobs:
 
       - id: run_sccache_cache
         name: Run sccache-cache
-        uses: mozilla-actions/sccache-action@7d986dd989559c6ecdb630a3fd2557667be217ad
+        uses: mozilla-actions/sccache-action@v0.0.10
 
       - id: cache_dependencies
         name: Cache dependencies
@@ -179,7 +179,7 @@ jobs:
 
       - id: setup_trunk
         name: Setup Trunk
-        uses: jetli/trunk-action@1346cc09eace4beb84e403e199a471346d4684c9
+        uses: jetli/trunk-action@v0.5.1
         with:
           version: latest
 
@@ -228,7 +228,7 @@ jobs:
 
       - id: deploy
         name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd
+        uses: cloudflare/wrangler-action@v4.0.0
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
