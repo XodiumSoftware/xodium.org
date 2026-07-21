@@ -1,4 +1,3 @@
-use crate::i18n::{t, use_i18n};
 use crate::utils::{observe_intersections, window_event_listener};
 use leptos::prelude::*;
 use leptos::task::spawn_local;
@@ -33,7 +32,6 @@ const SOCIAL_LINKS: &[SocialLink] = &[
 
 #[component]
 pub fn Header() -> impl IntoView {
-    let i18n = use_i18n();
     let (is_scrolled, set_is_scrolled) = signal(false);
     let (active_section, set_active_section) = signal(String::new());
     let (is_logo_active, set_is_logo_active) = signal(false);
@@ -167,14 +165,14 @@ pub fn Header() -> impl IntoView {
                         class="hover:text-primary text-sm font-semibold lift"
                         aria-current=move || if is_active("projects") { Some("true") } else { None }
                     >
-                        {t!(i18n, nav.projects)}
+                        "PROJECTS"
                     </a>
                     <a
                         href="#team"
                         class="hover:text-primary text-sm font-semibold lift"
                         aria-current=move || if is_active("team") { Some("true") } else { None }
                     >
-                        {t!(i18n, nav.team)}
+                        "TEAM"
                     </a>
                 </div>
                 // Right side

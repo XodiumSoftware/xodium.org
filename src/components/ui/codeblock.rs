@@ -1,10 +1,8 @@
-use crate::i18n::{t, use_i18n};
 use crate::utils::{prefers_reduced_motion, window_event_listener};
 use leptos::prelude::*;
 use leptos::task::spawn_local;
 use leptos::wasm_bindgen::JsCast;
 use leptos::web_sys;
-use leptos_i18n::tu_string;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
@@ -23,12 +21,11 @@ const ASCII_ART: &str = r"
 
 #[component]
 pub fn CodeBlock() -> impl IntoView {
-    let i18n = use_i18n();
     let company_values = [
-        tu_string!(i18n, landing.value_1),
-        tu_string!(i18n, landing.value_2),
-        tu_string!(i18n, landing.value_3),
-        tu_string!(i18n, landing.value_4),
+        "Building open-source tools for developers",
+        "Crafting CAD software with precision",
+        "Empowering creativity through code",
+        "Made with passion",
     ];
 
     let (show_ascii, set_show_ascii) = signal(false);
@@ -183,7 +180,7 @@ pub fn CodeBlock() -> impl IntoView {
                         <div class="w-3 h-3 rounded-full bg-success/80"></div>
                     </div>
                     <div class="flex-1 text-center text-xs text-base-content/50 font-mono">
-                        {t!(i18n, landing.terminal_title)}
+                        "xodium.sh"
                     </div>
                     <div class="w-14"></div>
                 </div>
@@ -267,7 +264,7 @@ pub fn CodeBlock() -> impl IntoView {
                                 rel="noopener noreferrer"
                                 accesskey="g"
                             >
-                                {t!(i18n, landing.cta_get_started)}
+                                "Get Started"
                                 <kbd class="inline-flex items-center justify-center px-1.5 py-0.5 min-w-[1.25rem] rounded border border-black/30 bg-black/10 text-black shadow-kbd text-xs font-sans ml-2" aria-hidden="true">"G"</kbd>
                             </a>
                             <a
@@ -276,7 +273,7 @@ pub fn CodeBlock() -> impl IntoView {
                                 class="btn btn-outline btn-outline-ghost btn-hover-warning btn-lift"
                                 accesskey="j"
                             >
-                                {t!(i18n, landing.cta_join_us)}
+                                "Join us"
                                 <kbd class="inline-flex items-center justify-center px-1.5 py-0.5 min-w-[1.25rem] rounded border border-white/30 bg-white/10 text-white shadow-kbd text-xs font-sans ml-2" aria-hidden="true">"J"</kbd>
                             </a>
                         </div>

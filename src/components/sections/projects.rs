@@ -4,12 +4,10 @@ use crate::components::effects::sectionfade::FadeOverlay;
 use crate::components::ui::cornerframe::CornerFrame;
 use crate::components::ui::datagrid::data_grid;
 use crate::github::{Repo, fetch_repos};
-use crate::i18n::{t, t_string, use_i18n};
 use leptos::prelude::*;
 
 #[component]
 pub fn ProjectsSection() -> impl IntoView {
-    let i18n = use_i18n();
     let (retry_count, set_retry_count) = signal(0u32);
     let resource = LocalResource::new(move || {
         let _ = retry_count.get();
@@ -33,14 +31,14 @@ pub fn ProjectsSection() -> impl IntoView {
                             class="h-full w-full flex items-center justify-center"
                         >
                             <h2 class="text-3xl font-bold tracking-tight text-transparent bg-base-100 bg-clip-text sm:text-4xl [writing-mode:vertical-rl] rotate-180 whitespace-nowrap">
-                                {t!(i18n, projects.title)}
+                                "PROJECTS"
                             </h2>
                         </CornerFrame>
                     </div>
                     <div class="flex-1 min-w-0">
                         {data_grid(
                             resource,
-                            move || t!(i18n, projects.empty),
+                            move || "No projects found.",
                             |projects: Vec<Repo>| {
                                 view! {
                                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
@@ -56,7 +54,7 @@ pub fn ProjectsSection() -> impl IntoView {
                                 }
                             },
                             Some(retry),
-                            t_string!(i18n, projects.retry),
+                            "Retry",
                         )}
                     </div>
                 </div>

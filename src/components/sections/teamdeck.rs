@@ -2,7 +2,6 @@ use crate::components::cards::teamcard::{TeamCard, TeamCardProperties};
 use crate::components::ui::cornerframe::CornerFrame;
 use crate::components::ui::datagrid::data_grid;
 use crate::github::{Member, fetch_members};
-use crate::i18n::{t, t_string, use_i18n};
 use crate::utils::{observe_intersections, window_event_listener};
 use leptos::prelude::*;
 use leptos::wasm_bindgen::JsCast;
@@ -10,7 +9,6 @@ use leptos::web_sys;
 
 #[component]
 pub fn TeamDeckSection() -> impl IntoView {
-    let i18n = use_i18n();
     let (rotation, set_rotation) = signal(0usize);
     let (count, set_count) = signal(8usize);
     let (retry_count, set_retry_count) = signal(0u32);
@@ -125,19 +123,19 @@ pub fn TeamDeckSection() -> impl IntoView {
                     class="team-deck-wrapper"
                     tabindex="0"
                     role="region"
-                    aria-label=t_string!(i18n, team.deck_label)
+                    aria-label="Team deck"
                 >
                     // Click zone at the right edge - triggers rotation
                     <div
                         class="deck-hover-zone"
                         role="button"
-                        aria-label=t_string!(i18n, team.rotate_label)
+                        aria-label="Rotate team deck"
                         on:click=move |_| rotate()
                     />
                     <ul class="team-deck">
                         {data_grid(
                             resource,
-                            move || t!(i18n, team.empty),
+                            move || "No team members found.",
                             move |members: Vec<Member>| {
                                 let member_count = members.len();
                                 let total_count = member_count + 1;
@@ -156,7 +154,7 @@ pub fn TeamDeckSection() -> impl IntoView {
                                                 class="team-deck-card"
                                                 tabindex="0"
                                                 role="button"
-                                                aria-label=format!("{login} - {}", t_string!(i18n, team.rotate_label))
+                                                aria-label=format!("{login} - Rotate team deck")
                                                 data-deck-pos=move || {
                                                     let total = count.get();
                                                     (card_idx + rotation.get()) % total
@@ -177,7 +175,7 @@ pub fn TeamDeckSection() -> impl IntoView {
                                     .collect_view()
                             },
                             Some(retry),
-                            t_string!(i18n, team.retry),
+                            "Retry",
                         )}
                         // Title card (always present, rotates through positions)
                         <li
@@ -185,7 +183,7 @@ pub fn TeamDeckSection() -> impl IntoView {
                             class="team-deck-card team-deck-title"
                             tabindex="0"
                             role="button"
-                            aria-label=t_string!(i18n, team.rotate_label)
+                            aria-label="Rotate team deck"
                             data-deck-pos=move || {
                                 let total = count.get();
                                 rotation.get() % total
@@ -199,7 +197,7 @@ pub fn TeamDeckSection() -> impl IntoView {
                                     class="h-full w-full flex items-center justify-center"
                                 >
                                     <h2 class="text-3xl font-bold tracking-tight text-transparent bg-base-100 bg-clip-text whitespace-nowrap">
-                                        {t!(i18n, team.title)}
+                                        "THE TEAM"
                                     </h2>
                                 </CornerFrame>
                             </div>
@@ -208,12 +206,12 @@ pub fn TeamDeckSection() -> impl IntoView {
                 </div>
                 // Keyboard hint below the deck
                 <div class="mt-6 hidden md:flex items-center justify-center gap-2 text-sm text-base-content/50 font-mono select-none">
-                    <span>{t!(i18n, team.keyboard_hint_press)}</span>
-                    <kbd class="inline-flex items-center justify-center px-2 py-0.5 min-w-[1.5rem] rounded border border-base-content/20 bg-base-200 shadow-kbd text-xs font-sans">{t!(i18n, team.keyboard_hint_space)}</kbd>
-                    <span>{t!(i18n, team.keyboard_hint_to_rotate)}</span>
+                    <span>"Press"</span>
+                    <kbd class="inline-flex items-center justify-center px-2 py-0.5 min-w-[1.5rem] rounded border border-base-content/20 bg-base-200 shadow-kbd text-xs font-sans">"Space"</kbd>
+                    <span>"to rotate"</span>
                     <span class="mx-1" aria-hidden="true">"·"</span>
-                    <kbd class="inline-flex items-center justify-center px-2 py-0.5 min-w-[1.5rem] rounded border border-base-content/20 bg-base-200 shadow-kbd text-xs font-sans">{t!(i18n, team.keyboard_hint_enter)}</kbd>
-                    <span>{t!(i18n, team.keyboard_hint_enter_to_open)}</span>
+                    <kbd class="inline-flex items-center justify-center px-2 py-0.5 min-w-[1.5rem] rounded border border-base-content/20 bg-base-200 shadow-kbd text-xs font-sans">"Enter"</kbd>
+                    <span>"to open"</span>
                 </div>
             </div>
         </section>
