@@ -9,7 +9,12 @@ use leptos::prelude::*;
 pub fn LandingSection() -> impl IntoView {
     view! {
         <section id="landing" class="hero min-h-[80dvh] relative isolate px-6 lg:px-8">
-            <BlueprintGrid />
+            {/* Grid container with its own top/bottom fades */}
+            <div class="absolute inset-0 pointer-events-none">
+                <BlueprintGrid />
+                <div class="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-base-100 to-transparent" />
+            </div>
+
             <WireframeShapes />
             <LineDrawHero />
             <ParallaxLanding />

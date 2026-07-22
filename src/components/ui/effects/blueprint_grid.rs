@@ -117,7 +117,7 @@ pub fn BlueprintGrid() -> impl IntoView {
             </svg>
 
             {/* Subtle radial mask to fade edges */}
-            <div class="absolute inset-0 blueprint-mask" />
+            {/* <div class="absolute inset-0 blueprint-mask" /> */}
         </div>
     }
 }

@@ -13,10 +13,15 @@ pub fn App() -> impl IntoView {
             >
                 "Skip to main content"
             </a>
-            <Header />
+            <div class="relative">
+                <Header />
+
+                <div class="absolute inset-x-0 top-0 h-128 bg-gradient-to-b from-base-100 to-transparent pointer-events-none z-10" />
+
+                <LandingSection />
+            </div>
 
         <main id="main-content" tabindex="-1">
-        <LandingSection />
 
         // Line divider between hero and projects
         <LineDraw />
