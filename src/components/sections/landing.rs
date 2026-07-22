@@ -8,7 +8,7 @@ use leptos::prelude::*;
 #[component]
 pub fn LandingSection() -> impl IntoView {
     view! {
-        <section id="landing" class="relative isolate px-6 py-[8dvh] sm:py-[10dvh] lg:px-8">
+        <section id="landing" class="hero min-h-[80dvh] relative isolate px-6 lg:px-8">
             <BlueprintGrid />
             <WireframeShapes />
             <LineDrawHero />
@@ -21,7 +21,7 @@ pub fn LandingSection() -> impl IntoView {
                 <div class="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-primary to-secondary opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem] clip-organic-blob"></div>
             </div>
 
-            <div class="mx-auto max-w-2xl py-[6dvh] sm:py-[8dvh] lg:py-[10dvh]">
+            <div class="hero-content z-10 w-full p-0 justify-center">
                 <CodeBlock />
             </div>
 
