@@ -133,6 +133,12 @@ async fn fetch_all<T: for<'de> Deserialize<'de> + Serialize>(
     Ok(all)
 }
 
+/// Fetches public organization members from the GitHub API.
+///
+/// # Errors
+///
+/// Returns an error if the GitHub API request fails and cannot be satisfied
+/// from cache.
 pub async fn fetch_members() -> Result<Vec<Member>, String> {
     let mut members = fetch_all::<Member>(&format!("/orgs/{ORG}/members")).await?;
 
@@ -160,6 +166,12 @@ pub async fn fetch_members() -> Result<Vec<Member>, String> {
     Ok(members)
 }
 
+/// Fetches public organization repositories from the GitHub API.
+///
+/// # Errors
+///
+/// Returns an error if the GitHub API request fails and cannot be satisfied
+/// from cache.
 pub async fn fetch_repos() -> Result<Vec<Repo>, String> {
     let mut repos = fetch_all::<Repo>(&format!("/orgs/{ORG}/repos?type=public")).await?;
     repos.retain(|r| !r.fork);
@@ -175,6 +187,7 @@ mod tests {
     wasm_bindgen_test_configure!(run_in_browser);
 
     #[wasm_bindgen_test]
+    #[allow(clippy::float_cmp)]
     fn test_constants() {
         assert_eq!(ORG, "XodiumSoftware");
         assert_eq!(API_BASE, "https://api.github.com");

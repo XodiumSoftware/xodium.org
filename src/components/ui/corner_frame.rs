@@ -1,7 +1,7 @@
 use leptos::prelude::*;
 
 #[component]
-#[must_use] 
+#[must_use]
 pub fn CornerFrame(
     children: Children,
     #[prop(default = "angle")] style: &'static str,

@@ -1,3 +1,5 @@
+#![allow(clippy::must_use_candidate, clippy::too_many_lines)]
+
 mod app;
 
 pub mod components {

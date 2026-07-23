@@ -2,7 +2,7 @@ use leptos::prelude::*;
 
 /// Hexagon background pattern for sections
 #[component]
-#[must_use] 
+#[must_use]
 pub fn HexPattern(#[prop(optional)] class: &'static str) -> impl IntoView {
     view! {
         <div class={format!("absolute inset-0 pointer-events-none overflow-hidden {class}")}>

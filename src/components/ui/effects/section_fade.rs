@@ -2,7 +2,7 @@ use leptos::prelude::*;
 
 /// Simple fade overlay for any section
 #[component]
-#[must_use] 
+#[must_use]
 pub fn FadeOverlay(
     #[prop(default = "")] position: &'static str,
     /// Height of the fade in tailwind spacing

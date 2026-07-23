@@ -6,7 +6,7 @@ use crate::components::ui::effects::wire_frames::WireframeShapes;
 use leptos::prelude::*;
 
 #[component]
-#[must_use] 
+#[must_use]
 pub fn LandingSection() -> impl IntoView {
     view! {
         <section id="landing" class="hero min-h-[80dvh] relative isolate px-6 lg:px-8">

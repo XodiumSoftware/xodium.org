@@ -2,7 +2,7 @@ use leptos::prelude::*;
 
 /// Floating isometric wireframe shapes for CAD aesthetic background
 #[component]
-#[must_use] 
+#[must_use]
 pub fn WireframeShapes() -> impl IntoView {
     view! {
         <div class="absolute inset-0 h-full w-full pointer-events-none overflow-hidden">

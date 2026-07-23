@@ -4,7 +4,7 @@ use crate::components::{
 use leptos::prelude::*;
 
 #[component]
-#[must_use] 
+#[must_use]
 pub fn App() -> impl IntoView {
     view! {
         <div>

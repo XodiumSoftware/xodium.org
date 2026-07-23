@@ -7,7 +7,7 @@ use crate::github::{Repo, fetch_repos};
 use leptos::prelude::*;
 
 #[component]
-#[must_use] 
+#[must_use]
 pub fn ProjectsSection() -> impl IntoView {
     let (retry_count, set_retry_count) = signal(0u32);
     let resource = LocalResource::new(move || {

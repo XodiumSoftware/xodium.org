@@ -29,7 +29,7 @@ const GIT_SHA: &str = env!("GIT_SHA");
 const GITHUB_REPO_URL: &str = "https://github.com/XodiumSoftware/xodium.org/commit";
 
 #[component]
-#[must_use] 
+#[must_use]
 pub fn Footer() -> impl IntoView {
     let current_year = js_sys::Date::new_0().get_full_year();
     let commit_url = if GIT_SHA == "unknown" {

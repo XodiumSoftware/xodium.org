@@ -3,7 +3,7 @@ use leptos::prelude::*;
 /// Blueprint-style grid background with measurement ticks and coordinate axes
 /// Designed to be placed behind the hero section for CAD aesthetic
 #[component]
-#[must_use] 
+#[must_use]
 pub fn BlueprintGrid() -> impl IntoView {
     view! {
         <div class="absolute inset-0 h-full w-full pointer-events-none overflow-hidden">

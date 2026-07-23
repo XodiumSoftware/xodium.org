@@ -27,7 +27,7 @@ impl<T: JsCast> SendWrapper<T> {
 /// Check whether the user has requested reduced motion.
 ///
 /// Defaults to `false` if the media query cannot be evaluated.
-#[must_use] 
+#[must_use]
 pub fn prefers_reduced_motion() -> bool {
     leptos::web_sys::window()
         .and_then(|w| w.match_media("(prefers-reduced-motion: reduce)").ok())
@@ -126,7 +126,7 @@ where
 }
 
 /// Strip a `-dirty` suffix from a Git SHA, if present.
-#[must_use] 
+#[must_use]
 pub fn clean_sha(sha: &str) -> &str {
     sha.strip_suffix("-dirty").unwrap_or(sha)
 }
@@ -134,7 +134,7 @@ pub fn clean_sha(sha: &str) -> &str {
 /// Return a Tailwind color class for a programming language name.
 ///
 /// Unknown languages fall back to a neutral base-content badge.
-#[must_use] 
+#[must_use]
 pub fn language_color(language: &str) -> &'static str {
     match language {
         "Rust" => "bg-[#dea584]",

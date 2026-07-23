@@ -31,7 +31,7 @@ const SOCIAL_LINKS: &[SocialLink] = &[
 ];
 
 #[component]
-#[must_use] 
+#[must_use]
 pub fn Header() -> impl IntoView {
     let (is_scrolled, set_is_scrolled) = signal(false);
     let (active_section, set_active_section) = signal(String::new());
@@ -40,8 +40,7 @@ pub fn Header() -> impl IntoView {
     // Scroll listener for backdrop blur
     Effect::new(move |_| {
         window_event_listener::<web_sys::Event, _>("scroll", move |_ev| {
-            let scrolled = web_sys::window()
-                .is_some_and(|w| w.scroll_y().unwrap_or(0.0) > 0.0);
+            let scrolled = web_sys::window().is_some_and(|w| w.scroll_y().is_ok_and(|y| y > 0.0));
             set_is_scrolled.set(scrolled);
         });
     });

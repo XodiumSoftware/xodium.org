@@ -20,7 +20,7 @@ const ASCII_ART: &str = r"
 ";
 
 #[component]
-#[must_use] 
+#[must_use]
 pub fn CodeBlock() -> impl IntoView {
     let company_values = [
         "Building open-source tools for developers",
@@ -71,7 +71,12 @@ pub fn CodeBlock() -> impl IntoView {
             if prefers_reduced_motion {
                 // Instant display — no delays, no typing animation
                 set_show_ascii.set(true);
-                set_lines.set(company_values.iter().map(std::string::ToString::to_string).collect());
+                set_lines.set(
+                    company_values
+                        .iter()
+                        .map(std::string::ToString::to_string)
+                        .collect(),
+                );
                 set_current_line.set(company_values.len());
                 set_show_buttons.set(true);
                 return;
@@ -100,7 +105,7 @@ pub fn CodeBlock() -> impl IntoView {
                         if lines.len() <= i {
                             lines.push(typed.clone());
                         } else {
-                            lines[i] = typed.clone();
+                            lines[i].clone_from(&typed);
                         }
                     });
                     gloo_timers::future::sleep(Duration::from_millis(30)).await;
