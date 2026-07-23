@@ -90,8 +90,10 @@ jobs:
     if: |
       !contains(github.event.head_commit.message, '[ci-skip]') &&
       !contains(github.event.pull_request.title, '[ci-skip]')
-    needs: [lint]
     runs-on: ubuntu-latest
+    env:
+      SCCACHE_GHA_ENABLED: "true"
+      RUSTC_WRAPPER: "sccache"
     steps:
       - id: checkout
         name: Checkout
@@ -108,6 +110,10 @@ jobs:
         run: rustup target add wasm32-unknown-unknown
         shell: bash
 
+      - id: run_sccache_cache
+        name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@7d986dd989559c6ecdb630a3fd2557667be217ad
+
       - id: cache_dependencies
         name: Cache dependencies
         uses: actions/cache@v6.1.0
@@ -118,9 +124,13 @@ jobs:
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
+      - id: install_cargo_binstall
+        name: Install cargo-binstall
+        uses: cargo-bins/cargo-binstall@dc19f1e48450eefe5a29b8da6c6b00a87d730b37
+
       - id: install_wasm_pack
         name: Install wasm-pack
-        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+        run: cargo binstall wasm-pack --no-confirm --force
         shell: bash
 
       - id: run_tests
@@ -133,7 +143,6 @@ jobs:
     if: |
       !contains(github.event.head_commit.message, '[ci-skip]') &&
       !contains(github.event.pull_request.title, '[ci-skip]')
-    needs: [lint, test]
     runs-on: ubuntu-latest
     env:
       SCCACHE_GHA_ENABLED: "true"
@@ -215,7 +224,7 @@ jobs:
     if: |
       !contains(github.event.head_commit.message, '[ci-skip]') &&
       !contains(github.event.pull_request.title, '[ci-skip]')
-    needs: [build]
+    needs: [lint, test, build]
     runs-on: ubuntu-latest
     environment:
       name: "${{ github.ref_name }}"
