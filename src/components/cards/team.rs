@@ -10,6 +10,7 @@ pub struct TeamCardProperties {
 }
 
 #[component]
+#[must_use] 
 pub fn TeamCard(props: TeamCardProperties) -> impl IntoView {
     view! {
         <a

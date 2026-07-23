@@ -8,6 +8,7 @@ use leptos::wasm_bindgen::JsCast;
 use leptos::web_sys;
 
 #[component]
+#[must_use] 
 pub fn TeamDeckSection() -> impl IntoView {
     let (rotation, set_rotation) = signal(0usize);
     let (count, set_count) = signal(8usize);

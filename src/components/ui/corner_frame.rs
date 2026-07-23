@@ -1,6 +1,7 @@
 use leptos::prelude::*;
 
 #[component]
+#[must_use] 
 pub fn CornerFrame(
     children: Children,
     #[prop(default = "angle")] style: &'static str,
@@ -21,7 +22,7 @@ pub fn CornerFrame(
     };
 
     view! {
-        <div class={format!("relative {}", class)}>
+        <div class={format!("relative {class}")}>
             // Top-left bracket
             <span class={format!("{corner_class} -top-2 -left-1")}>
                 {top_left}

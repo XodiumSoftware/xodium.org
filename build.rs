@@ -11,8 +11,7 @@ fn main() {
     let (git_sha, git_available) = match git_output {
         Ok(output) if output.status.success() => {
             let sha = String::from_utf8(output.stdout)
-                .map(|s| s.trim().to_string())
-                .unwrap_or_else(|_| "unknown".to_string());
+                .map_or_else(|_| "unknown".to_string(), |s| s.trim().to_string());
             (sha, true)
         }
         _ => {
@@ -90,15 +89,20 @@ fn sync_agent_skills() {
             .to_string();
         let content = std::fs::read_to_string(&skill_md)
             .unwrap_or_else(|e| panic!("Unable to read {}: {e}", skill_md.display()));
-        let description = parse_skill_description(&content).unwrap_or_else(|| {
-            // Fall back to the first Markdown heading, if present.
-            content
-                .lines()
-                .map(str::trim)
-                .find(|l| l.starts_with("# "))
-                .map(|l| l.trim_start_matches("# ").trim().to_string())
-                .unwrap_or_else(|| format!("Skill: {name}"))
-        });
+        let description = parse_skill_description(&content).map_or_else(
+            || {
+                // Fall back to the first Markdown heading, if present.
+                content
+                    .lines()
+                    .map(str::trim)
+                    .find(|l| l.starts_with("# "))
+                    .map_or_else(
+                        || format!("Skill: {name}"),
+                        |line| line.trim_start_matches("# ").trim().to_string(),
+                    )
+            },
+            std::convert::identity,
+        );
         let digest = sha256_hex(&content);
 
         let target_dir = public_skills_dir.join(&name);

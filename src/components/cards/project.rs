@@ -77,6 +77,7 @@ fn DocsIcon() -> impl IntoView {
 }
 
 #[component]
+#[must_use] 
 pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
     let link = props.link.clone().unwrap_or_else(|| "#".to_string());
     let stargazers_url = format!("{link}/stargazers");

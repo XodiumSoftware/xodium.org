@@ -5,6 +5,7 @@ use leptos::web_sys;
 /// Parallax background for the landing section.
 /// Respects `prefers-reduced-motion` by disabling all layer transforms.
 #[component]
+#[must_use] 
 pub fn ParallaxLanding() -> impl IntoView {
     let (scroll_y, set_scroll_y) = signal(0.0);
     let (reduced_motion, set_reduced_motion) = signal(false);
