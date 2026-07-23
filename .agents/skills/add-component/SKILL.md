@@ -36,7 +36,7 @@ Use this skill when the user wants to add a new component or page section to the
 7. Wire it into the app:
    - **Reusable component:** import it where needed and use it in the relevant section or card.
    - **Page section:** import it in `src/app.rs`, place it in the page layout where appropriate, and add `LineDraw` dividers before and/or after it to match the existing layout pattern.
-8. Run `cargo clippy --all-targets --all-features -- -D warnings` to ensure no lint issues.
+8. Run `cargo clippy --all-targets --all-features --target wasm32-unknown-unknown -- -W clippy::pedantic -D warnings` to ensure no lint issues.
 9. Run `trunk build` to verify compilation.
 
 ## Conventions

@@ -43,7 +43,7 @@ trunk build --release
 
 Before considering the site ready to deploy:
 
-1. `cargo clippy --all-targets --all-features -- -D warnings` passes with no warnings.
+1. `cargo clippy --all-targets --all-features --target wasm32-unknown-unknown -- -W clippy::pedantic -D warnings` passes with no warnings.
 2. `trunk build --release` completes with no errors or warnings.
 3. `cargo doc --no-deps` generates docs if public APIs changed.
 4. Rustdoc comments and `cargo doc --no-deps` are up to date if public APIs, components, or layout behavior changed.

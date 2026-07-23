@@ -49,6 +49,9 @@ cargo doc --no-deps
 
 # Clean build artifacts
 trunk clean
+
+# Lint with pedantic lints enabled; every warning is treated as an error.
+cargo clippy --all-targets --all-features --target wasm32-unknown-unknown -- -W clippy::pedantic -D warnings
 ```
 
 ## Architecture Overview
@@ -178,7 +181,7 @@ build.rs                       # Build script
 ### Key Conventions
 
 - **Register modules and re-exports in `src/lib.rs` explicitly.** Do not use `mod.rs` files, and do not nest `mod` declarations inside other module files. Every module in the crate must be declared directly in the crate root (`src/lib.rs`). Use `#[path = "..."]` attributes when a module file lives in a subdirectory.
-- All Clippy warnings enabled
+- All Clippy warnings enabled; run with `-W clippy::pedantic -D warnings` to catch pedantic lints as errors.
 - `unsafe_code` not needed (WASM sandbox)
 - **Props:** `#[derive(Clone)]` structs named `{Component}Properties`
 - **Async data:** Use `LocalResource` (not `Resource`) for WASM thread execution
