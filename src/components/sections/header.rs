@@ -37,11 +37,36 @@ pub fn Header() -> impl IntoView {
     let (active_section, set_active_section) = signal(String::new());
     let (is_logo_active, set_is_logo_active) = signal(false);
 
-    // Scroll listener for backdrop blur
+    // Scroll listener for backdrop blur, throttled to animation frames
     Effect::new(move |_| {
+        let pending = std::cell::Cell::new(false);
+
         window_event_listener::<web_sys::Event, _>("scroll", move |_ev| {
-            let scrolled = web_sys::window().is_some_and(|w| w.scroll_y().is_ok_and(|y| y > 0.0));
-            set_is_scrolled.set(scrolled);
+            if pending.get() {
+                return;
+            }
+            pending.set(true);
+
+            let set_is_scrolled = set_is_scrolled;
+            let pending_for_raf = pending.clone();
+            let closure = leptos::wasm_bindgen::closure::Closure::once_into_js(move || {
+                let scrolled =
+                    web_sys::window().is_some_and(|w| w.scroll_y().is_ok_and(|y| y > 0.0));
+                set_is_scrolled.set(scrolled);
+                pending_for_raf.set(false);
+            });
+
+            if let Some(window) = web_sys::window() {
+                let fn_ref: &js_sys::Function = closure.unchecked_ref();
+                let _ = window.request_animation_frame(fn_ref);
+                // Keep the closure alive for the single RAF invocation.
+                // requestAnimationFrame does not hold the closure, so we intentionally
+                // leak it here; the browser invokes it once and then it is garbage
+                // collected.
+                std::mem::forget(closure);
+            } else {
+                pending.set(false);
+            }
         });
     });
 
