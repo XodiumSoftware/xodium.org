@@ -2,6 +2,7 @@
   Link: </.well-known/api-catalog>; rel="api-catalog"
   Link: </.well-known/agent-skills/index.json>; rel="item"; type="application/json"
   Link: </auth.md>; rel="describedby"
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://api.github.com; img-src 'self' https://avatars.githubusercontent.com data:; font-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';
 
 /sitemap.xml
   Content-Type: application/xml
