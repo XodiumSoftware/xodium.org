@@ -100,6 +100,19 @@
                     const controller = new AbortController();
                     const signal = controller.signal;
 
+                    async function withMcpTools(fn) {
+                        if (!window.xodiumwebMcp) {
+                            await new Promise((resolve) => {
+                                window.addEventListener(
+                                    "xodiumweb-mcp-ready",
+                                    resolve,
+                                    { once: true },
+                                );
+                            });
+                        }
+                        return fn(window.xodiumwebMcp);
+                    }
+
                     register(
                         {
                             name: "navigate_to_section",
@@ -168,28 +181,10 @@
                                 },
                             },
                             execute: async ({ limit = 30 } = {}) => {
-                                const url =
-                                    "https://api.github.com/orgs/XodiumSoftware/repos?type=public&sort=stars&per_page=100";
-                                const response = await fetch(url, {
-                                    headers: { Accept: "application/vnd.github+json" },
-                                });
-                                if (!response.ok) {
-                                    throw new Error(
-                                        `GitHub API returned ${response.status}`,
-                                    );
-                                }
-                                const repos = await response.json();
-                                return repos
-                                    .filter((repo) => !repo.fork)
-                                    .sort((a, b) => b.stargazers_count - a.stargazers_count)
-                                    .slice(0, limit)
-                                    .map((repo) => ({
-                                        name: repo.name,
-                                        description: repo.description || "",
-                                        url: repo.html_url,
-                                        language: repo.language || "",
-                                        stars: repo.stargazers_count,
-                                    }));
+                                const projects = await withMcpTools((mcp) =>
+                                    mcp.listProjects(limit),
+                                );
+                                return projects;
                             },
                         },
                         { signal },
@@ -205,22 +200,10 @@
                                 properties: {},
                             },
                             execute: async () => {
-                                const url =
-                                    "https://api.github.com/orgs/XodiumSoftware/members?per_page=100";
-                                const response = await fetch(url, {
-                                    headers: { Accept: "application/vnd.github+json" },
-                                });
-                                if (!response.ok) {
-                                    throw new Error(
-                                        `GitHub API returned ${response.status}`,
-                                    );
-                                }
-                                const members = await response.json();
-                                return members.map((member) => ({
-                                    login: member.login,
-                                    profile: member.html_url,
-                                    avatar: member.avatar_url,
-                                }));
+                                const members = await withMcpTools((mcp) =>
+                                    mcp.listTeam(),
+                                );
+                                return members;
                             },
                         },
                         { signal },
