@@ -15,6 +15,9 @@ pub fn App() -> impl IntoView {
                 "Skip to main content"
             </a>
             <div class="relative">
+                {/* Sentinel used by Header to detect when the page has scrolled. */}
+                <div id="header-scroll-sentinel" class="absolute top-0 left-0 h-px w-full -z-20" />
+
                 <Header />
 
                 <div class="absolute inset-x-0 top-0 h-128 bg-gradient-to-b from-base-100 to-transparent pointer-events-none z-10" />

@@ -1,4 +1,4 @@
-use crate::utils::{observe_intersections, window_event_listener};
+use crate::utils::observe_intersections;
 use leptos::prelude::*;
 use leptos::task::spawn_local;
 use leptos::wasm_bindgen::JsCast;
@@ -37,36 +37,25 @@ pub fn Header() -> impl IntoView {
     let (active_section, set_active_section) = signal(String::new());
     let (is_logo_active, set_is_logo_active) = signal(false);
 
-    // Scroll listener for backdrop blur, throttled to animation frames
+    // IntersectionObserver to detect when the page has scrolled away from the top.
+    // Avoids a scroll listener so scrolling can remain async-panned.
     Effect::new(move |_| {
-        let pending = std::cell::Cell::new(false);
+        let Some(window) = web_sys::window() else {
+            return;
+        };
+        let Some(document) = window.document() else {
+            return;
+        };
+        let Some(sentinel) = document.get_element_by_id("header-scroll-sentinel") else {
+            return;
+        };
 
-        window_event_listener::<web_sys::Event, _>("scroll", move |_ev| {
-            if pending.get() {
-                return;
-            }
-            pending.set(true);
-
-            let set_is_scrolled = set_is_scrolled;
-            let pending_for_raf = pending.clone();
-            let closure = leptos::wasm_bindgen::closure::Closure::once_into_js(move || {
-                let scrolled =
-                    web_sys::window().is_some_and(|w| w.scroll_y().is_ok_and(|y| y > 0.0));
-                set_is_scrolled.set(scrolled);
-                pending_for_raf.set(false);
-            });
-
-            if let Some(window) = web_sys::window() {
-                let fn_ref: &js_sys::Function = closure.unchecked_ref();
-                let _ = window.request_animation_frame(fn_ref);
-                // Keep the closure alive for the single RAF invocation.
-                // requestAnimationFrame does not hold the closure, so we intentionally
-                // leak it here; the browser invokes it once and then it is garbage
-                // collected.
-                std::mem::forget(closure);
-            } else {
-                pending.set(false);
-            }
+        observe_intersections(&[sentinel], 0.0, move |entries| {
+            let at_top = entries
+                .iter()
+                .next()
+                .is_some_and(leptos::web_sys::IntersectionObserverEntry::is_intersecting);
+            set_is_scrolled.set(!at_top);
         });
     });
 

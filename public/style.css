@@ -234,6 +234,66 @@ html {
     animation: none;
 }
 
+/* Landing parallax layers — CSS-only, never tied to scroll */
+.parallax-layer-slow {
+    will-change: transform;
+    animation: parallaxFloatSlow 20s ease-in-out infinite;
+}
+
+.parallax-layer-medium {
+    will-change: transform;
+    animation: parallaxFloatMedium 15s ease-in-out infinite;
+}
+
+.parallax-layer-fast {
+    will-change: transform;
+    animation: parallaxFloatFast 10s ease-in-out infinite;
+}
+
+@keyframes parallaxFloatSlow {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes parallaxFloatMedium {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-35px);
+    }
+}
+
+@keyframes parallaxFloatFast {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-50px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .parallax-layer-slow,
+    .parallax-layer-medium,
+    .parallax-layer-fast {
+        animation: none;
+    }
+}
+
+.reduced-motion .parallax-layer-slow,
+.reduced-motion .parallax-layer-medium,
+.reduced-motion .parallax-layer-fast {
+    animation: none;
+}
+
 /* CAD Line Drawing animations */
 .cad-line-hidden {
     stroke-dasharray: 1200;
