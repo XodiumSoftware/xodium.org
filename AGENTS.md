@@ -263,6 +263,7 @@ view! {
 ### Build Pipeline
 
 1. **Trunk** bundles WASM, processes Tailwind CSS, copies `public/` → `dist/`
+   - `Trunk.toml` pins `tailwindcss = "2.8.3"`. This is the version of Trunk’s bundled Tailwind distribution, not the upstream Tailwind CSS version. The bundle includes the latest Tailwind CSS + DaisyUI; the actual Tailwind CSS version resolved at build time is shown in the build log (e.g. `tailwindcss v4.2.2`).
 2. **Cargo release profile** optimizations:
     - `opt-level = "z"` (size)
     - `lto = true` (link-time optimization)
