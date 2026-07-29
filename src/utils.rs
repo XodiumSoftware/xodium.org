@@ -55,13 +55,15 @@ pub fn apply_reduced_motion_class() {
 /// Add a listener to the browser `window` and automatically remove it when
 /// the surrounding effect is cleaned up.
 ///
-/// Returns `None` if the listener could not be registered.
-pub fn window_event_listener<E, F>(event: &'static str, mut handler: F) -> Option<()>
+/// Returns `true` if the listener was successfully registered.
+pub fn window_event_listener<E, F>(event: &'static str, mut handler: F) -> bool
 where
     E: JsCast + 'static,
     F: FnMut(E) + 'static,
 {
-    let window = leptos::web_sys::window()?;
+    let Some(window) = leptos::web_sys::window() else {
+        return false;
+    };
     let closure = SendWrapper(Closure::wrap(Box::new(move |ev: leptos::web_sys::Event| {
         if let Ok(typed) = ev.dyn_into::<E>() {
             handler(typed);
@@ -73,9 +75,12 @@ where
         .as_ref()
         .unchecked_ref::<js_sys::Function>()
         .clone();
-    window
+    if window
         .add_event_listener_with_callback(event, &fn_ref)
-        .ok()?;
+        .is_err()
+    {
+        return false;
+    }
 
     leptos::prelude::on_cleanup(move || {
         if let Some(window) = leptos::web_sys::window() {
@@ -84,7 +89,7 @@ where
         drop(closure);
     });
 
-    Some(())
+    true
 }
 
 /// Observe the intersection of a set of elements and call the provided
@@ -96,16 +101,18 @@ where
 /// element to be visible.
 ///
 /// The observer is disconnected when the surrounding effect is cleaned up.
-/// Returns `None` if the observer could not be created.
+/// Returns `true` if the observer was successfully created and started.
 pub fn observe_intersections<F>(
     elements: &[leptos::web_sys::Element],
     threshold: f64,
     mut callback: F,
-) -> Option<()>
+) -> bool
 where
     F: FnMut(&[leptos::web_sys::IntersectionObserverEntry]) + 'static,
 {
-    let window = leptos::web_sys::window()?;
+    let Some(window) = leptos::web_sys::window() else {
+        return false;
+    };
 
     let closure = SendWrapper(Closure::wrap(Box::new(move |entries: js_sys::Array| {
         let typed: Vec<leptos::web_sys::IntersectionObserverEntry> = entries
@@ -124,11 +131,13 @@ where
     let threshold = threshold.clamp(0.0, 1.0);
     options.set_threshold(&js_sys::Array::of1(&js_sys::Number::from(threshold)));
 
-    let observer = leptos::web_sys::IntersectionObserver::new_with_options(
+    let Some(observer) = leptos::web_sys::IntersectionObserver::new_with_options(
         closure.0.as_ref().unchecked_ref(),
         &options,
     )
-    .ok()?;
+    .ok() else {
+        return false;
+    };
 
     for element in elements {
         observer.observe(element);
@@ -139,7 +148,7 @@ where
         drop(closure);
     });
 
-    Some(())
+    true
 }
 
 /// Strip a `-dirty` suffix from a Git SHA, if present.
