@@ -3,7 +3,7 @@
 <h1 align="center">
   <br />
     <a href="https://xodium.org/">
-        <img src="logo.svg" alt="IllyriaBridge Logo" width="200">
+        <img src="logo.svg" alt="Xodium Logo" width="200">
     </a>
   <br /><br />
   Xodium

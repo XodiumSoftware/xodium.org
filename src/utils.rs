@@ -35,6 +35,23 @@ pub fn prefers_reduced_motion() -> bool {
         .is_some_and(|mql| mql.matches())
 }
 
+/// Apply a `reduced-motion` class to the document element when the user
+/// prefers reduced motion.
+///
+/// This lets CSS and JS share a single, consistent signal in addition to the
+/// standard `prefers-reduced-motion` media query.
+pub fn apply_reduced_motion_class() {
+    if !prefers_reduced_motion() {
+        return;
+    }
+    let Some(document) = leptos::web_sys::window().and_then(|w| w.document()) else {
+        return;
+    };
+    if let Some(html) = document.document_element() {
+        let _ = html.class_list().add_1("reduced-motion");
+    }
+}
+
 /// Add a listener to the browser `window` and automatically remove it when
 /// the surrounding effect is cleaned up.
 ///

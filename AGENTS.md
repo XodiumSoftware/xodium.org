@@ -91,14 +91,14 @@ Components are grouped by function in `src/components/`:
 | `TeamDeckSection` | `team_deck.rs`    | Fetches org members, renders `TeamCard`s     |
 | `Footer`          | `footer.rs`       | Site footer                                  |
 
-#### Cards (`src/cards/`)
+#### Cards (`src/components/cards/`)
 
 | Component     | File             | Purpose                                           |
 |---------------|------------------|---------------------------------------------------|
 | `ProjectCard` | `project.rs`     | Repo card with name, description, stars, language |
 | `TeamCard`    | `team.rs`        | Member avatar, login, role badge                  |
 
-#### Visual Effects (`src/ui/effects/`)
+#### Visual Effects (`src/components/ui/effects/`)
 
 | Component         | File                  | Purpose                     |
 |-------------------|-----------------------|-----------------------------|
@@ -108,14 +108,14 @@ Components are grouped by function in `src/components/`:
 | `HexPattern`      | `hex_grid.rs`         | Hexagonal grid overlay      |
 | `FadeOverlay`     | `section_fade.rs`     | Gradient fade transitions   |
 
-#### Animations (`src/animations/`)
+#### Animations (`src/components/animations/`)
 
 | Component      | File          | Purpose                   |
 |----------------|---------------|---------------------------|
 | `LineDraw`     | `line_draw.rs` | Section divider animation |
 | `LineDrawHero` | `line_draw.rs` | Hero variant              |
 
-#### UI Primitives (`src/ui/`)
+#### UI Primitives (`src/components/ui/`)
 
 | Component     | File             | Purpose                           |
 |---------------|------------------|-----------------------------------|
@@ -147,27 +147,28 @@ src/
 ├── app.rs                     # Root App component
 ├── github.rs                  # GitHub API client
 ├── utils.rs                   # Shared utilities
-├── sections/                  # Page sections
-│   ├── header.rs
-│   ├── landing.rs
-│   ├── projects.rs
-│   ├── team_deck.rs
-│   └── footer.rs
-├── cards/                     # Card components
-│   ├── project.rs
-│   └── team.rs
-├── animations/                # Animation components
-│   └── line_draw.rs
-└── ui/                        # UI primitives, effects, utilities
-    ├── code_block.rs
-    ├── corner_frame.rs
-    ├── data_grid.rs
-    └── effects/               # Visual effects
-        ├── blueprint_grid.rs
-        ├── hex_grid.rs
-        ├── parallax.rs
-        ├── section_fade.rs
-        └── wire_frames.rs
+├── components/
+│   ├── sections/              # Page sections
+│   │   ├── header.rs
+│   │   ├── landing.rs
+│   │   ├── projects.rs
+│   │   ├── team_deck.rs
+│   │   └── footer.rs
+│   ├── cards/                 # Card components
+│   │   ├── project.rs
+│   │   └── team.rs
+│   ├── animations/            # Animation components
+│   │   └── line_draw.rs
+│   └── ui/                    # UI primitives, effects, utilities
+│       ├── code_block.rs
+│       ├── corner_frame.rs
+│       ├── data_grid.rs
+│       └── effects/           # Visual effects
+│           ├── blueprint_grid.rs
+│           ├── hex_grid.rs
+│           ├── parallax.rs
+│           ├── section_fade.rs
+│           └── wire_frames.rs
 
 public/
 ├── style.css                  # Tailwind + custom theme
@@ -276,7 +277,7 @@ GitHub API responses cached in `localStorage`:
 - Key: `xodium:{endpoint}`
 - Timestamp: `{key}:ts`
 - TTL: 5 minutes
-- Fallback to stale data on fetch failure
+- Cache is invalidated after TTL; the next successful fetch refreshes it
 
 ## Testing
 
@@ -291,6 +292,7 @@ GitHub API responses cached in `localStorage`:
 - **GitHub API** has rate limits (60 req/hour unauthenticated)
 - **Cache invalidation** — manual refresh or wait for 5-min TTL
 - **WASM size** optimized heavily for fast page loads
+- **`prefers-reduced-motion`** — CSS animations and transitions are suppressed via a global media query, and JS-driven effects (`CodeBlock`, `ParallaxLanding`) read `utils::prefers_reduced_motion()`; `main.rs` also applies a `reduced-motion` class to `<html>` so future CSS/JS can share the same signal
 
 ## Claude Code Workflow
 
@@ -331,9 +333,9 @@ GitHub Actions workflows in `.github/workflows/`:
 
 To add a new page section:
 
-1. Create file in `src/sections/{section}.rs`
+1. Create file in `src/components/sections/{section}.rs`
 2. Define `{Section}` component with `#[component]` macro
-3. Add the module declaration in `src/lib.rs` under the `sections` block with `#[path = "../sections/{section}.rs"]`
+3. Add the module declaration in `src/lib.rs` under the `sections` block with `#[path = "components/sections/{section}.rs"]`
 4. Add a `pub use sections::{section}::{Section};` re-export in `src/lib.rs`
 5. Import in `src/app.rs` and add to `App` view
 6. Add `LineDraw` divider before/after if needed

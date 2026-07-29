@@ -154,6 +154,10 @@ html {
     }
 }
 
+.reduced-motion .blueprint-scanline {
+    animation: none;
+}
+
 /* Wireframe shapes animations */
 .wireframe-float-slow {
     animation: wireframeFloat 12s ease-in-out infinite;
@@ -222,6 +226,14 @@ html {
     }
 }
 
+.reduced-motion .wireframe-float-slow,
+.reduced-motion .wireframe-float-medium,
+.reduced-motion .wireframe-float-fast,
+.reduced-motion .wireframe-pulse,
+.reduced-motion .wireframe-rotate-slow {
+    animation: none;
+}
+
 /* CAD Line Drawing animations */
 .cad-line-hidden {
     stroke-dasharray: 1200;
@@ -265,6 +277,13 @@ html {
     }
 }
 
+.reduced-motion .cad-line-draw,
+.reduced-motion .cad-line-draw-hero,
+.reduced-motion .cad-line-simple {
+    animation: none;
+    stroke-dashoffset: 0;
+}
+
 /*noinspection ALL*/
 .nav-icon {
     mask: var(--mask-url) no-repeat center / contain;
@@ -292,7 +311,33 @@ html {
     );
 }
 
-/* Reduced motion support */
+.reduced-motion *,
+.reduced-motion *::before,
+.reduced-motion *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+}
+
+.reduced-motion .btn-lift,
+.reduced-motion .lift {
+    transition: none !important;
+    transform: none !important;
+}
+
+.reduced-motion .team-deck-container,
+.reduced-motion .team-card,
+.reduced-motion .team-cards-list,
+.reduced-motion .team-deck,
+.reduced-motion .team-deck-card {
+    animation: none !important;
+}
+
+.reduced-motion .team-deck-card {
+    transition: none !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -373,6 +418,13 @@ html {
     75% {
         transform: rotate(-4deg);
     }
+}
+
+.reduced-motion .logo-piece path,
+.reduced-motion .logo-piece {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
