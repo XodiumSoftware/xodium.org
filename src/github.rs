@@ -117,11 +117,10 @@ async fn fetch<T: for<'de> Deserialize<'de> + Serialize>(endpoint: &str) -> Resu
 async fn fetch_all<T: for<'de> Deserialize<'de> + Serialize>(
     endpoint: &str,
 ) -> Result<Vec<T>, String> {
-    let sep = if endpoint.contains('?') { '&' } else { '?' };
     let mut all = Vec::new();
     let mut page = 1u32;
     loop {
-        let page_endpoint = format!("{endpoint}{sep}page={page}&per_page={PER_PAGE}");
+        let page_endpoint = paginated_endpoint(endpoint, page, PER_PAGE);
         let items: Vec<T> = fetch(&page_endpoint).await?;
         let done = items.len() < PER_PAGE;
         all.extend(items);
@@ -131,6 +130,16 @@ async fn fetch_all<T: for<'de> Deserialize<'de> + Serialize>(
         page += 1;
     }
     Ok(all)
+}
+
+/// Build a paginated endpoint URL.
+///
+/// Preserves any existing query parameters in `endpoint` and appends the
+/// page and `per_page` parameters with the correct separator.
+#[must_use]
+fn paginated_endpoint(endpoint: &str, page: u32, per_page: usize) -> String {
+    let sep = if endpoint.contains('?') { '&' } else { '?' };
+    format!("{endpoint}{sep}page={page}&per_page={per_page}")
 }
 
 /// Fetches public organization members from the GitHub API.
@@ -186,6 +195,30 @@ mod tests {
 
     wasm_bindgen_test_configure!(run_in_browser);
 
+    fn clear_cache(key: &str) {
+        if let Some(Ok(Some(storage))) = web_sys::window().map(|w| w.local_storage()) {
+            let _ = storage.remove_item(key);
+            let _ = storage.remove_item(&format!("{key}:ts"));
+        }
+    }
+
+    fn test_cache_key() -> &'static str {
+        "xodium:test:github-cache"
+    }
+
+    fn sample_repo(name: &str) -> Repo {
+        Repo {
+            name: name.to_string(),
+            description: None,
+            html_url: format!("https://github.com/XodiumSoftware/{name}"),
+            language: Some("Rust".to_string()),
+            stargazers_count: 0,
+            fork: false,
+            has_pages: false,
+            topics: vec![],
+        }
+    }
+
     #[wasm_bindgen_test]
     #[allow(clippy::float_cmp)]
     fn test_constants() {
@@ -198,15 +231,15 @@ mod tests {
     }
 
     #[wasm_bindgen_test]
-    fn test_retry_delay_calculation() {
-        // Test exponential backoff delays: RETRY_BASE_MS << attempt
-        // attempt 0: no delay (immediate)
+    fn test_retry_backoff_delays() {
+        // Exponential backoff: RETRY_BASE_MS << (attempt - 1)
         // attempt 1: 1000 << 0 = 1000ms
         // attempt 2: 1000 << 1 = 2000ms
         // attempt 3: 1000 << 2 = 4000ms
-        assert_eq!(RETRY_BASE_MS, 1000);
-        assert_eq!(RETRY_BASE_MS << 1, 2000);
-        assert_eq!(RETRY_BASE_MS << 2, 4000);
+        let expected: Vec<u64> = (1..=MAX_RETRIES)
+            .map(|attempt| RETRY_BASE_MS << (attempt - 1))
+            .collect();
+        assert_eq!(expected, vec![1000, 2000, 4000]);
     }
 
     #[wasm_bindgen_test]
@@ -247,6 +280,121 @@ mod tests {
         assert!(!repo.fork);
         assert!(repo.has_pages);
         assert_eq!(repo.topics, vec!["cad", "cli", "rust"]);
+    }
+
+    #[wasm_bindgen_test]
+    async fn test_cache_operations() {
+        // Test cache key format
+        let endpoint = "/orgs/XodiumSoftware/members";
+        let cache_key = format!("xodium:{endpoint}");
+        assert_eq!(cache_key, "xodium:/orgs/XodiumSoftware/members");
+
+        // Note: Full cache_get/cache_set tests require localStorage
+        // which needs a browser environment. These are covered by
+        // the integration tests when running with wasm-pack test.
+    }
+
+    #[wasm_bindgen_test]
+    fn test_cache_miss_returns_none() {
+        let key = test_cache_key();
+        clear_cache(key);
+
+        let cached: Option<Vec<Repo>> = cache_get(key);
+        assert!(cached.is_none(), "Missing cache key should return None");
+    }
+
+    #[wasm_bindgen_test]
+    fn test_cache_roundtrip() {
+        let key = test_cache_key();
+        clear_cache(key);
+
+        let data = vec![sample_repo("roundtrip-repo")];
+        cache_set(key, &data);
+
+        let cached: Option<Vec<Repo>> = cache_get(key);
+        assert!(cached.is_some(), "Fresh cache entry should be returned");
+        let cached = cached.unwrap();
+        assert_eq!(cached.len(), 1);
+        assert_eq!(cached[0].name, "roundtrip-repo");
+
+        clear_cache(key);
+    }
+
+    #[wasm_bindgen_test]
+    fn test_cache_expires_after_ttl() {
+        let key = test_cache_key();
+        clear_cache(key);
+
+        let data = vec![sample_repo("expired-repo")];
+        cache_set(key, &data);
+
+        // Backdate the timestamp so the entry is past its TTL
+        if let Some(Ok(Some(storage))) = web_sys::window().map(|w| w.local_storage()) {
+            let expired_ts = (js_sys::Date::now() - CACHE_TTL_MS - 1.0).to_string();
+            let _ = storage.set_item(&format!("{key}:ts"), &expired_ts);
+        }
+
+        let cached: Option<Vec<Repo>> = cache_get(key);
+        assert!(
+            cached.is_none(),
+            "Expired cache entry should be evicted and return None"
+        );
+
+        // The expired entry should have been removed by cache_get
+        let ts_left = web_sys::window()
+            .and_then(|w| w.local_storage().ok())
+            .flatten()
+            .and_then(|s| s.get_item(&format!("{key}:ts")).ok())
+            .flatten();
+        assert!(ts_left.is_none(), "Expired timestamp should be removed");
+
+        clear_cache(key);
+    }
+
+    #[wasm_bindgen_test]
+    fn test_format_api_error_messages() {
+        assert_eq!(
+            format_api_error(403),
+            "GitHub API rate limit reached. Please try again later."
+        );
+        assert_eq!(
+            format_api_error(404),
+            "Organization or resource not found on GitHub."
+        );
+        for status in [500, 502, 503, 504] {
+            assert_eq!(
+                format_api_error(status),
+                "GitHub is temporarily unavailable. Please try again later."
+            );
+        }
+        assert_eq!(
+            format_api_error(418),
+            "Failed to load data from GitHub (status 418). Please try again later."
+        );
+    }
+
+    #[wasm_bindgen_test]
+    fn test_format_network_error_message() {
+        assert_eq!(
+            format_network_error(),
+            "Could not reach GitHub. Please check your network connection and try again."
+        );
+    }
+
+    #[wasm_bindgen_test]
+    fn test_paginated_endpoint() {
+        assert_eq!(
+            paginated_endpoint("/orgs/XodiumSoftware/members", 1, 100),
+            "/orgs/XodiumSoftware/members?page=1&per_page=100"
+        );
+        assert_eq!(
+            paginated_endpoint("/orgs/XodiumSoftware/repos?type=public", 2, 50),
+            "/orgs/XodiumSoftware/repos?type=public&page=2&per_page=50"
+        );
+        assert_eq!(
+            paginated_endpoint("/endpoint?foo=bar", 10, 30),
+            "/endpoint?foo=bar&page=10&per_page=30"
+        );
     }
 
     #[wasm_bindgen_test]
@@ -291,17 +439,5 @@ mod tests {
         assert_eq!(repos.len(), 2);
         assert_eq!(repos[0].name, "repo-b"); // 50 stars
         assert_eq!(repos[1].name, "repo-a"); // 10 stars
-    }
-
-    #[wasm_bindgen_test]
-    async fn test_cache_operations() {
-        // Test cache key format
-        let endpoint = "/orgs/XodiumSoftware/members";
-        let cache_key = format!("xodium:{endpoint}");
-        assert_eq!(cache_key, "xodium:/orgs/XodiumSoftware/members");
-
-        // Note: Full cache_get/cache_set tests require localStorage
-        // which needs a browser environment. These are covered by
-        // the integration tests when running with wasm-pack test.
     }
 }
