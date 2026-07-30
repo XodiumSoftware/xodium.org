@@ -197,10 +197,10 @@ pub fn Header() -> impl IntoView {
                                 view! {
                                     <li>
                                         <a
-                                            class="group hover:bg-transparent lift rounded-none"
+                                            class="group hover:bg-transparent lift rounded-none tooltip tooltip-bottom"
                                             href=link.href
                                             aria-label=link.label
-                                            title=link.label
+                                            data-tip=link.label
                                             target=if link.is_external { "_blank" } else { "" }
                                             rel=if link.is_external {
                                                 "noopener noreferrer"
