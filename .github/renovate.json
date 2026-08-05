@@ -4,5 +4,16 @@
     "baseBranchPatterns": ["main"],
     "dependencyDashboard": false,
     "extends": ["config:recommended"],
-    "commitMessagePrefix": "\uD83E\uDD16"
+    "commitMessagePrefix": "\uD83E\uDD16",
+    "customManagers": [
+        {
+            "customType": "regex",
+            "description": "Update Trunk tool versions in Trunk.toml",
+            "managerFilePatterns": ["^Trunk\\.toml$"],
+            "matchStrings": [
+                "#\\s*renovate:\\s*datasource=(?<datasource>[^\\s]+)\\s+depName=(?<depName>[^\\s]+)(?:\\s+versioning=(?<versioning>[^\\s]+))?\\s*(?:\\r?\\n|\\r)(?:[a-zA-Z0-9_-]+)\\s*=\\s*\"(?<currentValue>[^\"]+)\""
+            ],
+            "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+        }
+    ]
 }
