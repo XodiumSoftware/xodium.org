@@ -174,6 +174,7 @@ pub fn language_color(language: &str) -> &'static str {
         "C" => "bg-[#555555]",
         "C++" => "bg-[#f34b7d]",
         "Kotlin" => "bg-[#A97BFF]",
+        "QML" => "bg-[#44a51c]",
         _ => "bg-base-content/50",
     }
 }

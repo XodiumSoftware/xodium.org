@@ -193,6 +193,7 @@ mod tests {
         assert_eq!(language_color("Rust"), "bg-[#dea584]");
         assert_eq!(language_color("TypeScript"), "bg-[#3178c6]");
         assert_eq!(language_color("Python"), "bg-[#3572A5]");
+        assert_eq!(language_color("QML"), "bg-[#44a51c]");
         assert_eq!(language_color("UnknownLang"), "bg-base-content/50");
     }
 
