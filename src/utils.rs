@@ -1,28 +1,6 @@
 use leptos::wasm_bindgen::JsCast;
 use leptos::wasm_bindgen::closure::Closure;
-
-/// Wraps a `wasm_bindgen::closure::Closure` so it can be used with APIs
-/// that require `Send + Sync` (like Leptos `on_cleanup`).
-///
-/// # Safety
-///
-/// This is sound because WASM is single-threaded; there is only ever one
-/// thread of execution, so `Send` and `Sync` are trivially satisfied.
-pub struct SendWrapper<T>(pub T);
-
-unsafe impl<T> Send for SendWrapper<T> {}
-unsafe impl<T> Sync for SendWrapper<T> {}
-
-impl<T: JsCast> SendWrapper<T> {
-    /// Convert the wrapped closure to a `js_sys::Function` reference.
-    ///
-    /// # Panics
-    ///
-    /// Panics if the inner value cannot be cast to `Function`.
-    pub fn as_function(&self) -> js_sys::Function {
-        self.0.as_ref().unchecked_ref::<js_sys::Function>().clone()
-    }
-}
+use send_wrapper::SendWrapper;
 
 /// Check whether the user has requested reduced motion.
 ///
@@ -64,14 +42,13 @@ where
     let Some(window) = leptos::web_sys::window() else {
         return false;
     };
-    let closure = SendWrapper(Closure::wrap(Box::new(move |ev: leptos::web_sys::Event| {
+    let closure = SendWrapper::new(Closure::wrap(Box::new(move |ev: leptos::web_sys::Event| {
         if let Ok(typed) = ev.dyn_into::<E>() {
             handler(typed);
         }
     }) as Box<dyn FnMut(_)>));
 
-    let fn_ref: js_sys::Function = closure
-        .0
+    let fn_ref: js_sys::Function = (*closure)
         .as_ref()
         .unchecked_ref::<js_sys::Function>()
         .clone();
@@ -110,11 +87,11 @@ pub fn observe_intersections<F>(
 where
     F: FnMut(&[leptos::web_sys::IntersectionObserverEntry]) + 'static,
 {
-    let Some(window) = leptos::web_sys::window() else {
+    if leptos::web_sys::window().is_none() {
         return false;
-    };
+    }
 
-    let closure = SendWrapper(Closure::wrap(Box::new(move |entries: js_sys::Array| {
+    let closure = SendWrapper::new(Closure::wrap(Box::new(move |entries: js_sys::Array| {
         let typed: Vec<leptos::web_sys::IntersectionObserverEntry> = entries
             .iter()
             .filter_map(|entry| {
@@ -125,14 +102,13 @@ where
             .collect();
         callback(&typed);
     }) as Box<dyn FnMut(_)>));
-    let _ = &window; // keep the window reference alive for the closure lifetime
 
     let options = leptos::web_sys::IntersectionObserverInit::new();
     let threshold = threshold.clamp(0.0, 1.0);
     options.set_threshold(&js_sys::Array::of1(&js_sys::Number::from(threshold)));
 
     let Some(observer) = leptos::web_sys::IntersectionObserver::new_with_options(
-        closure.0.as_ref().unchecked_ref(),
+        (*closure).as_ref().unchecked_ref(),
         &options,
     )
     .ok() else {
