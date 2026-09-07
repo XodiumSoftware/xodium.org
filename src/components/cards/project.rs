@@ -111,7 +111,7 @@ pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
             <CornerFrame style="square" class="h-full">
                 <div class="card bg-ghost h-full rounded-none">
                     <div class="card-body">
-                        <h2 class="card-title text-primary">
+                        <h3 class="card-title text-primary">
                             <img
                                 src="/icons/github-repo.svg"
                                 alt=""
@@ -125,7 +125,7 @@ pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
                             >
                                 {props.title}
                             </a>
-                        </h2>
+                        </h3>
 
                         <div class="flex flex-wrap gap-1 mb-2">
                             {props
