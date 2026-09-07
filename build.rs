@@ -51,6 +51,9 @@ fn main() {
 /// Copy local agent skill files into `public/.well-known/agent-skills/` and
 /// generate an Agent Skills Discovery index (`index.json`) with SHA-256
 /// digests for each skill artifact.
+///
+/// The output directory is wiped first so renamed or removed skills don't
+/// leave stale artifacts behind in the deployed site.
 fn sync_agent_skills() {
     let manifest_dir = PathBuf::from(
         std::env::var_os("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR should be set"),
@@ -58,6 +61,11 @@ fn sync_agent_skills() {
     let skills_dir = manifest_dir.join(".agents/skills");
     let public_skills_dir = manifest_dir.join("public/.well-known/agent-skills");
 
+    // Wipe previous output so renamed/removed skills don't linger in deploys.
+    if public_skills_dir.exists() {
+        std::fs::remove_dir_all(&public_skills_dir)
+            .expect("stale agent-skills output directory should be removable");
+    }
     std::fs::create_dir_all(&public_skills_dir)
         .expect("public/.well-known/agent-skills directory should be created");
 
