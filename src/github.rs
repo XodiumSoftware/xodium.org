@@ -31,16 +31,17 @@ pub struct Repo {
     pub topics: Vec<String>,
 }
 
-fn cache_get<T: for<'de> Deserialize<'de>>(key: &str) -> Option<T> {
+/// Read and deserialize a cache entry together with its timestamp.
+///
+/// Returns `None` when storage is unavailable, the entry is missing, or the
+/// payload cannot be deserialized into `T`. The caller decides freshness
+/// from the returned timestamp — expired entries are deliberately retained
+/// so they can be served as a stale-if-error fallback.
+fn cache_read<T: for<'de> Deserialize<'de>>(key: &str) -> Option<(T, f64)> {
     let storage = web_sys::window()?.local_storage().ok()??;
     let ts: f64 = storage.get_item(&format!("{key}:ts")).ok()??.parse().ok()?;
-    if js_sys::Date::now() - ts > CACHE_TTL_MS {
-        let _ = storage.remove_item(key);
-        let _ = storage.remove_item(&format!("{key}:ts"));
-        return None;
-    }
     let raw = storage.get_item(key).ok()??;
-    serde_json::from_str(&raw).ok()
+    serde_json::from_str(&raw).ok().map(|data| (data, ts))
 }
 
 fn cache_set<T: Serialize>(key: &str, data: &T) {
@@ -71,9 +72,11 @@ fn format_network_error() -> String {
 async fn fetch<T: for<'de> Deserialize<'de> + Serialize>(endpoint: &str) -> Result<T, String> {
     let cache_key = format!("xodium:{endpoint}");
 
-    if let Some(cached) = cache_get::<T>(&cache_key) {
-        return Ok(cached);
-    }
+    let stale: Option<T> = match cache_read::<T>(&cache_key) {
+        Some((data, ts)) if js_sys::Date::now() - ts <= CACHE_TTL_MS => return Ok(data),
+        Some((data, _)) => Some(data),
+        None => None,
+    };
 
     let url = format!("{API_BASE}{endpoint}");
     let mut last_err = String::new();
@@ -105,6 +108,15 @@ async fn fetch<T: for<'de> Deserialize<'de> + Serialize>(endpoint: &str) -> Resu
         let data = response.json::<T>().await.map_err(|e| e.to_string())?;
         cache_set(&cache_key, &data);
         return Ok(data);
+    }
+
+    // All attempts failed: serve a stale cache entry if one exists (with a
+    // console warning) instead of surfacing an error to the user.
+    if let Some(stale) = stale {
+        web_sys::console::warn_1(
+            &format!("GitHub API request failed for {endpoint}; serving stale cached data.").into(),
+        );
+        return Ok(stale);
     }
 
     if network_failure_count > 0 {
@@ -146,8 +158,9 @@ fn paginated_endpoint(endpoint: &str, page: u32, per_page: usize) -> String {
 ///
 /// # Errors
 ///
-/// Returns an error if the GitHub API request fails and cannot be satisfied
-/// from cache.
+/// Returns an error if the GitHub API request fails and no cached data is
+/// available. Expired cache entries are served as a last-resort fallback
+/// (stale-if-error) rather than failing outright.
 pub async fn fetch_members() -> Result<Vec<Member>, String> {
     let mut members = fetch_all::<Member>(&format!("/orgs/{ORG}/members")).await?;
 
@@ -179,8 +192,9 @@ pub async fn fetch_members() -> Result<Vec<Member>, String> {
 ///
 /// # Errors
 ///
-/// Returns an error if the GitHub API request fails and cannot be satisfied
-/// from cache.
+/// Returns an error if the GitHub API request fails and no cached data is
+/// available. Expired cache entries are served as a last-resort fallback
+/// (stale-if-error) rather than failing outright.
 pub async fn fetch_repos() -> Result<Vec<Repo>, String> {
     let mut repos = fetch_all::<Repo>(&format!("/orgs/{ORG}/repos?type=public")).await?;
     repos.retain(|r| !r.fork);
@@ -292,7 +306,7 @@ mod tests {
         let cache_key = format!("xodium:{endpoint}");
         assert_eq!(cache_key, "xodium:/orgs/XodiumSoftware/members");
 
-        // Note: Full cache_get/cache_set tests require localStorage
+        // Note: Full cache_read/cache_set tests require localStorage
         // which needs a browser environment. These are covered by
         // the integration tests when running with wasm-pack test.
     }
@@ -302,8 +316,10 @@ mod tests {
         let key = test_cache_key();
         clear_cache(key);
 
-        let cached: Option<Vec<Repo>> = cache_get(key);
-        assert!(cached.is_none(), "Missing cache key should return None");
+        assert!(
+            cache_read::<Vec<Repo>>(key).is_none(),
+            "Missing cache key should return None"
+        );
     }
 
     #[wasm_bindgen_test]
@@ -314,17 +330,21 @@ mod tests {
         let data = vec![sample_repo("roundtrip-repo")];
         cache_set(key, &data);
 
-        let cached: Option<Vec<Repo>> = cache_get(key);
-        assert!(cached.is_some(), "Fresh cache entry should be returned");
-        let cached = cached.unwrap();
+        let Some((cached, ts)) = cache_read::<Vec<Repo>>(key) else {
+            panic!("Fresh cache entry should be returned");
+        };
         assert_eq!(cached.len(), 1);
         assert_eq!(cached[0].name, "roundtrip-repo");
+        assert!(
+            js_sys::Date::now() - ts <= CACHE_TTL_MS,
+            "Fresh entry should be within its TTL"
+        );
 
         clear_cache(key);
     }
 
     #[wasm_bindgen_test]
-    fn test_cache_expires_after_ttl() {
+    fn test_cache_expired_entry_is_retained_as_stale() {
         let key = test_cache_key();
         clear_cache(key);
 
@@ -337,19 +357,16 @@ mod tests {
             let _ = storage.set_item(&format!("{key}:ts"), &expired_ts);
         }
 
-        let cached: Option<Vec<Repo>> = cache_get(key);
+        // Expired entries stay readable (with their old timestamp) so fetch
+        // can fall back to them when the network is unavailable.
+        let Some((cached, ts)) = cache_read::<Vec<Repo>>(key) else {
+            panic!("Expired cache entry should be retained as a stale fallback");
+        };
+        assert_eq!(cached[0].name, "expired-repo");
         assert!(
-            cached.is_none(),
-            "Expired cache entry should be evicted and return None"
+            js_sys::Date::now() - ts > CACHE_TTL_MS,
+            "Backdated entry should be past its TTL"
         );
-
-        // The expired entry should have been removed by cache_get
-        let ts_left = web_sys::window()
-            .and_then(|w| w.local_storage().ok())
-            .flatten()
-            .and_then(|s| s.get_item(&format!("{key}:ts")).ok())
-            .flatten();
-        assert!(ts_left.is_none(), "Expired timestamp should be removed");
 
         clear_cache(key);
     }

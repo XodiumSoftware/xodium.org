@@ -289,6 +289,7 @@ GitHub API responses cached in `localStorage`:
 - Timestamp: `{key}:ts`
 - TTL: 5 minutes
 - Cache is invalidated after TTL; the next successful fetch refreshes it
+- Stale-if-error: if all refresh attempts fail, an expired entry is still served (with a console warning) instead of showing an error
 
 ## Testing
 
