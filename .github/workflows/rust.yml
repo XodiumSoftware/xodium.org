@@ -222,6 +222,7 @@ jobs:
   deploy:
     name: Deploy
     if: |
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
       !contains(github.event.head_commit.message, '[ci-skip]') &&
       !contains(github.event.pull_request.title, '[ci-skip]')
     needs: [lint, test, build]
