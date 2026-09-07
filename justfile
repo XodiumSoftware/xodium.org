@@ -34,4 +34,4 @@ clean:
     trunk clean
 
 # Run the full validation suite used in CI
-validate: lint fmt-check build
+validate: lint fmt-check test build
