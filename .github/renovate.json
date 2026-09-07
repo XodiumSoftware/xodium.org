@@ -14,6 +14,15 @@
                 "#\\s*renovate:\\s*datasource=(?<datasource>[^\\s]+)\\s+depName=(?<depName>[^\\s]+)(?:\\s+versioning=(?<versioning>[^\\s]+))?\\s*(?:\\r?\\n|\\r)(?:[a-zA-Z0-9_-]+)\\s*=\\s*\"(?<currentValue>[^\"]+)\""
             ],
             "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+        },
+        {
+            "customType": "regex",
+            "description": "Update the pinned Trunk version in the CI workflow",
+            "managerFilePatterns": ["^\\.github/workflows/rust\\.yml$"],
+            "matchStrings": [
+                "#\\s*renovate:\\s*datasource=(?<datasource>[^\\s]+)\\s+depName=(?<depName>[^\\s]+)(?:\\s+versioning=(?<versioning>[^\\s]+))?\\s*(?:\\r?\\n|\\r)\\s*TRUNK_VERSION:\\s*\"(?<currentValue>[^\"]+)\""
+            ],
+            "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
         }
     ]
 }

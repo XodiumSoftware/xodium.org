@@ -17,6 +17,8 @@ concurrency:
 
 env:
   CARGO_TERM_COLOR: always
+  # renovate: datasource=crate depName=trunk
+  TRUNK_VERSION: "0.21.14"
 
 jobs:
   lint:
@@ -60,13 +62,6 @@ jobs:
             ~/.cargo/git
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-
-      - id: cache_trunk
-        name: Cache Trunk
-        uses: actions/cache@v6.1.0
-        with:
-          path: ~/.cargo/bin/trunk
-          key: ${{ runner.os }}-trunk-latest
 
       - id: run_lint
         name: Run Lint
@@ -184,13 +179,13 @@ jobs:
         uses: actions/cache@v6.1.0
         with:
           path: ~/.cargo/bin/trunk
-          key: ${{ runner.os }}-trunk-latest
+          key: ${{ runner.os }}-trunk-${{ env.TRUNK_VERSION }}
 
       - id: setup_trunk
         name: Setup Trunk
         uses: jetli/trunk-action@v0.5.1
         with:
-          version: latest
+          version: ${{ env.TRUNK_VERSION }}
 
       - id: build_app
         name: Build App
