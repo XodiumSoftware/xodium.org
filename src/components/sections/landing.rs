@@ -10,6 +10,10 @@ use leptos::prelude::*;
 pub fn LandingSection() -> impl IntoView {
     view! {
         <section id="landing" class="hero min-h-[80dvh] relative isolate px-6 lg:px-8">
+            {/* Visually-hidden page title for screen readers and SEO; the visible
+                hero content is ASCII art + typed lines, so no real <h1> exists. */}
+            <h1 class="sr-only">"Xodium Software — open-source CAD software"</h1>
+
             {/* Grid container with its own top/bottom fades */}
             <div class="absolute inset-0 pointer-events-none">
                 <BlueprintGrid />
