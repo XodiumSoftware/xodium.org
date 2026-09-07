@@ -13,6 +13,9 @@
         />
         <meta content="Xodium Software" name="author" />
 
+        <!-- Browser UI color, matching the halloween theme's base-100 (oklch(21% 0.006 56.043)) -->
+        <meta content="#1b1718" name="theme-color" />
+
         <!-- Canonical URL -->
         <link href="https://xodium.org" rel="canonical" />
 
@@ -78,5 +81,28 @@
         <!-- WebMCP: expose lightweight site tools to browser agents -->
         <script src="/webmcp.js" defer></script>
     </head>
-    <body class="bg-base-100 font-mono"></body>
+    <body class="bg-base-100 font-mono">
+        <noscript>
+            <div
+                style="
+                    max-width: 32rem;
+                    margin: 20vh auto 0;
+                    padding: 0 1.5rem;
+                    text-align: center;
+                    color: #d4d4d4;
+                "
+            >
+                <h1>Xodium Software</h1>
+                <p>
+                    This site is a WebAssembly application and needs JavaScript
+                    to render its content. In the meantime, you can find us on
+                    <a
+                        href="https://github.com/XodiumSoftware"
+                        style="color: #ffa25d"
+                        >GitHub</a
+                    >.
+                </p>
+            </div>
+        </noscript>
+    </body>
 </html>
