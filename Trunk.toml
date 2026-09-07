@@ -4,3 +4,12 @@ tailwindcss = "2.10.10"
 
 [build.wasm-opt]
 level = "z"
+
+# build.rs generates public/.well-known/agent-skills/ while cargo builds, which
+# races with Trunk copying public/.well-known into the staging dir. Sync the
+# generated output into staging after all pipelines finish so clean checkouts
+# (e.g. CI) always ship it.
+[[hooks]]
+stage = "post_build"
+command = "sh"
+command_arguments = ["-c", "rm -rf \"$TRUNK_STAGING_DIR/.well-known/agent-skills\" && cp -R public/.well-known/agent-skills \"$TRUNK_STAGING_DIR/.well-known/agent-skills\""]
