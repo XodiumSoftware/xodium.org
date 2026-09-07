@@ -13,7 +13,7 @@
 ## APIs & Tools
 
 | Category          | Technology                    | Purpose                         |
-|-------------------|-------------------------------|---------------------------------|
+| ----------------- | ----------------------------- | ------------------------------- |
 | **Framework**     | Leptos 0.8.17 (CSR)           | Reactive web framework          |
 | **Build Tool**    | Trunk                         | WASM bundler + dev server       |
 | **Styling**       | Tailwind CSS + DaisyUI        | Utility-first CSS               |
@@ -50,18 +50,23 @@ cargo doc --no-deps
 # Clean build artifacts
 trunk clean
 
+# Run browser-based WASM tests (requires wasm-pack + Chrome/Chromium)
+wasm-pack test --headless --chrome
+
 # Lint with pedantic lints enabled; every warning is treated as an error.
 cargo clippy --all-targets --all-features --target wasm32-unknown-unknown -- -W clippy::pedantic -D warnings
 ```
+
+These also exist as `just` recipes (`just lint`, `just test`, `just build`, `just serve`, `just validate`); see `just --list`.
 
 ## Architecture Overview
 
 ### Entry Points
 
 | File      | Purpose                                          |
-|-----------|--------------------------------------------------|
+| --------- | ------------------------------------------------ |
 | `main.rs` | WASM entry point, mounts `App` to `&lt;body&gt;` |
-| `lib.rs`  | Crate root; declares every module and re-export |
+| `lib.rs`  | Crate root; declares every module and re-export  |
 | `app.rs`  | Root `App` component with full page layout       |
 
 ### Page Layout (`App` component)
@@ -83,58 +88,59 @@ Components are grouped by function in `src/components/`:
 
 #### Sections (`src/components/sections/`)
 
-| Component         | File             | Purpose                                      |
-|-------------------|------------------|----------------------------------------------|
-| `Header`          | `header.rs`      | Sticky navbar                                |
-| `LandingSection`  | `landing.rs`     | Hero section with visual effects and code block |
-| `ProjectsSection` | `projects.rs`    | Fetches GitHub repos, renders `ProjectCard`s |
-| `TeamDeckSection` | `team_deck.rs`    | Fetches org members, renders `TeamCard`s     |
-| `Footer`          | `footer.rs`       | Site footer                                  |
+| Component         | File           | Purpose                                         |
+| ----------------- | -------------- | ----------------------------------------------- |
+| `Header`          | `header.rs`    | Sticky navbar                                   |
+| `LandingSection`  | `landing.rs`   | Hero section with visual effects and code block |
+| `ProjectsSection` | `projects.rs`  | Fetches GitHub repos, renders `ProjectCard`s    |
+| `TeamDeckSection` | `team_deck.rs` | Fetches org members, renders `TeamCard`s        |
+| `Footer`          | `footer.rs`    | Site footer                                     |
 
 #### Cards (`src/components/cards/`)
 
-| Component     | File             | Purpose                                           |
-|---------------|------------------|---------------------------------------------------|
-| `ProjectCard` | `project.rs`     | Repo card with name, description, stars, language |
-| `TeamCard`    | `team.rs`        | Member avatar, login, role badge                  |
+| Component     | File         | Purpose                                           |
+| ------------- | ------------ | ------------------------------------------------- |
+| `ProjectCard` | `project.rs` | Repo card with name, description, stars, language |
+| `TeamCard`    | `team.rs`    | Member avatar, login, role badge                  |
 
 #### Visual Effects (`src/components/ui/effects/`)
 
-| Component         | File                  | Purpose                     |
-|-------------------|-----------------------|-----------------------------|
-| `BlueprintGrid`   | `blueprint_grid.rs`   | Animated SVG blueprint grid |
-| `WireframeShapes` | `wire_frames.rs`      | Floating 3D wireframes      |
-| `ParallaxLanding` | `parallax.rs`         | Parallax scroll effect      |
-| `HexPattern`      | `hex_grid.rs`         | Hexagonal grid overlay      |
-| `FadeOverlay`     | `section_fade.rs`     | Gradient fade transitions   |
+| Component         | File                | Purpose                     |
+| ----------------- | ------------------- | --------------------------- |
+| `BlueprintGrid`   | `blueprint_grid.rs` | Animated SVG blueprint grid |
+| `WireframeShapes` | `wire_frames.rs`    | Floating 3D wireframes      |
+| `ParallaxLanding` | `parallax.rs`       | Parallax scroll effect      |
+| `HexPattern`      | `hex_grid.rs`       | Hexagonal grid overlay      |
+| `FadeOverlay`     | `section_fade.rs`   | Gradient fade transitions   |
 
 #### Animations (`src/components/animations/`)
 
-| Component      | File          | Purpose                   |
-|----------------|---------------|---------------------------|
+| Component      | File           | Purpose                   |
+| -------------- | -------------- | ------------------------- |
 | `LineDraw`     | `line_draw.rs` | Section divider animation |
 | `LineDrawHero` | `line_draw.rs` | Hero variant              |
 
 #### UI Primitives (`src/components/ui/`)
 
-| Component     | File             | Purpose                           |
-|---------------|------------------|-----------------------------------|
-| `CodeBlock`   | `code_block.rs`  | Animated typewriter code display  |
-| `CornerFrame` | `corner_frame.rs`| Decorative corner frame           |
-| `data_grid`   | `data_grid.rs`   | `Suspense` wrapper for async data |
+| Component     | File              | Purpose                           |
+| ------------- | ----------------- | --------------------------------- |
+| `CodeBlock`   | `code_block.rs`   | Animated typewriter code display  |
+| `CornerFrame` | `corner_frame.rs` | Decorative corner frame           |
+| `data_grid`   | `data_grid.rs`    | `Suspense` wrapper for async data |
 
 ### GitHub API (`src/github.rs`)
 
 Centralized data fetching with `localStorage` caching:
 
 | Function          | Endpoint                                 | Cache TTL |
-|-------------------|------------------------------------------|-----------|
+| ----------------- | ---------------------------------------- | --------- |
 | `fetch_members()` | `/orgs/XodiumSoftware/members`           | 5 minutes |
 | `fetch_repos()`   | `/orgs/XodiumSoftware/repos?type=public` | 5 minutes |
 
 **Internal helpers:**
 
-- `fetch&lt;T&gt;(endpoint)` — cache-then-network with retry logic (3 attempts, exponential backoff)
+- `fetch&lt;T&gt;(endpoint)` — cache-then-network with retry logic (4 attempts, exponential backoff)
+- `fetch_all&lt;T&gt;(endpoint)` — paginates `fetch` with `?page=N&per_page=100` until a short page is returned
 - `LocalResource` used for async (runs on WASM thread)
 - `xodium:{endpoint}` cache key format
 
@@ -146,6 +152,7 @@ src/
 ├── lib.rs                     # Crate root, module declarations
 ├── app.rs                     # Root App component
 ├── github.rs                  # GitHub API client
+├── mcp.rs                     # WebMCP tools exposed to browser agents (window.xodiumwebMcp)
 ├── utils.rs                   # Shared utilities
 ├── components/
 │   ├── sections/              # Page sections
@@ -183,7 +190,7 @@ build.rs                       # Build script
 
 - **Register modules and re-exports in `src/lib.rs` explicitly.** Do not use `mod.rs` files, and do not nest `mod` declarations inside other module files. Every module in the crate must be declared directly in the crate root (`src/lib.rs`). Use `#[path = "..."]` attributes when a module file lives in a subdirectory.
 - All Clippy warnings enabled; run with `-W clippy::pedantic -D warnings` to catch pedantic lints as errors.
-- `unsafe_code` not needed (WASM sandbox)
+- No `unsafe` code — where JS handles must satisfy `Send + Sync` (e.g. for `on_cleanup`), use `send_wrapper::SendWrapper`
 - **Props:** `#[derive(Clone)]` structs named `{Component}Properties`
 - **Async data:** Use `LocalResource` (not `Resource`) for WASM thread execution
 - **Suspense:** Use `data_grid` helper, don't inline ad-hoc boundaries
@@ -256,15 +263,17 @@ view! {
             }
         },
         Some(retry),
+        "Retry",
     )}
 }
 ```
 
 ### Build Pipeline
 
-1. **Trunk** bundles WASM, processes Tailwind CSS, copies `public/` → `dist/`
-   - `Trunk.toml` pins the `tailwindcss` tool version. This is the version of Trunk’s bundled Tailwind distribution (`dobicinaitis/tailwind-cli-extra`), not the upstream Tailwind CSS version. The bundle includes the latest Tailwind CSS + DaisyUI; the actual Tailwind CSS version resolved at build time is shown in the build log (e.g. `tailwindcss v4.2.2`).
-   - Renovate manages this version via a custom regex manager in `.github/renovate.json`; the TOML line is annotated with `# renovate: datasource=github-releases depName=dobicinaitis/tailwind-cli-extra`.
+1. **Trunk** bundles WASM, processes Tailwind CSS, copies the `public/` assets declared via `data-trunk` links in `index.html` → `dist/`
+    - `Trunk.toml` pins the `tailwindcss` tool version. This is the version of Trunk’s bundled Tailwind distribution (`dobicinaitis/tailwind-cli-extra`), not the upstream Tailwind CSS version. The bundle includes the latest Tailwind CSS + DaisyUI; the actual Tailwind CSS version resolved at build time is shown in the build log (e.g. `tailwindcss v4.2.2`).
+    - Renovate manages this version via a custom regex manager in `.github/renovate.json`; the TOML line is annotated with `# renovate: datasource=github-releases depName=dobicinaitis/tailwind-cli-extra`.
+    - `build.rs` generates the Agent Skills Discovery files into `public/.well-known/agent-skills/` (git-ignored) while cargo compiles; a Trunk `post_build` hook then syncs them into the staging dir — Trunk copies assets concurrently with the cargo build, so without the hook the files are missed on clean checkouts (e.g. CI).
 2. **Cargo release profile** optimizations:
     - `opt-level = "z"` (size)
     - `lto = true` (link-time optimization)
@@ -283,9 +292,9 @@ GitHub API responses cached in `localStorage`:
 
 ## Testing
 
-- No automated tests in this project
-- Test by running `trunk serve` and manually verifying in browser
-- Check console for WASM panics (in debug builds)
+- **Browser-based WASM tests** (`wasm-bindgen-test`, `run_in_browser`) live alongside the code in `src/github.rs` and `src/components/cards/project.rs`
+- Run them with `wasm-pack test --headless --chrome` (or `just test`); the CI `test` job runs the same
+- Also verify manually with `trunk serve`; check the console for WASM panics (in debug builds)
 
 ## Important Notes
 
@@ -328,7 +337,7 @@ GitHub API responses cached in `localStorage`:
 
 GitHub Actions workflows in `.github/workflows/`:
 
-- **build.yml** — Builds WASM with Trunk, uploads to Cloudflare Pages
+- **rust.yml** — Lint (clippy + fmt + cargo-machete), browser WASM tests, Trunk build with a 500 KB WASM size budget, deploy to Cloudflare Pages (pushes to `main`/`dev` and manual dispatches only)
 - **enforce_pr_title.yml** — Validates PR titles follow conventional commits
 
 ## Adding a New Section
