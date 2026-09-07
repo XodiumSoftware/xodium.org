@@ -17,8 +17,8 @@ concurrency:
 
 env:
   CARGO_TERM_COLOR: always
-  # renovate: datasource=crate depName=trunk
-  TRUNK_VERSION: "0.21.14"
+  # renovate: datasource=github-releases depName=trunk-rs/trunk
+  TRUNK_VERSION: "v0.21.14"
 
 jobs:
   lint:
