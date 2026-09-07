@@ -210,7 +210,7 @@ pub struct ProjectCardProperties {
     pub link: Option<String>,
     pub language: Option<String>,
     pub stargazers_count: u32,
-    pub has_pages: bool,
+    pub docs_url: Option<String>,
     pub topics: Vec<String>,
 }
 ```
@@ -230,7 +230,7 @@ impl From<Repo> for ProjectCardProperties {
             link: Some(repo.html_url),
             language: repo.language,
             stargazers_count: repo.stargazers_count,
-            has_pages: repo.has_pages,
+            docs_url: docs_url_from_homepage(repo.homepage.as_deref()),
             topics: repo.topics,
         }
     }

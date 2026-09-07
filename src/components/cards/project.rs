@@ -10,7 +10,7 @@ pub struct ProjectCardProperties {
     pub link: Option<String>,
     pub language: Option<String>,
     pub stargazers_count: u32,
-    pub has_pages: bool,
+    pub docs_url: Option<String>,
     pub topics: Vec<String>,
 }
 
@@ -26,7 +26,7 @@ impl From<Repo> for ProjectCardProperties {
             link: Some(repo.html_url),
             language: repo.language,
             stargazers_count: repo.stargazers_count,
-            has_pages: repo.has_pages,
+            docs_url: docs_url_from_homepage(repo.homepage.as_deref()),
             topics: repo.topics,
         }
     }
@@ -35,6 +35,18 @@ impl From<Repo> for ProjectCardProperties {
 #[component]
 fn LanguageCircle(language: String, color: &'static str) -> impl IntoView {
     view! { <span class=format!("badge badge-sm {} mr-1", color) title=language /> }
+}
+
+/// Resolve a repo's public docs site URL from its GitHub `homepage` field.
+///
+/// Only `https://` URLs whose host is `xodium.org` or a `*.xodium.org`
+/// subdomain are accepted, so cards never present arbitrary external
+/// homepages as "Docs" links. A trailing slash is trimmed.
+fn docs_url_from_homepage(homepage: Option<&str>) -> Option<String> {
+    let url = homepage?.trim();
+    let host = url.strip_prefix("https://")?.split('/').next()?;
+    (host == "xodium.org" || host.ends_with(".xodium.org"))
+        .then(|| url.trim_end_matches('/').to_string())
 }
 
 #[component]
@@ -82,9 +94,7 @@ pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
     let link = props.link.clone().unwrap_or_else(|| "#".to_string());
     let stargazers_url = format!("{link}/stargazers");
     let stars = props.stargazers_count;
-    let docs_url = props
-        .has_pages
-        .then(|| format!("https://{}.xodium.org", props.title.to_lowercase()));
+    let docs_url = props.docs_url.clone();
     let language_badge = props.language.as_ref().map(|language| {
         let color = language_color(language);
         let language = language.clone();
@@ -205,11 +215,37 @@ mod tests {
             link: Some("https://github.com/test".to_string()),
             language: Some("Rust".to_string()),
             stargazers_count: 42,
-            has_pages: true,
+            docs_url: Some("https://test-repo.xodium.org".to_string()),
             topics: vec!["cad".to_string(), "cli".to_string()],
         };
         assert_eq!(props.title, "test-repo");
         assert_eq!(props.topics.len(), 2);
-        assert!(props.has_pages);
+        assert!(props.docs_url.is_some());
+    }
+
+    #[wasm_bindgen_test]
+    fn test_docs_url_from_homepage() {
+        // Subdomain and apex homepages are accepted (trailing slash trimmed)
+        assert_eq!(
+            docs_url_from_homepage(Some("https://utils.xodium.org/")),
+            Some("https://utils.xodium.org".to_string())
+        );
+        assert_eq!(
+            docs_url_from_homepage(Some("https://xodium.org")),
+            Some("https://xodium.org".to_string())
+        );
+
+        // External hosts, lookalike domains, non-HTTPS, and blanks are rejected
+        assert_eq!(docs_url_from_homepage(Some("https://evilxodium.org")), None);
+        assert_eq!(
+            docs_url_from_homepage(Some("https://github.com/XodiumSoftware/utils")),
+            None
+        );
+        assert_eq!(
+            docs_url_from_homepage(Some("http://utils.xodium.org")),
+            None
+        );
+        assert_eq!(docs_url_from_homepage(Some("  ")), None);
+        assert_eq!(docs_url_from_homepage(None), None);
     }
 }
