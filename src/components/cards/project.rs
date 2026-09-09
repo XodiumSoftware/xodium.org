@@ -20,13 +20,14 @@ impl From<Repo> for ProjectCardProperties {
             .description
             .filter(|d| !d.trim().is_empty())
             .unwrap_or_else(|| "(No description)".to_string());
+        let docs_url = docs_url_from_homepage(&repo.name, repo.homepage.as_deref());
         Self {
             title: repo.name,
             description,
             link: Some(repo.html_url),
             language: repo.language,
             stargazers_count: repo.stargazers_count,
-            docs_url: docs_url_from_homepage(repo.homepage.as_deref()),
+            docs_url,
             topics: repo.topics,
         }
     }
@@ -39,14 +40,24 @@ fn LanguageCircle(language: String, color: &'static str) -> impl IntoView {
 
 /// Resolve a repo's public docs site URL from its GitHub `homepage` field.
 ///
-/// Only `https://` URLs whose host is `xodium.org` or a `*.xodium.org`
-/// subdomain are accepted, so cards never present arbitrary external
-/// homepages as "Docs" links. A trailing slash is trimmed.
-fn docs_url_from_homepage(homepage: Option<&str>) -> Option<String> {
+/// Only `https://` URLs on a `*.xodium.org` subdomain are used as-is (a
+/// trailing slash is trimmed). The bare apex (`https://xodium.org`) hosts no
+/// per-project docs, so it is rewritten to the project's derived
+/// `https://{name}.xodium.org` subdomain — even when that site is not
+/// deployed yet. The website repo itself (name `xodium.org`) gets no docs
+/// link: deriving a subdomain from it is meaningless, and the apex is the
+/// site the visitor is already on. External hosts, lookalike domains, and
+/// non-HTTPS URLs yield no docs link.
+fn docs_url_from_homepage(repo_name: &str, homepage: Option<&str>) -> Option<String> {
     let url = homepage?.trim();
     let host = url.strip_prefix("https://")?.split('/').next()?;
-    (host == "xodium.org" || host.ends_with(".xodium.org"))
-        .then(|| url.trim_end_matches('/').to_string())
+    if host == "xodium.org" {
+        (repo_name != "xodium.org")
+            .then(|| format!("https://{}.xodium.org", repo_name.to_lowercase()))
+    } else {
+        host.ends_with(".xodium.org")
+            .then(|| url.trim_end_matches('/').to_string())
+    }
 }
 
 #[component]
@@ -225,27 +236,43 @@ mod tests {
 
     #[wasm_bindgen_test]
     fn test_docs_url_from_homepage() {
-        // Subdomain and apex homepages are accepted (trailing slash trimmed)
+        // A bare apex homepage is rewritten to the project's derived
+        // subdomain (lowercased), even if that site is not deployed yet.
         assert_eq!(
-            docs_url_from_homepage(Some("https://utils.xodium.org/")),
+            docs_url_from_homepage("utils", Some("https://xodium.org")),
             Some("https://utils.xodium.org".to_string())
         );
         assert_eq!(
-            docs_url_from_homepage(Some("https://xodium.org")),
-            Some("https://xodium.org".to_string())
+            docs_url_from_homepage("IllyriaPlus", Some("https://xodium.org/")),
+            Some("https://illyriaplus.xodium.org".to_string())
+        );
+
+        // The website repo itself gets no docs link.
+        assert_eq!(
+            docs_url_from_homepage("xodium.org", Some("https://xodium.org")),
+            None
+        );
+
+        // Real subdomain homepages are used as-is (trailing slash trimmed).
+        assert_eq!(
+            docs_url_from_homepage("utils", Some("https://utils.xodium.org/")),
+            Some("https://utils.xodium.org".to_string())
         );
 
         // External hosts, lookalike domains, non-HTTPS, and blanks are rejected
-        assert_eq!(docs_url_from_homepage(Some("https://evilxodium.org")), None);
         assert_eq!(
-            docs_url_from_homepage(Some("https://github.com/XodiumSoftware/utils")),
+            docs_url_from_homepage("utils", Some("https://evilxodium.org")),
             None
         );
         assert_eq!(
-            docs_url_from_homepage(Some("http://utils.xodium.org")),
+            docs_url_from_homepage("utils", Some("https://github.com/XodiumSoftware/utils")),
             None
         );
-        assert_eq!(docs_url_from_homepage(Some("  ")), None);
-        assert_eq!(docs_url_from_homepage(None), None);
+        assert_eq!(
+            docs_url_from_homepage("utils", Some("http://utils.xodium.org")),
+            None
+        );
+        assert_eq!(docs_url_from_homepage("utils", Some("  ")), None);
+        assert_eq!(docs_url_from_homepage("utils", None), None);
     }
 }

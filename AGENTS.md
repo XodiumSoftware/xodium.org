@@ -224,13 +224,14 @@ impl From<Repo> for ProjectCardProperties {
             .description
             .filter(|d| !d.trim().is_empty())
             .unwrap_or_else(|| "(No description)".to_string());
+        let docs_url = docs_url_from_homepage(&repo.name, repo.homepage.as_deref());
         Self {
             title: repo.name,
             description,
             link: Some(repo.html_url),
             language: repo.language,
             stargazers_count: repo.stargazers_count,
-            docs_url: docs_url_from_homepage(repo.homepage.as_deref()),
+            docs_url,
             topics: repo.topics,
         }
     }
