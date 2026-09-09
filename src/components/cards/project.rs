@@ -10,7 +10,6 @@ pub struct ProjectCardProperties {
     pub link: Option<String>,
     pub language: Option<String>,
     pub stargazers_count: u32,
-    pub docs_url: Option<String>,
     pub topics: Vec<String>,
 }
 
@@ -20,14 +19,12 @@ impl From<Repo> for ProjectCardProperties {
             .description
             .filter(|d| !d.trim().is_empty())
             .unwrap_or_else(|| "(No description)".to_string());
-        let docs_url = docs_url_from_homepage(&repo.name, repo.homepage.as_deref());
         Self {
             title: repo.name,
             description,
             link: Some(repo.html_url),
             language: repo.language,
             stargazers_count: repo.stargazers_count,
-            docs_url,
             topics: repo.topics,
         }
     }
@@ -36,28 +33,6 @@ impl From<Repo> for ProjectCardProperties {
 #[component]
 fn LanguageCircle(language: String, color: &'static str) -> impl IntoView {
     view! { <span class=format!("badge badge-sm {} mr-1", color) title=language /> }
-}
-
-/// Resolve a repo's public docs site URL from its GitHub `homepage` field.
-///
-/// Only `https://` URLs on a `*.xodium.org` subdomain are used as-is (a
-/// trailing slash is trimmed). The bare apex (`https://xodium.org`) hosts no
-/// per-project docs, so it is rewritten to the project's derived
-/// `https://{name}.xodium.org` subdomain — even when that site is not
-/// deployed yet. The website repo itself (name `xodium.org`) gets no docs
-/// link: deriving a subdomain from it is meaningless, and the apex is the
-/// site the visitor is already on. External hosts, lookalike domains, and
-/// non-HTTPS URLs yield no docs link.
-fn docs_url_from_homepage(repo_name: &str, homepage: Option<&str>) -> Option<String> {
-    let url = homepage?.trim();
-    let host = url.strip_prefix("https://")?.split('/').next()?;
-    if host == "xodium.org" {
-        (repo_name != "xodium.org")
-            .then(|| format!("https://{}.xodium.org", repo_name.to_lowercase()))
-    } else {
-        host.ends_with(".xodium.org")
-            .then(|| url.trim_end_matches('/').to_string())
-    }
 }
 
 #[component]
@@ -80,32 +55,11 @@ fn StarIcon() -> impl IntoView {
 }
 
 #[component]
-fn DocsIcon() -> impl IntoView {
-    view! {
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-        >
-            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-        </svg>
-    }
-}
-
-#[component]
 #[must_use]
 pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
     let link = props.link.clone().unwrap_or_else(|| "#".to_string());
     let stargazers_url = format!("{link}/stargazers");
     let stars = props.stargazers_count;
-    let docs_url = props.docs_url.clone();
     let language_badge = props.language.as_ref().map(|language| {
         let color = language_color(language);
         let language = language.clone();
@@ -158,19 +112,6 @@ pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
                             <div class="flex items-center gap-1 text-base-content/60 text-sm">
                                 {language_badge}
                             </div>
-                            <div class="flex items-center gap-3">
-                            {docs_url.map(|url| view! {
-                                <a
-                                    href=url
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    class="flex items-center gap-1 text-base-content/60 hover:text-primary text-sm transition-colors"
-                                    title="Documentation"
-                                >
-                                    <DocsIcon />
-                                    <span>"Docs"</span>
-                                </a>
-                            })}
                             {if stars > 0 {
                                 view! {
                                     <a
@@ -193,7 +134,6 @@ pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
                                 }
                                     .into_any()
                             }}
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -226,53 +166,9 @@ mod tests {
             link: Some("https://github.com/test".to_string()),
             language: Some("Rust".to_string()),
             stargazers_count: 42,
-            docs_url: Some("https://test-repo.xodium.org".to_string()),
             topics: vec!["cad".to_string(), "cli".to_string()],
         };
         assert_eq!(props.title, "test-repo");
         assert_eq!(props.topics.len(), 2);
-        assert!(props.docs_url.is_some());
-    }
-
-    #[wasm_bindgen_test]
-    fn test_docs_url_from_homepage() {
-        // A bare apex homepage is rewritten to the project's derived
-        // subdomain (lowercased), even if that site is not deployed yet.
-        assert_eq!(
-            docs_url_from_homepage("utils", Some("https://xodium.org")),
-            Some("https://utils.xodium.org".to_string())
-        );
-        assert_eq!(
-            docs_url_from_homepage("IllyriaPlus", Some("https://xodium.org/")),
-            Some("https://illyriaplus.xodium.org".to_string())
-        );
-
-        // The website repo itself gets no docs link.
-        assert_eq!(
-            docs_url_from_homepage("xodium.org", Some("https://xodium.org")),
-            None
-        );
-
-        // Real subdomain homepages are used as-is (trailing slash trimmed).
-        assert_eq!(
-            docs_url_from_homepage("utils", Some("https://utils.xodium.org/")),
-            Some("https://utils.xodium.org".to_string())
-        );
-
-        // External hosts, lookalike domains, non-HTTPS, and blanks are rejected
-        assert_eq!(
-            docs_url_from_homepage("utils", Some("https://evilxodium.org")),
-            None
-        );
-        assert_eq!(
-            docs_url_from_homepage("utils", Some("https://github.com/XodiumSoftware/utils")),
-            None
-        );
-        assert_eq!(
-            docs_url_from_homepage("utils", Some("http://utils.xodium.org")),
-            None
-        );
-        assert_eq!(docs_url_from_homepage("utils", Some("  ")), None);
-        assert_eq!(docs_url_from_homepage("utils", None), None);
     }
 }

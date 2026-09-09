@@ -24,7 +24,6 @@ pub struct Repo {
     pub name: String,
     pub description: Option<String>,
     pub html_url: String,
-    pub homepage: Option<String>,
     pub language: Option<String>,
     pub stargazers_count: u32,
     pub fork: bool,
@@ -225,7 +224,6 @@ mod tests {
             name: name.to_string(),
             description: None,
             html_url: format!("https://github.com/XodiumSoftware/{name}"),
-            homepage: None,
             language: Some("Rust".to_string()),
             stargazers_count: 0,
             fork: false,
@@ -279,7 +277,6 @@ mod tests {
             "name": "test-repo",
             "description": "A test repository",
             "html_url": "https://github.com/XodiumSoftware/test-repo",
-            "homepage": "https://test-repo.xodium.org",
             "language": "Rust",
             "stargazers_count": 42,
             "fork": false,
@@ -289,10 +286,6 @@ mod tests {
         let repo: Repo = serde_json::from_str(json).unwrap();
         assert_eq!(repo.name, "test-repo");
         assert_eq!(repo.description, Some("A test repository".to_string()));
-        assert_eq!(
-            repo.homepage,
-            Some("https://test-repo.xodium.org".to_string())
-        );
         assert_eq!(repo.language, Some("Rust".to_string()));
         assert_eq!(repo.stargazers_count, 42);
         assert!(!repo.fork);
@@ -424,7 +417,6 @@ mod tests {
                 name: "repo-a".to_string(),
                 description: None,
                 html_url: "https://github.com/XodiumSoftware/repo-a".to_string(),
-                homepage: None,
                 language: Some("Rust".to_string()),
                 stargazers_count: 10,
                 fork: false,
@@ -434,7 +426,6 @@ mod tests {
                 name: "repo-b".to_string(),
                 description: None,
                 html_url: "https://github.com/XodiumSoftware/repo-b".to_string(),
-                homepage: None,
                 language: Some("Python".to_string()),
                 stargazers_count: 50,
                 fork: false,
@@ -444,7 +435,6 @@ mod tests {
                 name: "repo-c".to_string(),
                 description: None,
                 html_url: "https://github.com/XodiumSoftware/repo-c".to_string(),
-                homepage: None,
                 language: Some("Go".to_string()),
                 stargazers_count: 30,
                 fork: true, // This should be filtered out
