@@ -4,7 +4,9 @@ edition = "2024"
 publish = false
 
 [dependencies]
-leptos = { version = "0.8.17", features = ["csr"] }
+# Leptos 0.9.0-beta uses syn 3.0 consistently across all proc-macro crates,
+# resolving the conflict with server_fn_macro_default
+leptos = { version = "0.9.0-beta", features = ["csr"] }
 wasm-bindgen = "0.2.114"
 gloo-net = { version = "0.7", features = ["http", "json"] }
 gloo-timers = { version = "0.4.0", features = ["futures"] }
@@ -17,6 +19,9 @@ send_wrapper = "0.6"
 
 serde-wasm-bindgen = "0.6"
 wasm-bindgen-futures = "0.4"
+# Pin syn to 2.x to prevent proc-macro crates from resolving to syn 3.0,
+# which breaks server_fn_macro_default 0.8.5
+syn = "=2.0.117"
 
 [build-dependencies]
 serde_json = "1"
