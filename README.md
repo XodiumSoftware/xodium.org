@@ -18,6 +18,7 @@
 [![Contributors][contributors_shield_url]][contributors_url]
 [![Issues][issues_shield_url]][issues_url]
 [![Roadmap][roadmap_shield_url]][roadmap_url]
+[![Dependency Status][deps_shield_url]][deps_url]
 
 </div>
 
@@ -41,25 +42,16 @@
 <p align="right"><a href="#readme-top">▲</a></p>
 
 [built_with_shield_url]: https://skillicons.dev/icons?i=rust,github,githubactions
-
 [built_with_url]: https://skillicons.dev
-
 [code_of_conduct_url]: https://github.com/XodiumSoftware/xodium.org?tab=coc-ov-file
-
 [contributing_url]: https://github.com/XodiumSoftware/xodium.org?tab=contributing-ov-file
-
 [contributors_shield_url]: https://img.shields.io/github/contributors/XodiumSoftware/xodium.org?style=for-the-badge&color=blue
-
 [contributors_url]: https://github.com/XodiumSoftware/xodium.org/graphs/contributors
-
+[deps_shield_url]: https://deps.rs/repo/github/XodiumSoftware/xodium.org/status.svg?style=for-the-badge
+[deps_url]: https://deps.rs/repo/github/XodiumSoftware/xodium.org
 [issues_shield_url]: https://img.shields.io/github/issues/XodiumSoftware/xodium.org?style=for-the-badge&color=yellow
-
 [issues_url]: https://github.com/XodiumSoftware/xodium.org/issues
-
 [license_url]: https://github.com/XodiumSoftware/xodium.org?tab=AGPL-3.0-1-ov-file
-
 [roadmap_shield_url]: https://img.shields.io/badge/Roadmap-Click%20Me!-purple.svg?style=for-the-badge
-
 [roadmap_url]: https://github.com/orgs/XodiumSoftware/projects/4
-
 [security_url]: https://github.com/XodiumSoftware/xodium.org?tab=security-ov-file

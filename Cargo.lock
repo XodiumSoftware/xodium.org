@@ -2113,7 +2113,6 @@ dependencies = [
  "serde-wasm-bindgen",
  "serde_json",
  "sha2 0.11.0",
- "syn 2.0.117",
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "wasm-bindgen-test",

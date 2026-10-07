@@ -4,24 +4,19 @@ edition = "2024"
 publish = false
 
 [dependencies]
-# Leptos 0.9.0-beta uses syn 3.0 consistently across all proc-macro crates,
-# resolving the conflict with server_fn_macro_default
 leptos = { version = "0.9.0-beta", features = ["csr"] }
-wasm-bindgen = "0.2.114"
+wasm-bindgen = "0.2"
 gloo-net = { version = "0.7", features = ["http", "json"] }
-gloo-timers = { version = "0.4.0", features = ["futures"] }
-serde = { version = "1.0.228", features = ["derive"] }
+gloo-timers = { version = "0.4", features = ["futures"] }
+serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 js-sys = "0.3"
 web-sys = { version = "0.3", features = ["Storage", "MediaQueryList", "Document", "Element", "HtmlElement", "Node", "console", "IntersectionObserver", "IntersectionObserverInit", "IntersectionObserverEntry"] }
-console_error_panic_hook = "0.1.7"
+console_error_panic_hook = "0.1"
 send_wrapper = "0.6"
 
 serde-wasm-bindgen = "0.6"
 wasm-bindgen-futures = "0.4"
-# Pin syn to 2.x to prevent proc-macro crates from resolving to syn 3.0,
-# which breaks server_fn_macro_default 0.8.5
-syn = "=2.0.117"
 
 [build-dependencies]
 serde_json = "1"
@@ -31,9 +26,6 @@ sha2 = "0.11"
 wasm-bindgen-test = "0.3"
 
 [package.metadata.cargo-machete]
-# wasm-bindgen is required at runtime by leptos/wasm-bindgen internals, but our
-# code only accesses it through leptos re-exports (e.g. leptos::wasm_bindgen::JsCast).
-# cargo-machete does not detect this indirect usage, so keep it ignored.
 ignored = ["wasm-bindgen"]
 
 [profile.release]
