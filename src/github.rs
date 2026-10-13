@@ -1,4 +1,5 @@
 use gloo_net::http::Request;
+use gloo_storage::{LocalStorage, Storage};
 use leptos::web_sys;
 use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
@@ -37,20 +38,14 @@ pub struct Repo {
 /// from the returned timestamp — expired entries are deliberately retained
 /// so they can be served as a stale-if-error fallback.
 fn cache_read<T: for<'de> Deserialize<'de>>(key: &str) -> Option<(T, f64)> {
-    let storage = web_sys::window()?.local_storage().ok()??;
-    let ts: f64 = storage.get_item(&format!("{key}:ts")).ok()??.parse().ok()?;
-    let raw = storage.get_item(key).ok()??;
-    serde_json::from_str(&raw).ok().map(|data| (data, ts))
+    let ts: f64 = LocalStorage::get(format!("{key}:ts")).ok()?;
+    let data: T = LocalStorage::get(key).ok()?;
+    Some((data, ts))
 }
 
 fn cache_set<T: Serialize>(key: &str, data: &T) {
-    let Some(Ok(Some(storage))) = web_sys::window().map(|w| w.local_storage()) else {
-        return;
-    };
-    if let Ok(json) = serde_json::to_string(data) {
-        let _ = storage.set_item(key, &json);
-        let _ = storage.set_item(&format!("{key}:ts"), &js_sys::Date::now().to_string());
-    }
+    let _ = LocalStorage::set(key, data);
+    let _ = LocalStorage::set(format!("{key}:ts"), js_sys::Date::now());
 }
 
 fn format_api_error(status: u16) -> String {
@@ -209,10 +204,8 @@ mod tests {
     wasm_bindgen_test_configure!(run_in_browser);
 
     fn clear_cache(key: &str) {
-        if let Some(Ok(Some(storage))) = web_sys::window().map(|w| w.local_storage()) {
-            let _ = storage.remove_item(key);
-            let _ = storage.remove_item(&format!("{key}:ts"));
-        }
+        LocalStorage::delete(key);
+        LocalStorage::delete(format!("{key}:ts"));
     }
 
     fn test_cache_key() -> &'static str {
@@ -345,10 +338,8 @@ mod tests {
         cache_set(key, &data);
 
         // Backdate the timestamp so the entry is past its TTL
-        if let Some(Ok(Some(storage))) = web_sys::window().map(|w| w.local_storage()) {
-            let expired_ts = (js_sys::Date::now() - CACHE_TTL_MS - 1.0).to_string();
-            let _ = storage.set_item(&format!("{key}:ts"), &expired_ts);
-        }
+        let expired_ts = js_sys::Date::now() - CACHE_TTL_MS - 1.0;
+        let _ = LocalStorage::set(format!("{key}:ts"), expired_ts);
 
         // Expired entries stay readable (with their old timestamp) so fetch
         // can fall back to them when the network is unavailable.

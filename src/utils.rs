@@ -1,3 +1,4 @@
+use leptos::prelude::on_cleanup;
 use leptos::wasm_bindgen::JsCast;
 use leptos::wasm_bindgen::closure::Closure;
 use send_wrapper::SendWrapper;
@@ -59,7 +60,7 @@ where
         return false;
     }
 
-    leptos::prelude::on_cleanup(move || {
+    on_cleanup(move || {
         if let Some(window) = leptos::web_sys::window() {
             let _ = window.remove_event_listener_with_callback(event, &fn_ref);
         }
