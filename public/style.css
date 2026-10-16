@@ -285,6 +285,8 @@ body::before {
     font-size: 0.75rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+    cursor: pointer;
+    user-select: none;
     animation: block-in 400ms ease-out 1100ms both;
 }
 
@@ -297,7 +299,8 @@ body::before {
     transition: transform 300ms ease;
 }
 
-.building-block:hover .building-block-iso {
+.building-block:hover .building-block-iso,
+.building-block.tooltip-open .building-block-iso {
     transform: translateY(-4px);
 }
 
