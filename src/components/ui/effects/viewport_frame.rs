@@ -191,9 +191,11 @@ fn AxisConnector(
             // SVG needs a non-zero bounding box even for a straight line;
             // give the line a 1px canvas so it sits centered on the
             // computed coordinate instead of clipping to nothing. The line
-            // itself runs along the canvas's 0.5 centerline so the SVG
-            // stroke (which is centered on the path) lands at the same
-            // pixel band as the marker leaders.
+            // runs along the canvas's 0.5 centerline so the SVG stroke
+            // (centered on the path) paints into the same pixel band the
+            // marker leaders use — without this the connector appears
+            // either half a pixel off the leader endpoints or anti-aliased
+            // at half the leader's apparent weight.
             let (svg_width, svg_height, lx1, ly1, lx2, ly2) = if width == 0 {
                 (1, height, 0.5, 0.0, 0.5, f64::from(height))
             } else {
@@ -207,13 +209,14 @@ fn AxisConnector(
                     width=svg_width
                     height=svg_height
                     viewBox=format!("0 0 {svg_width} {svg_height}")
-                    preserveAspectRatio="none"
                     style=format!("position: fixed; left: {min_x}px; top: {min_y}px;")
+                    shape-rendering="crispEdges"
                 >
                     <line
                         x1=lx1 y1=ly1 x2=lx2 y2=ly2
                         stroke="var(--color-base-content)"
                         stroke-width="1"
+                        vector-effect="non-scaling-stroke"
                     />
                 </svg>
             }
