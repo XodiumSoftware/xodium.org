@@ -198,6 +198,7 @@ build.rs                       # Build script
 - **External links:** Always use `target="_blank" rel="noopener noreferrer"`
 - **Static data:** Define `const` slices at top of component files
 - **CSS:** Tailwind utility classes via `style.css`
+- **Do not add `//` line comments.** Use `///` doc comments (or `//!` module docs) to explain intent; keep the code itself self-documenting. This applies to `view!` macro blocks too — meaningful intent in a template should live on the component's or helper's doc comment, not as a structural label inside the view.
 
 ### Component Patterns
 
