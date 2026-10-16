@@ -194,11 +194,15 @@ html {
 /* Blueprint title block — the engineering metadata frame found in the corner
    of technical drawings. Double outer border, thin internal rules, small
    monospace labels. */
-.title-block {
+.title-block-anchor {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 40;
+}
+
+.title-block-anchor table {
     border-collapse: collapse;
-    width: 100%;
-    max-width: 32rem;
-    margin-inline: auto;
     outline: 2px solid var(--color-base-content);
     outline-offset: 3px;
     border: 1px solid var(--color-base-content);
@@ -230,7 +234,11 @@ html {
 }
 
 @media (max-width: 640px) {
-    .title-block {
+    .title-block-anchor {
+        right: 20px;
+        bottom: 20px;
+    }
+    .title-block-anchor table {
         outline-offset: 2px;
     }
     .title-block-cell {

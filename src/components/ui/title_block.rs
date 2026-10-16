@@ -1,7 +1,16 @@
+use crate::utils::clean_sha;
 use leptos::prelude::*;
 
-/// Blueprint title block — the rectangular metadata frame found in the corner
-/// of engineering drawings (sheet number, title, drawn-by, date, revision).
+const GIT_SHA: &str = env!("GIT_SHA");
+const GITHUB_REPO_URL: &str = "https://github.com/XodiumSoftware/xodium.org/commit";
+
+/// Blueprint title block — the rectangular metadata frame found in the bottom
+/// right corner of engineering drawings (sheet number, title, drawn-by, date,
+/// current revision).
+///
+/// The revision cell links to the commit that produced the current build so a
+/// visitor can trace a deployed sheet back to its source, exactly like the
+/// "REV" letter on a controlled drawing.
 ///
 /// Rendered as a real `<table>` so screen readers announce it as tabular
 /// metadata rather than as page content.
@@ -9,11 +18,21 @@ use leptos::prelude::*;
 #[must_use]
 pub fn TitleBlock() -> impl IntoView {
     let current_year = js_sys::Date::new_0().get_full_year();
+    let commit_url = if GIT_SHA == "unknown" {
+        None
+    } else {
+        Some(format!("{GITHUB_REPO_URL}/{}", clean_sha(GIT_SHA)))
+    };
+    let rev_label = if GIT_SHA == "unknown" {
+        "A".to_string()
+    } else {
+        clean_sha(GIT_SHA).to_string()
+    };
 
     view! {
         <table
             aria-label="Site metadata"
-            class="title-block font-mono text-[10px] leading-tight text-base-content/80"
+            class="font-mono text-[10px] leading-tight text-base-content"
         >
             <tbody>
                 <tr>
@@ -45,7 +64,21 @@ pub fn TitleBlock() -> impl IntoView {
                     </td>
                     <td class="title-block-cell">
                         <span class="title-block-label">"REV"</span>
-                        <span class="title-block-value">"A"</span>
+                        {match commit_url {
+                            Some(url) => view! {
+                                <a
+                                    href={url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="title-block-value link link-hover link-primary"
+                                >
+                                    {rev_label}
+                                </a>
+                            }.into_any(),
+                            None => view! {
+                                <span class="title-block-value">{rev_label}</span>
+                            }.into_any(),
+                        }}
                     </td>
                 </tr>
             </tbody>
