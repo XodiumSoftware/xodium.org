@@ -1,13 +1,14 @@
 use leptos::prelude::*;
 
 /// In-flow isometric drawing viewport — a centered rectangle on the sheet
-/// containing a true 30° isometric grid, with cell-reference labels along
-/// its top and left edges like a real drawing figure.
+/// containing a true 30° isometric grid, with cell-reference labels around
+/// all four edges like a real drawing figure.
 ///
 /// The iso pattern uses the canonical engineering tile geometry:
 /// for cell width W, the tile is `W × 2·W·tan(30°)` = `60 × 69.282` px
-/// (no rounding, otherwise seams appear). Labels count is computed from the
-/// rendered width/height so the zone density scales with viewport size.
+/// (no rounding, otherwise seams appear). Axis origin sits at the bottom-
+/// left (row 1 at the bottom edge), matching how engineering drawings
+/// number zone rows from the title block upward.
 #[component]
 #[must_use]
 pub fn IsoViewport() -> impl IntoView {
@@ -17,7 +18,9 @@ pub fn IsoViewport() -> impl IntoView {
             <div class="iso-viewport-row">
                 <IsoRowLabels />
                 <IsoSheet />
+                <IsoRowLabels />
             </div>
+            <IsoColumnLabels />
         </figure>
     }
 }
@@ -91,10 +94,12 @@ fn IsoColumnLabels() -> impl IntoView {
     }
 }
 
-/// Row numbers (1, 2, 3, …) distributed down the left of the viewport.
+/// Row numbers (1, 2, 3, …) distributed down the side of the viewport.
+/// Origin is at the bottom (1 is the lowest cell), matching how engineering
+/// drawings number zone rows upward from the title-block side.
 #[component]
 fn IsoRowLabels() -> impl IntoView {
-    let rows = ["1", "2", "3", "4", "5"];
+    let rows = ["5", "4", "3", "2", "1"];
 
     view! {
         <div class="iso-viewport-rows" aria-hidden="true">

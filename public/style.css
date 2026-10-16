@@ -467,14 +467,14 @@ body::before {
 }
 
 /* Isometric drawing viewport — a centered framed sheet inside the page,
-   containing a true 30° isometric grid with zone labels on its top and left
-   edges, matching how an inserted drawing appears on a larger sheet. The
-   section scrolls with the document rather than being fixed to the viewport.
+   containing a true 30° isometric grid with zone labels on all four edges,
+   matching how an inserted drawing appears on a larger sheet. The section
+   scrolls with the document rather than being fixed to the viewport.
 
-   Layout: a flex column with the column letters on top, then a flex row
-   containing row labels on the left and the sheet on the right. This keeps
-   the labels attached to the sheet edges in document flow without any
-   positioning hackery. */
+   Layout: a flex column with column letters on top and bottom, wrapping a
+   middle flex row of [row labels | sheet | row labels]. Axis origin is at
+   the bottom-left (row 1 is rendered last in the labels column so it lands
+   at the bottom edge). */
 .iso-viewport-section {
     display: flex;
     align-items: center;
@@ -494,6 +494,10 @@ body::before {
 .iso-viewport-cols {
     display: flex;
     justify-content: space-around;
+    /* Leave room for the row-label columns on either side so the column
+       labels above and below align with the sheet edges, not the figure's
+       outer edges. Row label width is the width of "(N)" at 0.65rem mono
+       plus its flex gap (0.375rem each side). */
     padding-inline: 1.5rem;
 }
 
@@ -507,9 +511,20 @@ body::before {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    align-items: flex-end;
-    padding-block: 1.5rem;
     flex-shrink: 0;
+    padding-block: 1.5rem;
+    width: 1.5rem;
+}
+
+/* Left column of row labels hugs the sheet's left edge; right column hugs
+   the right edge. Both right-align their text so (N) sits next to the
+   sheet border regardless of which side the column is on. */
+.iso-viewport-rows:first-child {
+    align-items: flex-end;
+}
+
+.iso-viewport-rows:last-child {
+    align-items: flex-start;
 }
 
 .iso-sheet {
