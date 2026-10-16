@@ -14,11 +14,15 @@ const GRID_MAJOR: i32 = 60;
 /// Convert a bottom-origin row index into a top-origin CSS pixel offset,
 /// given the current viewport height.
 ///
-/// The drawing area's bottom edge sits `GRID_INSET` px above the viewport's
-/// bottom edge. Row `row` (0-based from the bottom) lives at:
-/// `viewport_h - GRID_INSET - (row + 1) * GRID_MAJOR` px from the top.
+/// Matches the `CoordPicker` convention: label `row = 0` is the bottom-most
+/// visible major gridline, and `row = N` is N major cells above that. In
+/// CSS pixels (top-origin):
+///   `GRID_INSET + (visible_rows - row) * GRID_MAJOR`
+/// where `visible_rows = (viewport_h - 2*GRID_INSET) / GRID_MAJOR`.
 fn row_to_top_px(row: i32, viewport_h: i32) -> i32 {
-    viewport_h - GRID_INSET - (row + 1) * GRID_MAJOR
+    let area_h = viewport_h - 2 * GRID_INSET;
+    let visible_rows = area_h / GRID_MAJOR;
+    GRID_INSET + (visible_rows - row) * GRID_MAJOR
 }
 
 /// Convert a left-origin column index into a top-origin CSS pixel offset.
@@ -71,8 +75,34 @@ pub fn ViewportFrame() -> impl IntoView {
 
     view! {
         <figure class="viewport-frame" aria-label="Drawing frame">
-            // Axis 3 (row index 3): left and right markers pinned to specific
-            // page-grid intersections.
+            <ZoneMarker
+                label="5"
+                side="left"
+                col=13
+                row=14
+                viewport_h=viewport_h.into()
+            />
+            <ZoneMarker
+                label="5"
+                side="right"
+                col=29
+                row=14
+                viewport_h=viewport_h.into()
+            />
+            <ZoneMarker
+                label="4"
+                side="left"
+                col=13
+                row=12
+                viewport_h=viewport_h.into()
+            />
+            <ZoneMarker
+                label="4"
+                side="right"
+                col=29
+                row=12
+                viewport_h=viewport_h.into()
+            />
             <ZoneMarker
                 label="3"
                 side="left"
@@ -88,10 +118,31 @@ pub fn ViewportFrame() -> impl IntoView {
                 viewport_h=viewport_h.into()
             />
             <ZoneMarker
-                label="4"
+                label="2"
+                side="left"
+                col=13
+                row=8
+                viewport_h=viewport_h.into()
+            />
+            <ZoneMarker
+                label="2"
                 side="right"
                 col=29
-                row=10
+                row=8
+                viewport_h=viewport_h.into()
+            />
+            <ZoneMarker
+                label="1"
+                side="left"
+                col=13
+                row=6
+                viewport_h=viewport_h.into()
+            />
+            <ZoneMarker
+                label="1"
+                side="right"
+                col=29
+                row=6
                 viewport_h=viewport_h.into()
             />
         </figure>
