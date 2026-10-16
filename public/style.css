@@ -139,7 +139,7 @@ body::before {
     line-height: 1.15;
     letter-spacing: 0;
     color: var(--color-base-content);
-    text-align: left;
+    text-align: center;
     margin: 0;
     user-select: none;
     white-space: pre;
