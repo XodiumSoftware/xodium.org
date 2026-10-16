@@ -1,6 +1,3 @@
-use crate::components::{
-    Footer, Header, LandingSection, ProjectsSection, SectionMarker, TeamDeckSection,
-};
 use leptos::prelude::*;
 
 #[component]
@@ -14,33 +11,9 @@ pub fn App() -> impl IntoView {
             >
                 "Skip to main content"
             </a>
-            <div class="relative">
-                {/* Sentinel used by Header to detect when the page has scrolled. */}
-                <div id="header-scroll-sentinel" class="absolute top-0 left-0 h-px w-full -z-20" />
 
-                <Header />
-
-                <div class="absolute inset-x-0 top-0 h-128 bg-gradient-to-b from-base-100 to-transparent pointer-events-none z-10" />
-
-                <LandingSection />
-            </div>
-
-        <main id="main-content" tabindex="-1">
-
-        // Section-cut marker between hero and projects
-        <SectionMarker letter="A" />
-
-        // Projects section
-        <ProjectsSection />
-
-        // Section-cut marker between projects and team
-        <SectionMarker letter="B" />
-
-        // Team section
-        <TeamDeckSection />
-        </main>
-
-        <Footer />
-    </div>
+            <main id="main-content" tabindex="-1">
+            </main>
+        </div>
     }
 }
