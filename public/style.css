@@ -466,21 +466,26 @@ body::before {
     border: 2px solid var(--color-base-content);
 }
 
-/* Isometric drawing raster — a 60px-pitch 30° grid covering the sheet inside
-   the frame border. Rendered behind content but above the body gridlines so
-   it reads as the primary drafting surface. */
+/* Isometric drawing raster — a 60px-pitch 30° grid framed as a centered
+   square section on the sheet, like a viewport on a drawing. Rendered behind
+   content but above the body gridlines so it reads as the primary drafting
+   surface. */
 .iso-raster {
     position: fixed;
-    inset: 18px;
-    width: calc(100% - 36px);
-    height: calc(100% - 36px);
+    left: 50%;
+    top: 50%;
+    width: min(60vmin, 720px);
+    height: min(60vmin, 720px);
+    transform: translate(-50%, -50%);
     z-index: 1;
     pointer-events: none;
+    /* Hard perimeter so the iso grid stops cleanly at the section edge. */
+    outline: 1px solid var(--color-base-content);
+    background-color: var(--color-base-100);
 }
 
-/* Reference-cell labels along the top and left edges, matching the (A)..(1)
-   designations on civil drawings. Square monospace lettering on the dark
-   paper; sits above the iso raster but below the frame borders. */
+/* Reference-cell labels attached to the edges of the iso raster itself,
+   matching the (A)..(1) designations on civil drawings. */
 .iso-label {
     font-size: 0.65rem;
     letter-spacing: 0.12em;
@@ -491,27 +496,31 @@ body::before {
 
 .iso-col-labels {
     position: fixed;
-    top: 22px;
-    left: 22px;
-    right: 22px;
+    top: calc(50% - min(30vmin, 360px) - 1.25rem);
+    left: 50%;
+    width: min(60vmin, 720px);
+    transform: translateX(-50%);
     z-index: 2;
     pointer-events: none;
     display: flex;
     justify-content: space-between;
-    padding-inline: 2rem;
+    padding-inline: 0.25rem;
 }
 
 .iso-row-labels {
     position: fixed;
-    top: 22px;
-    bottom: 22px;
-    left: 22px;
+    top: 50%;
+    left: calc(50% - min(30vmin, 360px) - 1.5rem);
+    width: 1.25rem;
+    height: min(60vmin, 720px);
+    transform: translateY(-50%);
     z-index: 2;
     pointer-events: none;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    padding-block: 2rem;
+    padding-block: 0.25rem;
+    align-items: flex-end;
 }
 
 /* Orthographic viewports — the framed panes on a technical drawing that show
