@@ -20,9 +20,9 @@ pub fn App() -> impl IntoView {
                 <h1 class="sr-only">"Xodium Software — open-source CAD software"</h1>
                 <Object3dScene>
                     <Object3d props=Object3dProperties {
-                        width: 80.0,
-                        depth: 40.0,
-                        height: 60.0,
+                        width: 240.0,
+                        depth: 120.0,
+                        height: 180.0,
                         name: "Building Block",
                         grid_x: 0.0,
                         grid_y: 0.0,
@@ -30,23 +30,23 @@ pub fn App() -> impl IntoView {
                         is_draft: false,
                     } />
                     <Object3d props=Object3dProperties {
-                        width: 60.0,
-                        depth: 60.0,
-                        height: 30.0,
+                        width: 180.0,
+                        depth: 180.0,
+                        height: 90.0,
                         name: "Slab",
-                        grid_x: -70.0,
+                        grid_x: -210.0,
                         grid_y: 0.0,
-                        grid_z: -15.0,
+                        grid_z: -45.0,
                         is_draft: false,
                     } />
                     <Object3d props=Object3dProperties {
-                        width: 25.0,
-                        depth: 25.0,
-                        height: 90.0,
+                        width: 75.0,
+                        depth: 75.0,
+                        height: 270.0,
                         name: "Column",
                         grid_x: 0.0,
-                        grid_y: 32.5,
-                        grid_z: 15.0,
+                        grid_y: 97.5,
+                        grid_z: 45.0,
                         is_draft: true,
                     } />
                 </Object3dScene>

@@ -93,6 +93,7 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
         max_extent * 2.0,
         max_extent * 2.0
     );
+    let svg_pixel_size = max_extent * 2.0;
 
     let tooltip = name.to_string();
 
@@ -128,6 +129,7 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
                 xmlns="http://www.w3.org/2000/svg"
                 role="img"
                 aria-hidden="true"
+                style=format!("width: {:.2}px; height: {:.2}px;", svg_pixel_size, svg_pixel_size)
             >
                 <g class="iso-face iso-top">
                     <polygon points=top_face />
