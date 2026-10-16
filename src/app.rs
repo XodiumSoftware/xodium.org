@@ -1,5 +1,5 @@
 use crate::components::sections::footer::Footer;
-use crate::components::ui::effects::iso_raster::{IsoColumnLabels, IsoRaster, IsoRowLabels};
+use crate::components::ui::effects::iso_viewport::IsoViewport;
 use crate::components::ui::link_badges::LinkBadges;
 use crate::components::ui::title_block::TitleBlock;
 use leptos::prelude::*;
@@ -17,11 +17,10 @@ pub fn App() -> impl IntoView {
             </a>
 
             <main id="main-content" tabindex="-1">
+                <section class="iso-viewport-section">
+                    <IsoViewport />
+                </section>
             </main>
-
-            <IsoRaster />
-            <IsoColumnLabels />
-            <IsoRowLabels />
 
             <Footer />
 

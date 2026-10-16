@@ -466,61 +466,72 @@ body::before {
     border: 2px solid var(--color-base-content);
 }
 
-/* Isometric drawing raster — a 60px-pitch 30° grid framed as a centered
-   square section on the sheet, like a viewport on a drawing. Rendered behind
-   content but above the body gridlines so it reads as the primary drafting
-   surface. */
-.iso-raster {
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    width: min(60vmin, 720px);
-    height: min(60vmin, 720px);
-    transform: translate(-50%, -50%);
-    z-index: 1;
-    pointer-events: none;
-    /* Hard perimeter so the iso grid stops cleanly at the section edge. */
-    outline: 1px solid var(--color-base-content);
+/* Isometric drawing viewport — a centered framed sheet inside the page,
+   containing a true 30° isometric grid with zone labels on its top and left
+   edges, matching how an inserted drawing appears on a larger sheet. The
+   section scrolls with the document rather than being fixed to the viewport.
+
+   Layout: a flex column with the column letters on top, then a flex row
+   containing row labels on the left and the sheet on the right. This keeps
+   the labels attached to the sheet edges in document flow without any
+   positioning hackery. */
+.iso-viewport-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8rem 2rem;
+    min-height: 80dvh;
+}
+
+.iso-viewport {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    width: min(80vw, 1100px);
+    margin: 0;
+}
+
+.iso-viewport-cols {
+    display: flex;
+    justify-content: space-around;
+    padding-inline: 1.5rem;
+}
+
+.iso-viewport-row {
+    display: flex;
+    gap: 0.375rem;
+    align-items: stretch;
+}
+
+.iso-viewport-rows {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: flex-end;
+    padding-block: 1.5rem;
+    flex-shrink: 0;
+}
+
+.iso-sheet {
+    flex: 1;
+    /* ISO 216 A-series landscape aspect (sqrt(2) : 1) so the framed sheet
+       reads as a real engineering drawing format. */
+    aspect-ratio: 1.4142 / 1;
+    width: 100%;
+    display: block;
+    border: 1px solid var(--color-base-content);
     background-color: var(--color-base-100);
 }
 
-/* Reference-cell labels attached to the edges of the iso raster itself,
-   matching the (A)..(1) designations on civil drawings. */
+/* Reference labels — the (A)/(1) zone designations on the drawing margin.
+   Square monospace lettering, dimmed so they read as chrome. */
 .iso-label {
     font-size: 0.65rem;
     letter-spacing: 0.12em;
     color: var(--color-base-content);
     opacity: 0.65;
     text-transform: uppercase;
-}
-
-.iso-col-labels {
-    position: fixed;
-    top: calc(50% - min(30vmin, 360px) - 1.25rem);
-    left: 50%;
-    width: min(60vmin, 720px);
-    transform: translateX(-50%);
-    z-index: 2;
-    pointer-events: none;
-    display: flex;
-    justify-content: space-between;
-    padding-inline: 0.25rem;
-}
-
-.iso-row-labels {
-    position: fixed;
-    top: 50%;
-    left: calc(50% - min(30vmin, 360px) - 1.5rem);
-    width: 1.25rem;
-    height: min(60vmin, 720px);
-    transform: translateY(-50%);
-    z-index: 2;
-    pointer-events: none;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding-block: 0.25rem;
-    align-items: flex-end;
+    line-height: 1;
 }
 
 /* Orthographic viewports — the framed panes on a technical drawing that show
