@@ -186,9 +186,12 @@ body::before {
 }
 
 .corner-stack > .ascii-art,
-.corner-stack > .corner-stack-sep,
-.corner-stack > .title-block-anchor {
+.corner-stack > .corner-stack-sep {
     animation: slide-up 400ms ease-out 500ms both;
+}
+
+.corner-stack > .title-block-anchor {
+    animation: slide-up 400ms ease-out 700ms both;
 }
 
 .corner-stack-sep {

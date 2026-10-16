@@ -14,11 +14,11 @@ pub fn Header() -> impl IntoView {
         <aside class="corner-stack" aria-label="Sheet metadata and external links">
             <AsciiArt />
             <hr class="corner-stack-sep" />
-            <LegendBlock />
             <div class="title-block-anchor">
                 <LinkBadges />
                 <TitleBlock />
             </div>
+            <LegendBlock />
         </aside>
     }
 }
