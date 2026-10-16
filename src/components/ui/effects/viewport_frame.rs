@@ -1,7 +1,6 @@
 use leptos::prelude::*;
 
-/// Page-grid geometry constants, mirrored from `public/style.css` and shared
-/// conceptually with [`crate::components::ui::coord_picker`]:
+/// Page-grid geometry constants, mirrored from `public/style.css`:
 /// - The frame's inner border sits at `inset: 16px` with a 2px line, so the
 ///   drawing area starts 18px from the viewport edge.
 /// - The blueprint grid uses a 60px major pitch.
@@ -14,9 +13,8 @@ const GRID_MAJOR: i32 = 60;
 /// Convert a bottom-origin row index into a top-origin CSS pixel offset,
 /// given the current viewport height.
 ///
-/// Matches the `CoordPicker` convention: label `row = 0` is the bottom-most
-/// visible major gridline, and `row = N` is N major cells above that. In
-/// CSS pixels (top-origin):
+/// Row 0 sits on the bottom-most major gridline of the drawing area; row N
+/// sits N major cells above that. In CSS pixels (top-origin):
 ///   `GRID_INSET + (visible_rows - row) * GRID_MAJOR`
 /// where `visible_rows = (viewport_h - 2*GRID_INSET) / GRID_MAJOR`.
 fn row_to_top_px(row: i32, viewport_h: i32) -> i32 {
@@ -53,7 +51,7 @@ pub fn ViewportFrame() -> impl IntoView {
                 .inner_height()
                 .ok()
                 .and_then(|v| v.as_f64())
-                .and_then(crate::components::ui::coord_picker::to_i32_saturated)
+                .and_then(crate::utils::to_i32_saturated)
                 .unwrap_or(0)
         };
 

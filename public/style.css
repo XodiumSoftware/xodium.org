@@ -418,62 +418,6 @@ body::before {
     }
 }
 
-/* Coordinate picker marker — a small dot at the snapped grid intersection
-   with a balloon label reading the (X, Y) major-cell coordinate. The dot
-   pulses once on placement so it's visible against the faint gridlines.
-   Origin is bottom-left of the drawing area, Y increasing upward. */
-.coord-marker {
-    position: fixed;
-    z-index: 50;
-    pointer-events: none;
-}
-
-.coord-marker-dot {
-    position: absolute;
-    left: 0;
-    top: 0;
-    transform: translate(-50%, -50%);
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--color-accent);
-    box-shadow:
-        0 0 0 2px var(--color-base-100),
-        0 0 0 3px var(--color-accent);
-    animation: coord-pop 200ms ease-out;
-}
-
-.coord-marker-label {
-    position: absolute;
-    left: 0.75rem;
-    bottom: 0.75rem;
-    background-color: var(--color-base-100);
-    color: var(--color-base-content);
-    border: 1px solid var(--color-accent);
-    padding: 0.125rem 0.375rem;
-    font-size: 0.65rem;
-    letter-spacing: 0.08em;
-    white-space: nowrap;
-}
-
-@keyframes coord-pop {
-    from {
-        transform: scale(0);
-    }
-    70% {
-        transform: scale(1.2);
-    }
-    to {
-        transform: scale(1);
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .coord-marker-dot {
-        animation: none;
-    }
-}
-
 /* Blueprint-style tooltips — pale-line frame on the dark base paper, square — pale-line frame on the dark base paper, square
    corners and monospace type to match the rest of the sheet. Overrides
    DaisyUI's default rounded, border-less bubble. The arrow pseudo-element
