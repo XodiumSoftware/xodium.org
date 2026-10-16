@@ -316,11 +316,6 @@ fn ZoneMarker(
             let _ = target.set_pointer_capture(ev.pointer_id());
         }
 
-        // Each marker owns its drag state; once a drag starts, the closures
-        // below live for the rest of the drag (and ultimately the page's
-        // lifetime). Using std::mem::forget is intentional because we don't
-        // currently unregister the listeners when a drag ends - the flags
-        // guard on `dragging.read()` make them inert between drags.
         let move_closure = {
             Closure::wrap(Box::new(move |ev: web_sys::PointerEvent| {
                 if !dragging.get() {
