@@ -28,30 +28,12 @@ fn col_to_left_px(col: i32) -> i32 {
     GRID_INSET + col * GRID_MAJOR
 }
 
-/// Convert a pixel offset to the nearest major-grid column index, rounding
-/// to the nearest line rather than always snapping down.
-fn px_to_col(x: i32) -> i32 {
-    let rel = x - GRID_INSET;
-    (rel + GRID_MAJOR / 2).div_euclid(GRID_MAJOR)
-}
-
-/// Convert a pixel offset (top-origin) plus the current viewport height to
-/// the nearest bottom-origin row index.
-fn px_to_row(y: i32, viewport_h: i32) -> i32 {
-    let area_h = viewport_h - 2 * GRID_INSET;
-    let visible_rows = area_h / GRID_MAJOR;
-    let rel = y - GRID_INSET;
-    let row_from_top = (rel + GRID_MAJOR / 2).div_euclid(GRID_MAJOR);
-    visible_rows - row_from_top
-}
-
 /// Viewport frame — an empty drawing surface carrying the marker balloons
 /// and the connector lines between opposite balloons.
 ///
-/// Balloons are draggable: pressing one and moving the pointer snaps its
-/// anchor to the nearest page-grid intersection on every move event.
-/// Connectors (and the opposite balloon on the shared axis) track the same
-/// signal so the whole axis line moves as one continuous drawing element.
+/// Balloons and connectors are fixed-positioned once mounted; the only
+/// moving part is `viewport_h`, which tracks window resize so bottom-origin
+/// row coordinates stay pinned to the drawing area's bottom edge.
 #[component]
 #[must_use]
 pub fn ViewportFrame() -> impl IntoView {
@@ -84,32 +66,16 @@ pub fn ViewportFrame() -> impl IntoView {
         }
     });
 
-    let row_signals: [RwSignal<i32>; 5] = [
-        RwSignal::new(6),
-        RwSignal::new(8),
-        RwSignal::new(10),
-        RwSignal::new(12),
-        RwSignal::new(14),
-    ];
-    let col_signals: [RwSignal<i32>; 9] = [
-        RwSignal::new(13),
-        RwSignal::new(15),
-        RwSignal::new(17),
-        RwSignal::new(19),
-        RwSignal::new(21),
-        RwSignal::new(23),
-        RwSignal::new(25),
-        RwSignal::new(27),
-        RwSignal::new(29),
-    ];
+    let rows: [i32; 5] = [6, 8, 10, 12, 14];
+    let cols: [i32; 9] = [13, 15, 17, 19, 21, 23, 25, 27, 29];
 
     view! {
         <figure class="viewport-frame" aria-label="Drawing frame">
-            {row_signals.iter().map(|axis_row| {
+            {rows.iter().map(|row| {
                 view! {
                     <AxisConnector
                         orientation="horizontal"
-                        axis=*axis_row
+                        at=*row
                         from=13
                         to=29
                         viewport_h=viewport_h.into()
@@ -117,11 +83,11 @@ pub fn ViewportFrame() -> impl IntoView {
                 }
             }).collect::<Vec<_>>()}
 
-            {col_signals.iter().map(|axis_col| {
+            {cols.iter().map(|col| {
                 view! {
                     <AxisConnector
                         orientation="vertical"
-                        axis=*axis_col
+                        at=*col
                         from=6
                         to=14
                         viewport_h=viewport_h.into()
@@ -129,28 +95,29 @@ pub fn ViewportFrame() -> impl IntoView {
                 }
             }).collect::<Vec<_>>()}
 
-            {row_signals.iter().enumerate().map(|(i, axis_row)| {
+            {rows.iter().enumerate().map(|(i, row)| {
                 let label: &'static str = match i {
                     0 => "1", 1 => "2", 2 => "3", 3 => "4", 4 => "5",
                     _ => unreachable!("row label index out of range"),
                 };
                 view! {
-                    <ZoneMarker label=label side="left"  axis=*axis_row viewport_h=viewport_h.into() />
-                    <ZoneMarker label=label side="right" axis=*axis_row viewport_h=viewport_h.into() />
+                    <ZoneMarker label=label side="left"  at=*row viewport_h=viewport_h.into() />
+                    <ZoneMarker label=label side="right" at=*row viewport_h=viewport_h.into() />
                 }
             }).collect::<Vec<_>>()}
 
-            {col_signals.iter().enumerate().map(|(i, axis_col)| {
+            {cols.iter().enumerate().map(|(i, col)| {
                 let label: &'static str = match i {
                     0 => "A", 1 => "B", 2 => "C", 3 => "D", 4 => "E",
                     5 => "F", 6 => "G", 7 => "H", 8 => "I",
                     _ => unreachable!("column label index out of range"),
                 };
                 view! {
-                    <ZoneMarker label=label side="bottom" axis=*axis_col viewport_h=viewport_h.into() />
-                    <ZoneMarker label=label side="top"    axis=*axis_col viewport_h=viewport_h.into() />
+                    <ZoneMarker label=label side="bottom" at=*col viewport_h=viewport_h.into() />
+                    <ZoneMarker label=label side="top"    at=*col viewport_h=viewport_h.into() />
                 }
             }).collect::<Vec<_>>()}
+
         </figure>
     }
 }
@@ -159,17 +126,14 @@ pub fn ViewportFrame() -> impl IntoView {
 /// drawing surface.
 ///
 /// `orientation` is "horizontal" or "vertical":
-/// - horizontal: `axis` is a row-coordinate signal; `from` and `to` are the
-///   two column coordinates the line spans between.
-/// - vertical:   `axis` is a column-coordinate signal; `from` and `to` are
-///   the two row coordinates the line spans between.
-///
-/// The line's rendered position tracks its axis signal, so dragging either
-/// attached balloon repositions the connector in the same frame.
+/// - horizontal: `at` is the row coordinate; `from` and `to` are the two
+///   column coordinates the line spans between.
+/// - vertical:   `at` is the column coordinate; `from` and `to` are the
+///   two row coordinates the line spans between.
 #[component]
 fn AxisConnector(
     orientation: &'static str,
-    axis: RwSignal<i32>,
+    at: i32,
     from: i32,
     to: i32,
     viewport_h: Signal<i32>,
@@ -182,11 +146,11 @@ fn AxisConnector(
             }
             let (x1, y1, x2, y2) = match orientation {
                 "horizontal" => {
-                    let y = row_to_top_px(axis.get(), vh);
+                    let y = row_to_top_px(at, vh);
                     (col_to_left_px(from), y, col_to_left_px(to), y)
                 }
                 "vertical" => {
-                    let x = col_to_left_px(axis.get());
+                    let x = col_to_left_px(at);
                     (x, row_to_top_px(from.max(to), vh), x, row_to_top_px(from.min(to), vh))
                 }
                 _ => return None,
@@ -223,24 +187,23 @@ fn AxisConnector(
     }
 }
 
-/// One marker balloon pinned to an axis signal — its anchor dot tracks the
-/// shared coordinate, and dragging it snaps the anchor to the nearest grid
-/// intersection along the axis (row-axis markers only change Y, column-axis
-/// markers only change X).
+/// One marker balloon pinned to a fixed page-grid intersection: the leader's
+/// anchor dot sits exactly at `at`, with the balloon floating outward toward
+/// the page edge chosen by `side`.
 ///
-/// `side` controls which way the balloon floats from the anchor: "left"
-/// balloons hang leftward of the anchor, "right" balloons hang rightward,
-/// etc. For "left"/"right" the axis is a row coordinate; for "top"/"bottom"
-/// the axis is a column coordinate.
+/// `side` controls which way the balloon floats from the anchor:
+/// - "left"  — anchor on the right edge of the SVG; `at` is a row coordinate
+/// - "right" — anchor on the left edge of the SVG; `at` is a row coordinate
+/// - "top"   — anchor on the bottom edge of the SVG; `at` is a column coordinate
+/// - "bottom" — anchor on the top edge of the SVG; `at` is a column coordinate
 #[component]
 fn ZoneMarker(
     label: &'static str,
     /// One of "left", "right", "top", "bottom".
     side: &'static str,
-    /// Shared axis-coordinate signal — row for left/right, column for
-    /// top/bottom. The connected AxisConnector and opposing balloon read
-    /// this same signal.
-    axis: RwSignal<i32>,
+    /// Page-grid coordinate to pin the anchor to — a row index for
+    /// left/right balloons, a column index for top/bottom balloons.
+    at: i32,
     /// Current viewport height in px, used to resolve bottom-origin rows.
     viewport_h: Signal<i32>,
 ) -> impl IntoView {
@@ -261,17 +224,14 @@ fn ZoneMarker(
         _ => ("0 0 64 32", 64, 32, 62, 16, 16, 16, ""),
     };
 
-    let dragging = RwSignal::new(false);
-
     let style = move || {
         let vh = viewport_h.get();
         if vh <= 0 {
             return "display: none;".to_string();
         }
-        let axis_value = axis.get();
         let (target_left, target_top) = match side {
             "left" | "right" => {
-                let y = row_to_top_px(axis_value, vh);
+                let y = row_to_top_px(at, vh);
                 let x = if side == "left" {
                     col_to_left_px(13)
                 } else {
@@ -280,7 +240,7 @@ fn ZoneMarker(
                 (x, y)
             }
             _ => {
-                let x = col_to_left_px(axis_value);
+                let x = col_to_left_px(at);
                 let y = if side == "top" {
                     row_to_top_px(14, vh)
                 } else {
@@ -290,64 +250,12 @@ fn ZoneMarker(
             }
         };
         format!(
-            "position: fixed; left: {}px; top: {}px; width: {}px; height: {}px; cursor: {};",
+            "position: fixed; left: {}px; top: {}px; width: {}px; height: {}px;",
             target_left - anchor_cx,
             target_top - anchor_cy,
             css_w,
             css_h,
-            if dragging.get() { "grabbing" } else { "grab" },
         )
-    };
-
-    let on_pointerdown = move |ev: web_sys::PointerEvent| {
-        use leptos::wasm_bindgen::JsCast;
-        use leptos::wasm_bindgen::closure::Closure;
-        use leptos::web_sys;
-
-        let Some(window) = web_sys::window() else {
-            return;
-        };
-        dragging.set(true);
-
-        if let Some(target) = ev
-            .target()
-            .and_then(|t| t.dyn_into::<web_sys::Element>().ok())
-        {
-            let _ = target.set_pointer_capture(ev.pointer_id());
-        }
-
-        let move_closure = {
-            Closure::wrap(Box::new(move |ev: web_sys::PointerEvent| {
-                if !dragging.get() {
-                    return;
-                }
-                let x = ev.client_x();
-                let y = ev.client_y();
-                let vh = viewport_h.get();
-                if vh <= 0 {
-                    return;
-                }
-                match side {
-                    "left" | "right" => {
-                        axis.set(px_to_row(y, vh).clamp(0, 30));
-                    }
-                    _ => {
-                        axis.set(px_to_col(x).clamp(0, 60));
-                    }
-                }
-            }) as Box<dyn FnMut(_)>)
-        };
-
-        let move_js = move_closure.as_ref().clone();
-        let _ = window.add_event_listener_with_callback("pointermove", move_js.unchecked_ref());
-        move_closure.forget();
-
-        let up_closure = Closure::wrap(Box::new(move |_: web_sys::PointerEvent| {
-            dragging.set(false);
-        }) as Box<dyn FnMut(_)>);
-        let up_js = up_closure.as_ref().clone();
-        let _ = window.add_event_listener_with_callback("pointerup", up_js.unchecked_ref());
-        up_closure.forget();
     };
 
     view! {
@@ -358,45 +266,39 @@ fn ZoneMarker(
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
         >
-            <g on:pointerdown=on_pointerdown class="zone-marker-handle">
-                <path
-                    d=leader_path
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1"
-                    pointer-events="none"
-                />
-                <circle
-                    cx=anchor_cx cy=anchor_cy r="2"
-                    fill="currentColor"
-                    stroke="none"
-                    pointer-events="none"
-                />
-                <circle
-                    cx=ring_cx cy=ring_cy r="11"
-                    fill="var(--color-base-100)"
-                    stroke="currentColor"
-                    stroke-width="1"
-                />
-                <circle
-                    cx=ring_cx cy=ring_cy r="8.5"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="0.6"
-                    pointer-events="none"
-                />
-                <text
-                    x=ring_cx y=ring_cy
-                    text-anchor="middle"
-                    dominant-baseline="central"
-                    class="zone-marker-text"
-                    fill="currentColor"
-                    stroke="none"
-                    pointer-events="none"
-                >
-                    {label}
-                </text>
-            </g>
+            <path
+                d=leader_path
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1"
+            />
+            <circle
+                cx=anchor_cx cy=anchor_cy r="2"
+                fill="currentColor"
+                stroke="none"
+            />
+            <circle
+                cx=ring_cx cy=ring_cy r="11"
+                fill="var(--color-base-100)"
+                stroke="currentColor"
+                stroke-width="1"
+            />
+            <circle
+                cx=ring_cx cy=ring_cy r="8.5"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="0.6"
+            />
+            <text
+                x=ring_cx y=ring_cy
+                text-anchor="middle"
+                dominant-baseline="central"
+                class="zone-marker-text"
+                fill="currentColor"
+                stroke="none"
+            >
+                {label}
+            </text>
         </svg>
     }
 }
