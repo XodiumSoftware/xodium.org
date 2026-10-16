@@ -75,6 +75,38 @@ pub fn ViewportFrame() -> impl IntoView {
 
     view! {
         <figure class="viewport-frame" aria-label="Drawing frame">
+            // Horizontal connector lines: one per row (1..5) spanning from
+            // the left-marker anchor at col 13 to the right-marker anchor at
+            // col 29, drawn directly between the two opposing anchor dots.
+            {(1..=5).map(|n| {
+                let row = 4 + 2 * n;
+                view! {
+                    <AxisConnector
+                        orientation="horizontal"
+                        at=row
+                        from=13
+                        to=29
+                        viewport_h=viewport_h.into()
+                    />
+                }
+            }).collect::<Vec<_>>()}
+
+            // Vertical connector lines: one per column letter, spanning from
+            // the bottom-marker anchor at row 6 to the top-marker anchor at
+            // row 14.
+            {(0..9).map(|i| {
+                let col = 13 + 2 * i;
+                view! {
+                    <AxisConnector
+                        orientation="vertical"
+                        at=col
+                        from=6
+                        to=14
+                        viewport_h=viewport_h.into()
+                    />
+                }
+            }).collect::<Vec<_>>()}
+
             // Row labels 1..5, each with a left + right marker.
             {(1..=5).map(|n| {
                 let row = 4 + 2 * n;
@@ -103,6 +135,59 @@ pub fn ViewportFrame() -> impl IntoView {
                 }
             }).collect::<Vec<_>>()}
         </figure>
+    }
+}
+
+/// One straight line connecting two opposite marker anchors across the
+/// drawing surface. Rendered as a 1px-wide fixed-position element with a
+/// plain div background, so it survives page scroll and resize like the
+/// markers themselves.
+///
+/// `orientation` is "horizontal" (left-right) or "vertical" (top-bottom).
+/// - horizontal: `at` is the row coordinate; `from` and `to` are the two
+///   column coordinates the line spans between.
+/// - vertical:   `at` is the column coordinate; `from` and `to` are the two
+///   row coordinates the line spans between.
+#[component]
+fn AxisConnector(
+    orientation: &'static str,
+    at: i32,
+    from: i32,
+    to: i32,
+    viewport_h: Signal<i32>,
+) -> impl IntoView {
+    let style = move || {
+        let vh = viewport_h.get();
+        if vh <= 0 {
+            return "display: none;".to_string();
+        }
+        match orientation {
+            "horizontal" => {
+                let top = row_to_top_px(at, vh);
+                let left = col_to_left_px(from.min(to));
+                let width = (to - from).abs() * GRID_MAJOR;
+                format!(
+                    "position: fixed; left: {left}px; top: {top}px; width: {width}px; height: 0;",
+                )
+            }
+            "vertical" => {
+                let left = col_to_left_px(at);
+                let top_from = row_to_top_px(from.max(to), vh);
+                let height = (to - from).abs() * GRID_MAJOR;
+                format!(
+                    "position: fixed; left: {left}px; top: {top_from}px; width: 0; height: {height}px;",
+                )
+            }
+            _ => "display: none;".to_string(),
+        }
+    };
+
+    view! {
+        <div
+            class=format!("axis-connector axis-connector-{orientation}")
+            style=style
+            aria-hidden="true"
+        />
     }
 }
 

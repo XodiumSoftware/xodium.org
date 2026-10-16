@@ -522,6 +522,25 @@ body::before {
     border: 2px solid var(--color-base-content);
 }
 
+/* Axis connectors — the 1px construction lines spanning the drawing surface
+   between opposite marker anchors. Rendered as zero-sized fixed divs with a
+   single border edge so they stay sharp at any scale, positioned to land
+   exactly on the anchor dots. */
+.axis-connector {
+    pointer-events: none;
+    z-index: 15;
+}
+
+.axis-connector-horizontal {
+    border-top: 1px solid var(--color-base-content);
+    opacity: 0.35;
+}
+
+.axis-connector-vertical {
+    border-left: 1px solid var(--color-base-content);
+    opacity: 0.35;
+}
+
 /* Viewport frame — the marker balloons pinned to specific page-grid
    intersections on the drawing surface. Markers are individually fixed-
    positioned via inline style (computed from the page-grid constants
