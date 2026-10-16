@@ -40,7 +40,10 @@ pub fn ProjectsSection() -> impl IntoView {
                         {data_grid(
                             resource,
                             move || "No projects found.",
-                            |projects: Vec<Repo>| {
+                            |mut projects: Vec<Repo>| {
+                                projects.sort_by_key(|repo| {
+                                    std::cmp::Reverse(repo.name == "cadiotheka")
+                                });
                                 view! {
                                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
                                         {projects

@@ -102,6 +102,30 @@ html {
     box-shadow: 2px 2px 0 0 rgba(0, 0, 0, 0.8);
 }
 
+/* Featured card (e.g. Cadiotheka): primary-tinted border glow behind the
+   hard-drop "lift" shadow. Both shadows share the same transition so they
+   stay in sync on hover/active. */
+.card-featured {
+    box-shadow:
+        4px 4px 0 0 rgba(0, 0, 0, 0.8),
+        0 0 12px 2px oklch(from var(--color-primary) l c h / 0.55),
+        0 0 32px 4px oklch(from var(--color-primary) l c h / 0.3);
+}
+
+.card-featured:hover {
+    box-shadow:
+        6px 6px 0 0 rgba(0, 0, 0, 0.8),
+        0 0 18px 3px oklch(from var(--color-primary) l c h / 0.7),
+        0 0 44px 6px oklch(from var(--color-primary) l c h / 0.4);
+}
+
+.card-featured:active {
+    box-shadow:
+        2px 2px 0 0 rgba(0, 0, 0, 0.8),
+        0 0 8px 1px oklch(from var(--color-primary) l c h / 0.5),
+        0 0 20px 3px oklch(from var(--color-primary) l c h / 0.25);
+}
+
 .blueprint-grid {
     background-image:
         linear-gradient(to right, var(--color-primary) 1px, transparent 1px),

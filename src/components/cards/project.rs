@@ -11,6 +11,7 @@ pub struct ProjectCardProperties {
     pub language: Option<String>,
     pub stargazers_count: u32,
     pub topics: Vec<String>,
+    pub featured: bool,
 }
 
 impl From<Repo> for ProjectCardProperties {
@@ -20,6 +21,7 @@ impl From<Repo> for ProjectCardProperties {
             .filter(|d| !d.trim().is_empty())
             .unwrap_or_else(|| "(No description)".to_string());
         Self {
+            featured: repo.name == "cadiotheka",
             title: repo.name,
             description,
             link: Some(repo.html_url),
@@ -72,7 +74,10 @@ pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
     });
 
     view! {
-        <article class="btn-lift hover:border-primary block h-full p-2">
+        <article class=format!(
+            "btn-lift hover:border-primary block h-full p-2{}",
+            if props.featured { " card-featured" } else { "" },
+        )>
             <CornerFrame style="square" class="h-full">
                 <div class="card bg-ghost h-full rounded-none">
                     <div class="card-body">
@@ -167,8 +172,40 @@ mod tests {
             language: Some("Rust".to_string()),
             stargazers_count: 42,
             topics: vec!["cad".to_string(), "cli".to_string()],
+            featured: false,
         };
         assert_eq!(props.title, "test-repo");
         assert_eq!(props.topics.len(), 2);
+        assert!(!props.featured);
+    }
+
+    #[wasm_bindgen_test]
+    fn test_repo_conversion_marks_cadiotheka_featured() {
+        let repo = Repo {
+            name: "cadiotheka".to_string(),
+            description: Some("The open hub for CAD creators".to_string()),
+            html_url: "https://github.com/XodiumSoftware/cadiotheka".to_string(),
+            language: Some("Rust".to_string()),
+            stargazers_count: 1,
+            topics: Vec::new(),
+            fork: false,
+        };
+        let props = ProjectCardProperties::from(repo);
+        assert!(props.featured);
+    }
+
+    #[wasm_bindgen_test]
+    fn test_repo_conversion_leaves_other_repos_unfeatured() {
+        let repo = Repo {
+            name: "xodiumweb".to_string(),
+            description: None,
+            html_url: "https://github.com/XodiumSoftware/xodiumweb".to_string(),
+            language: Some("Rust".to_string()),
+            stargazers_count: 5,
+            topics: Vec::new(),
+            fork: false,
+        };
+        let props = ProjectCardProperties::from(repo);
+        assert!(!props.featured);
     }
 }
