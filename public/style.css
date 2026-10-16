@@ -359,15 +359,15 @@ body::before {
 }
 
 .iso-top polygon {
-    fill: oklch(from var(--color-primary) l c h / 0.35);
+    fill: var(--face-top, oklch(from var(--color-primary) l c h / 0.35));
 }
 
 .iso-left polygon {
-    fill: oklch(from var(--color-secondary) l c h / 0.35);
+    fill: var(--face-left, oklch(from var(--color-secondary) l c h / 0.35));
 }
 
 .iso-right polygon {
-    fill: oklch(from var(--color-accent) l c h / 0.35);
+    fill: var(--face-right, oklch(from var(--color-accent) l c h / 0.35));
 }
 
 .iso-edges line {

@@ -27,7 +27,7 @@ pub mod components {
     pub use ui::ascii_art::{AsciiArt, XODIUM_ASCII_ART};
     pub use ui::legend_block::LegendBlock;
     pub use ui::link_badges::LinkBadges;
-    pub use ui::object_3d::{Object3d, Object3dProperties};
+    pub use ui::object_3d::{Dimensions, FaceColors, Object3d, Object3dProperties, Position};
     pub use ui::title_block::TitleBlock;
 }
 

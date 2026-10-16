@@ -1,26 +1,53 @@
 use crate::contexts::scene::{DRAG_CLICK_SUPPRESS_MS, SceneContext};
+use core::fmt::Write as _;
 use leptos::prelude::*;
 
 #[derive(Clone, Copy)]
-pub struct Object3dProperties {
-    /// Width along the X axis (screen right-down in projection).
+pub struct Dimensions {
+    /// Size along the X axis (screen right-down in projection).
     pub width: f64,
-    /// Depth along the Y axis (screen left-down in projection).
+    /// Size along the Y axis (screen left-down in projection).
     pub depth: f64,
-    /// Height along the Z axis (screen up).
+    /// Size along the Z axis (screen up).
     pub height: f64,
-    /// Display name shown in the tooltip on hover / when pinned.
-    pub name: &'static str,
+}
+
+#[derive(Clone, Copy)]
+pub struct Position {
     /// Lattice X coordinate of the object's centre, in drawing units. The
     /// value lives on the same 3D grid the block's own vertices use, so two
-    /// blocks whose `grid_x` differ by `(a.width + b.width) / 2` touch faces
-    /// on the X axis. Projected isometrically for the screen position.
-    pub grid_x: f64,
+    /// blocks whose `position.x` differ by `(a.width + b.width) / 2` touch
+    /// faces on the X axis. Projected isometrically for the screen position.
+    pub x: f64,
     /// Lattice Y coordinate (screen back-left to front-right on the top
-    /// face). See `grid_x`.
-    pub grid_y: f64,
-    /// Lattice Z coordinate (vertical, positive is up). See `grid_x`.
-    pub grid_z: f64,
+    /// face). See `x`.
+    pub y: f64,
+    /// Lattice Z coordinate (vertical, positive is up). See `x`.
+    pub z: f64,
+}
+
+#[derive(Clone, Copy)]
+pub struct FaceColors {
+    /// CSS colour for the top face.
+    pub top: &'static str,
+    /// CSS colour for the left face.
+    pub left: &'static str,
+    /// CSS colour for the right face.
+    pub right: &'static str,
+}
+
+#[derive(Clone, Copy)]
+pub struct Object3dProperties {
+    /// Display name shown in the tooltip on hover / when pinned.
+    pub name: &'static str,
+    /// Bounding-box size of the object.
+    pub size: Dimensions,
+    /// Centre of the object on the drawing lattice.
+    pub position: Position,
+    /// Optional per-face colour overrides. `None` uses the blueprint theme
+    /// defaults (primary / secondary / accent). `Some(FaceColors { .. })`
+    /// replaces all three faces at once.
+    pub colors: Option<FaceColors>,
     /// When true the object is drawn as a draft reference: faces are
     /// unfilled and all edges use dashed strokes so the block reads as
     /// proposed/work-in-progress geometry rather than committed structure.
@@ -50,20 +77,21 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
     let scene = use_context::<SceneContext>();
 
     let Object3dProperties {
-        width,
-        depth,
-        height,
+        size: Dimensions {
+            width,
+            depth,
+            height,
+        },
         name,
-        grid_x,
-        grid_y,
-        grid_z,
+        position: Position { x, y, z },
+        colors,
         is_draft,
     } = props;
     let (hw, hd, hh) = (width / 2.0, depth / 2.0, height / 2.0);
 
     let project = move |x: f64, y: f64, z: f64| ((x - y) * COS30, (x + y) * SIN30 - z);
 
-    let (screen_x, screen_y) = project(grid_x, grid_y, grid_z);
+    let (screen_x, screen_y) = project(x, y, z);
 
     let back_top = project(-hw, -hd, hh);
     let right_top = project(hw, -hd, hh);
@@ -97,6 +125,13 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
 
     let tooltip = name.to_string();
 
+    let mut face_overrides = String::new();
+    if let Some(FaceColors { top, left, right }) = colors {
+        let _ = write!(face_overrides, "--face-top: {top};");
+        let _ = write!(face_overrides, "--face-left: {left};");
+        let _ = write!(face_overrides, "--face-right: {right};");
+    }
+
     view! {
         <div
             class="object-3d-target tooltip tooltip-top"
@@ -107,7 +142,9 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
             aria-pressed=move || selected.get().to_string()
             tabindex="0"
             data-tip=tooltip
-            style=format!("left: calc(50% + {screen_x:.2}px); top: calc(50% + {screen_y:.2}px);")
+            style=format!(
+                "left: calc(50% + {screen_x:.2}px); top: calc(50% + {screen_y:.2}px); {face_overrides}"
+            )
             on:click=move |_| {
                 let suppress = scene.is_some_and(|s| {
                     js_sys::Date::now() - s.last_drag_end.get() < DRAG_CLICK_SUPPRESS_MS
