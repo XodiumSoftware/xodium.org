@@ -349,6 +349,13 @@ body::before {
        hover. */
 }
 
+/* The BMC logo's viewBox is taller than wide (884x1279); constrain height so
+   it visually matches the square GitHub mark. */
+.link-badge-icon-bmc {
+    width: auto;
+    height: 1.25rem;
+}
+
 @media (max-width: 640px) {
     .title-block-anchor {
         right: 20px;
