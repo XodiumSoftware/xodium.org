@@ -75,76 +75,33 @@ pub fn ViewportFrame() -> impl IntoView {
 
     view! {
         <figure class="viewport-frame" aria-label="Drawing frame">
-            <ZoneMarker
-                label="5"
-                side="left"
-                col=13
-                row=14
-                viewport_h=viewport_h.into()
-            />
-            <ZoneMarker
-                label="5"
-                side="right"
-                col=29
-                row=14
-                viewport_h=viewport_h.into()
-            />
-            <ZoneMarker
-                label="4"
-                side="left"
-                col=13
-                row=12
-                viewport_h=viewport_h.into()
-            />
-            <ZoneMarker
-                label="4"
-                side="right"
-                col=29
-                row=12
-                viewport_h=viewport_h.into()
-            />
-            <ZoneMarker
-                label="3"
-                side="left"
-                col=13
-                row=10
-                viewport_h=viewport_h.into()
-            />
-            <ZoneMarker
-                label="3"
-                side="right"
-                col=29
-                row=10
-                viewport_h=viewport_h.into()
-            />
-            <ZoneMarker
-                label="2"
-                side="left"
-                col=13
-                row=8
-                viewport_h=viewport_h.into()
-            />
-            <ZoneMarker
-                label="2"
-                side="right"
-                col=29
-                row=8
-                viewport_h=viewport_h.into()
-            />
-            <ZoneMarker
-                label="1"
-                side="left"
-                col=13
-                row=6
-                viewport_h=viewport_h.into()
-            />
-            <ZoneMarker
-                label="1"
-                side="right"
-                col=29
-                row=6
-                viewport_h=viewport_h.into()
-            />
+            // Row labels 1..5, each with a left + right marker.
+            {(1..=5).map(|n| {
+                let row = 4 + 2 * n;
+                let label: &'static str = match n {
+                    1 => "1", 2 => "2", 3 => "3", 4 => "4", 5 => "5",
+                    _ => unreachable!("row label index out of range"),
+                };
+                view! {
+                    <ZoneMarker label=label side="left"  col=13 row=row viewport_h=viewport_h.into() />
+                    <ZoneMarker label=label side="right" col=29 row=row viewport_h=viewport_h.into() />
+                }
+            }).collect::<Vec<_>>()}
+
+            // Column labels A..I, each with a top + bottom marker,
+            // anchored at row 6 (bottom edge) and row 14 (top edge).
+            {(0..9).map(|i| {
+                let col = 13 + 2 * i;
+                let label: &'static str = match i {
+                    0 => "A", 1 => "B", 2 => "C", 3 => "D", 4 => "E",
+                    5 => "F", 6 => "G", 7 => "H", 8 => "I",
+                    _ => unreachable!("column label index out of range"),
+                };
+                view! {
+                    <ZoneMarker label=label side="bottom" col=col row=6  viewport_h=viewport_h.into() />
+                    <ZoneMarker label=label side="top"    col=col row=14 viewport_h=viewport_h.into() />
+                }
+            }).collect::<Vec<_>>()}
         </figure>
     }
 }
