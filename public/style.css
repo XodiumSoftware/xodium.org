@@ -490,6 +490,19 @@ body::before {
     opacity: 0.85;
     pointer-events: none;
     z-index: 30;
+    user-select: none;
+}
+
+/* Only the balloon ring itself is a drag handle — the leader line and
+   label text pass pointer events through so a click anywhere other than
+   the ring doesn't accidentally start a drag. */
+.zone-marker-handle {
+    pointer-events: auto;
+    cursor: grab;
+}
+
+.zone-marker-handle:active {
+    cursor: grabbing;
 }
 
 .zone-marker-text {
