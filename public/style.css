@@ -198,6 +198,11 @@ body::before {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    padding: 8px;
+    margin: -8px;
+    max-width: calc(100vw - 58px + 16px);
+    max-height: calc(100dvh - 58px + 16px);
+    overflow: hidden;
 }
 
 .corner-stack > .ascii-art,
@@ -502,6 +507,18 @@ body::before {
         left: 20px;
         bottom: 20px;
         font-size: 0.55rem;
+    }
+}
+
+@media (max-width: 650px), (max-height: 480px) {
+    .corner-stack {
+        display: none;
+    }
+}
+
+@media (max-width: 700px), (max-height: 450px) {
+    .blueprint-footer {
+        display: none;
     }
 }
 
