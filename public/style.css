@@ -132,6 +132,14 @@ body::before {
     gap: 1rem;
 }
 
+.corner-stack-sep {
+    border: 0;
+    border-top: 1px solid var(--color-base-content);
+    margin: 0;
+    width: 100%;
+    opacity: 0.55;
+}
+
 .ascii-art {
     align-self: stretch;
     font-family: var(--font-mono, ui-monospace, monospace);
