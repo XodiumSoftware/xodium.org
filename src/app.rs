@@ -24,26 +24,29 @@ pub fn App() -> impl IntoView {
                         depth: 40.0,
                         height: 60.0,
                         name: "Building Block",
-                        offset_x: 0.0,
-                        offset_y: 0.0,
+                        grid_x: 0.0,
+                        grid_y: 0.0,
+                        grid_z: 0.0,
                         is_draft: false,
                     } />
                     <Object3d props=Object3dProperties {
                         width: 60.0,
                         depth: 60.0,
                         height: 30.0,
-                        name: "SOON™",
-                        offset_x: -180.0,
-                        offset_y: 0.0,
-                        is_draft: true,
+                        name: "Slab",
+                        grid_x: -70.0,
+                        grid_y: 0.0,
+                        grid_z: -15.0,
+                        is_draft: false,
                     } />
                     <Object3d props=Object3dProperties {
                         width: 25.0,
                         depth: 25.0,
                         height: 90.0,
-                        name: "SOON™",
-                        offset_x: 180.0,
-                        offset_y: 0.0,
+                        name: "Column",
+                        grid_x: 0.0,
+                        grid_y: 32.5,
+                        grid_z: 15.0,
                         is_draft: true,
                     } />
                 </Object3dScene>

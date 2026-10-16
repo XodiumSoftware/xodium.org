@@ -11,10 +11,16 @@ pub struct Object3dProperties {
     pub height: f64,
     /// Display name shown in the tooltip on hover / when pinned.
     pub name: &'static str,
-    /// Horizontal offset from the scene's centre, in pixels at 1x zoom.
-    pub offset_x: f64,
-    /// Vertical offset from the scene's centre, in pixels at 1x zoom.
-    pub offset_y: f64,
+    /// Lattice X coordinate of the object's centre, in drawing units. The
+    /// value lives on the same 3D grid the block's own vertices use, so two
+    /// blocks whose `grid_x` differ by `(a.width + b.width) / 2` touch faces
+    /// on the X axis. Projected isometrically for the screen position.
+    pub grid_x: f64,
+    /// Lattice Y coordinate (screen back-left to front-right on the top
+    /// face). See `grid_x`.
+    pub grid_y: f64,
+    /// Lattice Z coordinate (vertical, positive is up). See `grid_x`.
+    pub grid_z: f64,
     /// When true the object is drawn as a draft reference: faces are
     /// unfilled and all edges use dashed strokes so the block reads as
     /// proposed/work-in-progress geometry rather than committed structure.
@@ -48,13 +54,16 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
         depth,
         height,
         name,
-        offset_x,
-        offset_y,
+        grid_x,
+        grid_y,
+        grid_z,
         is_draft,
     } = props;
     let (hw, hd, hh) = (width / 2.0, depth / 2.0, height / 2.0);
 
     let project = move |x: f64, y: f64, z: f64| ((x - y) * COS30, (x + y) * SIN30 - z);
+
+    let (screen_x, screen_y) = project(grid_x, grid_y, grid_z);
 
     let back_top = project(-hw, -hd, hh);
     let right_top = project(hw, -hd, hh);
@@ -97,7 +106,7 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
             aria-pressed=move || selected.get().to_string()
             tabindex="0"
             data-tip=tooltip
-            style=format!("left: calc(50% + {offset_x:.2}px); top: calc(50% + {offset_y:.2}px);")
+            style=format!("left: calc(50% + {screen_x:.2}px); top: calc(50% + {screen_y:.2}px);")
             on:click=move |_| {
                 let suppress = scene.is_some_and(|s| {
                     js_sys::Date::now() - s.last_drag_end.get() < DRAG_CLICK_SUPPRESS_MS
