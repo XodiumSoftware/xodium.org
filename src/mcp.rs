@@ -63,7 +63,6 @@ pub fn expose_mcp_tools() {
 
     let mcp = js_sys::Object::new();
 
-    // listProjects(limit) -> Promise<Array<ProjectInfo>>
     let list_projects = Closure::wrap(Box::new(move |limit: u32| -> Promise {
         future_to_promise(async move {
             fetch_repos()
@@ -87,7 +86,6 @@ pub fn expose_mcp_tools() {
     );
     std::mem::forget(list_projects);
 
-    // listTeam() -> Promise<Array<TeamMemberInfo>>
     let list_team = Closure::wrap(Box::new(move || -> Promise {
         future_to_promise(async move {
             fetch_members()
@@ -110,7 +108,6 @@ pub fn expose_mcp_tools() {
 
     let _ = js_sys::Reflect::set(&window, &"xodiumwebMcp".into(), &mcp);
 
-    // Notify any waiting inline scripts that the tools are ready.
     if let Ok(event) = leptos::web_sys::Event::new("xodiumweb-mcp-ready") {
         let _ = window.dispatch_event(&event);
     }

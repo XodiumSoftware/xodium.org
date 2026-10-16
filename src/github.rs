@@ -63,6 +63,14 @@ fn format_network_error() -> String {
     "Could not reach GitHub. Please check your network connection and try again.".to_string()
 }
 
+/// Fetch `T` from the GitHub API with a localStorage cache (TTL: 5 minutes)
+/// and exponential-backoff retries.
+///
+/// On the happy path, a fresh cached entry is returned immediately without
+/// hitting the network. Otherwise the endpoint is requested up to
+/// `MAX_RETRIES + 1` times; if all attempts fail, a stale cache entry is
+/// served as a `stale-if-error` fallback (with a console warning) so the UI
+/// degrades gracefully instead of showing an error.
 async fn fetch<T: for<'de> Deserialize<'de> + Serialize>(endpoint: &str) -> Result<T, String> {
     let cache_key = format!("xodium:{endpoint}");
 
@@ -104,8 +112,6 @@ async fn fetch<T: for<'de> Deserialize<'de> + Serialize>(endpoint: &str) -> Resu
         return Ok(data);
     }
 
-    // All attempts failed: serve a stale cache entry if one exists (with a
-    // console warning) instead of surfacing an error to the user.
     if let Some(stale) = stale {
         web_sys::console::warn_1(
             &format!("GitHub API request failed for {endpoint}; serving stale cached data.").into(),
@@ -158,7 +164,6 @@ fn paginated_endpoint(endpoint: &str, page: u32, per_page: usize) -> String {
 pub async fn fetch_members() -> Result<Vec<Member>, String> {
     let mut members = fetch_all::<Member>(&format!("/orgs/{ORG}/members")).await?;
 
-    // Fetch all admins (owners) using role filter
     let owners = match fetch_all::<Member>(&format!("/orgs/{ORG}/members?role=admin")).await {
         Ok(o) => o,
         Err(e) => {
@@ -170,7 +175,6 @@ pub async fn fetch_members() -> Result<Vec<Member>, String> {
     };
     let owner_logins: HashSet<String> = owners.into_iter().map(|m| m.login).collect();
 
-    // Mark role for each member
     for member in &mut members {
         member.role = if owner_logins.contains(&member.login) {
             Some("Owner".to_string())
@@ -237,10 +241,6 @@ mod tests {
 
     #[wasm_bindgen_test]
     fn test_retry_backoff_delays() {
-        // Exponential backoff: RETRY_BASE_MS << (attempt - 1)
-        // attempt 1: 1000 << 0 = 1000ms
-        // attempt 2: 1000 << 1 = 2000ms
-        // attempt 3: 1000 << 2 = 4000ms
         let expected: Vec<u64> = (1..=MAX_RETRIES)
             .map(|attempt| RETRY_BASE_MS << (attempt - 1))
             .collect();
@@ -287,14 +287,9 @@ mod tests {
 
     #[wasm_bindgen_test]
     async fn test_cache_operations() {
-        // Test cache key format
         let endpoint = "/orgs/XodiumSoftware/members";
         let cache_key = format!("xodium:{endpoint}");
         assert_eq!(cache_key, "xodium:/orgs/XodiumSoftware/members");
-
-        // Note: Full cache_read/cache_set tests require localStorage
-        // which needs a browser environment. These are covered by
-        // the integration tests when running with wasm-pack test.
     }
 
     #[wasm_bindgen_test]
@@ -337,12 +332,9 @@ mod tests {
         let data = vec![sample_repo("expired-repo")];
         cache_set(key, &data);
 
-        // Backdate the timestamp so the entry is past its TTL
         let expired_ts = js_sys::Date::now() - CACHE_TTL_MS - 1.0;
         let _ = LocalStorage::set(format!("{key}:ts"), expired_ts);
 
-        // Expired entries stay readable (with their old timestamp) so fetch
-        // can fall back to them when the network is unavailable.
         let Some((cached, ts)) = cache_read::<Vec<Repo>>(key) else {
             panic!("Expired cache entry should be retained as a stale fallback");
         };
@@ -428,17 +420,16 @@ mod tests {
                 html_url: "https://github.com/XodiumSoftware/repo-c".to_string(),
                 language: Some("Go".to_string()),
                 stargazers_count: 30,
-                fork: true, // This should be filtered out
+                fork: true,
                 topics: vec![],
             },
         ];
 
-        // Apply the same logic as fetch_repos
         repos.retain(|r| !r.fork);
         repos.sort_by_key(|b| std::cmp::Reverse(b.stargazers_count));
 
         assert_eq!(repos.len(), 2);
-        assert_eq!(repos[0].name, "repo-b"); // 50 stars
-        assert_eq!(repos[1].name, "repo-a"); // 10 stars
+        assert_eq!(repos[0].name, "repo-b");
+        assert_eq!(repos[1].name, "repo-a");
     }
 }

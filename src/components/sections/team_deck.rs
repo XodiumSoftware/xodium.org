@@ -33,7 +33,6 @@ pub fn TeamDeckSection() -> impl IntoView {
         }
     };
 
-    // Track when the team section is visible so keyboard shortcuts work on scroll
     Effect::new(move |_| {
         let Some(window) = web_sys::window() else {
             return;
@@ -57,7 +56,6 @@ pub fn TeamDeckSection() -> impl IntoView {
         });
     });
 
-    // Move focus to the front card after each rotation
     Effect::new(move |_| {
         if !should_focus_front.get() {
             return;
@@ -77,8 +75,6 @@ pub fn TeamDeckSection() -> impl IntoView {
             return;
         }
 
-        // The title card is front when rotation % total == 0.
-        // Member card with 1-based index i is front when (i + rot) % total == 0.
         let front_id = if rot % total == 0 {
             "team-card-title".to_string()
         } else {
@@ -91,7 +87,6 @@ pub fn TeamDeckSection() -> impl IntoView {
         }
     });
 
-    // Global keydown listener that fires when the team section is in view
     Effect::new(move |_| {
         let rotate = rotate;
         let is_visible = is_visible;
@@ -126,7 +121,6 @@ pub fn TeamDeckSection() -> impl IntoView {
                     role="region"
                     aria-label="Team deck"
                 >
-                    // Click zone at the right edge - triggers rotation
                     <div
                         class="deck-hover-zone"
                         role="button"
@@ -178,7 +172,6 @@ pub fn TeamDeckSection() -> impl IntoView {
                             Some(retry),
                             "Retry",
                         )}
-                        // Title card (always present, rotates through positions)
                         <li
                             id="team-card-title"
                             class="team-deck-card team-deck-title"
@@ -205,7 +198,6 @@ pub fn TeamDeckSection() -> impl IntoView {
                         </li>
                     </ul>
                 </div>
-                // Keyboard hint below the deck
                 <div class="mt-6 hidden md:flex items-center justify-center gap-2 text-sm text-base-content/50 font-mono select-none">
                     <span>"Press"</span>
                     <kbd class="inline-flex items-center justify-center px-2 py-0.5 min-w-[1.5rem] rounded border border-base-content/20 bg-base-200 shadow-kbd text-xs font-sans">"Space"</kbd>

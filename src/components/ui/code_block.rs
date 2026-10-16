@@ -36,10 +36,8 @@ pub fn CodeBlock() -> impl IntoView {
     let (show_buttons, set_show_buttons) = signal(false);
     let cancelled = Arc::new(AtomicBool::new(false));
 
-    // Synchronous check for prefers-reduced-motion before spawning effects
     let prefers_reduced_motion = prefers_reduced_motion();
 
-    // Cursor blink + typewriter effects share one cancellation flag
     Effect::new(move |_| {
         let c_blink_cleanup = Arc::clone(&cancelled);
         let c_blink_task = Arc::clone(&cancelled);
@@ -51,7 +49,6 @@ pub fn CodeBlock() -> impl IntoView {
             c_type_cleanup.store(true, Ordering::Relaxed);
         });
 
-        // Cursor blink loop (skipped if reduced motion preferred)
         spawn_local(async move {
             if prefers_reduced_motion {
                 set_cursor_visible.set(false);
@@ -66,10 +63,8 @@ pub fn CodeBlock() -> impl IntoView {
             }
         });
 
-        // Show ASCII art first, then type out lines
         spawn_local(async move {
             if prefers_reduced_motion {
-                // Instant display — no delays, no typing animation
                 set_show_ascii.set(true);
                 set_lines.set(
                     company_values
@@ -81,14 +76,12 @@ pub fn CodeBlock() -> impl IntoView {
                 set_show_buttons.set(true);
                 return;
             }
-            // Initial delay
             gloo_timers::future::sleep(Duration::from_millis(500)).await;
             if c_type_task.load(Ordering::Relaxed) {
                 return;
             }
             set_show_ascii.set(true);
 
-            // Wait for ASCII to be visible
             gloo_timers::future::sleep(Duration::from_millis(800)).await;
             if c_type_task.load(Ordering::Relaxed) {
                 return;
@@ -97,7 +90,6 @@ pub fn CodeBlock() -> impl IntoView {
             for (i, line) in company_values.iter().enumerate() {
                 set_current_line.set(i);
 
-                // Type each character
                 let mut typed = String::new();
                 for ch in line.chars() {
                     typed.push(ch);
@@ -114,14 +106,12 @@ pub fn CodeBlock() -> impl IntoView {
                     }
                 }
 
-                // Pause between lines
                 gloo_timers::future::sleep(Duration::from_millis(400)).await;
                 if c_type_task.load(Ordering::Relaxed) {
                     return;
                 }
             }
 
-            // Show buttons after typing complete
             gloo_timers::future::sleep(Duration::from_millis(600)).await;
             if c_type_task.load(Ordering::Relaxed) {
                 return;
@@ -130,7 +120,6 @@ pub fn CodeBlock() -> impl IntoView {
         });
     });
 
-    // Global keydown shortcuts for CTA buttons
     Effect::new(move |_| {
         let Some(document) = web_sys::window().and_then(|w| w.document()) else {
             return;
@@ -141,7 +130,6 @@ pub fn CodeBlock() -> impl IntoView {
                 return;
             }
 
-            // Ignore shortcuts while typing in an input, textarea, or contenteditable element
             if let Some(active) = document.active_element() {
                 let tag = active.tag_name().to_lowercase();
                 let is_editable = tag == "input"
@@ -176,9 +164,7 @@ pub fn CodeBlock() -> impl IntoView {
 
     view! {
         <div class="w-full max-w-2xl mx-auto">
-            // Terminal window
             <div class="backdrop-blur-sm bg-base-300/50 rounded-lg overflow-hidden shadow-2xl border border-white/10">
-                // Terminal header
                 <div class="bg-base-200 px-4 py-2 flex items-center gap-2 border-b border-base-content/5">
                     <div class="flex gap-1.5">
                         <div class="w-3 h-3 rounded-full bg-error/80"></div>
@@ -191,9 +177,7 @@ pub fn CodeBlock() -> impl IntoView {
                     <div class="w-14"></div>
                 </div>
 
-                // Terminal content
                 <div class="p-4 sm:p-6 font-mono text-xs sm:text-sm" style="min-height: 280px;">
-                    // ASCII Art
                     {move || {
                         if show_ascii.get() {
                             view! {
@@ -218,7 +202,6 @@ pub fn CodeBlock() -> impl IntoView {
                             <>
                                 {all_lines.iter().enumerate().map(|(i, line)| {
                                     let is_current = i == current;
-                                    // Only show cursor on current line if menu is NOT visible
                                     let show_cursor = is_current && cursor && !menu_visible;
 
                                     view! {
@@ -232,7 +215,6 @@ pub fn CodeBlock() -> impl IntoView {
                                     }
                                 }).collect::<Vec<_>>()}
 
-                                // Current empty line being typed
                                 {if all_lines.len() < company_values.len() && all_lines.len() == current {
                                     view! {
                                         <div class="text-primary/80 leading-relaxed">
@@ -250,7 +232,6 @@ pub fn CodeBlock() -> impl IntoView {
                     }}
                 </div>
 
-                // CTA Buttons area
                 <div
                     class={move || {
                         if show_buttons.get() {

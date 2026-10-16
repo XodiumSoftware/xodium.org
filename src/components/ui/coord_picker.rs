@@ -54,16 +54,22 @@ struct Coord {
 /// snapped coordinate ("(X, Y)" in major-cell units, origin bottom-left).
 /// Clicking again moves the marker. Esc clears it.
 ///
+/// Snapping happens inside the single window-level click handler (rather
+/// than via hundreds of invisible hit-target elements) and rounds to the
+/// nearest major gridline by adding half a cell before `div_euclid`, which
+/// converts truncation into round-to-nearest.
+///
 /// Purely a debug aid - the marker is aria-hidden and pointer-events-none;
 /// the picker itself is invisible chrome on top of the blueprint grid.
+///
+/// The window listeners are attached once and leaked via `Closure::forget`,
+/// keeping them alive for the lifetime of the page. The picker is
+/// app-lifetime chrome, so this doesn't leak user-visible state.
 #[component]
 #[must_use]
 pub fn CoordPicker() -> impl IntoView {
     let (coord, set_coord) = signal(Option::<Coord>::None);
 
-    // Click handler on the whole window so any position inside the drawing
-    // area registers a coordinate; we snap in JS rather than via hundreds
-    // of invisible hit-target elements.
     let on_click = move |ev: web_sys::MouseEvent| {
         let Some(window) = web_sys::window() else {
             return;
@@ -72,8 +78,6 @@ pub fn CoordPicker() -> impl IntoView {
         let px = ev.client_x();
         let py = ev.client_y();
 
-        // Viewport dimensions arrive as f64 from JS and saturate into i32
-        // through the helper above.
         let Some(viewport_w) = window
             .inner_width()
             .ok()
@@ -94,29 +98,22 @@ pub fn CoordPicker() -> impl IntoView {
             return;
         }
 
-        // Snap to the nearest major-grid intersection inside the drawing area.
         let area_w = viewport_w - 2 * GRID_INSET;
         let area_h = viewport_h - 2 * GRID_INSET;
 
         let rel_x = px - GRID_INSET;
         let rel_y = py - GRID_INSET;
 
-        // Round to the *nearest* major gridline (not always the one above/
-        // left of the click). Adding half a cell before div_euclid converts
-        // truncation into round-to-nearest.
         let snap_col = (rel_x + GRID_MAJOR / 2).div_euclid(GRID_MAJOR);
         let snap_row_top = (rel_y + GRID_MAJOR / 2).div_euclid(GRID_MAJOR);
 
         let snapped_px = GRID_INSET + snap_col * GRID_MAJOR;
         let snapped_py_top = GRID_INSET + snap_row_top * GRID_MAJOR;
 
-        // Convert to bottom-origin row index: the bottommost visible major
-        // line is the last full tick that fits inside the drawing area.
         let visible_rows = area_h / GRID_MAJOR;
         let snap_y = visible_rows - snap_row_top;
         let snap_x = snap_col;
 
-        // Ignore clicks that fall outside the drawing area proper.
         if rel_x < 0
             || rel_y < 0
             || snapped_px > GRID_INSET + area_w
@@ -133,16 +130,12 @@ pub fn CoordPicker() -> impl IntoView {
         }));
     };
 
-    // Esc clears the active marker.
     let on_keydown = move |ev: web_sys::KeyboardEvent| {
         if ev.key() == "Escape" {
             set_coord.set(None);
         }
     };
 
-    // Attach listeners once; both are owned by the window via forget(),
-    // keeping them alive for the lifetime of the page. The picker is
-    // app-lifetime chrome, so this doesn't leak user-visible state.
     Effect::new(move |_| {
         use leptos::wasm_bindgen::closure::Closure;
 

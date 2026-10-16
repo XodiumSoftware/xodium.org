@@ -21,25 +21,20 @@ pub fn SectionMarker(
                 xmlns="http://www.w3.org/2000/svg"
             >
                 <g stroke="var(--color-primary)" fill="none">
-                    // Left leader line
                     <line
                         x1="0" y1="40" x2="560" y2="40"
                         class="cad-line-draw"
                         stroke-width="1.5"
                     />
-                    // Right leader line
                     <line
                         x1="640" y1="40" x2="1200" y2="40"
                         class="cad-line-draw"
                         stroke-width="1.5"
                     />
 
-                    // Left arrowhead (pointing outward)
                     <path d="M 40,40 L 60,32 M 40,40 L 60,48" stroke-width="1.5" />
-                    // Right arrowhead (pointing outward)
                     <path d="M 1160,40 L 1140,32 M 1160,40 L 1140,48" stroke-width="1.5" />
 
-                    // Center circle with letter
                     <circle cx="600" cy="40" r="22" stroke-width="1.5" fill="var(--color-base-100)" />
                     <text
                         x="600" y="46"
@@ -53,7 +48,6 @@ pub fn SectionMarker(
                         {letter}
                     </text>
 
-                    // Small tick marks flanking the circle
                     <line x1="540" y1="36" x2="540" y2="44" stroke-width="1" stroke-opacity="0.6" />
                     <line x1="660" y1="36" x2="660" y2="44" stroke-width="1" stroke-opacity="0.6" />
                 </g>

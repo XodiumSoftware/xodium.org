@@ -6,6 +6,10 @@ use leptos::prelude::*;
 ///
 /// Both SVGs are inlined so the buttons render without waiting on a static
 /// asset fetch and so hover states can switch their colour via `currentColor`.
+/// The Buy Me a Coffee mark uses the canonical art (same as Cadiotheka);
+/// its dark outline paths use `currentColor` so the badge's colour property
+/// drives them and matches the GitHub glyph's hover behavior, while the cup
+/// body keeps its brand yellow.
 ///
 /// Rendered as a `<nav>` with direct anchor children (rather than a table) so
 /// flexbox stretches the two cells to share the same height as the title
@@ -47,10 +51,6 @@ pub fn LinkBadges() -> impl IntoView {
                 class="link-badge-cell tooltip tooltip-left"
                 data-tip="Buy Me a Coffee"
             >
-                // Canonical Buy Me a Coffee mark (same art Cadiotheka uses).
-                // Dark outline paths switched to currentColor so the badge's
-                // colour property drives them and matches the GitHub glyph's
-                // hover behavior; the cup body keeps its brand yellow.
                 <svg
                     viewBox="0 0 884 1279"
                     fill="none"

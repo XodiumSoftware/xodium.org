@@ -41,9 +41,6 @@ fn col_to_left_px(col: i32) -> i32 {
 #[component]
 #[must_use]
 pub fn ViewportFrame() -> impl IntoView {
-    // Track viewport height so row coordinates (which are bottom-origin)
-    // stay pinned to the correct page grid intersection as the window
-    // resizes vertically.
     let (viewport_h, set_viewport_h) = signal(0i32);
 
     Effect::new(move |_| {
@@ -75,9 +72,6 @@ pub fn ViewportFrame() -> impl IntoView {
 
     view! {
         <figure class="viewport-frame" aria-label="Drawing frame">
-            // Horizontal connector lines: one per row (1..5) spanning from
-            // the left-marker anchor at col 13 to the right-marker anchor at
-            // col 29, drawn directly between the two opposing anchor dots.
             {(1..=5).map(|n| {
                 let row = 4 + 2 * n;
                 view! {
@@ -91,9 +85,6 @@ pub fn ViewportFrame() -> impl IntoView {
                 }
             }).collect::<Vec<_>>()}
 
-            // Vertical connector lines: one per column letter, spanning from
-            // the bottom-marker anchor at row 6 to the top-marker anchor at
-            // row 14.
             {(0..9).map(|i| {
                 let col = 13 + 2 * i;
                 view! {
@@ -107,7 +98,6 @@ pub fn ViewportFrame() -> impl IntoView {
                 }
             }).collect::<Vec<_>>()}
 
-            // Row labels 1..5, each with a left + right marker.
             {(1..=5).map(|n| {
                 let row = 4 + 2 * n;
                 let label: &'static str = match n {
@@ -120,8 +110,6 @@ pub fn ViewportFrame() -> impl IntoView {
                 }
             }).collect::<Vec<_>>()}
 
-            // Column labels A..I, each with a top + bottom marker,
-            // anchored at row 6 (bottom edge) and row 14 (top edge).
             {(0..9).map(|i| {
                 let col = 13 + 2 * i;
                 let label: &'static str = match i {
@@ -150,6 +138,13 @@ pub fn ViewportFrame() -> impl IntoView {
 ///   column coordinates the line spans between.
 /// - vertical:   `at` is the column coordinate; `from` and `to` are the two
 ///   row coordinates the line spans between.
+///
+/// The SVG uses a non-zero 1px bounding box even for a perfectly straight
+/// line so it sits centered on the computed coordinate instead of clipping
+/// to nothing; the line runs along the canvas's 0.5 centerline so the SVG
+/// stroke (centered on the path) paints into the same pixel band the marker
+/// leaders use. Without this the connector appears either half a pixel off
+/// the leader endpoints or anti-aliased at half the leader's apparent weight.
 #[component]
 fn AxisConnector(
     orientation: &'static str,
@@ -172,8 +167,6 @@ fn AxisConnector(
             }
             "vertical" => {
                 let x = col_to_left_px(at);
-                // from.max(to) is the *upper* row (higher row index = higher
-                // on screen = smaller top pixel), which is the line's start.
                 let y1 = row_to_top_px(from.max(to), vh);
                 let y2 = row_to_top_px(from.min(to), vh);
                 Some((x, y1, x, y2))
@@ -188,14 +181,6 @@ fn AxisConnector(
             let min_y = y1.min(y2);
             let width = (x2 - x1).abs();
             let height = (y2 - y1).abs();
-            // SVG needs a non-zero bounding box even for a straight line;
-            // give the line a 1px canvas so it sits centered on the
-            // computed coordinate instead of clipping to nothing. The line
-            // runs along the canvas's 0.5 centerline so the SVG stroke
-            // (centered on the path) paints into the same pixel band the
-            // marker leaders use — without this the connector appears
-            // either half a pixel off the leader endpoints or anti-aliased
-            // at half the leader's apparent weight.
             let (svg_width, svg_height, lx1, ly1, lx2, ly2) = if width == 0 {
                 (1, height, 0.5, 0.0, 0.5, f64::from(height))
             } else {
@@ -234,6 +219,13 @@ fn AxisConnector(
 /// - \"right\" — anchor on the left edge of the SVG, balloon extends rightward
 /// - \"top\"   — anchor on the bottom edge, balloon extends upward
 /// - \"bottom\" — anchor on the top edge, balloon extends downward
+///
+/// The SVG viewBox is 64x32 for horizontal leaders and 32x64 for vertical.
+/// The anchor dot sits at one end, the leader crosses the body, the balloon
+/// ring sits at the other end, and the label glyph is centered in the ring.
+/// Inline styles position the SVG so the anchor dot lands on the requested
+/// grid intersection: the dot is rendered at `(anchor_cx, anchor_cy)` in
+/// SVG-space, so the SVG's top-left must sit at `target - anchor`.
 #[component]
 fn ZoneMarker(
     label: &'static str,
@@ -246,10 +238,6 @@ fn ZoneMarker(
     /// Current viewport height in px, used to resolve the bottom-origin row.
     viewport_h: Signal<i32>,
 ) -> impl IntoView {
-    // viewBox is 64x32 for horizontal leaders, 32x64 for vertical. The
-    // anchor dot sits at one end, the leader crosses the body, the balloon
-    // ring sits at the other end, and the label glyph is centered in the
-    // ring.
     let (view_box, css_w, css_h, anchor_cx, anchor_cy, ring_cx, ring_cy, leader_path): (
         &'static str,
         i32,
@@ -267,15 +255,9 @@ fn ZoneMarker(
         _ => ("0 0 64 32", 64, 32, 62, 16, 16, 16, ""),
     };
 
-    // Inline styles position the SVG so the *anchor dot* lands on the
-    // requested grid intersection. The dot is rendered at (anchor_cx,
-    // anchor_cy) in SVG-space, so the SVG's top-left must sit at
-    // `target - anchor`.
     let style = move || {
         let vh = viewport_h.get();
         if vh <= 0 {
-            // Viewport height unknown yet; keep the marker hidden until
-            // resize reports it.
             return "display: none;".to_string();
         }
         let target_left = col_to_left_px(col);
