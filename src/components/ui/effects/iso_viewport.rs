@@ -127,52 +127,12 @@ fn IsoRowLabels(edge: &'static str) -> impl IntoView {
     }
 }
 
-/// The framed sheet itself — the SVG-drawn isometric surface inside the
-/// reference balloons. Purely presentational.
+/// The framed sheet itself — currently empty. Kept as the structural
+/// container that the row/column markers attach to; drawing content goes
+/// inside later.
 #[component]
 fn IsoSheet() -> impl IntoView {
     view! {
-        <svg
-            class="iso-sheet"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-        >
-            <defs>
-                // True isometric tile: 60px wide × 69.282px tall (60 · 2 · tan(30°)).
-                // Draws both diagonal families of the rhombus inside the tile only —
-                // no overflow past the tile edge, so the pattern tiles seamlessly.
-                <pattern
-                    id="iso-grid"
-                    width="60"
-                    height="69.2820323"
-                    patternUnits="userSpaceOnUse"
-                >
-                    // Vertical axis
-                    <line
-                        x1="30" y1="0" x2="30" y2="69.2820323"
-                        stroke="var(--color-primary)"
-                        stroke-width="0.6"
-                        stroke-opacity="0.2"
-                    />
-                    // +30° diagonals
-                    <path
-                        d="M 0 17.3205081 L 30 0 M 0 51.9615242 L 30 34.6410162 M 0 86.6025403 L 30 69.2820323 M 30 34.6410162 L 60 17.3205081 M 30 69.2820323 L 60 51.9615242"
-                        fill="none"
-                        stroke="var(--color-primary)"
-                        stroke-width="0.6"
-                        stroke-opacity="0.24"
-                    />
-                    // -30° diagonals
-                    <path
-                        d="M 0 17.3205081 L 30 34.6410162 M 0 51.9615242 L 30 69.2820323 M 30 0 L 60 17.3205081 M 30 34.6410162 L 60 51.9615242 M 30 69.2820323 L 60 86.6025403"
-                        fill="none"
-                        stroke="var(--color-primary)"
-                        stroke-width="0.6"
-                        stroke-opacity="0.24"
-                    />
-                </pattern>
-            </defs>
-            <rect x="0" y="0" width="100%" height="100%" fill="url(#iso-grid)" />
-        </svg>
+        <div class="iso-sheet" aria-hidden="true"></div>
     }
 }
