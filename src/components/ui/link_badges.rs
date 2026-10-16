@@ -20,7 +20,8 @@ pub fn LinkBadges() -> impl IntoView {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Xodium Software on GitHub"
-                class="link-badge-cell"
+                class="link-badge-cell tooltip tooltip-left"
+                data-tip="GitHub"
             >
                 <svg
                     viewBox="0 0 496 512"
@@ -43,7 +44,8 @@ pub fn LinkBadges() -> impl IntoView {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Buy me a coffee"
-                class="link-badge-cell"
+                class="link-badge-cell tooltip tooltip-left"
+                data-tip="Buy Me a Coffee"
             >
                 // Canonical Buy Me a Coffee mark (same art Cadiotheka uses).
                 // Dark outline paths switched to currentColor so the badge's
