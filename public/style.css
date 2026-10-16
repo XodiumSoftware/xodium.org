@@ -306,6 +306,32 @@ html {
     position: absolute;
     inset: 0;
     padding: 1rem;
+    background-image:
+        linear-gradient(
+            to right,
+            oklch(from var(--color-base-content) l c h / 0.08) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            to bottom,
+            oklch(from var(--color-base-content) l c h / 0.08) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            to right,
+            oklch(from var(--color-base-content) l c h / 0.15) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            to bottom,
+            oklch(from var(--color-base-content) l c h / 0.15) 1px,
+            transparent 1px
+        );
+    background-size:
+        12px 12px,
+        12px 12px,
+        60px 60px,
+        60px 60px;
 }
 
 .viewport-title {
