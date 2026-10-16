@@ -9,6 +9,7 @@ pub mod components {
 
     pub mod ui {
         pub mod ascii_art;
+        pub mod legend_block;
         pub mod link_badges;
         pub mod title_block;
     }
@@ -16,6 +17,7 @@ pub mod components {
     pub use sections::footer::Footer;
 
     pub use ui::ascii_art::{AsciiArt, XODIUM_ASCII_ART};
+    pub use ui::legend_block::LegendBlock;
     pub use ui::link_badges::LinkBadges;
     pub use ui::title_block::TitleBlock;
 }

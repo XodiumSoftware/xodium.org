@@ -1,5 +1,6 @@
 use crate::components::sections::footer::Footer;
 use crate::components::ui::ascii_art::AsciiArt;
+use crate::components::ui::legend_block::LegendBlock;
 use crate::components::ui::link_badges::LinkBadges;
 use crate::components::ui::title_block::TitleBlock;
 use leptos::prelude::*;
@@ -24,6 +25,7 @@ pub fn App() -> impl IntoView {
 
             <aside class="corner-stack" aria-label="Sheet metadata and external links">
                 <AsciiArt />
+                <LegendBlock />
                 <div class="title-block-anchor">
                     <LinkBadges />
                     <TitleBlock />

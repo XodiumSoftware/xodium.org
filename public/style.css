@@ -145,6 +145,38 @@ body::before {
     white-space: pre;
 }
 
+.legend-block {
+    align-self: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+    margin: 0;
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-base-content);
+}
+
+.legend-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+}
+
+.legend-row > dt,
+.legend-row > dd {
+    margin: 0;
+    padding: 0;
+}
+
+.legend-swatch {
+    display: inline-block;
+    width: 0.875rem;
+    height: 0.875rem;
+    border: 1px solid var(--color-base-content);
+}
+
 .title-block-anchor {
     display: flex;
     align-items: stretch;
