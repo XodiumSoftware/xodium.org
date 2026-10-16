@@ -32,7 +32,7 @@ pub fn TitleBlock() -> impl IntoView {
     view! {
         <table
             aria-label="Site metadata"
-            class="font-mono text-[10px] leading-tight text-base-content"
+            class="font-mono text-xs leading-snug text-base-content"
         >
             <tbody>
                 <tr>
