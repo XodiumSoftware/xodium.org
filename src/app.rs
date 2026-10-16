@@ -1,4 +1,5 @@
 use crate::components::sections::footer::Footer;
+use crate::components::ui::ascii_art::AsciiArt;
 use crate::components::ui::effects::viewport_frame::ViewportFrame;
 use crate::components::ui::link_badges::LinkBadges;
 use crate::components::ui::title_block::TitleBlock;
@@ -24,6 +25,7 @@ pub fn App() -> impl IntoView {
             <Footer />
 
             <aside class="corner-stack" aria-label="Sheet metadata and external links">
+                <AsciiArt />
                 <div class="title-block-anchor">
                     <LinkBadges />
                     <TitleBlock />

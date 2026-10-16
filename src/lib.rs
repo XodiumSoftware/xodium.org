@@ -21,6 +21,7 @@ pub mod components {
     }
 
     pub mod ui {
+        pub mod ascii_art;
         pub mod code_block;
         pub mod corner_frame;
         pub mod data_grid;
@@ -49,6 +50,7 @@ pub mod components {
     pub use animations::line_draw::{LineDraw, LineDrawHero};
     pub use animations::section_marker::SectionMarker;
 
+    pub use ui::ascii_art::{AsciiArt, XODIUM_ASCII_ART};
     pub use ui::code_block::CodeBlock;
     pub use ui::corner_frame::CornerFrame;
     pub use ui::data_grid::data_grid;

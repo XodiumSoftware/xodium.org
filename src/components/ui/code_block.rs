@@ -1,3 +1,4 @@
+use crate::components::ui::ascii_art::XODIUM_ASCII_ART;
 use crate::utils::{prefers_reduced_motion, window_event_listener};
 use leptos::prelude::*;
 use leptos::task::spawn_local;
@@ -6,18 +7,6 @@ use leptos::web_sys;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
-
-const ASCII_ART: &str = r"
-         ,-.--,  _,.---._                 .=-.-.                   ___
-.--.-.  /=/, .',-.' , -  `.   _,..---._  /==/_ /.--.-. .-.-..-._ .='.'\
-\==\ -\/=/- / /==/_,  ,  - \/==/,   -  \|==|, |/==/ -|/=/  /==/ \|==|  |
- \==\ `-' ,/ |==|   .=.     |==|   _   _\==|  ||==| ,||=| -|==|,|  / - |
-  |==|,  - | |==|_ : ;=:  - |==|  .=.   |==|- ||==|- | =/  |==|  \/  , |
- /==/   ,   \|==| , '='     |==|,|   | -|==| ,||==|,  \/ - |==|- ,   _ |
-/==/, .--, - \\==\ -    ,_ /|==|  '='   /==|- ||==|-   ,   /==| _ /\   |
-\==\- \/=/ , / '.='. -   .' |==|-,   _`//==/. //==/ , _  .'/==/  / / , /
- `--`-'  `--`    `--`--''   `-.`.____.' `--`-` `--`..---'  `--`./  `--`
-";
 
 #[component]
 #[must_use]
@@ -183,7 +172,7 @@ pub fn CodeBlock() -> impl IntoView {
                             view! {
                                 <div class="w-full overflow-x-auto">
                                     <pre class="text-primary/90 leading-none mb-4 text-[0.5rem] sm:text-xs whitespace-pre origin-left scale-[0.75] sm:scale-100 inline-block" aria-hidden="true">
-                                        {ASCII_ART}
+                                        {XODIUM_ASCII_ART}
                                     </pre>
                                 </div>
                             }.into_any()
