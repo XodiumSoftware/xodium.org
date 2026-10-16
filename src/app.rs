@@ -1,6 +1,5 @@
-use crate::components::sections::building_block::{
-    BuildingBlock, BuildingBlockProperties, BuildingBlocksScene,
-};
+use crate::components::sections::building_block::{BuildingBlock, BuildingBlockProperties};
+use crate::components::sections::building_blocks_scene::BuildingBlocksScene;
 use crate::components::sections::footer::Footer;
 use crate::components::sections::header::Header;
 use leptos::prelude::*;

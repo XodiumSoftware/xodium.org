@@ -5,8 +5,10 @@ mod app;
 pub mod components {
     pub mod sections {
         pub mod building_block;
+        pub mod building_blocks_scene;
         pub mod footer;
         pub mod header;
+        pub mod scene_context;
     }
 
     pub mod ui {
@@ -16,9 +18,8 @@ pub mod components {
         pub mod title_block;
     }
 
-    pub use sections::building_block::{
-        BuildingBlock, BuildingBlockProperties, BuildingBlocksScene,
-    };
+    pub use sections::building_block::{BuildingBlock, BuildingBlockProperties};
+    pub use sections::building_blocks_scene::BuildingBlocksScene;
     pub use sections::footer::Footer;
     pub use sections::header::Header;
 
