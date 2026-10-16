@@ -522,75 +522,20 @@ body::before {
     border: 2px solid var(--color-base-content);
 }
 
-/* Isometric drawing viewport — a centered framed sheet inside the page,
-   containing a true 30° isometric grid with marker-balloon zone labels on
-   all four edges, matching the callout-marker convention on real drawings.
-   The section scrolls with the document rather than being fixed to the
-   viewport.
-
-   Layout: a flex column with a column of letters on top + bottom, around a
-   middle flex row of [row labels | sheet | row labels]. Axis origin is at
-   the bottom-left (row 1 is rendered last in each row-labels column so it
-   lands at the bottom edge). */
-.iso-viewport-section {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* Span the full viewport height so the viewport's geometric centre (the
-       E-3 markers, nine columns and five rows deep) lands on the page-grid
-       centre. */
-    min-height: 100dvh;
-    padding: 2rem;
-}
-
-.iso-viewport {
-    display: flex;
-    flex-direction: column;
-    width: min(80vw, 1100px);
+/* Viewport frame — the marker balloons pinned to specific page-grid
+   intersections on the drawing surface. Markers are individually fixed-
+   positioned via inline style (computed from the page-grid constants
+   GRID_INSET=18 and GRID_MAJOR=60 in viewport_frame.rs). */
+.viewport-frame {
+    position: contents;
     margin: 0;
-}
-
-.iso-viewport-cols,
-.iso-viewport-rows {
-    display: flex;
-    color: var(--color-base-content);
-}
-
-.iso-viewport-cols {
-    justify-content: space-around;
-    /* Inset by half of one row-marker width so the first/last column marker
-       sits flush with the sheet's left/right edges. */
-    padding-inline: 2.75rem;
-}
-
-.iso-viewport-row {
-    display: flex;
-    align-items: stretch;
-}
-
-.iso-viewport-rows {
-    flex-direction: column;
-    justify-content: space-around;
-    flex-shrink: 0;
-    padding-block: 2.75rem;
-    width: 4rem;
-}
-
-/* Left column: markers hang to the right of the column box, so their leader
-   lines touch the sheet. Right column: mirror. */
-.iso-viewport-rows-left {
-    align-items: flex-end;
-}
-
-.iso-viewport-rows-right {
-    align-items: flex-start;
 }
 
 .zone-marker {
     color: var(--color-base-content);
-    opacity: 0.75;
-    display: block;
-    flex-shrink: 0;
+    opacity: 0.85;
+    pointer-events: none;
+    z-index: 30;
 }
 
 .zone-marker-text {
@@ -599,33 +544,6 @@ body::before {
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-}
-
-.iso-sheet {
-    flex: 1;
-    /* ISO 216 A-series landscape aspect (sqrt(2) : 1) so the framed sheet
-       reads as a real engineering drawing format. */
-    aspect-ratio: 1.4142 / 1;
-    width: 100%;
-    display: block;
-}
-
-/* Wrapper around the sheet that also hosts the connector-line overlay.
-   Becomes a positioning context so the connectors SVG can lay out against
-   the sheet's rendered bounds. */
-.iso-viewport-stack {
-    flex: 1;
-    position: relative;
-    display: flex;
-    align-items: stretch;
-}
-
-.iso-connectors {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
 }
 
 /* Orthographic viewports — the framed panes on a technical drawing that show

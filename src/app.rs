@@ -1,6 +1,6 @@
 use crate::components::sections::footer::Footer;
 use crate::components::ui::coord_picker::CoordPicker;
-use crate::components::ui::effects::iso_viewport::IsoViewport;
+use crate::components::ui::effects::viewport_frame::ViewportFrame;
 use crate::components::ui::link_badges::LinkBadges;
 use crate::components::ui::title_block::TitleBlock;
 use leptos::prelude::*;
@@ -18,10 +18,9 @@ pub fn App() -> impl IntoView {
             </a>
 
             <main id="main-content" tabindex="-1">
-                <section class="iso-viewport-section">
-                    <IsoViewport />
-                </section>
             </main>
+
+            <ViewportFrame />
 
             <CoordPicker />
 

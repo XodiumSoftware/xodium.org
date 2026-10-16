@@ -21,7 +21,10 @@ const GRID_MAJOR: i32 = 60;
 /// integer-valued f64 well within i32 range; saturating via `trunc` and
 /// `try_from` avoids the `clippy::cast_possible_truncation` lint while
 /// keeping one code path instead of three fallible conversions.
-fn to_i32_saturated(value: f64) -> Option<i32> {
+///
+/// Shared with other components that need to resolve pixel geometry into
+/// integer page coordinates (e.g. the viewport frame marker balloons).
+pub(crate) fn to_i32_saturated(value: f64) -> Option<i32> {
     if value.is_finite() && value >= f64::from(i32::MIN) && value <= f64::from(i32::MAX) {
         #[allow(clippy::cast_possible_truncation)]
         Some(value.trunc() as i32)

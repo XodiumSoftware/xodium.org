@@ -32,9 +32,9 @@ pub mod components {
         pub mod effects {
             pub mod blueprint_grid;
             pub mod hex_grid;
-            pub mod iso_viewport;
             pub mod parallax;
             pub mod section_fade;
+            pub mod viewport_frame;
             pub mod wire_frames;
         }
     }
@@ -56,9 +56,9 @@ pub mod components {
     pub use ui::data_grid::data_grid;
     pub use ui::effects::blueprint_grid::BlueprintGrid;
     pub use ui::effects::hex_grid::HexPattern;
-    pub use ui::effects::iso_viewport::IsoViewport;
     pub use ui::effects::parallax::ParallaxLanding;
     pub use ui::effects::section_fade::FadeOverlay;
+    pub use ui::effects::viewport_frame::ViewportFrame;
     pub use ui::effects::wire_frames::WireframeShapes;
     pub use ui::link_badges::LinkBadges;
     pub use ui::title_block::TitleBlock;
