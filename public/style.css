@@ -260,6 +260,9 @@ body::before {
 .title-block-anchor > :is(table, nav) {
     outline: 2px solid var(--color-base-content);
     outline-offset: 3px;
+}
+
+.title-block-anchor > table {
     border: 1px solid var(--color-base-content);
 }
 
@@ -292,9 +295,9 @@ body::before {
 }
 
 /* Link badges — a two-row frame sitting immediately left of the title
-   block, matching its border / background so the two read as one drawn
-   assembly. Flex column so the two cells split the parent's stretch height
-   evenly. */
+   block. The containing nav carries the 2px outer outline; each cell carries
+   its own 1px border so the drawn frame travels with the cell when it lifts
+   on hover. */
 .link-badges {
     display: flex;
     flex-direction: column;
@@ -310,20 +313,27 @@ body::before {
     width: 3.25rem;
     color: var(--color-base-content);
     background-color: var(--color-base-100);
+    border: 1px solid var(--color-base-content);
+    /* Collapse shared cell borders so the inner divider is 1px, not 2px. */
+    margin-bottom: -1px;
     transition:
         color 0.12s ease,
         transform 0.1s ease,
         box-shadow 0.1s ease;
 }
 
-.link-badge-cell + .link-badge-cell {
-    border-top: 1px solid var(--color-base-content);
+.link-badge-cell:last-child {
+    margin-bottom: 0;
 }
 
 .link-badge-cell:hover {
     color: var(--color-primary);
     transform: translate(-2px, -2px);
     box-shadow: 3px 3px 0 0 var(--shadow-drop);
+    /* Stack above the sibling cell during hover so its border and shadow
+       aren't clipped by the next cell. */
+    position: relative;
+    z-index: 1;
 }
 
 .link-badge-cell:active {
