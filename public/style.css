@@ -309,9 +309,11 @@ body::before {
     padding: 0.5rem;
     width: 3.25rem;
     color: var(--color-base-content);
+    background-color: var(--color-base-100);
     transition:
         color 0.12s ease,
-        transform 0.1s ease;
+        transform 0.1s ease,
+        box-shadow 0.1s ease;
 }
 
 .link-badge-cell + .link-badge-cell {
@@ -320,10 +322,13 @@ body::before {
 
 .link-badge-cell:hover {
     color: var(--color-primary);
+    transform: translate(-2px, -2px);
+    box-shadow: 3px 3px 0 0 var(--shadow-drop);
 }
 
 .link-badge-cell:active {
-    transform: scale(0.94);
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 0 var(--shadow-drop);
 }
 
 .link-badge-icon {
