@@ -355,6 +355,71 @@ body::before {
     height: 1.25rem;
 }
 
+/* Blueprint footer — small framed annotation anchored bottom-left, mirroring
+   the title-block cluster on the right. Each cell is one bordered pane in a
+   shared outline; links share the same lift/pop as the link badges. */
+.blueprint-footer {
+    position: fixed;
+    left: 29px;
+    bottom: 29px;
+    z-index: 40;
+    display: flex;
+    align-items: stretch;
+    outline: 2px solid var(--color-base-content);
+    outline-offset: 3px;
+    border: 1px solid var(--color-base-content);
+    background-color: var(--color-base-100);
+    color: var(--color-base-content);
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.blueprint-footer-cell {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    border-right: 1px solid var(--color-base-content);
+    transition:
+        color 0.12s ease,
+        transform 0.1s ease,
+        box-shadow 0.1s ease,
+        background-color 0.12s ease;
+}
+
+.blueprint-footer-cell:last-child {
+    border-right: none;
+}
+
+.blueprint-footer-link {
+    color: var(--color-base-content);
+    text-decoration: none;
+}
+
+.blueprint-footer-link:hover {
+    color: var(--color-base-100);
+    background-color: var(--color-primary);
+    transform: translate(-2px, -2px);
+    box-shadow: 3px 3px 0 0 var(--shadow-drop);
+}
+
+.blueprint-footer-link:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 0 var(--shadow-drop);
+}
+
+@media (max-width: 640px) {
+    .blueprint-footer {
+        left: 20px;
+        bottom: 20px;
+        outline-offset: 2px;
+    }
+    .blueprint-footer-cell {
+        padding: 0.375rem 0.5rem;
+        font-size: 0.55rem;
+    }
+}
+
 @media (max-width: 640px) {
     .corner-stack {
         right: 20px;

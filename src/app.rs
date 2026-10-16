@@ -1,3 +1,4 @@
+use crate::components::sections::footer::Footer;
 use crate::components::ui::link_badges::LinkBadges;
 use crate::components::ui::title_block::TitleBlock;
 use leptos::prelude::*;
@@ -16,6 +17,8 @@ pub fn App() -> impl IntoView {
 
             <main id="main-content" tabindex="-1">
             </main>
+
+            <Footer />
 
             <aside class="corner-stack" aria-label="Sheet metadata and external links">
                 <div class="title-block-anchor">
