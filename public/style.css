@@ -3,15 +3,10 @@
 
 @import "tailwindcss";
 
-/*noinspection CssUnknownTarget*/
 @plugin "daisyui" {
     themes: blueprint --default;
 }
 
-/* Civil-engineering blueprint (cyanotype) theme.
-   Deep Prussian-blue paper with pale cyan drawing lines.
-   Accent is "redline red" — the colour engineers use for corrections/markup. */
-/*noinspection CssUnknownTarget*/
 @plugin "daisyui/theme" {
     name: "blueprint";
     default: true;
@@ -52,8 +47,6 @@
     --noise: 0;
 }
 
-/* Drop-shadow tint used by the link-badge lift hover. Darker than base-100
-   so it reads as a physical shadow on the blueprint paper. */
 :root {
     --shadow-drop: #041020;
 }
@@ -62,14 +55,6 @@ html {
     scroll-behavior: smooth;
 }
 
-/* Blueprint paper — full-page graph grid fixed behind all page content.
-   Two stacked linear-gradient grids give a 12px minor grid (every line) and
-   a 60px major grid (every 5th line) in pale base-content, so content reads
-   as drawn on top of graph paper. The z-index: 0 sits above the body's own
-   background fill; page content (main, sections) paints above it because
-   they come later in the DOM and don't set a z-index.
-   Inset 18px so gridlines stop at the inner edge of the 2px frame border
-   (16px offset + 2px border width). */
 body::before {
     content: "";
     position: fixed;
@@ -104,20 +89,15 @@ body::before {
         60px 60px;
 }
 
-/* Consistent, theme-aware focus indicator for keyboard navigation */
 :focus-visible {
     outline: 2px solid oklch(var(--color-primary));
     outline-offset: 2px;
 }
 
-/* Remove default focus outline where our custom :focus-visible takes over */
 :focus:not(:focus-visible) {
     outline: none;
 }
 
-/* Blueprint sheet border — double-line frame inset from the viewport edge,
-   matching the border convention on engineering drawings. The outer thin line
-   sits at 8px from the viewport; the inner thicker line at 16px. */
 .blueprint-frame {
     position: relative;
     min-height: 100dvh;
@@ -142,9 +122,6 @@ body::before {
     border: 2px solid var(--color-base-content);
 }
 
-/* Corner metadata cluster — ASCII header on top of the LinkBadges +
-   TitleBlock row, anchored to the bottom-right of the viewport so the group
-   always lands between the page borders. */
 .corner-stack {
     position: fixed;
     right: 29px;
@@ -155,14 +132,9 @@ body::before {
     gap: 1rem;
 }
 
-/* XODIUM ASCII-art title mark — sits on top of the title block as the
-   drawing header. Stretches to the full cluster width so the lettering's
-   edges line up with the balloons + title block below. */
 .ascii-art {
     align-self: stretch;
     font-family: var(--font-mono, ui-monospace, monospace);
-    /* 65 columns of monospace glyph at roughly 0.6em advance; ~0.585rem
-       per glyph lands the 65-char art close to the ~23rem cluster width. */
     font-size: 0.585rem;
     line-height: 1.15;
     letter-spacing: 0;
@@ -221,9 +193,6 @@ body::before {
     text-transform: uppercase;
 }
 
-/* Link badges — a two-row frame sitting immediately left of the title
-   block. Flex column so the two cells split the parent's stretch height
-   evenly. */
 .link-badges {
     display: flex;
     flex-direction: column;
@@ -240,7 +209,6 @@ body::before {
     color: var(--color-base-content);
     background-color: var(--color-base-100);
     border: 1px solid var(--color-base-content);
-    /* Collapse shared cell borders so the inner divider is 1px, not 2px. */
     margin-bottom: -1px;
     transition:
         color 0.12s ease,
@@ -256,8 +224,6 @@ body::before {
     color: var(--color-primary);
     transform: translate(-2px, -2px);
     box-shadow: 3px 3px 0 0 var(--shadow-drop);
-    /* Stack above the sibling cell during hover so its border and shadow
-       aren't clipped by the next cell. */
     position: relative;
     z-index: 1;
 }
@@ -270,21 +236,13 @@ body::before {
 .link-badge-icon {
     width: 1.25rem;
     height: 1.25rem;
-    /* Both glyphs use currentColor for fill (GitHub) or stroke (BMC cup), so
-       the parent link's color drives them: base-content at rest, primary on
-       hover. */
 }
 
-/* The BMC logo's viewBox is taller than wide (884x1279); constrain height so
-   it visually matches the square GitHub mark. */
 .link-badge-icon-bmc {
     width: auto;
     height: 1.25rem;
 }
 
-/* Blueprint footer — a single line of monospace uppercase text in the
-   bottom-left margin of the page border. No frame or background: the text
-   reads like a handwritten note on the drawing, separated by middots. */
 .blueprint-footer {
     position: fixed;
     left: 29px;
@@ -316,11 +274,6 @@ body::before {
     opacity: 0.5;
 }
 
-/* Blueprint-style tooltips — pale-line frame on the dark base paper, square
-   corners and monospace type to match the rest of the sheet. Overrides
-   DaisyUI's default rounded, border-less bubble. The arrow pseudo-element
-   is hidden: engineering annotations attach to their subject with a leader
-   line, not a speech-bubble arrow. */
 .tooltip::before {
     background-color: var(--color-base-100);
     color: var(--color-base-content);
@@ -335,41 +288,6 @@ body::before {
 
 .tooltip::after {
     display: none;
-}
-
-/* Axis connectors — the 1px construction lines spanning the drawing surface
-   between opposite marker anchors. Rendered as inline SVG strokes so they
-   rasterise identically to the zone-marker leaders (same colour, same
-   width), producing one continuous axis line from balloon to balloon. */
-.axis-connector {
-    pointer-events: none;
-    z-index: 15;
-    opacity: 0.85;
-}
-
-/* Viewport frame — the marker balloons pinned to specific page-grid
-   intersections on the drawing surface. Markers are individually fixed-
-   positioned via inline style (computed from the page-grid constants
-   GRID_INSET=18 and GRID_MAJOR=60 in viewport_frame.rs). */
-.viewport-frame {
-    position: contents;
-    margin: 0;
-}
-
-.zone-marker {
-    color: var(--color-base-content);
-    opacity: 0.85;
-    pointer-events: none;
-    z-index: 30;
-    user-select: none;
-}
-
-.zone-marker-text {
-    font-family: var(--font-mono, ui-monospace, monospace);
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
 }
 
 @media (max-width: 640px) {

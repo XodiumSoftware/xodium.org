@@ -1,6 +1,5 @@
 use crate::components::sections::footer::Footer;
 use crate::components::ui::ascii_art::AsciiArt;
-use crate::components::ui::effects::viewport_frame::ViewportFrame;
 use crate::components::ui::link_badges::LinkBadges;
 use crate::components::ui::title_block::TitleBlock;
 use leptos::prelude::*;
@@ -20,8 +19,6 @@ pub fn App() -> impl IntoView {
             <main id="main-content" tabindex="-1">
                 <h1 class="sr-only">"Xodium Software — open-source CAD software"</h1>
             </main>
-
-            <ViewportFrame />
 
             <Footer />
 
