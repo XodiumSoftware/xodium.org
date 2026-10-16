@@ -99,24 +99,64 @@ fn IsoConnectors() -> impl IntoView {
 
 /// One marker balloon — a ringed circle containing the zone reference
 /// (letter or digit) plus a long thin leader line pointing outward to the
-/// sheet edge. `edge` controls which way the leader points.
+/// sheet edge, with a small anchor dot at the far end of the leader marking
+/// the exact point the callout pins to.
 ///
 /// Each SVG is 32px wide × 64px tall (or transposed for left/right): the
 /// marker circle sits at one end, the leader line occupies the rest so the
-/// balloon reads as a real callout and the leader visibly reaches the sheet.
+/// balloon reads as a real callout, and the 2px anchor dot at the leader
+/// endpins the callout to the drawing edge.
 #[component]
 fn ZoneMarker(
     label: &'static str,
     /// Which side of the sheet this marker sits on: "top", "bottom", "left", "right".
     edge: &'static str,
 ) -> impl IntoView {
-    let (view_box, width, height, circle_cx, circle_cy, leader_path) = match edge {
-        "top" => ("0 0 32 64", "32", "64", "16", "16", "M 16 27 L 16 60"),
-        "bottom" => ("0 0 32 64", "32", "64", "16", "48", "M 16 4 L 16 37"),
-        "left" => ("0 0 64 32", "64", "32", "16", "16", "M 27 16 L 60 16"),
-        "right" => ("0 0 64 32", "64", "32", "48", "16", "M 4 16 L 37 16"),
-        _ => ("0 0 32 64", "32", "64", "16", "16", ""),
-    };
+    // viewBox, width, height, circle center, leader path, anchor dot center
+    let (view_box, width, height, circle_cx, circle_cy, leader_path, anchor_cx, anchor_cy) =
+        match edge {
+            "top" => (
+                "0 0 32 64",
+                "32",
+                "64",
+                "16",
+                "16",
+                "M 16 27 L 16 60",
+                "16",
+                "60",
+            ),
+            "bottom" => (
+                "0 0 32 64",
+                "32",
+                "64",
+                "16",
+                "48",
+                "M 16 4 L 16 37",
+                "16",
+                "4",
+            ),
+            "left" => (
+                "0 0 64 32",
+                "64",
+                "32",
+                "16",
+                "16",
+                "M 27 16 L 60 16",
+                "60",
+                "16",
+            ),
+            "right" => (
+                "0 0 64 32",
+                "64",
+                "32",
+                "48",
+                "16",
+                "M 4 16 L 37 16",
+                "4",
+                "16",
+            ),
+            _ => ("0 0 32 64", "32", "64", "16", "16", "", "16", "16"),
+        };
 
     view! {
         <svg
@@ -133,6 +173,13 @@ fn ZoneMarker(
                 fill="none"
                 stroke="currentColor"
                 stroke-width="1"
+            />
+            // Anchor dot at the far end of the leader — marks the exact
+            // point the callout pins to.
+            <circle
+                cx=anchor_cx cy=anchor_cy r="2"
+                fill="currentColor"
+                stroke="none"
             />
             // Outer ring
             <circle
