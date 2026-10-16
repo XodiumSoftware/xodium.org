@@ -1,5 +1,4 @@
 use crate::components::ui::link_badges::LinkBadges;
-use crate::components::ui::revision_ledger::RevisionLedger;
 use crate::components::ui::title_block::TitleBlock;
 use leptos::prelude::*;
 
@@ -19,7 +18,6 @@ pub fn App() -> impl IntoView {
             </main>
 
             <aside class="corner-stack" aria-label="Sheet metadata and external links">
-                <RevisionLedger />
                 <div class="title-block-anchor">
                     <LinkBadges />
                     <TitleBlock />

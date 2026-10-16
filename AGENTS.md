@@ -169,7 +169,6 @@ src/
 │       ├── corner_frame.rs
 │       ├── data_grid.rs
 │       ├── link_badges.rs
-│       ├── revision_ledger.rs
 │       ├── title_block.rs
 │       ├── viewport.rs
 │       └── effects/           # Visual effects
