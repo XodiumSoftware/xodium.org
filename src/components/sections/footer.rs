@@ -34,10 +34,7 @@ pub fn Footer() -> impl IntoView {
 
     view! {
         <footer class="blueprint-footer" aria-label="Site footer">
-            <span>
-                {format!("© {current_year} ")}
-                <a href="/">"XODIUM™"</a>
-            </span>
+            <a href="/">{format!("© {current_year} XODIUM™")}</a>
             <span class="blueprint-footer-sep" aria-hidden="true">"·"</span>
             {FOOTER_LINKS
                 .iter()
