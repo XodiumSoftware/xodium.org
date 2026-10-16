@@ -21,6 +21,18 @@ pub fn TitleBlock() -> impl IntoView {
     let git_sha = option_env!("GIT_SHA");
     let commit_url = git_sha.map(|sha| format!("{GITHUB_REPO_URL}/{sha}"));
 
+    let scale = leptos::web_sys::window().map_or_else(
+        || "1:1".to_string(),
+        |w| {
+            let ratio = w.device_pixel_ratio();
+            if (ratio - 1.0).abs() < f64::EPSILON {
+                "1:1".to_string()
+            } else {
+                format!("1:{ratio:.2}")
+            }
+        },
+    );
+
     view! {
         <table
             aria-label="Site metadata"
@@ -34,11 +46,11 @@ pub fn TitleBlock() -> impl IntoView {
                     </td>
                     <td class="title-block-cell">
                         <span class="title-block-label">"SHEET"</span>
-                        <span class="title-block-value">"01 / 01"</span>
+                        <span class="title-block-value">"01/01"</span>
                     </td>
                     <td class="title-block-cell">
                         <span class="title-block-label">"SCALE"</span>
-                        <span class="title-block-value">"NTS"</span>
+                        <span class="title-block-value">{scale}</span>
                     </td>
                 </tr>
                 <tr>
