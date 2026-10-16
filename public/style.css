@@ -83,6 +83,44 @@ html {
     scroll-behavior: smooth;
 }
 
+/* Blueprint paper — full-page graph grid fixed behind all page content.
+   Two stacked linear-gradient grids give a 12px minor grid (every line) and
+   a 60px major grid (every 5th line) in pale base-content, so content reads
+   as drawn on top of graph paper. */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+        linear-gradient(
+            to right,
+            oklch(from var(--color-base-content) l c h / 0.06) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            to bottom,
+            oklch(from var(--color-base-content) l c h / 0.06) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            to right,
+            oklch(from var(--color-base-content) l c h / 0.12) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            to bottom,
+            oklch(from var(--color-base-content) l c h / 0.12) 1px,
+            transparent 1px
+        );
+    background-size:
+        12px 12px,
+        12px 12px,
+        60px 60px,
+        60px 60px;
+}
+
 /* Consistent, theme-aware focus indicator for keyboard navigation */
 :focus-visible {
     outline: 2px solid oklch(var(--color-primary));
@@ -306,32 +344,6 @@ html {
     position: absolute;
     inset: 0;
     padding: 1rem;
-    background-image:
-        linear-gradient(
-            to right,
-            oklch(from var(--color-base-content) l c h / 0.08) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            to bottom,
-            oklch(from var(--color-base-content) l c h / 0.08) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            to right,
-            oklch(from var(--color-base-content) l c h / 0.15) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            to bottom,
-            oklch(from var(--color-base-content) l c h / 0.15) 1px,
-            transparent 1px
-        );
-    background-size:
-        12px 12px,
-        12px 12px,
-        60px 60px,
-        60px 60px;
 }
 
 .viewport-title {
