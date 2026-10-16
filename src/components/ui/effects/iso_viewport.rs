@@ -11,7 +11,8 @@ use leptos::prelude::*;
 ///
 /// Zone labels are rendered as marker balloons — a small ring containing the
 /// reference letter/number with a thin leader line extending to the sheet
-/// edge. This matches the standard "drawing callout" convention.
+/// edge, and a connector line spanning the sheet diagonally opposite so
+/// opposite markers read as paired axes.
 #[component]
 #[must_use]
 pub fn IsoViewport() -> impl IntoView {
@@ -20,11 +21,79 @@ pub fn IsoViewport() -> impl IntoView {
             <IsoColumnLabels edge="top" />
             <div class="iso-viewport-row">
                 <IsoRowLabels edge="left" />
-                <IsoSheet />
+                <div class="iso-viewport-stack">
+                    <IsoSheet />
+                    <IsoConnectors />
+                </div>
                 <IsoRowLabels edge="right" />
             </div>
             <IsoColumnLabels edge="bottom" />
         </figure>
+    }
+}
+
+/// Connector lines running through the sheet that pair opposite markers —
+/// one vertical line per column letter and one horizontal line per row
+/// number, so the markers read as the ends of invisible axes crossing the
+/// drawing surface.
+///
+/// Rendered as an SVG overlay absolutely positioned on top of the sheet,
+/// sharing the same coordinate space so the lines line up with the markers.
+/// Coordinates use a 0-1 viewBox (with preserveAspectRatio="none") so the
+/// proportions scale with the sheet's rendered size.
+#[component]
+fn IsoConnectors() -> impl IntoView {
+    // Column X positions in 0-1 viewBox space. 9 letters distributed with
+    // space-around across the sheet; each marker sits at (i + 0.5) / 9 of
+    // the sheet width.
+    let col_xs: [f64; 9] = [
+        1.0 / 18.0,
+        3.0 / 18.0,
+        5.0 / 18.0,
+        7.0 / 18.0,
+        9.0 / 18.0,
+        11.0 / 18.0,
+        13.0 / 18.0,
+        15.0 / 18.0,
+        17.0 / 18.0,
+    ];
+    // Row Y positions. 5 rows, same spacing convention. Row index 0
+    // (top) is label "5" since origin is bottom-left.
+    let row_ys: [f64; 5] = [1.0 / 10.0, 3.0 / 10.0, 5.0 / 10.0, 7.0 / 10.0, 9.0 / 10.0];
+
+    view! {
+        <svg
+            class="iso-connectors"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 1 1"
+            preserveAspectRatio="none"
+        >
+            {col_xs
+                .iter()
+                .map(|x| view! {
+                    <line
+                        x1=*x y1="0" x2=*x y2="1"
+                        stroke="var(--color-base-content)"
+                        stroke-width="0.5"
+                        stroke-opacity="0.1"
+                        vector-effect="non-scaling-stroke"
+                    />
+                })
+                .collect::<Vec<_>>()}
+            {row_ys
+                .iter()
+                .map(|y| view! {
+                    <line
+                        x1="0" y1=*y x2="1" y2=*y
+                        stroke="var(--color-base-content)"
+                        stroke-width="0.5"
+                        stroke-opacity="0.1"
+                        vector-effect="non-scaling-stroke"
+                    />
+                })
+                .collect::<Vec<_>>()}
+        </svg>
     }
 }
 
