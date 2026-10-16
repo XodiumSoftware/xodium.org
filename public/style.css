@@ -252,7 +252,7 @@ body::before {
     background-color: var(--color-base-100);
 }
 
-.title-block-anchor > table {
+.title-block-anchor > :is(table, nav) {
     outline: 2px solid var(--color-base-content);
     outline-offset: 3px;
     border: 1px solid var(--color-base-content);
@@ -288,38 +288,36 @@ body::before {
 
 /* Link badges — a two-row frame sitting immediately left of the title
    block, matching its border / background so the two read as one drawn
-   assembly. */
+   assembly. Flex column so the two cells split the parent's stretch height
+   evenly. */
 .link-badges {
-    height: 100%;
-    table-layout: fixed;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-base-100);
 }
 
 .link-badge-cell {
-    border: 1px solid var(--color-base-content);
-    padding: 0.5rem;
-    width: 3.25rem;
-    height: 50%;
-    vertical-align: middle;
-    text-align: center;
-}
-
-.link-badge-link {
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
-    height: 100%;
+    padding: 0.5rem;
+    width: 3.25rem;
     color: var(--color-base-content);
     transition:
         color 0.12s ease,
         transform 0.1s ease;
 }
 
-.link-badge-link:hover {
+.link-badge-cell + .link-badge-cell {
+    border-top: 1px solid var(--color-base-content);
+}
+
+.link-badge-cell:hover {
     color: var(--color-primary);
 }
 
-.link-badge-link:active {
+.link-badge-cell:active {
     transform: scale(0.94);
 }
 
@@ -336,7 +334,7 @@ body::before {
         right: 20px;
         bottom: 20px;
     }
-    .title-block-anchor > table:not(.link-badges) {
+    .title-block-anchor > :is(table, nav) {
         outline-offset: 2px;
     }
     .title-block-cell {
@@ -349,10 +347,6 @@ body::before {
     .link-badge-cell {
         width: 2.75rem;
         padding: 0.375rem;
-    }
-    .link-badge-icon {
-        width: 1rem;
-        height: 1rem;
     }
 }
 
