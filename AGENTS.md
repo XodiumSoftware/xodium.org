@@ -74,13 +74,12 @@ These also exist as `just` recipes (`just lint`, `just test`, `just build`, `jus
 The single-page application follows this structure:
 
 1. **Skip Link** — accessibility anchor to `#main-content`
-2. **`Header`** — sticky navbar with logo and navigation
-3. **`#landing`** — hero section with `LandingSection`
-4. **Divider** — `LineDraw` animation
-5. **`#projects`** — sidebar layout with `ProjectsSection`
-6. **Divider** — `LineDraw` animation
-7. **`#team`** — `TeamDeckSection`
-8. **`Footer`** — site footer
+2. **`#landing`** — hero section with `LandingSection`
+3. **Divider** — `LineDraw` animation
+4. **`#projects`** — sidebar layout with `ProjectsSection`
+5. **Divider** — `LineDraw` animation
+6. **`#team`** — `TeamDeckSection`
+7. **`Footer`** — site footer
 
 ### Component Organization
 
@@ -90,7 +89,6 @@ Components are grouped by function in `src/components/`:
 
 | Component         | File           | Purpose                                         |
 | ----------------- | -------------- | ----------------------------------------------- |
-| `Header`          | `header.rs`    | Sticky navbar                                   |
 | `LandingSection`  | `landing.rs`   | Hero section with visual effects and code block |
 | `ProjectsSection` | `projects.rs`  | Fetches GitHub repos, renders `ProjectCard`s    |
 | `TeamDeckSection` | `team_deck.rs` | Fetches org members, renders `TeamCard`s        |
@@ -156,7 +154,6 @@ src/
 ├── utils.rs                   # Shared utilities
 ├── components/
 │   ├── sections/              # Page sections
-│   │   ├── header.rs
 │   │   ├── landing.rs
 │   │   ├── projects.rs
 │   │   ├── team_deck.rs
@@ -165,11 +162,16 @@ src/
 │   │   ├── project.rs
 │   │   └── team.rs
 │   ├── animations/            # Animation components
-│   │   └── line_draw.rs
+│   │   ├── line_draw.rs
+│   │   └── section_marker.rs
 │   └── ui/                    # UI primitives, effects, utilities
 │       ├── code_block.rs
 │       ├── corner_frame.rs
 │       ├── data_grid.rs
+│       ├── link_badges.rs
+│       ├── revision_ledger.rs
+│       ├── title_block.rs
+│       ├── viewport.rs
 │       └── effects/           # Visual effects
 │           ├── blueprint_grid.rs
 │           ├── hex_grid.rs

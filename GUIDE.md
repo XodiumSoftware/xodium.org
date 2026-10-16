@@ -163,7 +163,7 @@ xodium.org/
 │   │   ├── animations/   # LineDraw, etc.
 │   │   ├── cards/        # ProjectCard, TeamCard
 │   │   ├── effects/      # Visual effects
-│   │   ├── sections/     # Header, Footer, etc.
+│   │   ├── sections/     # Landing, Projects, TeamDeck, Footer
 │   │   └── ui/           # UI primitives
 │   └── github.rs         # GitHub API client
 ├── public/
