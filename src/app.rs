@@ -1,8 +1,5 @@
+use crate::components::sections::corner_cluster::CornerCluster;
 use crate::components::sections::footer::Footer;
-use crate::components::ui::ascii_art::AsciiArt;
-use crate::components::ui::legend_block::LegendBlock;
-use crate::components::ui::link_badges::LinkBadges;
-use crate::components::ui::title_block::TitleBlock;
 use leptos::prelude::*;
 
 #[component]
@@ -23,15 +20,7 @@ pub fn App() -> impl IntoView {
 
             <Footer />
 
-            <aside class="corner-stack" aria-label="Sheet metadata and external links">
-                <AsciiArt />
-                <hr class="corner-stack-sep" />
-                <LegendBlock />
-                <div class="title-block-anchor">
-                    <LinkBadges />
-                    <TitleBlock />
-                </div>
-            </aside>
+            <CornerCluster />
         </div>
     }
 }
