@@ -15,6 +15,10 @@ pub struct Object3dProperties {
     pub offset_x: f64,
     /// Vertical offset from the scene's centre, in pixels at 1x zoom.
     pub offset_y: f64,
+    /// When true the object is drawn as a draft reference: faces are
+    /// unfilled and all edges use dashed strokes so the block reads as
+    /// proposed/work-in-progress geometry rather than committed structure.
+    pub is_draft: bool,
 }
 
 /// A single isometric wireframe object. Renders just the SVG and its
@@ -26,6 +30,10 @@ pub struct Object3dProperties {
 /// until clicked again. Keyboard-accessible via Enter or Space. A click that
 /// follows a drag is suppressed via [`SceneContext::last_drag_end`] so
 /// releasing the mouse after panning does not also toggle the pin.
+///
+/// With [`Object3dProperties::is_draft`] set the object is rendered in the
+/// draft style used for uncommitted geometry: no face fills, every edge
+/// dashed (not just the hidden ones).
 #[component]
 #[must_use]
 pub fn Object3d(props: Object3dProperties) -> impl IntoView {
@@ -42,6 +50,7 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
         name,
         offset_x,
         offset_y,
+        is_draft,
     } = props;
     let (hw, hd, hh) = (width / 2.0, depth / 2.0, height / 2.0);
 
@@ -82,6 +91,7 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
         <div
             class="object-3d-target tooltip tooltip-top"
             class:tooltip-open=selected
+            class:object-3d-draft=is_draft
             role="button"
             aria-label=name
             aria-pressed=move || selected.get().to_string()

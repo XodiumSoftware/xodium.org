@@ -26,22 +26,25 @@ pub fn App() -> impl IntoView {
                         name: "Building Block",
                         offset_x: 0.0,
                         offset_y: 0.0,
+                        is_draft: false,
                     } />
                     <Object3d props=Object3dProperties {
                         width: 60.0,
                         depth: 60.0,
                         height: 30.0,
-                        name: "Slab",
+                        name: "SOON™",
                         offset_x: -180.0,
                         offset_y: 0.0,
+                        is_draft: true,
                     } />
                     <Object3d props=Object3dProperties {
                         width: 25.0,
                         depth: 25.0,
                         height: 90.0,
-                        name: "Column",
+                        name: "SOON™",
                         offset_x: 180.0,
                         offset_y: 0.0,
+                        is_draft: true,
                     } />
                 </Object3dScene>
             </main>

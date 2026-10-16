@@ -386,6 +386,18 @@ body::before {
     stroke-linecap: butt;
 }
 
+.object-3d-draft .iso-face polygon {
+    fill: none;
+    stroke-dasharray: 3 3;
+    stroke-linejoin: miter;
+    stroke-linecap: butt;
+}
+
+.object-3d-draft .iso-edges line,
+.object-3d-draft .iso-hidden line {
+    stroke-dasharray: 3 3;
+}
+
 .title-block-anchor > :is(table, nav) {
     outline: 2px solid var(--color-base-content);
     outline-offset: 3px;
