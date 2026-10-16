@@ -243,19 +243,18 @@ body::before {
     z-index: 40;
     display: flex;
     flex-direction: column;
-    /* Right-edge alignment: the ASCII header and the title-block row share
-       the same outer edge so the cluster reads as one stacked drawing
-       block, not a column of centered shapes. */
-    align-items: flex-end;
     gap: 1rem;
 }
 
 /* XODIUM ASCII-art title mark — sits on top of the title block as the
-   drawing header. Shrunk aggressively so it fits the corner; right-aligned
-   so the lettering's right edge matches the blocks below. */
+   drawing header. Stretches to the full cluster width so the lettering's
+   edges line up with the balloons + title block below. */
 .ascii-art {
+    align-self: stretch;
     font-family: var(--font-mono, ui-monospace, monospace);
-    font-size: 0.375rem;
+    /* 65 columns of monospace glyph at roughly 0.6em advance; ~0.585rem
+       per glyph lands the 65-char art close to the ~23rem cluster width. */
+    font-size: 0.585rem;
     line-height: 1.15;
     letter-spacing: 0;
     color: var(--color-base-content);
