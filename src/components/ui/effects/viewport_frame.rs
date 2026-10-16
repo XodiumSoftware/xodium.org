@@ -139,9 +139,11 @@ pub fn ViewportFrame() -> impl IntoView {
 }
 
 /// One straight line connecting two opposite marker anchors across the
-/// drawing surface. Rendered as a 1px-wide fixed-position element with a
-/// plain div background, so it survives page scroll and resize like the
-/// markers themselves.
+/// drawing surface. Rendered as a minimal SVG with a single line so the
+/// connector rasterises exactly like the marker leaders (same stroke color,
+/// same 1px linewidth), instead of using a div border which sits 0.5px off
+/// the stroke center because HTML borders paint on the inside edge of the
+/// box while SVG strokes paint centered on the path.
 ///
 /// `orientation` is "horizontal" (left-right) or "vertical" (top-bottom).
 /// - horizontal: `at` is the row coordinate; `from` and `to` are the two
@@ -156,38 +158,66 @@ fn AxisConnector(
     to: i32,
     viewport_h: Signal<i32>,
 ) -> impl IntoView {
-    let style = move || {
+    let data = move || {
         let vh = viewport_h.get();
         if vh <= 0 {
-            return "display: none;".to_string();
+            return None;
         }
         match orientation {
             "horizontal" => {
-                let top = row_to_top_px(at, vh);
-                let left = col_to_left_px(from.min(to));
-                let width = (to - from).abs() * GRID_MAJOR;
-                format!(
-                    "position: fixed; left: {left}px; top: {top}px; width: {width}px; height: 0;",
-                )
+                let y = row_to_top_px(at, vh);
+                let x1 = col_to_left_px(from.min(to));
+                let x2 = col_to_left_px(from.max(to));
+                Some((x1, y, x2, y))
             }
             "vertical" => {
-                let left = col_to_left_px(at);
-                let top_from = row_to_top_px(from.max(to), vh);
-                let height = (to - from).abs() * GRID_MAJOR;
-                format!(
-                    "position: fixed; left: {left}px; top: {top_from}px; width: 0; height: {height}px;",
-                )
+                let x = col_to_left_px(at);
+                // from.max(to) is the *upper* row (higher row index = higher
+                // on screen = smaller top pixel), which is the line's start.
+                let y1 = row_to_top_px(from.max(to), vh);
+                let y2 = row_to_top_px(from.min(to), vh);
+                Some((x, y1, x, y2))
             }
-            _ => "display: none;".to_string(),
+            _ => None,
         }
     };
 
     view! {
-        <div
-            class=format!("axis-connector axis-connector-{orientation}")
-            style=style
-            aria-hidden="true"
-        />
+        {move || data().map(|(x1, y1, x2, y2)| {
+            let min_x = x1.min(x2);
+            let min_y = y1.min(y2);
+            let width = (x2 - x1).abs();
+            let height = (y2 - y1).abs();
+            // SVG needs a non-zero bounding box even for a straight line;
+            // give the line a 1px canvas so it sits centered on the
+            // computed coordinate instead of clipping to nothing. The line
+            // itself runs along the canvas's 0.5 centerline so the SVG
+            // stroke (which is centered on the path) lands at the same
+            // pixel band as the marker leaders.
+            let (svg_width, svg_height, lx1, ly1, lx2, ly2) = if width == 0 {
+                (1, height, 0.5, 0.0, 0.5, f64::from(height))
+            } else {
+                (width, 1, 0.0, 0.5, f64::from(width), 0.5)
+            };
+            view! {
+                <svg
+                    class="axis-connector"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width=svg_width
+                    height=svg_height
+                    viewBox=format!("0 0 {svg_width} {svg_height}")
+                    preserveAspectRatio="none"
+                    style=format!("position: fixed; left: {min_x}px; top: {min_y}px;")
+                >
+                    <line
+                        x1=lx1 y1=ly1 x2=lx2 y2=ly2
+                        stroke="var(--color-base-content)"
+                        stroke-width="1"
+                    />
+                </svg>
+            }
+        })}
     }
 }
 
