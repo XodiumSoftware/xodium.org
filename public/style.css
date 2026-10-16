@@ -466,6 +466,54 @@ body::before {
     border: 2px solid var(--color-base-content);
 }
 
+/* Isometric drawing raster — a 60px-pitch 30° grid covering the sheet inside
+   the frame border. Rendered behind content but above the body gridlines so
+   it reads as the primary drafting surface. */
+.iso-raster {
+    position: fixed;
+    inset: 18px;
+    width: calc(100% - 36px);
+    height: calc(100% - 36px);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Reference-cell labels along the top and left edges, matching the (A)..(1)
+   designations on civil drawings. Square monospace lettering on the dark
+   paper; sits above the iso raster but below the frame borders. */
+.iso-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    color: var(--color-base-content);
+    opacity: 0.65;
+    text-transform: uppercase;
+}
+
+.iso-col-labels {
+    position: fixed;
+    top: 22px;
+    left: 22px;
+    right: 22px;
+    z-index: 2;
+    pointer-events: none;
+    display: flex;
+    justify-content: space-between;
+    padding-inline: 2rem;
+}
+
+.iso-row-labels {
+    position: fixed;
+    top: 22px;
+    bottom: 22px;
+    left: 22px;
+    z-index: 2;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-block: 2rem;
+}
+
 /* Orthographic viewports — the framed panes on a technical drawing that show
    a single view (front / side / plan) of the subject. Empty by default; the
    drawing content is placed in the .viewport-body slot. */

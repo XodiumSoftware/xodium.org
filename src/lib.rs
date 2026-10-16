@@ -31,6 +31,7 @@ pub mod components {
         pub mod effects {
             pub mod blueprint_grid;
             pub mod hex_grid;
+            pub mod iso_raster;
             pub mod parallax;
             pub mod section_fade;
             pub mod wire_frames;
@@ -53,6 +54,7 @@ pub mod components {
     pub use ui::data_grid::data_grid;
     pub use ui::effects::blueprint_grid::BlueprintGrid;
     pub use ui::effects::hex_grid::HexPattern;
+    pub use ui::effects::iso_raster::{IsoColumnLabels, IsoRaster, IsoRowLabels};
     pub use ui::effects::parallax::ParallaxLanding;
     pub use ui::effects::section_fade::FadeOverlay;
     pub use ui::effects::wire_frames::WireframeShapes;
