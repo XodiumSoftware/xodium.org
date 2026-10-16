@@ -26,6 +26,7 @@ pub mod components {
         pub mod corner_frame;
         pub mod data_grid;
         pub mod link_badges;
+        pub mod revision_ledger;
         pub mod title_block;
         pub mod viewport;
 
@@ -59,6 +60,7 @@ pub mod components {
     pub use ui::effects::section_fade::FadeOverlay;
     pub use ui::effects::wire_frames::WireframeShapes;
     pub use ui::link_badges::LinkBadges;
+    pub use ui::revision_ledger::RevisionLedger;
     pub use ui::title_block::TitleBlock;
     pub use ui::viewport::Viewport;
 }
