@@ -238,9 +238,14 @@ body::before {
    monospace labels. Rendered alongside a small link-badge block that shares
    the same drawn-frame language. */
 .title-block-anchor {
+    /* Positioned so the block's outer outline edge lands exactly 1rem inside
+       the page border's inner edge, matching the 1rem gap between the badge
+       block and the title block.
+       (18px inner frame edge + 1rem gap) - (3px outline-offset + 2px outline)
+       = 29px from viewport edge. */
     position: fixed;
-    right: 24px;
-    bottom: 24px;
+    right: 29px;
+    bottom: 29px;
     z-index: 40;
     display: flex;
     align-items: stretch;
