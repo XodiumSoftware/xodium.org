@@ -6,7 +6,6 @@
 - [Build from Source](#build-from-source)
 - [Development](#development)
 - [Deployment](#deployment)
-- [Agent Readiness](#agent-readiness)
 - [Troubleshooting](#troubleshooting)
 
 ---
@@ -108,39 +107,6 @@ For GitHub Actions deployment, set these secrets:
 | `CLOUDFLARE_API_TOKEN`  | Cloudflare API token with Pages edit permissions |
 | `CLOUDFLARE_ACCOUNT_ID` | Your Cloudflare account ID                       |
 
-## Agent Readiness
-
-The site publishes a number of discovery documents and headers to help AI agents and agent platforms interact with it.
-
-### Static discovery files
-
-These files live under `public/` and are copied to `dist/` by Trunk during the build:
-
-| Path                                      | Purpose                                                                                 |
-| ----------------------------------------- | --------------------------------------------------------------------------------------- |
-| `/sitemap.xml`                            | Sitemap of canonical URLs for crawlers and agents                                       |
-| `/robots.txt`                             | Crawl instructions; references `/sitemap.xml`                                           |
-| `/.well-known/api-catalog`                | RFC 9727 API catalog (currently empty because xodium.org has no public APIs of its own) |
-| `/.well-known/oauth-protected-resource`   | RFC 9728 protected-resource metadata                                                    |
-| `/.well-known/oauth-authorization-server` | OAuth authorization server metadata with an `agent_auth` block                          |
-| `/auth.md`                                | Agent registration instructions in Markdown                                             |
-
-### Response headers
-
-Cloudflare Pages reads `public/_headers` and applies the configured headers:
-
-- `Link` headers on the homepage pointing to `/.well-known/api-catalog` and `/auth.md`.
-- Correct `Content-Type` headers for extension-less well-known files and `/auth.md`.
-
-### Cloudflare-only features
-
-Two checks require configuration in the Cloudflare dashboard rather than code changes:
-
-1. **Markdown for Agents** — enable in the Cloudflare dashboard so requests with `Accept: text/markdown` receive a markdown rendering of the page.
-2. **DNS for AI Discovery (DNS-AID)** — publish SVCB/HTTPS records under `_agents.xodium.org` (for example `_index._agents.xodium.org`) and sign the zone with DNSSEC.
-
-See the [isitagentready.com agent readiness checklist](https://isitagentready.com/) for the exact validation criteria.
-
 ## Project Structure
 
 ```
@@ -150,16 +116,13 @@ xodium.org/
 │   ├── lib.rs            # Crate root
 │   ├── app.rs            # Main App component
 │   ├── components/       # UI components
-│   │   ├── animations/   # LineDraw, etc.
-│   │   ├── cards/        # ProjectCard, TeamCard
-│   │   ├── effects/      # Visual effects
-│   │   ├── sections/     # Landing, Projects, TeamDeck, Footer
-│   │   └── ui/           # UI primitives
+│   │   ├── sections/     # Footer
+│   │   ├── ui/           # AsciiArt, LinkBadges, TitleBlock
+│   │   └── ui/effects/   # ViewportFrame (zone markers + connectors)
 │   └── github.rs         # GitHub API client
 ├── public/
 │   ├── style.css         # Tailwind + DaisyUI styles
-│   ├── icons/            # SVG icons
-│   └── .well-known/      # Agent discovery files
+│   └── icons/            # SVG icons
 ├── index.html            # HTML template
 ├── Trunk.toml            # Trunk configuration
 └── Cargo.toml            # Rust dependencies
