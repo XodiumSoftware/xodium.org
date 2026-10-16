@@ -1,6 +1,6 @@
 ---
 name: github-api-change
-description: Modify the GitHub API client in xodium.org, including endpoints, caching, retries, and data structures, while keeping call sites and docs in sync.
+description: Modify the GitHub API client in xodium.org, including endpoints, caching, retries, and data structures, while keeping consumers and docs in sync.
 ---
 
 # Modify the GitHub API Client
@@ -9,34 +9,48 @@ Use this skill when the user wants to change how the xodium.org site fetches dat
 
 ## Key File
 
-All GitHub data fetching is centralized in `src/github.rs`.
+All GitHub data fetching is centralized in **`src/github.rs`**. There are currently no other fetchers.
+
+## Public API surface
+
+- `fetch_members() -> Result<Vec<Member>, String>` — org members, with `Owner`/`Member` role labels resolved via a second `role=admin` query for owners.
+- `fetch_repos() -> Result<Vec<Repo>, String>` — public org repos, filtered to exclude forks and sorted by star count descending.
+- `Member` and `Repo` — the response shapes consumed by callers.
+
+Both wrap the internal helpers:
+
+- `fetch<T>(endpoint)` — cache-then-network with exponential-backoff retry and stale-if-error fallback.
+- `fetch_all<T>(endpoint)` — paginates `fetch` with `?page=N&per_page=100` until a short page is returned.
+
+## Cache contract
+
+- Cache key: `xodium:{endpoint}`.
+- Timestamp: `{key}:ts` (ms since epoch).
+- TTL: 5 minutes.
+- Storage: `localStorage` via `gloo-storage`.
+- On all refresh attempts failing, the cached entry is still served if present — a console warning notes the staleness instead of showing a user-facing error.
 
 ## Steps
 
 1. Read `src/github.rs` to understand the current implementation.
-2. Identify what needs to change:
-   - New endpoint or query parameters
-   - Different response schema
-   - Cache TTL adjustment
-   - Retry/backoff behavior
-   - Error handling
-3. Update the relevant types, functions, or endpoints in `src/github.rs`.
-4. If response structures change, update any component that consumes them (e.g., `ProjectCard`, `TeamCard`, `ProjectsSection`, `TeamDeckSection`).
-5. If the public function signature changes, update call sites in `src/components/sections/`.
-6. Update rustdoc comments in `src/github.rs` if endpoints, cache TTL, or function descriptions changed.
-7. Run `cargo clippy --all-targets --all-features --target wasm32-unknown-unknown -- -W clippy::pedantic -D warnings` to ensure no lint issues.
-8. Run `trunk build` to verify compilation.
+2. Identify what you're changing:
+    - New endpoint or query parameters
+    - Response shape alterations
+    - Cache TTL / retry / backoff tweaks
+    - Error handling around 403/429/5xx
+3. Edit `src/github.rs`.
+4. Update rustdoc on the public function if the cache TTL, retry behaviour, or return shape changed.
+5. If a response type changes, follow the field forward to whichever UI currently consumes it and rewire there. There are no UI consumers wired up yet — the call sites are the components that will be (re)built next, so the public API changes propagate cleanly.
+6. `just lint` must stay clean.
+7. `trunk build` to verify.
 
 ## Conventions
 
-- Cache keys follow the format `xodium:{endpoint}` with a timestamp key `{key}:ts`.
-- Default TTL is 5 minutes; document any change.
-- Use `LocalResource` for async in components, not `Resource`.
-- `fetch<T>(endpoint)` is the internal cache-then-network helper with retry logic.
-- Keep the retry limit and exponential backoff behavior consistent unless explicitly changing them.
+- Keep the 5-minute TTL unless you have a reason to change it; document any change in the function's rustdoc.
+- Any new fetch function should also live in `src/github.rs` and follow the same cache/retry/stale-if-error pattern.
+- Rate limit awareness: GitHub's unauthenticated cap is 60 req/hour per IP; pagination through `fetch_all` already multiplies calls.
 
 ## Testing
 
-- There are no automated tests.
-- Verify by running `trunk serve` and checking the browser console for fetch/cache behavior.
-- Be mindful of GitHub's unauthenticated rate limit (60 requests/hour).
+- WASM browser tests exist under `#[wasm_bindgen_test]` in `src/github.rs` — run them with `wasm-pack test --headless --chrome`, or `just test`.
+- `trunk serve` + browser devtools Network/Application tabs are the manual verification loop.

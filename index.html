@@ -1,5 +1,5 @@
 <!doctype html>
-<html data-theme="halloween" lang="en">
+<html data-theme="blueprint" lang="en">
     <head>
         <meta charset="utf-8" />
         <meta content="width=device-width, initial-scale=1.0" name="viewport" />
@@ -13,8 +13,8 @@
         />
         <meta content="Xodium Software" name="author" />
 
-        <!-- Browser UI color, matching the halloween theme's base-100 (oklch(21% 0.006 56.043)) -->
-        <meta content="#1b1718" name="theme-color" />
+        <!-- Browser UI color, matching the blueprint theme's base-100 (#0a2540) -->
+        <meta content="#0a2540" name="theme-color" />
 
         <!-- Canonical URL -->
         <link href="https://xodium.org" rel="canonical" />
@@ -43,7 +43,7 @@
                 "@type": "Organization",
                 "name": "Xodium Software",
                 "url": "https://xodium.org",
-                "logo": "https://xodium.org/icons/favicon.svg",
+                "logo": "https://xodium.org/favicon.svg",
                 "sameAs": ["https://github.com/XodiumSoftware"],
                 "description": "Open source CAD software organization. Building innovative tools for the engineering community."
             }
@@ -61,22 +61,14 @@
 
         <link
             data-trunk
-            href="public/icons/favicon.svg"
+            href="public/favicon.svg"
             rel="icon"
             type="image/svg+xml"
         />
+        <link data-trunk href="public/favicon.svg" rel="copy-file" />
         <link data-trunk href="public/style.css" rel="tailwind-css-extra" />
-        <link data-trunk href="public/icons" rel="copy-dir" />
-        <link data-trunk href="public/sitemap.xml" rel="copy-file" />
-        <link data-trunk href="public/robots.txt" rel="copy-file" />
-        <link data-trunk href="public/auth.md" rel="copy-file" />
-        <link data-trunk href="public/.well-known" rel="copy-dir" />
         <link data-trunk href="public/_headers" rel="copy-file" />
-        <link data-trunk href="public/webmcp.js" rel="copy-file" />
         <title>Xodium</title>
-
-        <!-- WebMCP: expose lightweight site tools to browser agents -->
-        <script src="/webmcp.js" defer></script>
     </head>
     <body class="bg-base-100 font-mono">
         <noscript>

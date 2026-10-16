@@ -1,5 +1,8 @@
-use crate::components::{
-    Footer, Header, LandingSection, LineDraw, ProjectsSection, TeamDeckSection,
+use crate::components::scenes::object_3d_scene::Object3dScene;
+use crate::components::sections::footer::Footer;
+use crate::components::sections::header::Header;
+use crate::components::ui::object_3d::{
+    Dimensions, Face, FaceColors, Object3dProperties, Placement, Position,
 };
 use leptos::prelude::*;
 
@@ -7,40 +10,70 @@ use leptos::prelude::*;
 #[must_use]
 pub fn App() -> impl IntoView {
     view! {
-        <div>
+        <div class="blueprint-frame">
             <a
                 href="#main-content"
                 class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-content focus:rounded"
             >
                 "Skip to main content"
             </a>
-            <div class="relative">
-                {/* Sentinel used by Header to detect when the page has scrolled. */}
-                <div id="header-scroll-sentinel" class="absolute top-0 left-0 h-px w-full -z-20" />
 
-                <Header />
+            <main id="main-content" tabindex="-1">
+                <h1 class="sr-only">"Xodium Software — open-source CAD software"</h1>
+                <Object3dScene objects=vec![
+                    Object3dProperties {
+                        name: "Building Block",
+                        size: Dimensions {
+                            width: 240.0,
+                            depth: 120.0,
+                            height: 180.0,
+                        },
+                        placement: Placement::At(Position {
+                            x: 0.0,
+                            y: 0.0,
+                            z: 0.0,
+                        }),
+                        colors: None,
+                        is_draft: false,
+                    },
+                    Object3dProperties {
+                        name: "Slab",
+                        size: Dimensions {
+                            width: 180.0,
+                            depth: 180.0,
+                            height: 90.0,
+                        },
+                        placement: Placement::AttachedTo {
+                            target: "Building Block",
+                            face: Face::Left,
+                        },
+                        colors: Some(FaceColors {
+                            top: "oklch(0.75 0.15 140 / 0.35)",
+                            left: "oklch(0.65 0.13 140 / 0.35)",
+                            right: "oklch(0.55 0.15 25 / 0.35)",
+                        }),
+                        is_draft: false,
+                    },
+                    Object3dProperties {
+                        name: "Column",
+                        size: Dimensions {
+                            width: 75.0,
+                            depth: 75.0,
+                            height: 270.0,
+                        },
+                        placement: Placement::AttachedTo {
+                            target: "Slab",
+                            face: Face::Top,
+                        },
+                        colors: None,
+                        is_draft: true,
+                    },
+                ] />
+            </main>
 
-                <div class="absolute inset-x-0 top-0 h-128 bg-gradient-to-b from-base-100 to-transparent pointer-events-none z-10" />
+            <Footer />
 
-                <LandingSection />
-            </div>
-
-        <main id="main-content" tabindex="-1">
-
-        // Line divider between hero and projects
-        <LineDraw />
-
-        // Projects section
-        <ProjectsSection />
-
-        // Line draw divider
-        <LineDraw />
-
-        // Team section
-        <TeamDeckSection />
-        </main>
-
-        <Footer />
-    </div>
+            <Header />
+        </div>
     }
 }
