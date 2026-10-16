@@ -150,7 +150,6 @@ src/
 ├── lib.rs                     # Crate root, module declarations
 ├── app.rs                     # Root App component
 ├── github.rs                  # GitHub API client
-├── mcp.rs                     # WebMCP tools exposed to browser agents (window.xodiumwebMcp)
 ├── utils.rs                   # Shared utilities
 ├── components/
 │   ├── sections/              # Page sections

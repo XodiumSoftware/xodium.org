@@ -26,11 +26,9 @@ pub mod components {
 }
 
 pub mod github;
-pub mod mcp;
 pub mod utils;
 
 pub use app::*;
 pub use components::*;
 pub use github::*;
-pub use mcp::*;
 pub use utils::*;

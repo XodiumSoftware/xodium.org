@@ -124,7 +124,6 @@ These files live under `public/` and are copied to `dist/` by Trunk during the b
 | `/.well-known/oauth-protected-resource`   | RFC 9728 protected-resource metadata                                                    |
 | `/.well-known/oauth-authorization-server` | OAuth authorization server metadata with an `agent_auth` block                          |
 | `/auth.md`                                | Agent registration instructions in Markdown                                             |
-| `/.well-known/mcp/server-card.json`       | MCP Server Card discovery stub                                                          |
 
 ### Response headers
 
@@ -132,15 +131,6 @@ Cloudflare Pages reads `public/_headers` and applies the configured headers:
 
 - `Link` headers on the homepage pointing to `/.well-known/api-catalog` and `/auth.md`.
 - Correct `Content-Type` headers for extension-less well-known files and `/auth.md`.
-
-### WebMCP
-
-The page registers lightweight browser tools via `navigator.modelContext.registerTool()` (with a fallback to `provideContext()`):
-
-- `navigate_to_section`
-- `get_site_info`
-- `list_projects`
-- `list_team`
 
 ### Cloudflare-only features
 
