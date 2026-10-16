@@ -88,11 +88,13 @@ html {
    a 60px major grid (every 5th line) in pale base-content, so content reads
    as drawn on top of graph paper. The z-index: 0 sits above the body's own
    background fill; page content (main, sections) paints above it because
-   they come later in the DOM and don't set a z-index. */
+   they come later in the DOM and don't set a z-index.
+   Inset 18px so gridlines stop at the inner edge of the 2px frame border
+   (16px offset + 2px border width). */
 body::before {
     content: "";
     position: fixed;
-    inset: 0;
+    inset: 18px;
     z-index: 0;
     pointer-events: none;
     background-image:
