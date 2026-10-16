@@ -244,7 +244,7 @@ body::before {
     z-index: 40;
     display: flex;
     align-items: stretch;
-    gap: 0;
+    gap: 0.5rem;
 }
 
 .title-block-anchor table {
@@ -252,7 +252,7 @@ body::before {
     background-color: var(--color-base-100);
 }
 
-.title-block-anchor > table:not(.link-badges) {
+.title-block-anchor > table {
     outline: 2px solid var(--color-base-content);
     outline-offset: 3px;
     border: 1px solid var(--color-base-content);
@@ -288,12 +288,8 @@ body::before {
 
 /* Link badges — a two-row frame sitting immediately left of the title
    block, matching its border / background so the two read as one drawn
-   assembly. The margin-right: 3px compensates for the title block's
-   outline-offset so the badge outline ends flush against it. */
+   assembly. */
 .link-badges {
-    outline: 2px solid var(--color-base-content);
-    outline-offset: 3px;
-    margin-right: 3px;
     height: 100%;
     table-layout: fixed;
 }
