@@ -1,5 +1,5 @@
 use crate::components::{
-    Footer, Header, LandingSection, LineDraw, ProjectsSection, TeamDeckSection,
+    Footer, Header, LandingSection, ProjectsSection, SectionMarker, TeamDeckSection,
 };
 use leptos::prelude::*;
 
@@ -27,14 +27,14 @@ pub fn App() -> impl IntoView {
 
         <main id="main-content" tabindex="-1">
 
-        // Line divider between hero and projects
-        <LineDraw />
+        // Section-cut marker between hero and projects
+        <SectionMarker letter="A" />
 
         // Projects section
         <ProjectsSection />
 
-        // Line draw divider
-        <LineDraw />
+        // Section-cut marker between projects and team
+        <SectionMarker letter="B" />
 
         // Team section
         <TeamDeckSection />

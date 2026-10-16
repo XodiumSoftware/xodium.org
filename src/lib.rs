@@ -18,12 +18,14 @@ pub mod components {
 
     pub mod animations {
         pub mod line_draw;
+        pub mod section_marker;
     }
 
     pub mod ui {
         pub mod code_block;
         pub mod corner_frame;
         pub mod data_grid;
+        pub mod title_block;
 
         pub mod effects {
             pub mod blueprint_grid;
@@ -44,6 +46,7 @@ pub mod components {
     pub use cards::team::{TeamCard, TeamCardProperties};
 
     pub use animations::line_draw::{LineDraw, LineDrawHero};
+    pub use animations::section_marker::SectionMarker;
 
     pub use ui::code_block::CodeBlock;
     pub use ui::corner_frame::CornerFrame;
@@ -53,6 +56,7 @@ pub mod components {
     pub use ui::effects::parallax::ParallaxLanding;
     pub use ui::effects::section_fade::FadeOverlay;
     pub use ui::effects::wire_frames::WireframeShapes;
+    pub use ui::title_block::TitleBlock;
 }
 
 pub mod github;

@@ -126,6 +126,66 @@ html {
         0 0 20px 3px oklch(from var(--color-primary) l c h / 0.25);
 }
 
+/* 45° brickwork hatch — the "cut material" fill used on civil drawings.
+   Applied behind the featured card's content so the glow reads as a drawn
+   overlay on top of hatched paper. */
+.hatch-cut {
+    background-image: repeating-linear-gradient(
+        45deg,
+        oklch(from var(--color-primary) l c h / 0.06) 0,
+        oklch(from var(--color-primary) l c h / 0.06) 1px,
+        transparent 1px,
+        transparent 6px
+    );
+}
+
+/* Blueprint title block — the engineering metadata frame found in the corner
+   of technical drawings. Double outer border, thin internal rules, small
+   monospace labels. */
+.title-block {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 32rem;
+    margin-inline: auto;
+    outline: 2px solid var(--color-base-content);
+    outline-offset: 3px;
+    border: 1px solid var(--color-base-content);
+}
+
+.title-block-cell {
+    border: 1px solid var(--color-base-content);
+    padding: 0.375rem 0.625rem;
+    vertical-align: top;
+}
+
+.title-block-cell-wide {
+    text-align: left;
+}
+
+.title-block-label {
+    display: block;
+    font-size: 0.55rem;
+    letter-spacing: 0.08em;
+    opacity: 0.55;
+    text-transform: uppercase;
+}
+
+.title-block-value {
+    display: block;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+@media (max-width: 640px) {
+    .title-block {
+        outline-offset: 2px;
+    }
+    .title-block-cell {
+        padding: 0.25rem 0.45rem;
+    }
+}
+
 .blueprint-grid {
     background-image:
         linear-gradient(to right, var(--color-primary) 1px, transparent 1px),

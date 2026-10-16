@@ -1,3 +1,4 @@
+use crate::components::ui::title_block::TitleBlock;
 use crate::utils::clean_sha;
 use leptos::prelude::*;
 
@@ -39,7 +40,10 @@ pub fn Footer() -> impl IntoView {
     };
 
     view! {
-        <footer class="text-base-content px-6 lg:px-8 py-4">
+        <footer class="text-base-content px-6 lg:px-8 py-6">
+            <div class="mx-auto max-w-7xl mb-6">
+                <TitleBlock />
+            </div>
             <div class="mx-auto max-w-7xl flex flex-col-reverse md:flex-row md:justify-between items-center gap-4">
                 <aside class="max-md:w-full max-md:text-center" style="container-type: inline-size">
                     <div class="flex flex-col md:flex-row md:items-center gap-1 md:gap-0">

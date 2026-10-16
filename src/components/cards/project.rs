@@ -79,7 +79,10 @@ pub fn ProjectCard(props: ProjectCardProperties) -> impl IntoView {
             if props.featured { " card-featured" } else { "" },
         )>
             <CornerFrame style="square" class="h-full">
-                <div class="card bg-ghost h-full rounded-none">
+                <div class=format!(
+                    "card bg-ghost h-full rounded-none{}",
+                    if props.featured { " hatch-cut" } else { "" },
+                )>
                     <div class="card-body">
                         <h3 class="card-title text-primary">
                             <img
