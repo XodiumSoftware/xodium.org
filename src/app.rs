@@ -1,4 +1,5 @@
 use crate::components::ui::title_block::TitleBlock;
+use crate::components::ui::viewport::Viewport;
 use leptos::prelude::*;
 
 #[component]
@@ -14,6 +15,17 @@ pub fn App() -> impl IntoView {
             </a>
 
             <main id="main-content" tabindex="-1">
+                <div class="viewport-grid">
+                    <Viewport title="{placeholder}">
+                        <div></div>
+                    </Viewport>
+                    <Viewport title="{placeholder}">
+                        <div></div>
+                    </Viewport>
+                    <Viewport title="{placeholder}">
+                        <div></div>
+                    </Viewport>
+                </div>
             </main>
 
             <aside class="title-block-anchor" aria-label="Sheet metadata">
