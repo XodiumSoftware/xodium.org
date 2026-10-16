@@ -5,11 +5,63 @@
 
 /*noinspection CssUnknownTarget*/
 @plugin "daisyui" {
-    themes: halloween --default;
+    themes: blueprint --default;
+}
+
+/* Civil-engineering blueprint (cyanotype) theme.
+   Deep Prussian-blue paper with pale cyan drawing lines.
+   Accent is "redline red" — the colour engineers use for corrections/markup. */
+/*noinspection CssUnknownTarget*/
+@plugin "daisyui/theme" {
+    name: "blueprint";
+    default: true;
+    prefersdark: true;
+    color-scheme: "dark";
+
+    /* Paper surfaces — deep blueprint navy */
+    --color-base-100: #0a2540;
+    --color-base-200: #0d2f52;
+    --color-base-300: #113a66;
+    --color-base-content: #d9e8f5;
+
+    /* Primary — bright blueprint cyan (the drawn line) */
+    --color-primary: #4da6ff;
+    --color-primary-content: #041020;
+
+    /* Secondary — muted steel blue (dimension lines, secondary annotations) */
+    --color-secondary: #7ba7d9;
+    --color-secondary-content: #041020;
+
+    /* Accent — redline red (markup, corrections, current revision) */
+    --color-accent: #ff6b6b;
+    --color-accent-content: #1a0404;
+
+    /* Neutral — grid/measurement tone */
+    --color-neutral: #1a3a5c;
+    --color-neutral-content: #c8dcec;
+
+    /* State */
+    --color-info: #4da6ff;
+    --color-info-content: #041020;
+    --color-success: #5ec97a;
+    --color-success-content: #041404;
+    --color-warning: #f0b429;
+    --color-warning-content: #1a0f00;
+    --color-error: #ff6b6b;
+    --color-error-content: #1a0404;
+
+    /* Drafting geometry: sharp corners, thin lines, no soft depth */
+    --radius-selector: 0rem;
+    --radius-field: 0rem;
+    --radius-box: 0rem;
+    --border: 1px;
+    --depth: 0;
+    --noise: 0;
 }
 
 /* Semantic surface colors used by components that sit outside the main theme canvas. */
 :root {
+    --shadow-drop: #041020;
     --surface-light: #d0d0d0;
     --surface-dark: #1a1a1a;
     --kbd-shadow: 0 2px 0 0 rgba(0, 0, 0, 0.3);
@@ -50,12 +102,12 @@ html {
 
 .lift:hover {
     transform: translate(-2px, -2px);
-    box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.8);
+    box-shadow: 3px 3px 0 0 var(--shadow-drop);
 }
 
 .lift:active {
     transform: translate(2px, 2px);
-    box-shadow: 1px 1px 0 0 rgba(0, 0, 0, 0.8);
+    box-shadow: 1px 1px 0 0 var(--shadow-drop);
 }
 
 .btn-outline-ghost {
@@ -86,7 +138,7 @@ html {
 .btn-lift {
     border-radius: 0;
     border-width: 2px;
-    box-shadow: 4px 4px 0 0 rgba(0, 0, 0, 0.8);
+    box-shadow: 4px 4px 0 0 var(--shadow-drop);
     transition:
         transform 0.1s ease,
         box-shadow 0.1s ease;
@@ -94,12 +146,12 @@ html {
 
 .btn-lift:hover {
     transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 0 rgba(0, 0, 0, 0.8);
+    box-shadow: 6px 6px 0 0 var(--shadow-drop);
 }
 
 .btn-lift:active {
     transform: translate(2px, 2px);
-    box-shadow: 2px 2px 0 0 rgba(0, 0, 0, 0.8);
+    box-shadow: 2px 2px 0 0 var(--shadow-drop);
 }
 
 /* Featured card (e.g. Cadiotheka): primary-tinted border glow behind the
@@ -107,21 +159,21 @@ html {
    stay in sync on hover/active. */
 .card-featured {
     box-shadow:
-        4px 4px 0 0 rgba(0, 0, 0, 0.8),
+        4px 4px 0 0 var(--shadow-drop),
         0 0 12px 2px oklch(from var(--color-primary) l c h / 0.55),
         0 0 32px 4px oklch(from var(--color-primary) l c h / 0.3);
 }
 
 .card-featured:hover {
     box-shadow:
-        6px 6px 0 0 rgba(0, 0, 0, 0.8),
+        6px 6px 0 0 var(--shadow-drop),
         0 0 18px 3px oklch(from var(--color-primary) l c h / 0.7),
         0 0 44px 6px oklch(from var(--color-primary) l c h / 0.4);
 }
 
 .card-featured:active {
     box-shadow:
-        2px 2px 0 0 rgba(0, 0, 0, 0.8),
+        2px 2px 0 0 var(--shadow-drop),
         0 0 8px 1px oklch(from var(--color-primary) l c h / 0.5),
         0 0 20px 3px oklch(from var(--color-primary) l c h / 0.25);
 }
