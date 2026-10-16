@@ -34,7 +34,7 @@ pub fn Footer() -> impl IntoView {
 
     view! {
         <footer class="blueprint-footer" aria-label="Site footer">
-            <span class="blueprint-footer-copy">
+            <span>
                 {format!("© {current_year} ")}
                 <a href="/">"XODIUM™"</a>
             </span>
@@ -51,7 +51,6 @@ pub fn Footer() -> impl IntoView {
                                 href=link.href
                                 target=target
                                 rel=rel
-                                class="blueprint-footer-link"
                             >
                                 {link.label}
                             </a>

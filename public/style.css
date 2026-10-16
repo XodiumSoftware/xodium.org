@@ -376,12 +376,17 @@ body::before {
 
 .blueprint-footer a {
     color: inherit;
-    text-decoration: none;
-    transition: color 0.12s ease;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 3px;
+    transition:
+        color 0.12s ease,
+        text-decoration-color 0.12s ease;
 }
 
 .blueprint-footer a:hover {
     color: var(--color-primary);
+    text-decoration-color: currentColor;
 }
 
 .blueprint-footer-sep {
