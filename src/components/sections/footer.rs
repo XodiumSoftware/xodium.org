@@ -24,10 +24,9 @@ const FOOTER_LINKS: &[FooterLink] = &[
     },
 ];
 
-/// Blueprint footer — a small framed annotation block anchored bottom-left
-/// inside the page border. Carries the copyright line and the three external
-/// links; the commit link lives in the title block's REV cell instead, so
-/// it's not duplicated here.
+/// Blueprint footer — a single line of monospace uppercase text anchored
+/// bottom-left inside the page border, reading like a handwritten note in
+/// the drawing margin rather than a framed cell.
 #[component]
 #[must_use]
 pub fn Footer() -> impl IntoView {
@@ -35,26 +34,35 @@ pub fn Footer() -> impl IntoView {
 
     view! {
         <footer class="blueprint-footer" aria-label="Site footer">
-            <span class="blueprint-footer-cell blueprint-footer-cell-copy font-mono">
+            <span class="blueprint-footer-copy">
                 {format!("© {current_year} ")}
-                <a href="/" class="blueprint-footer-link">
-                    "XODIUM™"
-                </a>
+                <a href="/">"XODIUM™"</a>
             </span>
+            <span class="blueprint-footer-sep" aria-hidden="true">"·"</span>
             {FOOTER_LINKS
                 .iter()
-                .map(|link| {
+                .enumerate()
+                .map(|(i, link)| {
                     let target = if link.is_external { Some("_blank") } else { None };
                     let rel = if link.is_external { Some("noopener noreferrer") } else { None };
                     view! {
-                        <a
-                            href=link.href
-                            target=target
-                            rel=rel
-                            class="blueprint-footer-cell blueprint-footer-link font-mono"
-                        >
-                            {link.label}
-                        </a>
+                        <>
+                            <a
+                                href=link.href
+                                target=target
+                                rel=rel
+                                class="blueprint-footer-link"
+                            >
+                                {link.label}
+                            </a>
+                            {if i + 1 < FOOTER_LINKS.len() {
+                                Some(view! {
+                                    <span class="blueprint-footer-sep" aria-hidden="true">"·"</span>
+                                })
+                            } else {
+                                None
+                            }}
+                        </>
                     }
                 })
                 .collect::<Vec<_>>()}
