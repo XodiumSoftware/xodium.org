@@ -480,8 +480,11 @@ body::before {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 8rem 2rem;
-    min-height: 80dvh;
+    /* Span the full viewport height so the viewport's geometric centre (the
+       E-3 markers, nine columns and five rows deep) lands on the page-grid
+       centre. */
+    min-height: 100dvh;
+    padding: 2rem;
 }
 
 .iso-viewport {

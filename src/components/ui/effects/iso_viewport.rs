@@ -94,11 +94,14 @@ fn ZoneMarker(
     }
 }
 
-/// Row of column letters (A..H) for one horizontal edge of the sheet.
+/// Row of column letters (A..I) for one horizontal edge of the sheet.
 /// `edge` is "top" or "bottom" — the leader line points toward the sheet.
+///
+/// Nine columns (odd count) so the middle letter E sits on the raster's
+/// horizontal centreline and aligns with the page-grid centring.
 #[component]
 fn IsoColumnLabels(edge: &'static str) -> impl IntoView {
-    let cols = ["A", "B", "C", "D", "E", "F", "G", "H"];
+    let cols = ["A", "B", "C", "D", "E", "F", "G", "H", "I"];
 
     view! {
         <div class=format!("iso-viewport-cols iso-viewport-cols-{edge}") aria-hidden="true">
