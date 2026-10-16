@@ -22,6 +22,7 @@ pub mod components {
 
     pub mod ui {
         pub mod code_block;
+        pub mod coord_picker;
         pub mod corner_frame;
         pub mod data_grid;
         pub mod link_badges;
@@ -50,6 +51,7 @@ pub mod components {
     pub use animations::section_marker::SectionMarker;
 
     pub use ui::code_block::CodeBlock;
+    pub use ui::coord_picker::CoordPicker;
     pub use ui::corner_frame::CornerFrame;
     pub use ui::data_grid::data_grid;
     pub use ui::effects::blueprint_grid::BlueprintGrid;

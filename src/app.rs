@@ -1,4 +1,5 @@
 use crate::components::sections::footer::Footer;
+use crate::components::ui::coord_picker::CoordPicker;
 use crate::components::ui::effects::iso_viewport::IsoViewport;
 use crate::components::ui::link_badges::LinkBadges;
 use crate::components::ui::title_block::TitleBlock;
@@ -21,6 +22,8 @@ pub fn App() -> impl IntoView {
                     <IsoViewport />
                 </section>
             </main>
+
+            <CoordPicker />
 
             <Footer />
 
