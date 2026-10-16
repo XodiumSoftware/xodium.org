@@ -1,19 +1,19 @@
-use crate::components::sections::scene_context::SceneContext;
+use crate::contexts::scene::SceneContext;
 use leptos::prelude::*;
 
 const DBLCLICK_WINDOW_MS: f64 = 400.0;
 
-/// Collective viewport that hosts any number of [`BuildingBlock`] children
+/// Collective viewport that hosts any number of [`crate::Object3d`] children
 /// and owns the shared pan/zoom state. Drag with any mouse button pans the
 /// whole scene; mouse wheel zooms around the centre; double-tapping the
 /// middle button within 400ms resets the view to 1:1 centred (the UI Events
 /// spec only fires `dblclick` for the primary button, so the middle-button
 /// double-tap is detected by hand). When a drag ends after moving more than
 /// 4 pixels, `last_drag_end` is stamped so the click that immediately follows
-/// does not also toggle a block's pinned state.
+/// does not also toggle an object's pinned state.
 #[component]
 #[must_use]
-pub fn BuildingBlocksScene(children: Children) -> impl IntoView {
+pub fn Object3dScene(children: Children) -> impl IntoView {
     const ZOOM_MIN: f64 = 0.25;
     const ZOOM_MAX: f64 = 4.0;
     const ZOOM_STEP: f64 = 1.1;
@@ -28,7 +28,7 @@ pub fn BuildingBlocksScene(children: Children) -> impl IntoView {
 
     view! {
         <section
-            class="building-block-scene"
+            class="object-3d-scene"
             aria-label="Drawing viewport"
             on:wheel=move |ev| {
                 ev.prevent_default();
@@ -82,7 +82,7 @@ pub fn BuildingBlocksScene(children: Children) -> impl IntoView {
             on:pointercancel=move |_| set_drag_origin.set(None)
         >
             <div
-                class="building-block-layer"
+                class="object-3d-layer"
                 style=move || {
                     let (px, py) = pan.get();
                     format!("--zoom: {:.3}; --pan-x: {:.2}px; --pan-y: {:.2}px;", zoom.get(), px, py)

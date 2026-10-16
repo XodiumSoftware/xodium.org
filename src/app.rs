@@ -1,7 +1,7 @@
-use crate::components::sections::building_block::{BuildingBlock, BuildingBlockProperties};
-use crate::components::sections::building_blocks_scene::BuildingBlocksScene;
+use crate::components::scenes::object_3d_scene::Object3dScene;
 use crate::components::sections::footer::Footer;
 use crate::components::sections::header::Header;
+use crate::components::ui::object_3d::{Object3d, Object3dProperties};
 use leptos::prelude::*;
 
 #[component]
@@ -18,8 +18,8 @@ pub fn App() -> impl IntoView {
 
             <main id="main-content" tabindex="-1">
                 <h1 class="sr-only">"Xodium Software — open-source CAD software"</h1>
-                <BuildingBlocksScene>
-                    <BuildingBlock props=BuildingBlockProperties {
+                <Object3dScene>
+                    <Object3d props=Object3dProperties {
                         width: 80.0,
                         depth: 40.0,
                         height: 60.0,
@@ -27,7 +27,7 @@ pub fn App() -> impl IntoView {
                         offset_x: 0.0,
                         offset_y: 0.0,
                     } />
-                    <BuildingBlock props=BuildingBlockProperties {
+                    <Object3d props=Object3dProperties {
                         width: 60.0,
                         depth: 60.0,
                         height: 30.0,
@@ -35,7 +35,7 @@ pub fn App() -> impl IntoView {
                         offset_x: -180.0,
                         offset_y: 0.0,
                     } />
-                    <BuildingBlock props=BuildingBlockProperties {
+                    <Object3d props=Object3dProperties {
                         width: 25.0,
                         depth: 25.0,
                         height: 90.0,
@@ -43,7 +43,7 @@ pub fn App() -> impl IntoView {
                         offset_x: 180.0,
                         offset_y: 0.0,
                     } />
-                </BuildingBlocksScene>
+                </Object3dScene>
             </main>
 
             <Footer />

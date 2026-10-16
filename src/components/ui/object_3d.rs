@@ -1,8 +1,8 @@
-use crate::components::sections::scene_context::{DRAG_CLICK_SUPPRESS_MS, SceneContext};
+use crate::contexts::scene::{DRAG_CLICK_SUPPRESS_MS, SceneContext};
 use leptos::prelude::*;
 
 #[derive(Clone, Copy)]
-pub struct BuildingBlockProperties {
+pub struct Object3dProperties {
     /// Width along the X axis (screen right-down in projection).
     pub width: f64,
     /// Depth along the Y axis (screen left-down in projection).
@@ -17,25 +17,25 @@ pub struct BuildingBlockProperties {
     pub offset_y: f64,
 }
 
-/// A single isometric wireframe block. Renders just the SVG and its
+/// A single isometric wireframe object. Renders just the SVG and its
 /// interactive target wrapper; pan and zoom are applied by the enclosing
-/// `BuildingBlocksScene`, so multiple blocks move as one scene.
+/// `Object3dScene`, so multiple objects move as one scene.
 ///
-/// Clicking the block toggles its own pinned "selected" state via DaisyUI's
-/// `tooltip-open` class; the block stays lifted and its tooltip stays visible
+/// Clicking the object toggles its own pinned "selected" state via DaisyUI's
+/// `tooltip-open` class; the object stays lifted and its tooltip stays visible
 /// until clicked again. Keyboard-accessible via Enter or Space. A click that
 /// follows a drag is suppressed via [`SceneContext::last_drag_end`] so
 /// releasing the mouse after panning does not also toggle the pin.
 #[component]
 #[must_use]
-pub fn BuildingBlock(props: BuildingBlockProperties) -> impl IntoView {
+pub fn Object3d(props: Object3dProperties) -> impl IntoView {
     const COS30: f64 = 0.866_025_403_784_438_6;
     const SIN30: f64 = 0.5;
 
     let (selected, set_selected) = signal(false);
     let scene = use_context::<SceneContext>();
 
-    let BuildingBlockProperties {
+    let Object3dProperties {
         width,
         depth,
         height,
@@ -80,7 +80,7 @@ pub fn BuildingBlock(props: BuildingBlockProperties) -> impl IntoView {
 
     view! {
         <div
-            class="building-block-target tooltip tooltip-top"
+            class="object-3d-target tooltip tooltip-top"
             class:tooltip-open=selected
             role="button"
             aria-label=name
@@ -104,7 +104,7 @@ pub fn BuildingBlock(props: BuildingBlockProperties) -> impl IntoView {
             }
         >
             <svg
-                class="building-block-iso"
+                class="object-3d-iso"
                 viewBox=view_box
                 xmlns="http://www.w3.org/2000/svg"
                 role="img"
