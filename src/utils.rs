@@ -39,9 +39,3 @@ pub fn apply_reduced_motion_class() {
         let _ = html.class_list().add_1("reduced-motion");
     }
 }
-
-/// Strip a `-dirty` suffix from a Git SHA, if present.
-#[must_use]
-pub fn clean_sha(sha: &str) -> &str {
-    sha.strip_suffix("-dirty").unwrap_or(sha)
-}

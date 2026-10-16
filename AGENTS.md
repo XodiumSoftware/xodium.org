@@ -183,7 +183,7 @@ public/
 
 index.html                     # Trunk entry template
 Trunk.toml                     # Trunk configuration
-build.rs                       # Build script
+
 ```
 
 ### Key Conventions

@@ -1,7 +1,5 @@
-use crate::utils::clean_sha;
 use leptos::prelude::*;
 
-const GIT_SHA: &str = env!("GIT_SHA");
 const GITHUB_REPO_URL: &str = "https://github.com/XodiumSoftware/xodium.org/commit";
 
 /// Blueprint title block — the rectangular metadata frame found in the bottom
@@ -10,7 +8,9 @@ const GITHUB_REPO_URL: &str = "https://github.com/XodiumSoftware/xodium.org/comm
 ///
 /// The revision cell links to the commit that produced the current build so a
 /// visitor can trace a deployed sheet back to its source, exactly like the
-/// "REV" letter on a controlled drawing.
+/// "REV" letter on a controlled drawing. The commit SHA is read from the
+/// `GIT_SHA` environment variable set by the CI workflow; local builds leave
+/// it unset and the cell renders as "N.A." with no link.
 ///
 /// Rendered as a real `<table>` so screen readers announce it as tabular
 /// metadata rather than as page content.
@@ -18,16 +18,8 @@ const GITHUB_REPO_URL: &str = "https://github.com/XodiumSoftware/xodium.org/comm
 #[must_use]
 pub fn TitleBlock() -> impl IntoView {
     let current_year = js_sys::Date::new_0().get_full_year();
-    let commit_url = if GIT_SHA == "unknown" {
-        None
-    } else {
-        Some(format!("{GITHUB_REPO_URL}/{}", clean_sha(GIT_SHA)))
-    };
-    let rev_label = if GIT_SHA == "unknown" {
-        "A".to_string()
-    } else {
-        clean_sha(GIT_SHA).to_string()
-    };
+    let git_sha = option_env!("GIT_SHA");
+    let commit_url = git_sha.map(|sha| format!("{GITHUB_REPO_URL}/{sha}"));
 
     view! {
         <table
@@ -72,11 +64,11 @@ pub fn TitleBlock() -> impl IntoView {
                                     rel="noopener noreferrer"
                                     class="title-block-value link link-hover link-primary"
                                 >
-                                    {rev_label}
+                                    {git_sha.unwrap_or("")}
                                 </a>
                             }.into_any(),
                             None => view! {
-                                <span class="title-block-value">{rev_label}</span>
+                                <span class="title-block-value">"N.A."</span>
                             }.into_any(),
                         }}
                     </td>
