@@ -14,16 +14,47 @@ pub struct Dimensions {
 
 #[derive(Clone, Copy)]
 pub struct Position {
-    /// Lattice X coordinate of the object's centre, in drawing units. The
-    /// value lives on the same 3D grid the block's own vertices use, so two
-    /// blocks whose `position.x` differ by `(a.width + b.width) / 2` touch
-    /// faces on the X axis. Projected isometrically for the screen position.
+    /// Lattice X coordinate of the object's centre, in drawing units.
     pub x: f64,
-    /// Lattice Y coordinate (screen back-left to front-right on the top
-    /// face). See `x`.
+    /// Lattice Y coordinate (screen back-left to front-right on top face).
     pub y: f64,
-    /// Lattice Z coordinate (vertical, positive is up). See `x`.
+    /// Lattice Z coordinate (vertical, positive is up).
     pub z: f64,
+}
+
+/// A cardinal face of an object, used to describe attachments.
+#[derive(Clone, Copy)]
+pub enum Face {
+    /// The +Z face (top). Attaching to the top places the new block above.
+    Top,
+    /// The -Z face (bottom).
+    Bottom,
+    /// The -X face (screen back-left).
+    Left,
+    /// The +X face (screen front-right).
+    Right,
+    /// The -Y face (screen front-left).
+    Front,
+    /// The +Y face (screen back-right).
+    Back,
+}
+
+/// How a block is placed inside a scene.
+#[derive(Clone, Copy)]
+pub enum Placement {
+    /// Place at an explicit lattice coordinate. No attachment is computed.
+    At(Position),
+    /// Attach to another block's face. The new block's opposite face is
+    /// brought flush against the target's face on the same axis: attaching
+    /// to `Face::Top` stacks the new block on top; to `Face::Right` places
+    /// it to the right of the target, and so on. `target` is the `name` of
+    /// a sibling block that must appear earlier in the scene's child list.
+    AttachedTo {
+        /// Name of the sibling block to attach to.
+        target: &'static str,
+        /// Which face of the target to attach against.
+        face: Face,
+    },
 }
 
 #[derive(Clone, Copy)]
@@ -42,8 +73,8 @@ pub struct Object3dProperties {
     pub name: &'static str,
     /// Bounding-box size of the object.
     pub size: Dimensions,
-    /// Centre of the object on the drawing lattice.
-    pub position: Position,
+    /// How the object is placed on the lattice.
+    pub placement: Placement,
     /// Optional per-face colour overrides. `None` uses the blueprint theme
     /// defaults (primary / secondary / accent). `Some(FaceColors { .. })`
     /// replaces all three faces at once.
@@ -83,7 +114,7 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
             height,
         },
         name,
-        position: Position { x, y, z },
+        placement,
         colors,
         is_draft,
     } = props;
@@ -91,7 +122,12 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
 
     let project = move |x: f64, y: f64, z: f64| ((x - y) * COS30, (x + y) * SIN30 - z);
 
-    let (screen_x, screen_y) = project(x, y, z);
+    let (screen_x, screen_y) = match placement {
+        Placement::At(Position { x, y, z }) => project(x, y, z),
+        Placement::AttachedTo { .. } => {
+            panic!("AttachedTo placements are resolved by Object3dScene before render")
+        }
+    };
 
     let back_top = project(-hw, -hd, hh);
     let right_top = project(hw, -hd, hh);
