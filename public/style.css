@@ -294,6 +294,34 @@ body::before {
     text-transform: uppercase;
 }
 
+/* Revision cell button — links to the commit that produced the build.
+   Rendered as a small framed button inside the title-block cell so it matches
+   the pop-out lift behaviour of the link badges. */
+.title-block-rev {
+    display: inline-block;
+    padding: 0.125rem 0.5rem;
+    border: 1px solid var(--color-base-content);
+    color: var(--color-primary);
+    text-decoration: none;
+    transition:
+        color 0.12s ease,
+        transform 0.1s ease,
+        box-shadow 0.1s ease,
+        background-color 0.12s ease;
+}
+
+.title-block-rev:hover {
+    color: var(--color-base-100);
+    background-color: var(--color-primary);
+    transform: translate(-2px, -2px);
+    box-shadow: 3px 3px 0 0 var(--shadow-drop);
+}
+
+.title-block-rev:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 0 var(--shadow-drop);
+}
+
 /* Link badges — a two-row frame sitting immediately left of the title
    block. The containing nav carries the 2px outer outline; each cell carries
    its own 1px border so the drawn frame travels with the cell when it lifts
