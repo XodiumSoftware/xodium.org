@@ -2,6 +2,14 @@ use leptos::prelude::*;
 use wasm_bindgen::JsCast;
 
 const DBLCLICK_WINDOW_MS: f64 = 400.0;
+const DRAG_CLICK_SUPPRESS_MS: f64 = 100.0;
+
+/// Shared pan/zoom signals and drag-suppression timestamp, provided by
+/// [`BuildingBlocksScene`] and consumed by each nested [`BuildingBlock`].
+#[derive(Clone, Copy)]
+struct SceneContext {
+    last_drag_end: ReadSignal<f64>,
+}
 
 #[derive(Clone, Copy)]
 pub struct BuildingBlockProperties {
@@ -13,68 +21,37 @@ pub struct BuildingBlockProperties {
     pub height: f64,
     /// Display name shown in the tooltip on hover / when pinned.
     pub name: &'static str,
+    /// Horizontal offset from the scene's centre, in pixels at 1x zoom.
+    pub offset_x: f64,
+    /// Vertical offset from the scene's centre, in pixels at 1x zoom.
+    pub offset_y: f64,
 }
 
-impl Default for BuildingBlockProperties {
-    fn default() -> Self {
-        Self {
-            width: 80.0,
-            depth: 40.0,
-            height: 60.0,
-            name: "Building Block",
-        }
-    }
-}
-
-/// Isometric wireframe skeleton of a rectangular box, drawn per engineering
-/// convention (ISO 128 / ASME Y14.2 hidden lines).
+/// A single isometric wireframe block. Renders just the SVG and its
+/// interactive target wrapper; pan and zoom are applied by the enclosing
+/// `BuildingBlocksScene`, so multiple blocks move as one scene.
 ///
-/// The box is projected with the classic 30-degree isometric transform:
-/// `screen_x = (x - y) * cos(30°)`, `screen_y = (x + y) * sin(30°) - z`. For
-/// a perfect cube the eight vertices collapse onto a regular hexagon with the
-/// front-top and back-bottom corners coinciding at the center; for non-cubic
-/// extents the hexagon stretches accordingly.
-///
-/// Faces are translucent-filled from the DaisyUI theme (top = primary, left =
-/// secondary, right = accent) and edges are stroked in `base-content`. The
-/// three hidden edges meeting at the back-bottom vertex are dashed.
-///
-/// Clicking the block toggles a pinned "selected" state via DaisyUI's
-/// `tooltip-open` class; the block stays lifted and the tooltip stays visible
-/// until clicked again. Keyboard-accessible via Enter or Space.
-///
-/// Mouse wheel over the block zooms the drawing independently of browser
-/// zoom. Scale is clamped between 0.25× and 4× and applied as a CSS
-/// `transform: scale()` on the SVG, so stroke widths scale with the geometry
-/// like a vector drawing being magnified.
-///
-/// Drag with any mouse button pans the drawing. A press is disambiguated
-/// from a click by a 4-pixel movement threshold: move further before release
-/// and it counts as a pan, otherwise as a click that toggles selection.
-/// Double-clicking with the middle mouse button resets pan and zoom to 1:1.
-/// Because the UI Events spec only fires `dblclick` for the primary button,
-/// the middle-button double-tap is detected manually: two middle-pointerup
-/// events within 400ms reset the view.
+/// Clicking the block toggles its own pinned "selected" state via DaisyUI's
+/// `tooltip-open` class; the block stays lifted and its tooltip stays visible
+/// until clicked again. Keyboard-accessible via Enter or Space. A click that
+/// follows a drag is suppressed via [`SceneContext::last_drag_end`] so
+/// releasing the mouse after panning does not also toggle the pin.
 #[component]
 #[must_use]
 pub fn BuildingBlock(props: BuildingBlockProperties) -> impl IntoView {
     const COS30: f64 = 0.866_025_403_784_438_6;
     const SIN30: f64 = 0.5;
-    const ZOOM_MIN: f64 = 0.25;
-    const ZOOM_MAX: f64 = 4.0;
-    const ZOOM_STEP: f64 = 1.1;
 
     let (selected, set_selected) = signal(false);
-    let (zoom, set_zoom) = signal(1.0f64);
-    let (pan, set_pan) = signal((0.0f64, 0.0f64));
-    let (drag_origin, set_drag_origin) = signal(Option::<(f64, f64, f64, f64, bool)>::None);
-    let (last_middle_up, set_last_middle_up) = signal(0.0f64);
+    let scene = use_context::<SceneContext>();
 
     let BuildingBlockProperties {
         width,
         depth,
         height,
         name,
+        offset_x,
+        offset_y,
     } = props;
     let (hw, hd, hh) = (width / 2.0, depth / 2.0, height / 2.0);
 
@@ -112,94 +89,37 @@ pub fn BuildingBlock(props: BuildingBlockProperties) -> impl IntoView {
     let tooltip = name.to_string();
 
     view! {
-        <section
-            class="building-block"
-            aria-label="Drawing viewport"
-            on:wheel=move |ev| {
-                ev.prevent_default();
-                let factor = if ev.delta_y() < 0.0 { ZOOM_STEP } else { 1.0 / ZOOM_STEP };
-                set_zoom.update(|z| {
-                    *z = (*z * factor).clamp(ZOOM_MIN, ZOOM_MAX);
+        <div
+            class="building-block-target tooltip tooltip-top"
+            class:tooltip-open=selected
+            role="button"
+            aria-label=name
+            aria-pressed=move || selected.get().to_string()
+            tabindex="0"
+            data-tip=tooltip
+            style=format!("left: calc(50% + {offset_x:.2}px); top: calc(50% + {offset_y:.2}px);")
+            on:click=move |_| {
+                let suppress = scene.is_some_and(|s| {
+                    js_sys::Date::now() - s.last_drag_end.get() < DRAG_CLICK_SUPPRESS_MS
                 });
-            }
-            on:pointerdown=move |ev| {
-                let (px, py) = pan.get();
-                let on_cube = ev
-                    .target()
-                    .and_then(|t| t.dyn_into::<leptos::web_sys::Element>().ok())
-                    .is_some_and(|el| el.closest(".building-block-target").ok().flatten().is_some());
-                set_drag_origin.set(Some((
-                    f64::from(ev.client_x()),
-                    f64::from(ev.client_y()),
-                    px,
-                    py,
-                    on_cube,
-                )));
-            }
-            on:pointermove=move |ev| {
-                if let Some((sx, sy, px, py, _)) = drag_origin.get() {
-                    if ev.buttons() == 0 {
-                        set_drag_origin.set(None);
-                        return;
-                    }
-                    let dx = f64::from(ev.client_x()) - sx;
-                    let dy = f64::from(ev.client_y()) - sy;
-                    set_pan.set((px + dx, py + dy));
+                if !suppress {
+                    set_selected.update(|s| *s = !*s);
                 }
             }
-            on:pointerup=move |ev| {
-                if ev.button() == 1 {
-                    let now = js_sys::Date::now();
-                    if now - last_middle_up.get() < DBLCLICK_WINDOW_MS {
-                        ev.prevent_default();
-                        set_pan.set((0.0, 0.0));
-                        set_zoom.set(1.0);
-                        set_last_middle_up.set(0.0);
-                    } else {
-                        set_last_middle_up.set(now);
-                    }
-                }
-                if let Some((sx, sy, px, py, on_cube)) = drag_origin.get() {
-                    let dx = f64::from(ev.client_x()) - sx;
-                    let dy = f64::from(ev.client_y()) - sy;
-                    let moved = (dx * dx + dy * dy).sqrt() > 4.0;
-                    if moved {
-                        set_pan.set((px + dx, py + dy));
-                    } else if ev.button() == 0 && on_cube {
-                        set_selected.update(|s| *s = !*s);
-                    }
-                    set_drag_origin.set(None);
+            on:keydown=move |ev| {
+                if ev.key() == "Enter" || ev.key() == " " {
+                    ev.prevent_default();
+                    set_selected.update(|s| *s = !*s);
                 }
             }
-            on:pointerleave=move |_| set_drag_origin.set(None)
-            on:pointercancel=move |_| set_drag_origin.set(None)
         >
-            <div
-                class="building-block-target tooltip tooltip-top"
-                class:tooltip-open=selected
-                role="button"
-                aria-label=name
-                aria-pressed=move || selected.get().to_string()
-                tabindex="0"
-                data-tip=tooltip
-                style=move || {
-                    let (px, py) = pan.get();
-                    format!("--zoom: {:.3}; --pan-x: {:.2}px; --pan-y: {:.2}px;", zoom.get(), px, py)
-                }
-                on:keydown=move |ev| {
-                    if ev.key() == "Enter" || ev.key() == " " {
-                        ev.prevent_default();
-                        set_selected.update(|s| *s = !*s);
-                    }
-                }
+            <svg
+                class="building-block-iso"
+                viewBox=view_box
+                xmlns="http://www.w3.org/2000/svg"
+                role="img"
+                aria-hidden="true"
             >
-                <svg
-                    class="building-block-iso"
-                    viewBox=view_box
-                    xmlns="http://www.w3.org/2000/svg"
-                    role="img"
-                    aria-hidden="true"
-                >
                 <g class="iso-face iso-top">
                     <polygon points=top_face />
                 </g>
@@ -250,6 +170,101 @@ pub fn BuildingBlock(props: BuildingBlockProperties) -> impl IntoView {
                     />
                 </g>
             </svg>
+        </div>
+    }
+}
+
+/// Collective viewport that hosts any number of [`BuildingBlock`] children
+/// and owns the shared pan/zoom state. Drag with any mouse button pans the
+/// whole scene; mouse wheel zooms around the centre; double-tapping the
+/// middle button within 400ms resets the view to 1:1 centred (the UI Events
+/// spec only fires `dblclick` for the primary button, so the middle-button
+/// double-tap is detected by hand). When a drag ends after moving more than
+/// 4 pixels, `last_drag_end` is stamped so the click that immediately follows
+/// does not also toggle a block's pinned state.
+#[component]
+#[must_use]
+pub fn BuildingBlocksScene(children: Children) -> impl IntoView {
+    const ZOOM_MIN: f64 = 0.25;
+    const ZOOM_MAX: f64 = 4.0;
+    const ZOOM_STEP: f64 = 1.1;
+
+    let (zoom, set_zoom) = signal(1.0f64);
+    let (pan, set_pan) = signal((0.0f64, 0.0f64));
+    let (drag_origin, set_drag_origin) = signal(Option::<(f64, f64, f64, f64)>::None);
+    let (last_middle_up, set_last_middle_up) = signal(0.0f64);
+    let (last_drag_end, set_last_drag_end) = signal(0.0f64);
+
+    provide_context(SceneContext { last_drag_end });
+
+    view! {
+        <section
+            class="building-block-scene"
+            aria-label="Drawing viewport"
+            on:wheel=move |ev| {
+                ev.prevent_default();
+                let factor = if ev.delta_y() < 0.0 { ZOOM_STEP } else { 1.0 / ZOOM_STEP };
+                set_zoom.update(|z| {
+                    *z = (*z * factor).clamp(ZOOM_MIN, ZOOM_MAX);
+                });
+            }
+            on:pointerdown=move |ev| {
+                let (px, py) = pan.get();
+                let on_cube = ev
+                    .target()
+                    .and_then(|t| t.dyn_into::<leptos::web_sys::Element>().ok())
+                    .is_some_and(|el| el.closest(".building-block-target").ok().flatten().is_some());
+                let _ = on_cube;
+                set_drag_origin.set(Some((
+                    f64::from(ev.client_x()),
+                    f64::from(ev.client_y()),
+                    px,
+                    py,
+                )));
+            }
+            on:pointermove=move |ev| {
+                if let Some((sx, sy, px, py)) = drag_origin.get() {
+                    if ev.buttons() == 0 {
+                        set_drag_origin.set(None);
+                        return;
+                    }
+                    let dx = f64::from(ev.client_x()) - sx;
+                    let dy = f64::from(ev.client_y()) - sy;
+                    set_pan.set((px + dx, py + dy));
+                }
+            }
+            on:pointerup=move |ev| {
+                if ev.button() == 1 {
+                    let now = js_sys::Date::now();
+                    if now - last_middle_up.get() < DBLCLICK_WINDOW_MS {
+                        ev.prevent_default();
+                        set_pan.set((0.0, 0.0));
+                        set_zoom.set(1.0);
+                        set_last_middle_up.set(0.0);
+                    } else {
+                        set_last_middle_up.set(now);
+                    }
+                }
+                if let Some((sx, sy, _, _)) = drag_origin.get() {
+                    let dx = f64::from(ev.client_x()) - sx;
+                    let dy = f64::from(ev.client_y()) - sy;
+                    if (dx * dx + dy * dy).sqrt() > 4.0 {
+                        set_last_drag_end.set(js_sys::Date::now());
+                    }
+                }
+                set_drag_origin.set(None);
+            }
+            on:pointerleave=move |_| set_drag_origin.set(None)
+            on:pointercancel=move |_| set_drag_origin.set(None)
+        >
+            <div
+                class="building-block-layer"
+                style=move || {
+                    let (px, py) = pan.get();
+                    format!("--zoom: {:.3}; --pan-x: {:.2}px; --pan-y: {:.2}px;", zoom.get(), px, py)
+                }
+            >
+                {children()}
             </div>
         </section>
     }

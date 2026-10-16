@@ -16,7 +16,9 @@ pub mod components {
         pub mod title_block;
     }
 
-    pub use sections::building_block::BuildingBlock;
+    pub use sections::building_block::{
+        BuildingBlock, BuildingBlockProperties, BuildingBlocksScene,
+    };
     pub use sections::footer::Footer;
     pub use sections::header::Header;
 

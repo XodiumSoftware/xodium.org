@@ -299,12 +299,11 @@ body::before {
     background-color: var(--color-base-100);
 }
 
-.building-block {
+.building-block-scene {
     grid-area: 1 / 1;
     width: 100%;
     height: 100%;
-    display: grid;
-    place-items: center;
+    position: relative;
     color: var(--color-base-content);
     font-family: var(--font-mono, ui-monospace, monospace);
     font-size: 0.75rem;
@@ -316,12 +315,19 @@ body::before {
     animation: block-in 400ms ease-out 1100ms both;
 }
 
-.building-block:active {
+.building-block-scene:active {
     cursor: grabbing;
 }
 
-.building-block:active .building-block-target {
+.building-block-scene:active .building-block-layer {
     transition: none;
+}
+
+.building-block-layer {
+    position: absolute;
+    inset: 0;
+    transition: transform 300ms ease;
+    transform: translate(var(--pan-x, 0), var(--pan-y, 0)) scale(var(--zoom, 1));
 }
 
 .building-block-iso {
@@ -333,18 +339,19 @@ body::before {
 }
 
 .building-block-target {
+    position: absolute;
     display: inline-grid;
     place-items: center;
     cursor: pointer;
     user-select: none;
+    margin-left: -3.75rem;
+    margin-top: -3.75rem;
     transition: transform 300ms ease;
-    transform: translate(var(--pan-x, 0), var(--pan-y, 0)) scale(var(--zoom, 1));
 }
 
 .building-block-target:hover,
 .building-block-target.tooltip-open {
-    transform: translate(var(--pan-x, 0), var(--pan-y, 0)) scale(var(--zoom, 1))
-        translateY(calc(-4px / var(--zoom, 1)));
+    transform: translateY(-4px);
 }
 
 .iso-face polygon {
@@ -569,11 +576,12 @@ body::before {
     .corner-stack > .title-block-anchor,
     .blueprint-footer,
     .legend-block,
-    .building-block {
+    .building-block-scene {
         animation: none;
     }
 
-    .building-block-target {
+    .building-block-target,
+    .building-block-layer {
         transition: none;
     }
 
