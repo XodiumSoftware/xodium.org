@@ -12,7 +12,7 @@ gloo-storage = "0.4"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 js-sys = "0.3"
-web-sys = { version = "0.3", features = ["MediaQueryList", "Document", "Element", "console"] }
+web-sys = { version = "0.3", features = ["Element", "console"] }
 console_error_panic_hook = "0.1"
 
 [dev-dependencies]
