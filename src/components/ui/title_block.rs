@@ -2,6 +2,20 @@ use leptos::prelude::*;
 
 const GITHUB_REPO_URL: &str = "https://github.com/XodiumSoftware/xodium.org/commit";
 
+fn read_scale() -> String {
+    leptos::web_sys::window().map_or_else(
+        || "1:1".to_string(),
+        |w| {
+            let ratio = w.device_pixel_ratio();
+            if (ratio - 1.0).abs() < f64::EPSILON {
+                "1:1".to_string()
+            } else {
+                format!("1:{ratio:.2}")
+            }
+        },
+    )
+}
+
 /// Blueprint title block — the rectangular metadata frame found in the bottom
 /// right corner of engineering drawings (sheet number, title, drawn-by, date,
 /// current revision).
@@ -12,6 +26,11 @@ const GITHUB_REPO_URL: &str = "https://github.com/XodiumSoftware/xodium.org/comm
 /// `GIT_SHA` environment variable set by the CI workflow; local builds leave
 /// it unset and the cell renders as "N.A." with no link.
 ///
+/// The SCALE cell shows the live device pixel ratio as a drafting-style
+/// scale pair: 1:1 at 100% zoom, 1:1.25 at 125%, and so on. The value is
+/// re-read on window resize so the cell tracks the browser zoom control
+/// without requiring a page reload.
+///
 /// Rendered as a real `<table>` so screen readers announce it as tabular
 /// metadata rather than as page content.
 #[component]
@@ -21,17 +40,22 @@ pub fn TitleBlock() -> impl IntoView {
     let git_sha = option_env!("GIT_SHA");
     let commit_url = git_sha.map(|sha| format!("{GITHUB_REPO_URL}/{sha}"));
 
-    let scale = leptos::web_sys::window().map_or_else(
-        || "1:1".to_string(),
-        |w| {
-            let ratio = w.device_pixel_ratio();
-            if (ratio - 1.0).abs() < f64::EPSILON {
-                "1:1".to_string()
-            } else {
-                format!("1:{ratio:.2}")
-            }
-        },
-    );
+    let (scale, set_scale) = signal(read_scale());
+
+    Effect::new(move |_| {
+        use leptos::wasm_bindgen::JsCast;
+        use leptos::wasm_bindgen::closure::Closure;
+        use leptos::web_sys;
+
+        let Some(window) = web_sys::window() else {
+            return;
+        };
+        let closure = Closure::wrap(Box::new(move || {
+            set_scale.set(read_scale());
+        }) as Box<dyn FnMut()>);
+        let _ = window.add_event_listener_with_callback("resize", closure.as_ref().unchecked_ref());
+        closure.forget();
+    });
 
     view! {
         <table
