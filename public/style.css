@@ -18,29 +18,23 @@
     prefersdark: true;
     color-scheme: "dark";
 
-    /* Paper surfaces — deep blueprint navy */
     --color-base-100: #0a2540;
     --color-base-200: #0d2f52;
     --color-base-300: #113a66;
     --color-base-content: #d9e8f5;
 
-    /* Primary — bright blueprint cyan (the drawn line) */
     --color-primary: #4da6ff;
     --color-primary-content: #041020;
 
-    /* Secondary — muted steel blue (dimension lines, secondary annotations) */
     --color-secondary: #7ba7d9;
     --color-secondary-content: #041020;
 
-    /* Accent — redline red (markup, corrections, current revision) */
     --color-accent: #ff6b6b;
     --color-accent-content: #1a0404;
 
-    /* Neutral — grid/measurement tone */
     --color-neutral: #1a3a5c;
     --color-neutral-content: #c8dcec;
 
-    /* State */
     --color-info: #4da6ff;
     --color-info-content: #041020;
     --color-success: #5ec97a;
@@ -50,7 +44,6 @@
     --color-error: #ff6b6b;
     --color-error-content: #1a0404;
 
-    /* Drafting geometry: sharp corners, thin lines, no soft depth */
     --radius-selector: 0rem;
     --radius-field: 0rem;
     --radius-box: 0rem;
@@ -59,24 +52,10 @@
     --noise: 0;
 }
 
-/* Semantic surface colors used by components that sit outside the main theme canvas. */
+/* Drop-shadow tint used by the link-badge lift hover. Darker than base-100
+   so it reads as a physical shadow on the blueprint paper. */
 :root {
     --shadow-drop: #041020;
-    --surface-light: #d0d0d0;
-    --surface-dark: #1a1a1a;
-    --kbd-shadow: 0 2px 0 0 rgba(0, 0, 0, 0.3);
-}
-
-@utility bg-surface-light {
-    background-color: var(--surface-light);
-}
-
-@utility bg-surface-dark {
-    background-color: var(--surface-dark);
-}
-
-@utility shadow-kbd {
-    box-shadow: var(--kbd-shadow);
 }
 
 html {
@@ -136,106 +115,36 @@ body::before {
     outline: none;
 }
 
-.lift {
-    transition:
-        transform 0.1s ease,
-        box-shadow 0.1s ease;
+/* Blueprint sheet border — double-line frame inset from the viewport edge,
+   matching the border convention on engineering drawings. The outer thin line
+   sits at 8px from the viewport; the inner thicker line at 16px. */
+.blueprint-frame {
+    position: relative;
+    min-height: 100dvh;
 }
 
-.lift:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 3px 3px 0 0 var(--shadow-drop);
+.blueprint-frame::before,
+.blueprint-frame::after {
+    content: "";
+    position: fixed;
+    pointer-events: none;
+    z-index: 40;
+    border-color: var(--color-base-content);
 }
 
-.lift:active {
-    transform: translate(2px, 2px);
-    box-shadow: 1px 1px 0 0 var(--shadow-drop);
+.blueprint-frame::before {
+    inset: 8px;
+    border: 1px solid var(--color-base-content);
 }
 
-.btn-outline-ghost {
-    background-color: transparent !important;
-    color: oklch(var(--color-base-content)) !important;
-    border-color: oklch(var(--color-base-content)) !important;
+.blueprint-frame::after {
+    inset: 16px;
+    border: 2px solid var(--color-base-content);
 }
 
-.btn-outline-ghost:hover {
-    background-color: transparent !important;
-    color: oklch(var(--color-base-content)) !important;
-    border-color: oklch(var(--color-base-content)) !important;
-}
-
-.btn-hover-warning:hover {
-    color: var(--color-warning) !important;
-    border-color: var(--color-warning) !important;
-}
-
-.bg-ghost {
-    background-color: transparent !important;
-}
-
-.bg-ghost:hover {
-    background-color: transparent !important;
-}
-
-.btn-lift {
-    border-radius: 0;
-    border-width: 2px;
-    box-shadow: 4px 4px 0 0 var(--shadow-drop);
-    transition:
-        transform 0.1s ease,
-        box-shadow 0.1s ease;
-}
-
-.btn-lift:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 0 var(--shadow-drop);
-}
-
-.btn-lift:active {
-    transform: translate(2px, 2px);
-    box-shadow: 2px 2px 0 0 var(--shadow-drop);
-}
-
-/* Featured card (e.g. Cadiotheka): primary-tinted border glow behind the
-   hard-drop "lift" shadow. Both shadows share the same transition so they
-   stay in sync on hover/active. */
-.card-featured {
-    box-shadow:
-        4px 4px 0 0 var(--shadow-drop),
-        0 0 12px 2px oklch(from var(--color-primary) l c h / 0.55),
-        0 0 32px 4px oklch(from var(--color-primary) l c h / 0.3);
-}
-
-.card-featured:hover {
-    box-shadow:
-        6px 6px 0 0 var(--shadow-drop),
-        0 0 18px 3px oklch(from var(--color-primary) l c h / 0.7),
-        0 0 44px 6px oklch(from var(--color-primary) l c h / 0.4);
-}
-
-.card-featured:active {
-    box-shadow:
-        2px 2px 0 0 var(--shadow-drop),
-        0 0 8px 1px oklch(from var(--color-primary) l c h / 0.5),
-        0 0 20px 3px oklch(from var(--color-primary) l c h / 0.25);
-}
-
-/* 45° brickwork hatch — the "cut material" fill used on civil drawings.
-   Applied behind the featured card's content so the glow reads as a drawn
-   overlay on top of hatched paper. */
-.hatch-cut {
-    background-image: repeating-linear-gradient(
-        45deg,
-        oklch(from var(--color-primary) l c h / 0.06) 0,
-        oklch(from var(--color-primary) l c h / 0.06) 1px,
-        transparent 1px,
-        transparent 6px
-    );
-}
-
-/* Corner metadata cluster — link badges left of the title block, anchored
-   to the bottom-right of the viewport so they always land between the page
-   borders. */
+/* Corner metadata cluster — ASCII header on top of the LinkBadges +
+   TitleBlock row, anchored to the bottom-right of the viewport so the group
+   always lands between the page borders. */
 .corner-stack {
     position: fixed;
     right: 29px;
@@ -313,9 +222,8 @@ body::before {
 }
 
 /* Link badges — a two-row frame sitting immediately left of the title
-   block. The containing nav carries the 2px outer outline; each cell carries
-   its own 1px border so the drawn frame travels with the cell when it lifts
-   on hover. */
+   block. Flex column so the two cells split the parent's stretch height
+   evenly. */
 .link-badges {
     display: flex;
     flex-direction: column;
@@ -408,36 +316,7 @@ body::before {
     opacity: 0.5;
 }
 
-@media (max-width: 640px) {
-    .blueprint-footer {
-        left: 20px;
-        bottom: 20px;
-        font-size: 0.55rem;
-    }
-}
-
-@media (max-width: 640px) {
-    .corner-stack {
-        right: 20px;
-        bottom: 20px;
-    }
-    .title-block-anchor > :is(table, nav) {
-        outline-offset: 2px;
-    }
-    .title-block-cell {
-        padding: 0.375rem 0.625rem;
-        min-width: 3rem;
-    }
-    .title-block-cell-wide {
-        min-width: 8rem;
-    }
-    .link-badge-cell {
-        width: 2.75rem;
-        padding: 0.375rem;
-    }
-}
-
-/* Blueprint-style tooltips — pale-line frame on the dark base paper, square — pale-line frame on the dark base paper, square
+/* Blueprint-style tooltips — pale-line frame on the dark base paper, square
    corners and monospace type to match the rest of the sheet. Overrides
    DaisyUI's default rounded, border-less bubble. The arrow pseudo-element
    is hidden: engineering annotations attach to their subject with a leader
@@ -456,33 +335,6 @@ body::before {
 
 .tooltip::after {
     display: none;
-}
-
-/* Blueprint sheet border — double-line frame inset from the viewport edge,
-   matching the border convention on engineering drawings. The outer thin line
-   sits at 8px from the viewport; the inner thicker line at 16px. */
-.blueprint-frame {
-    position: relative;
-    min-height: 100dvh;
-}
-
-.blueprint-frame::before,
-.blueprint-frame::after {
-    content: "";
-    position: fixed;
-    pointer-events: none;
-    z-index: 40;
-    border-color: var(--color-base-content);
-}
-
-.blueprint-frame::before {
-    inset: 8px;
-    border: 1px solid var(--color-base-content);
-}
-
-.blueprint-frame::after {
-    inset: 16px;
-    border: 2px solid var(--color-base-content);
 }
 
 /* Axis connectors — the 1px construction lines spanning the drawing surface
@@ -532,608 +384,33 @@ body::before {
     text-transform: uppercase;
 }
 
-/* Orthographic viewports — the framed panes on a technical drawing that show
-   a single view (front / side / plan) of the subject. Empty by default; the
-   drawing content is placed in the .viewport-body slot. */
-.viewport-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    padding: 4rem 2rem;
-    max-width: 80rem;
-    margin-inline: auto;
-}
-
-@media (min-width: 768px) {
-    .viewport-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1.5rem;
-        padding: 6rem 3rem;
-    }
-}
-
-.viewport {
-    position: relative;
-    aspect-ratio: 4 / 3;
-    outline: 1px solid var(--color-base-content);
-    outline-offset: 3px;
-    border: 1px solid var(--color-base-content);
-    background: transparent;
-}
-
-.viewport-body {
-    position: absolute;
-    inset: 0;
-    padding: 1rem;
-}
-
-.viewport-title {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    padding: 0.375rem 0.625rem;
-    border-top: 1px solid var(--color-base-content);
-    border-left: 1px solid var(--color-base-content);
-    font-size: 0.65rem;
-    letter-spacing: 0.12em;
-    color: var(--color-base-content);
-    background-color: var(--color-base-100);
-}
-
-.blueprint-grid {
-    background-image:
-        linear-gradient(to right, var(--color-primary) 1px, transparent 1px),
-        linear-gradient(to bottom, var(--color-primary) 1px, transparent 1px);
-    background-size: 60px 60px;
-    background-position: center;
-    opacity: 0.08;
-}
-
-.blueprint-mask {
-    mask-image: radial-gradient(
-        ellipse 50% 50% at 50% 50%,
-        #000 60%,
-        transparent 100%
-    );
-}
-
-.bg-gradient-radial {
-    background: radial-gradient(
-        circle at center,
-        var(--tw-gradient-from) 0%,
-        var(--tw-gradient-to) 70%
-    );
-}
-
-.blueprint-scanline {
-    background: linear-gradient(
-        to bottom,
-        transparent 0%,
-        var(--color-primary) 50%,
-        transparent 100%
-    );
-    opacity: 0.1;
-    animation: scanline 8s linear infinite;
-    height: 4px;
-}
-
-@keyframes scanline {
-    0% {
-        transform: translateY(-100%);
-    }
-    100% {
-        transform: translateY(100vh);
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .blueprint-scanline {
-        animation: none;
-    }
-}
-
-.reduced-motion .blueprint-scanline {
-    animation: none;
-}
-
-/* Wireframe shapes animations */
-.wireframe-float-slow {
-    animation: wireframeFloat 12s ease-in-out infinite;
-}
-
-.wireframe-float-medium {
-    animation: wireframeFloat 8s ease-in-out infinite;
-}
-
-.wireframe-float-fast {
-    animation: wireframeFloat 6s ease-in-out infinite;
-}
-
-.wireframe-pulse {
-    animation: wireframePulse 4s ease-in-out infinite;
-}
-
-.wireframe-rotate-slow {
-    animation: wireframeRotate 20s linear infinite;
-}
-
-@keyframes wireframeFloat {
-    0%,
-    100% {
-        transform: translateY(0) translateX(0);
-    }
-    25% {
-        transform: translateY(-15px) translateX(5px);
-    }
-    50% {
-        transform: translateY(-5px) translateX(-5px);
-    }
-    75% {
-        transform: translateY(-20px) translateX(3px);
-    }
-}
-
-@keyframes wireframePulse {
-    0%,
-    100% {
-        opacity: 0.3;
-        transform: scale(1);
-    }
-    50% {
-        opacity: 0.6;
-        transform: scale(1.1);
-    }
-}
-
-@keyframes wireframeRotate {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .wireframe-float-slow,
-    .wireframe-float-medium,
-    .wireframe-float-fast,
-    .wireframe-pulse,
-    .wireframe-rotate-slow {
-        animation: none;
-    }
-}
-
-.reduced-motion .wireframe-float-slow,
-.reduced-motion .wireframe-float-medium,
-.reduced-motion .wireframe-float-fast,
-.reduced-motion .wireframe-pulse,
-.reduced-motion .wireframe-rotate-slow {
-    animation: none;
-}
-
-/* Landing parallax layers — CSS-only, never tied to scroll */
-.parallax-layer-slow {
-    will-change: transform;
-    animation: parallaxFloatSlow 20s ease-in-out infinite;
-}
-
-.parallax-layer-medium {
-    will-change: transform;
-    animation: parallaxFloatMedium 15s ease-in-out infinite;
-}
-
-.parallax-layer-fast {
-    will-change: transform;
-    animation: parallaxFloatFast 10s ease-in-out infinite;
-}
-
-@keyframes parallaxFloatSlow {
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-20px);
-    }
-}
-
-@keyframes parallaxFloatMedium {
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-35px);
-    }
-}
-
-@keyframes parallaxFloatFast {
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-50px);
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .parallax-layer-slow,
-    .parallax-layer-medium,
-    .parallax-layer-fast {
-        animation: none;
-    }
-}
-
-.reduced-motion .parallax-layer-slow,
-.reduced-motion .parallax-layer-medium,
-.reduced-motion .parallax-layer-fast {
-    animation: none;
-}
-
-/* CAD Line Drawing animations */
-.cad-line-hidden {
-    stroke-dasharray: 1200;
-    stroke-dashoffset: 1200;
-}
-
-.cad-line-draw {
-    stroke-dasharray: 1200;
-    stroke-dashoffset: 0;
-    animation: cadLineDraw 2s ease-out forwards;
-}
-
-.cad-line-draw-hero {
-    stroke-dasharray: 1200;
-    stroke-dashoffset: 1200;
-    animation: cadLineDraw 3s ease-out 0.5s forwards;
-}
-
-.cad-line-simple {
-    stroke-dasharray: 100;
-    stroke-dashoffset: 100;
-    animation: cadLineDraw 1.5s ease-in-out forwards;
-}
-
-.cad-dimension-text {
-    transition: fill-opacity 0.5s ease 2s;
-}
-
-@keyframes cadLineDraw {
-    to {
-        stroke-dashoffset: 0;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .cad-line-draw,
-    .cad-line-draw-hero,
-    .cad-line-simple {
-        animation: none;
-        stroke-dashoffset: 0;
-    }
-}
-
-.reduced-motion .cad-line-draw,
-.reduced-motion .cad-line-draw-hero,
-.reduced-motion .cad-line-simple {
-    animation: none;
-    stroke-dashoffset: 0;
-}
-
-/*noinspection ALL*/
-.nav-icon {
-    mask: var(--mask-url) no-repeat center / contain;
-    -webkit-mask: var(--mask-url) no-repeat center / contain;
-}
-
-.clip-organic-blob {
-    clip-path: polygon(
-        74.1% 44.1%,
-        100% 61.6%,
-        97.5% 26.9%,
-        85.5% 0.1%,
-        80.7% 2%,
-        72.5% 32.5%,
-        60.2% 62.4%,
-        52.4% 68.1%,
-        47.5% 58.3%,
-        45.2% 34.5%,
-        27.5% 76.7%,
-        0.1% 64.9%,
-        17.9% 100%,
-        27.6% 76.8%,
-        76.1% 97.7%,
-        74.1% 44.1%
-    );
-}
-
-.reduced-motion *,
-.reduced-motion *::before,
-.reduced-motion *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-}
-
-.reduced-motion .btn-lift,
-.reduced-motion .lift {
-    transition: none !important;
-    transform: none !important;
-}
-
-.reduced-motion .team-deck-container,
-.reduced-motion .team-card,
-.reduced-motion .team-cards-list,
-.reduced-motion .team-deck,
-.reduced-motion .team-deck-card {
-    animation: none !important;
-}
-
-.reduced-motion .team-deck-card {
-    transition: none !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
+@media (max-width: 640px) {
+    .corner-stack {
+        right: 20px;
+        bottom: 20px;
     }
 
-    .btn-lift,
-    .lift {
-        transition: none !important;
-        transform: none !important;
+    .title-block-anchor > :is(table, nav) {
+        outline-offset: 2px;
     }
 
-    .team-deck-container,
-    .team-card,
-    .team-cards-list,
-    .team-deck,
-    .team-deck-card {
-        animation: none !important;
+    .title-block-cell {
+        padding: 0.375rem 0.625rem;
+        min-width: 3rem;
     }
 
-    .team-deck-card {
-        transition: none !important;
-    }
-}
-
-/* Logo hover: expand + shake */
-.logo-container {
-    display: inline-block;
-    cursor: pointer;
-}
-
-.logo-piece {
-    transform-origin: 64px 64px;
-}
-
-.logo-piece path {
-    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-    transform-origin: center;
-}
-
-.logo-container:hover .logo-piece-bl path,
-.logo-container.logo-active .logo-piece-bl path {
-    transform: translate(-10px, 10px);
-}
-
-.logo-container:hover .logo-piece-tr path,
-.logo-container.logo-active .logo-piece-tr path {
-    transform: translate(10px, -10px);
-}
-
-.logo-container:hover .logo-piece-br path,
-.logo-container.logo-active .logo-piece-br path {
-    transform: translate(10px, 10px);
-}
-
-.logo-container:hover .logo-piece-tl path,
-.logo-container.logo-active .logo-piece-tl path {
-    transform: translate(-10px, -10px);
-}
-
-.logo-container:hover .logo-piece,
-.logo-container.logo-active .logo-piece {
-    animation: logo-shake 0.25s ease-in-out infinite;
-}
-
-@keyframes logo-shake {
-    0%,
-    100% {
-        transform: rotate(0deg);
-    }
-    25% {
-        transform: rotate(4deg);
-    }
-    75% {
-        transform: rotate(-4deg);
-    }
-}
-
-.reduced-motion .logo-piece path,
-.reduced-motion .logo-piece {
-    transition: none !important;
-    animation: none !important;
-    transform: none !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .logo-piece path,
-    .logo-piece {
-        transition: none !important;
-        animation: none !important;
-        transform: none !important;
-    }
-}
-
-/* Mobile: disable sticky hover/active states; rely on JS-driven .logo-active */
-@media (hover: none) {
-    .logo-container:hover .logo-piece-bl path,
-    .logo-container:hover .logo-piece-tr path,
-    .logo-container:hover .logo-piece-br path,
-    .logo-container:hover .logo-piece-tl path,
-    .logo-container:active .logo-piece-bl path,
-    .logo-container:active .logo-piece-tr path,
-    .logo-container:active .logo-piece-br path,
-    .logo-container:active .logo-piece-tl path {
-        transform: none;
+    .title-block-cell-wide {
+        min-width: 8rem;
     }
 
-    .logo-container:hover .logo-piece,
-    .logo-container:active .logo-piece {
-        animation: none;
+    .link-badge-cell {
+        width: 2.75rem;
+        padding: 0.375rem;
     }
 
-    /* Re-enable expand + shake for JS-driven .logo-active */
-    .logo-container.logo-active .logo-piece-bl path {
-        transform: translate(-10px, 10px);
-    }
-
-    .logo-container.logo-active .logo-piece-tr path {
-        transform: translate(10px, -10px);
-    }
-
-    .logo-container.logo-active .logo-piece-br path {
-        transform: translate(10px, 10px);
-    }
-
-    .logo-container.logo-active .logo-piece-tl path {
-        transform: translate(-10px, -10px);
-    }
-
-    .logo-container.logo-active .logo-piece {
-        animation: logo-shake 0.25s ease-in-out 6;
-    }
-}
-
-/* New Team Deck System with step rotation */
-.team-deck-wrapper {
-    perspective: 1200px;
-    transform-style: preserve-3d;
-    min-height: 500px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.team-deck {
-    position: relative;
-    width: 240px;
-    height: 336px;
-    transform-style: preserve-3d;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.team-deck-card {
-    position: absolute;
-    width: 240px;
-    height: 336px;
-    border-radius: 0;
-    border: 2px solid oklch(var(--color-base-content) / 0.8);
-    box-shadow: 4px 4px 0 0 rgba(0, 0, 0, 0.8);
-    background-color: var(--surface-light);
-    transform-style: preserve-3d;
-    transition:
-        transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1),
-        opacity 0.3s ease;
-    overflow: hidden;
-    cursor: pointer;
-}
-
-/* Member cards have dark background */
-.team-deck-card:not(.team-deck-title) {
-    background-color: var(--surface-dark);
-}
-
-/* Position 0: Front and center */
-.team-deck-card[data-deck-pos="0"] {
-    transform: translateX(0) translateZ(0px);
-    opacity: 1;
-    z-index: 100;
-}
-
-/* Position 1: Peeking from right edge (hover target) */
-.team-deck-card[data-deck-pos="1"] {
-    transform: translateX(80px) translateZ(-30px) rotateY(-3deg);
-    opacity: 1;
-    z-index: 90;
-    pointer-events: auto;
-}
-
-/* Positions 2+: Hidden behind */
-.team-deck-card[data-deck-pos="2"],
-.team-deck-card[data-deck-pos="3"],
-.team-deck-card[data-deck-pos="4"],
-.team-deck-card[data-deck-pos="5"],
-.team-deck-card[data-deck-pos="6"],
-.team-deck-card[data-deck-pos="7"] {
-    opacity: 0;
-    pointer-events: none;
-    transform: translateX(0) translateZ(-300px);
-}
-
-/* Title card overflow visible for corner-frame */
-.team-deck-title {
-    overflow: visible !important;
-}
-
-/* Member cards have dark background */
-.team-deck-card:not(.team-deck-title) {
-    background-color: #1a1a1a;
-}
-
-.team-deck-bg {
-    position: absolute;
-    inset: 0;
-    background: none;
-}
-
-/* Hover zone at right edge - triggers deck rotation */
-.deck-hover-zone {
-    position: absolute;
-    right: calc(
-        50% - 120px - 80px
-    ); /* Center - half card width - offset to edge */
-    top: 50%;
-    transform: translateY(-50%);
-    width: 80px;
-    height: 336px;
-    z-index: 95;
-    cursor: pointer;
-}
-
-.team-deck-wrapper:has(.deck-hover-zone:hover)
-    .team-deck-card[data-deck-pos="1"],
-.team-deck-wrapper:has(.team-deck-card.team-deck-title[data-deck-pos="0"]:hover)
-    .team-deck-card[data-deck-pos="1"] {
-    animation: card-edge-bounce 0.6s ease-in-out infinite;
-}
-
-.team-deck-wrapper:has(.deck-hover-zone:active)
-    .team-deck-card[data-deck-pos="1"],
-.team-deck-wrapper:has(
-        .team-deck-card.team-deck-title[data-deck-pos="0"]:active
-    )
-    .team-deck-card[data-deck-pos="1"] {
-    animation: none;
-}
-
-@keyframes card-edge-bounce {
-    0%,
-    100% {
-        transform: translateX(80px) translateZ(-30px) rotateY(-3deg);
-    }
-    50% {
-        transform: translateX(95px) translateZ(-30px) rotateY(-3deg);
+    .blueprint-footer {
+        left: 20px;
+        bottom: 20px;
+        font-size: 0.55rem;
     }
 }
