@@ -4,6 +4,7 @@ mod app;
 
 pub mod components {
     pub mod sections {
+        pub mod building_block;
         pub mod footer;
         pub mod header;
     }
@@ -15,6 +16,7 @@ pub mod components {
         pub mod title_block;
     }
 
+    pub use sections::building_block::BuildingBlock;
     pub use sections::footer::Footer;
     pub use sections::header::Header;
 

@@ -1,3 +1,4 @@
+use crate::components::sections::building_block::BuildingBlock;
 use crate::components::sections::footer::Footer;
 use crate::components::sections::header::Header;
 use leptos::prelude::*;
@@ -16,6 +17,7 @@ pub fn App() -> impl IntoView {
 
             <main id="main-content" tabindex="-1">
                 <h1 class="sr-only">"Xodium Software — open-source CAD software"</h1>
+                <BuildingBlock />
             </main>
 
             <Footer />

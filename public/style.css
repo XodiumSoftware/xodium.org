@@ -152,9 +152,22 @@ body::before {
     }
 }
 
+@keyframes block-in {
+    from {
+        opacity: 0;
+        transform: translateY(0.25rem);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .blueprint-frame {
     position: relative;
     min-height: 100dvh;
+    display: grid;
+    place-items: center;
 }
 
 .blueprint-frame::before,
@@ -201,6 +214,7 @@ body::before {
     border-top: 1px solid var(--color-base-content);
     margin: 0;
     width: 100%;
+    user-select: none;
 }
 
 .ascii-art {
@@ -213,6 +227,7 @@ body::before {
     text-align: center;
     margin: 0;
     user-select: none;
+    pointer-events: none;
     white-space: pre;
 }
 
@@ -227,6 +242,7 @@ body::before {
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--color-base-content);
+    user-select: none;
     animation: legend-in 400ms ease-out 900ms both;
 }
 
@@ -260,6 +276,63 @@ body::before {
     background-color: var(--color-base-100);
 }
 
+.building-block {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-base-content);
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    animation: block-in 400ms ease-out 1100ms both;
+}
+
+.building-block-iso {
+    width: 7.5rem;
+    height: 7.5rem;
+    color: var(--color-base-content);
+    user-select: none;
+    pointer-events: none;
+    transition: transform 300ms ease;
+}
+
+.building-block:hover .building-block-iso {
+    transform: translateY(-4px);
+}
+
+.iso-face polygon {
+    stroke: var(--color-base-content);
+    stroke-width: 1.5;
+    stroke-linejoin: miter;
+}
+
+.iso-top polygon {
+    fill: oklch(from var(--color-primary) l c h / 0.35);
+}
+
+.iso-left polygon {
+    fill: oklch(from var(--color-secondary) l c h / 0.35);
+}
+
+.iso-right polygon {
+    fill: oklch(from var(--color-accent) l c h / 0.35);
+}
+
+.iso-edges line {
+    stroke: var(--color-base-content);
+    stroke-width: 1;
+    opacity: 0.55;
+}
+
+.iso-hidden line {
+    stroke: var(--color-base-content);
+    stroke-width: 1;
+    opacity: 0.45;
+    stroke-dasharray: 3 3;
+    stroke-linecap: butt;
+}
+
 .title-block-anchor > :is(table, nav) {
     outline: 2px solid var(--color-base-content);
     outline-offset: 3px;
@@ -274,6 +347,7 @@ body::before {
     padding: 0.5rem 0.875rem;
     vertical-align: top;
     min-width: 4rem;
+    user-select: none;
 }
 
 .title-block-cell-wide {
@@ -369,6 +443,7 @@ body::before {
     text-decoration: underline;
     text-underline-offset: 3px;
     transition: color 0.12s ease;
+    user-select: none;
 }
 
 .blueprint-footer a:hover {
@@ -377,6 +452,7 @@ body::before {
 
 .blueprint-footer-sep {
     opacity: 0.5;
+    user-select: none;
 }
 
 .tooltip::before {
@@ -434,7 +510,16 @@ body::before {
     .corner-stack > .corner-stack-sep,
     .corner-stack > .title-block-anchor,
     .blueprint-footer,
-    .legend-block {
+    .legend-block,
+    .building-block {
         animation: none;
+    }
+
+    .building-block-iso {
+        transition: none;
+    }
+
+    .building-block:hover .building-block-iso {
+        transform: none;
     }
 }
