@@ -1,5 +1,5 @@
-use crate::components::sections::corner_cluster::CornerCluster;
 use crate::components::sections::footer::Footer;
+use crate::components::sections::header::Header;
 use leptos::prelude::*;
 
 #[component]
@@ -20,7 +20,7 @@ pub fn App() -> impl IntoView {
 
             <Footer />
 
-            <CornerCluster />
+            <Header />
         </div>
     }
 }

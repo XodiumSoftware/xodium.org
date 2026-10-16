@@ -4,8 +4,8 @@ mod app;
 
 pub mod components {
     pub mod sections {
-        pub mod corner_cluster;
         pub mod footer;
+        pub mod header;
     }
 
     pub mod ui {
@@ -15,8 +15,8 @@ pub mod components {
         pub mod title_block;
     }
 
-    pub use sections::corner_cluster::CornerCluster;
     pub use sections::footer::Footer;
+    pub use sections::header::Header;
 
     pub use ui::ascii_art::{AsciiArt, XODIUM_ASCII_ART};
     pub use ui::legend_block::LegendBlock;

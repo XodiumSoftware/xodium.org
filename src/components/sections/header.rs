@@ -4,13 +4,12 @@ use crate::components::ui::link_badges::LinkBadges;
 use crate::components::ui::title_block::TitleBlock;
 use leptos::prelude::*;
 
-/// The bottom-right corner assembly — the grouped metadata cluster on the
-/// drawing sheet. Stacks the XODIUM ASCII header, a horizontal separator,
-/// the legend, and the framed LinkBadges + TitleBlock pair into a single
-/// fixed-positioned block.
+/// The bottom-right corner assembly. Despite the file name, this is NOT a
+/// top-of-page header — it's the sheet metadata block that lives at the
+/// bottom-right of the drawing.
 #[component]
 #[must_use]
-pub fn CornerCluster() -> impl IntoView {
+pub fn Header() -> impl IntoView {
     view! {
         <aside class="corner-stack" aria-label="Sheet metadata and external links">
             <AsciiArt />
