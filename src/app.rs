@@ -18,6 +18,7 @@ pub fn App() -> impl IntoView {
             </a>
 
             <main id="main-content" tabindex="-1">
+                <h1 class="sr-only">"Xodium Software — open-source CAD software"</h1>
             </main>
 
             <ViewportFrame />
