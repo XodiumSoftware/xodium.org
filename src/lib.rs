@@ -5,17 +5,14 @@ mod app;
 pub mod components {
     pub mod sections {
         pub mod footer;
-        pub mod projects;
         pub mod team_deck;
     }
 
     pub mod cards {
-        pub mod project;
         pub mod team;
     }
 
     pub mod animations {
-        pub mod line_draw;
         pub mod section_marker;
     }
 
@@ -28,34 +25,21 @@ pub mod components {
         pub mod viewport;
 
         pub mod effects {
-            pub mod blueprint_grid;
-            pub mod hex_grid;
-            pub mod parallax;
-            pub mod section_fade;
             pub mod viewport_frame;
-            pub mod wire_frames;
         }
     }
 
     pub use sections::footer::Footer;
-    pub use sections::projects::ProjectsSection;
     pub use sections::team_deck::TeamDeckSection;
 
-    pub use cards::project::{ProjectCard, ProjectCardProperties};
     pub use cards::team::{TeamCard, TeamCardProperties};
 
-    pub use animations::line_draw::{LineDraw, LineDrawHero};
     pub use animations::section_marker::SectionMarker;
 
     pub use ui::ascii_art::{AsciiArt, XODIUM_ASCII_ART};
     pub use ui::corner_frame::CornerFrame;
     pub use ui::data_grid::data_grid;
-    pub use ui::effects::blueprint_grid::BlueprintGrid;
-    pub use ui::effects::hex_grid::HexPattern;
-    pub use ui::effects::parallax::ParallaxLanding;
-    pub use ui::effects::section_fade::FadeOverlay;
     pub use ui::effects::viewport_frame::ViewportFrame;
-    pub use ui::effects::wire_frames::WireframeShapes;
     pub use ui::link_badges::LinkBadges;
     pub use ui::title_block::TitleBlock;
     pub use ui::viewport::Viewport;
