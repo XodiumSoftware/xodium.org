@@ -1,20 +1,6 @@
 use leptos::prelude::*;
 
-const GITHUB_REPO_URL: &str = "https://github.com/XodiumSoftware/xodium.org/commit";
-
-fn read_scale() -> String {
-    leptos::web_sys::window().map_or_else(
-        || "1:1".to_string(),
-        |w| {
-            let ratio = w.device_pixel_ratio();
-            if (ratio - 1.0).abs() < f64::EPSILON {
-                "1:1".to_string()
-            } else {
-                format!("1:{ratio:.2}")
-            }
-        },
-    )
-}
+use crate::utils::{GITHUB_REPO_URL, read_scale};
 
 /// Blueprint title block — the rectangular metadata frame found in the bottom
 /// right corner of engineering drawings (sheet number, title, drawn-by, date,
