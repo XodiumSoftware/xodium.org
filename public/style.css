@@ -238,6 +238,33 @@ html {
     }
 }
 
+/* Blueprint sheet border — double-line frame inset from the viewport edge,
+   matching the border convention on engineering drawings. The outer thin line
+   sits at 8px from the viewport; the inner thicker line at 16px. */
+.blueprint-frame {
+    position: relative;
+    min-height: 100dvh;
+}
+
+.blueprint-frame::before,
+.blueprint-frame::after {
+    content: "";
+    position: fixed;
+    pointer-events: none;
+    z-index: 40;
+    border-color: var(--color-base-content);
+}
+
+.blueprint-frame::before {
+    inset: 8px;
+    border: 1px solid var(--color-base-content);
+}
+
+.blueprint-frame::after {
+    inset: 16px;
+    border: 2px solid var(--color-base-content);
+}
+
 .blueprint-grid {
     background-image:
         linear-gradient(to right, var(--color-primary) 1px, transparent 1px),
