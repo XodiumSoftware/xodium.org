@@ -231,17 +231,15 @@ body::before {
 }
 
 .legend-row {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 0.5rem;
     margin: 0;
     line-height: 1;
 }
 
-.legend-row > dt,
-.legend-row > dd {
-    margin: 0;
-    padding: 0;
+.legend-label {
+    line-height: 1;
 }
 
 .legend-swatch {

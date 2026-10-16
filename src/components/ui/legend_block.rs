@@ -52,21 +52,19 @@ const LEGEND_ENTRIES: &[LegendEntry] = &[
 #[must_use]
 pub fn LegendBlock() -> impl IntoView {
     view! {
-        <dl class="legend-block font-mono" aria-label="Legend">
+        <div class="legend-block font-mono" role="list" aria-label="Legend">
             {LEGEND_ENTRIES
                 .iter()
                 .map(|entry| view! {
-                    <div class="legend-row">
-                        <dt>
-                            <span
-                                class="legend-swatch"
-                                style=format!("background-color: {};", entry.color)
-                            />
-                        </dt>
-                        <dd>"= "{entry.label}</dd>
+                    <div class="legend-row" role="listitem">
+                        <span
+                            class="legend-swatch"
+                            style=format!("background-color: {};", entry.color)
+                        />
+                        <span class="legend-label">"= "{entry.label}</span>
                     </div>
                 })
                 .collect::<Vec<_>>()}
-        </dl>
+        </div>
     }
 }
