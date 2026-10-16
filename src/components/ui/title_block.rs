@@ -70,10 +70,9 @@ pub fn TitleBlock() -> impl IntoView {
                                     href={url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    class="title-block-rev"
-                                    aria-label="View commit for this build on GitHub"
+                                    class="title-block-value link link-hover link-primary"
                                 >
-                                    <span class="title-block-value">{rev_label}</span>
+                                    {rev_label}
                                 </a>
                             }.into_any(),
                             None => view! {
