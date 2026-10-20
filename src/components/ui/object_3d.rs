@@ -242,11 +242,7 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
             let left_face = quad(left_top, front_top, front_bottom, left_bottom);
             let right_face = quad(front_top, right_top, right_bottom, front_bottom);
 
-            let edges = vec![
-                (left_top, left_bottom),
-                (right_top, right_bottom),
-                (front_top, front_bottom),
-            ];
+            let edges = vec![];
 
             let hidden = vec![
                 (back_top, back_bottom),
@@ -426,24 +422,30 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
                     <polygon points=right_face />
                 </g>
                 <g class="iso-edges">
-                    {edges.iter().map(|(p1, p2)| view! {
-                        <line
-                            x1=format!("{:.2}", p1.0)
-                            y1=format!("{:.2}", p1.1)
-                            x2=format!("{:.2}", p2.0)
-                            y2=format!("{:.2}", p2.1)
-                        />
-                    }).collect::<Vec<_>>()}
+                    {edges
+                        .iter()
+                        .map(|(p1, p2)| view! {
+                            <line
+                                x1=format!("{:.2}", p1.0)
+                                y1=format!("{:.2}", p1.1)
+                                x2=format!("{:.2}", p2.0)
+                                y2=format!("{:.2}", p2.1)
+                            />
+                        })
+                        .collect::<Vec<_>>()}
                 </g>
                 <g class="iso-hidden">
-                    {hidden.iter().map(|(p1, p2)| view! {
-                        <line
-                            x1=format!("{:.2}", p1.0)
-                            y1=format!("{:.2}", p1.1)
-                            x2=format!("{:.2}", p2.0)
-                            y2=format!("{:.2}", p2.1)
-                        />
-                    }).collect::<Vec<_>>()}
+                    {hidden
+                        .iter()
+                        .map(|(p1, p2)| view! {
+                            <line
+                                x1=format!("{:.2}", p1.0)
+                                y1=format!("{:.2}", p1.1)
+                                x2=format!("{:.2}", p2.0)
+                                y2=format!("{:.2}", p2.1)
+                            />
+                        })
+                        .collect::<Vec<_>>()}
                 </g>
             </svg>
         </div>

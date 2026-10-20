@@ -358,6 +358,10 @@ body::before {
     stroke-linejoin: miter;
 }
 
+.object-3d-draft .iso-face polygon {
+    stroke-width: 1;
+}
+
 .iso-top polygon {
     fill: var(--face-top, oklch(from var(--color-primary) l c h / 0.35));
 }
@@ -386,14 +390,15 @@ body::before {
 
 .object-3d-draft .iso-face polygon {
     fill: none;
-    stroke-dasharray: 3 3;
+    stroke-dasharray: 8 6;
     stroke-linejoin: miter;
     stroke-linecap: butt;
+    stroke-width: 1;
 }
 
 .object-3d-draft .iso-edges line,
 .object-3d-draft .iso-hidden line {
-    stroke-dasharray: 3 3;
+    stroke-dasharray: 6 4;
 }
 
 .title-block-anchor > :is(table, nav) {
