@@ -24,9 +24,9 @@ fn resolve(
                 panic!("Attachment target '{target}' not registered before use")
             });
             let (axis_target_ext, axis_self_ext) = match face {
-                Face::Top | Face::Bottom => (target_size.height, size.height),
-                Face::Left | Face::Right => (target_size.width, size.width),
-                Face::Front | Face::Back => (target_size.depth, size.depth),
+                Face::Top | Face::Bottom => (target_size.height(), size.height()),
+                Face::Left | Face::Right => (target_size.width(), size.width()),
+                Face::Front | Face::Back => (target_size.depth(), size.depth()),
             };
             let offset = f64::midpoint(axis_target_ext, axis_self_ext);
             match face {
@@ -111,11 +111,7 @@ pub fn Object3dScene(objects: Vec<Object3dProperties>) -> impl IntoView {
             let Position { x, y, z } = props
                 .resolved_position
                 .expect("resolved_position must be set");
-            let Dimensions {
-                width,
-                depth,
-                height,
-            } = props.size;
+            let (width, depth, height) = props.size.components();
             let (hw, hd, hh) = (width / 2.0, depth / 2.0, height / 2.0);
 
             min_x = min_x.min(x - hw);

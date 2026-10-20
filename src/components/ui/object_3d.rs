@@ -2,14 +2,75 @@ use crate::contexts::scene::{DRAG_CLICK_SUPPRESS_MS, SceneContext};
 use core::fmt::Write as _;
 use leptos::prelude::*;
 
+/// Dimensions for an object. Can be specified explicitly or using a
+/// convenience shape constructor.
 #[derive(Clone, Copy)]
-pub struct Dimensions {
-    /// Size along the X axis (screen right-down in projection).
-    pub width: f64,
-    /// Size along the Y axis (screen left-down in projection).
-    pub depth: f64,
-    /// Size along the Z axis (screen up).
-    pub height: f64,
+pub enum Dimensions {
+    /// A rectangular cuboid with explicit dimensions in all three axes.
+    Cuboid {
+        /// Size along the X axis (screen right-down in projection).
+        width: f64,
+        /// Size along the Y axis (screen down-left to up-right on top face).
+        depth: f64,
+        /// Size along the Z axis (screen up).
+        height: f64,
+    },
+    /// Convenience constructor: applies one value to width, depth, and height.
+    /// Useful for cubes and as a foundation for future shape types.
+    Cube(f64),
+    /// Square pyramid: `base_size` applies to width and depth (base),
+    /// `height` is the height from base to apex.
+    Pyramid {
+        /// Base size (width and depth are equal for pyramids).
+        base_size: f64,
+        /// Height from base to apex (Z axis).
+        height: f64,
+    },
+}
+
+impl Dimensions {
+    /// Extract the width component.
+    #[must_use]
+    pub fn width(&self) -> f64 {
+        match self {
+            Self::Cuboid { width, .. } => *width,
+            Self::Cube(size) => *size,
+            Self::Pyramid { base_size, .. } => *base_size,
+        }
+    }
+
+    /// Extract the depth component.
+    #[must_use]
+    pub fn depth(&self) -> f64 {
+        match self {
+            Self::Cuboid { depth, .. } => *depth,
+            Self::Cube(size) => *size,
+            Self::Pyramid { base_size, .. } => *base_size,
+        }
+    }
+
+    /// Extract the height component.
+    #[must_use]
+    pub fn height(&self) -> f64 {
+        match self {
+            Self::Cuboid { height, .. } | Self::Pyramid { height, .. } => *height,
+            Self::Cube(size) => *size,
+        }
+    }
+
+    /// Decompose into (width, depth, height).
+    #[must_use]
+    pub fn components(&self) -> (f64, f64, f64) {
+        match self {
+            Self::Cuboid {
+                width,
+                depth,
+                height,
+            } => (*width, *depth, *height),
+            Self::Cube(size) => (*size, *size, *size),
+            Self::Pyramid { base_size, height } => (*base_size, *base_size, *height),
+        }
+    }
 }
 
 #[derive(Clone, Copy)]
@@ -97,11 +158,7 @@ impl Default for Object3dProperties {
         Self {
             id: "default",
             name: "Unnamed Object",
-            size: Dimensions {
-                width: 100.0,
-                depth: 100.0,
-                height: 100.0,
-            },
+            size: Dimensions::Cube(100.0),
             attached_to: None,
             resolved_position: None,
             depth_index: None,
@@ -133,11 +190,7 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
     let scene = use_context::<SceneContext>();
 
     let Object3dProperties {
-        size: Dimensions {
-            width,
-            depth,
-            height,
-        },
+        size,
         name,
         attached_to: _,
         colors,
@@ -146,6 +199,8 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
         depth_index,
         ..
     } = props;
+
+    let (width, depth, height) = size.components();
     let (hw, hd, hh) = (width / 2.0, depth / 2.0, height / 2.0);
 
     let project = move |x: f64, y: f64, z: f64| ((x - y) * COS30, (x + y) * SIN30 - z);
@@ -155,23 +210,81 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
         .expect("resolved_position must be set by Object3dScene");
     let (screen_x, screen_y) = project(x, y, z);
 
-    let back_top = project(-hw, -hd, hh);
-    let right_top = project(hw, -hd, hh);
-    let left_top = project(-hw, hd, hh);
-    let front_top = project(hw, hd, hh);
-    let back_bottom = project(-hw, -hd, -hh);
-    let right_bottom = project(hw, -hd, -hh);
-    let left_bottom = project(-hw, hd, -hh);
-    let front_bottom = project(hw, hd, -hh);
-
     let fmt_pt = |p: (f64, f64)| format!("{:.2},{:.2}", p.0, p.1);
-    let quad = |a: (f64, f64), b: (f64, f64), c: (f64, f64), d: (f64, f64)| {
-        format!("{} {} {} {}", fmt_pt(a), fmt_pt(b), fmt_pt(c), fmt_pt(d))
-    };
 
-    let top_face = quad(back_top, right_top, front_top, left_top);
-    let left_face = quad(left_top, front_top, front_bottom, left_bottom);
-    let right_face = quad(front_top, right_top, right_bottom, front_bottom);
+    let (top_face, left_face, right_face, edges, hidden) = match size {
+        Dimensions::Cuboid { .. } | Dimensions::Cube(_) => {
+            let back_top = project(-hw, -hd, hh);
+            let right_top = project(hw, -hd, hh);
+            let left_top = project(-hw, hd, hh);
+            let front_top = project(hw, hd, hh);
+            let back_bottom = project(-hw, -hd, -hh);
+            let right_bottom = project(hw, -hd, -hh);
+            let left_bottom = project(-hw, hd, -hh);
+            let front_bottom = project(hw, hd, -hh);
+
+            let quad = |a: (f64, f64), b: (f64, f64), c: (f64, f64), d: (f64, f64)| {
+                format!("{} {} {} {}", fmt_pt(a), fmt_pt(b), fmt_pt(c), fmt_pt(d))
+            };
+
+            let top_face = quad(back_top, right_top, front_top, left_top);
+            let left_face = quad(left_top, front_top, front_bottom, left_bottom);
+            let right_face = quad(front_top, right_top, right_bottom, front_bottom);
+
+            let edges = vec![
+                (left_top, left_bottom),
+                (right_top, right_bottom),
+                (front_top, front_bottom),
+            ];
+
+            let hidden = vec![
+                (back_top, back_bottom),
+                (back_bottom, left_bottom),
+                (back_bottom, right_bottom),
+            ];
+
+            (top_face, left_face, right_face, edges, hidden)
+        }
+        Dimensions::Pyramid {
+            base_size,
+            height: _,
+        } => {
+            let hb = base_size / 2.0;
+            let apex = project(0.0, 0.0, hh);
+
+            let back_base = project(-hb, -hb, -hh);
+            let right_base = project(hb, -hb, -hh);
+            let left_base = project(-hb, hb, -hh);
+            let front_base = project(hb, hb, -hh);
+
+            let quad = |a: (f64, f64), b: (f64, f64), c: (f64, f64), d: (f64, f64)| {
+                format!("{} {} {} {}", fmt_pt(a), fmt_pt(b), fmt_pt(c), fmt_pt(d))
+            };
+            let tri = |a: (f64, f64), b: (f64, f64), c: (f64, f64)| {
+                format!("{} {} {}", fmt_pt(a), fmt_pt(b), fmt_pt(c))
+            };
+
+            let base = quad(back_base, right_base, front_base, left_base);
+            let left_face = tri(left_base, front_base, apex);
+            let right_face = tri(front_base, right_base, apex);
+
+            let edges = vec![
+                (left_base, apex),
+                (right_base, apex),
+                (front_base, apex),
+                (left_base, front_base),
+                (front_base, right_base),
+            ];
+
+            let hidden = vec![
+                (back_base, apex),
+                (back_base, left_base),
+                (back_base, right_base),
+            ];
+
+            (base, left_face, right_face, edges, hidden)
+        }
+    };
 
     let extent_x = (hw + hd) * COS30;
     let extent_y = (hw + hd) * SIN30 + hh;
@@ -247,44 +360,24 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
                     <polygon points=right_face />
                 </g>
                 <g class="iso-edges">
-                    <line
-                        x1=format!("{:.2}", left_top.0)
-                        y1=format!("{:.2}", left_top.1)
-                        x2=format!("{:.2}", left_bottom.0)
-                        y2=format!("{:.2}", left_bottom.1)
-                    />
-                    <line
-                        x1=format!("{:.2}", right_top.0)
-                        y1=format!("{:.2}", right_top.1)
-                        x2=format!("{:.2}", right_bottom.0)
-                        y2=format!("{:.2}", right_bottom.1)
-                    />
-                    <line
-                        x1=format!("{:.2}", front_top.0)
-                        y1=format!("{:.2}", front_top.1)
-                        x2=format!("{:.2}", front_bottom.0)
-                        y2=format!("{:.2}", front_bottom.1)
-                    />
+                    {edges.iter().map(|(p1, p2)| view! {
+                        <line
+                            x1=format!("{:.2}", p1.0)
+                            y1=format!("{:.2}", p1.1)
+                            x2=format!("{:.2}", p2.0)
+                            y2=format!("{:.2}", p2.1)
+                        />
+                    }).collect::<Vec<_>>()}
                 </g>
                 <g class="iso-hidden">
-                    <line
-                        x1=format!("{:.2}", back_top.0)
-                        y1=format!("{:.2}", back_top.1)
-                        x2=format!("{:.2}", back_bottom.0)
-                        y2=format!("{:.2}", back_bottom.1)
-                    />
-                    <line
-                        x1=format!("{:.2}", back_bottom.0)
-                        y1=format!("{:.2}", back_bottom.1)
-                        x2=format!("{:.2}", left_bottom.0)
-                        y2=format!("{:.2}", left_bottom.1)
-                    />
-                    <line
-                        x1=format!("{:.2}", back_bottom.0)
-                        y1=format!("{:.2}", back_bottom.1)
-                        x2=format!("{:.2}", right_bottom.0)
-                        y2=format!("{:.2}", right_bottom.1)
-                    />
+                    {hidden.iter().map(|(p1, p2)| view! {
+                        <line
+                            x1=format!("{:.2}", p1.0)
+                            y1=format!("{:.2}", p1.1)
+                            x2=format!("{:.2}", p2.0)
+                            y2=format!("{:.2}", p2.1)
+                        />
+                    }).collect::<Vec<_>>()}
                 </g>
             </svg>
         </div>
