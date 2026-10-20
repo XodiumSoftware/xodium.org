@@ -22,7 +22,7 @@ pub fn App() -> impl IntoView {
                     Object3dProperties {
                         id: "cadiotheka_project",
                         name: "Cadiotheka",
-                        url: Some("https://github.com/XodiumSoftware"),
+                        url: Some("https://cadiotheka.com/"),
                         ..Default::default()
                     },
                     Object3dProperties {
