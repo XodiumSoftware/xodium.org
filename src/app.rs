@@ -34,6 +34,7 @@ pub fn App() -> impl IntoView {
                         }),
                         colors: None,
                         is_draft: false,
+                        url: Some("https://cadiotheka.com/"),
                     },
                     Object3dProperties {
                         id: "draft_0",
@@ -49,6 +50,7 @@ pub fn App() -> impl IntoView {
                         },
                         colors: None,
                         is_draft: true,
+                        url: None,
                     },
                     Object3dProperties {
                         id: "draft_1",
@@ -64,6 +66,7 @@ pub fn App() -> impl IntoView {
                         },
                         colors: None,
                         is_draft: true,
+                        url: None,
                     },
                 ] />
             </main>

@@ -85,17 +85,18 @@ pub struct Object3dProperties {
     /// unfilled and all edges use dashed strokes so the block reads as
     /// proposed/work-in-progress geometry rather than committed structure.
     pub is_draft: bool,
+    /// URL to open when the object is clicked. `None` means no action.
+    pub url: Option<&'static str>,
 }
 
 /// A single isometric wireframe object. Renders just the SVG and its
 /// interactive target wrapper; pan and zoom are applied by the enclosing
 /// `Object3dScene`, so multiple objects move as one scene.
 ///
-/// Clicking the object toggles its own pinned "selected" state via DaisyUI's
-/// `tooltip-open` class; the object stays lifted and its tooltip stays visible
-/// until clicked again. Keyboard-accessible via Enter or Space. A click that
+/// Clicking the object opens its `url` if one is configured; otherwise the
+/// click is a no-op. Keyboard-accessible via Enter or Space. A click that
 /// follows a drag is suppressed via [`SceneContext::last_drag_end`] so
-/// releasing the mouse after panning does not also toggle the pin.
+/// releasing the mouse after panning does not trigger navigation.
 ///
 /// With [`Object3dProperties::is_draft`] set the object is rendered in the
 /// draft style used for uncommitted geometry: no face fills, every edge
@@ -106,7 +107,6 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
     const COS30: f64 = 0.866_025_403_784_438_6;
     const SIN30: f64 = 0.5;
 
-    let (selected, set_selected) = signal(false);
     let scene = use_context::<SceneContext>();
 
     let Object3dProperties {
@@ -119,6 +119,7 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
         placement,
         colors,
         is_draft,
+        url,
         ..
     } = props;
     let (hw, hd, hh) = (width / 2.0, depth / 2.0, height / 2.0);
@@ -171,31 +172,33 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
         let _ = write!(face_overrides, "--face-right: {right};");
     }
 
+    let navigate = move || {
+        if let Some(url) = url {
+            let suppress = scene.is_some_and(|s| {
+                js_sys::Date::now() - s.last_drag_end.get() < DRAG_CLICK_SUPPRESS_MS
+            });
+            if !suppress && let Some(window) = web_sys::window() {
+                let _ = window.open_with_url_and_target(url, "_blank");
+            }
+        }
+    };
+
     view! {
         <div
             class="object-3d-target tooltip tooltip-top"
-            class:tooltip-open=selected
             class:object-3d-draft=is_draft
             role="button"
             aria-label=name
-            aria-pressed=move || selected().to_string()
             tabindex="0"
             data-tip=tooltip
             style=format!(
                 "left: calc(50% + {screen_x:.2}px); top: calc(50% + {screen_y:.2}px); {face_overrides}"
             )
-            on:click=move |_| {
-                let suppress = scene.is_some_and(|s| {
-                    js_sys::Date::now() - s.last_drag_end.get() < DRAG_CLICK_SUPPRESS_MS
-                });
-                if !suppress {
-                    set_selected.update(|s| *s = !*s);
-                }
-            }
+            on:click=move |_| navigate()
             on:keydown=move |ev| {
                 if ev.key() == "Enter" || ev.key() == " " {
                     ev.prevent_default();
-                    set_selected.update(|s| *s = !*s);
+                    navigate();
                 }
             }
         >
