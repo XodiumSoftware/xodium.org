@@ -1,6 +1,6 @@
 use crate::components::ui::axis_gizmo::AxisGizmo;
 use crate::components::ui::object_3d::{
-    Attachment, Dimensions, Face, Object3d, Object3dProperties, Position,
+    Attachment, Corner, Dimensions, Face, Object3d, Object3dProperties, Position,
 };
 use leptos::prelude::*;
 use std::collections::HashMap;
@@ -17,7 +17,7 @@ fn resolve(
             y: 0.0,
             z: 0.0,
         },
-        Some(Attachment { target, face }) => {
+        Some(Attachment::Face { target, face }) => {
             let (target_pos, target_size) = registry.get(target).copied().unwrap_or_else(|| {
                 panic!("Attachment target '{target}' not registered before use")
             });
@@ -52,6 +52,33 @@ fn resolve(
                     y: target_pos.y - offset,
                     ..target_pos
                 },
+            }
+        }
+        Some(Attachment::Corner { target, corner }) => {
+            let (target_pos, target_size) = registry.get(target).copied().unwrap_or_else(|| {
+                panic!("Attachment target '{target}' not registered before use")
+            });
+            let (hw, hd, hh) = (
+                target_size.width() / 2.0,
+                target_size.depth() / 2.0,
+                target_size.height() / 2.0,
+            );
+
+            let (dx, dy, dz) = match corner {
+                Corner::BackLeftBottom => (-hw, -hd, -hh),
+                Corner::BackRightBottom => (hw, -hd, -hh),
+                Corner::BackLeftTop => (-hw, hd, -hh),
+                Corner::BackRightTop => (hw, hd, -hh),
+                Corner::FrontLeftBottom => (-hw, -hd, hh),
+                Corner::FrontRightBottom => (hw, -hd, hh),
+                Corner::FrontLeftTop => (-hw, hd, hh),
+                Corner::FrontRightTop => (hw, hd, hh),
+            };
+
+            Position {
+                x: target_pos.x + dx,
+                y: target_pos.y + dy,
+                z: target_pos.z + dz,
             }
         }
     }
@@ -129,28 +156,6 @@ pub fn Object3dScene(objects: Vec<Object3dProperties>) -> impl IntoView {
         }
     }
 
-    let (gizmo_offset_x, gizmo_offset_y, gizmo_elevation) = if resolved.is_empty() {
-        (-60.0, -60.0, 60.0)
-    } else {
-        let mut min_x = f64::INFINITY;
-        let mut min_y = f64::INFINITY;
-        let mut max_z = f64::NEG_INFINITY;
-
-        for props in &resolved {
-            let Position { x, y, z } = props
-                .resolved_position
-                .expect("resolved_position must be set");
-            let (width, depth, height) = props.size.components();
-            let (hw, hd, hh) = (width / 2.0, depth / 2.0, height / 2.0);
-
-            min_x = min_x.min(x - hw);
-            min_y = min_y.min(y - hd);
-            max_z = max_z.max(z + hh);
-        }
-
-        (min_x - 60.0, min_y - 60.0, max_z + 60.0)
-    };
-
     view! {
         <section
             class="object-3d-scene"
@@ -159,13 +164,14 @@ pub fn Object3dScene(objects: Vec<Object3dProperties>) -> impl IntoView {
             <div class="object-3d-layer">
                 {resolved
                     .into_iter()
-                    .map(|props| view! { <Object3d props=props /> })
+                    .map(|props| {
+                        if props.id == "axis_gizmo" {
+                            view! { <AxisGizmo props=props /> }.into_any()
+                        } else {
+                            view! { <Object3d props=props /> }.into_any()
+                        }
+                    })
                     .collect::<Vec<_>>()}
-                <AxisGizmo
-                    offset_x=gizmo_offset_x
-                    offset_y=gizmo_offset_y
-                    elevation=gizmo_elevation
-                />
             </div>
         </section>
     }

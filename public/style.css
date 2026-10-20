@@ -301,9 +301,9 @@ body::before {
 
 .object-3d-scene {
     grid-area: 1 / 1;
-    width: calc(100% - 16px - 16px);
-    height: calc(100% - 16px - 16px);
-    margin: 16px;
+    width: calc(100% - 16px * 2);
+    height: calc(100% - 16px * 2);
+    margin: auto;
     position: relative;
     color: var(--color-base-content);
     font-family: var(--font-mono, ui-monospace, monospace);
@@ -314,7 +314,6 @@ body::before {
     user-select: none;
     clip-path: inset(0);
     animation: block-in 400ms ease-out 1100ms both;
-    border: 2px dashed var(--color-warning);
 }
 
 .object-3d-scene:active {
@@ -330,8 +329,6 @@ body::before {
     inset: 0;
     transition: transform 300ms ease;
     transform: translate(var(--pan-x, 0), var(--pan-y, 0)) scale(var(--zoom, 1));
-    border: 1px solid var(--color-error);
-    box-sizing: border-box;
 }
 
 .object-3d-iso {

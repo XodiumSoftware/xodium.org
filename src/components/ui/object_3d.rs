@@ -113,17 +113,49 @@ pub enum Face {
     Back,
 }
 
-/// Attachment to another block's face. The new block's opposite face is
-/// brought flush against the target's face on the same axis: attaching
-/// to `Face::Top` stacks the new block on top; to `Face::Right` places
-/// it to the right of the target, and so on. `target` is the `id` of
-/// a sibling block that must appear earlier in the scene's child list.
+/// A corner of an object, used for precise positioning.
 #[derive(Clone, Copy)]
-pub struct Attachment {
-    /// Id of the sibling block to attach to.
-    pub target: &'static str,
-    /// Which face of the target to attach against.
-    pub face: Face,
+pub enum Corner {
+    /// Corner at (-X, -Y, -Z): back-bottom-left
+    BackLeftBottom,
+    /// Corner at (+X, -Y, -Z): back-bottom-right
+    BackRightBottom,
+    /// Corner at (-X, +Y, -Z): back-top-left
+    BackLeftTop,
+    /// Corner at (+X, +Y, -Z): back-top-right
+    BackRightTop,
+    /// Corner at (-X, -Y, +Z): front-bottom-left
+    FrontLeftBottom,
+    /// Corner at (+X, -Y, +Z): front-bottom-right
+    FrontRightBottom,
+    /// Corner at (-X, +Y, +Z): front-top-left
+    FrontLeftTop,
+    /// Corner at (+X, +Y, +Z): front-top-right
+    FrontRightTop,
+}
+
+/// Attachment to another block. Can attach to a face for flush placement,
+/// or to a corner for precise point positioning.
+#[derive(Clone, Copy)]
+pub enum Attachment {
+    /// Attach to a face. The new block's opposite face is brought flush
+    /// against the target's face on the same axis: attaching to `Face::Top`
+    /// stacks the new block on top; to `Face::Right` places it to the right
+    /// of the target, and so on.
+    Face {
+        /// Id of the sibling block to attach to.
+        target: &'static str,
+        /// Which face of the target to attach against.
+        face: Face,
+    },
+    /// Attach to a corner point with precise positioning. The new block's
+    /// center is placed at the specified corner of the target block.
+    Corner {
+        /// Id of the sibling block to attach to.
+        target: &'static str,
+        /// Which corner of the target to position at.
+        corner: Corner,
+    },
 }
 
 #[derive(Clone, Copy)]
