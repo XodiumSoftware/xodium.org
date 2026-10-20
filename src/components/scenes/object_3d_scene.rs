@@ -1,3 +1,4 @@
+use crate::components::ui::axis_gizmo::AxisGizmo;
 use crate::components::ui::object_3d::{
     Attachment, Dimensions, Face, Object3d, Object3dProperties, Position,
 };
@@ -151,6 +152,28 @@ pub fn Object3dScene(objects: Vec<Object3dProperties>) -> impl IntoView {
         }
     }
 
+    let (gizmo_offset_x, gizmo_offset_y, gizmo_elevation) = if resolved.is_empty() {
+        (-60.0, -60.0, 60.0)
+    } else {
+        let mut min_x = f64::INFINITY;
+        let mut min_y = f64::INFINITY;
+        let mut max_z = f64::NEG_INFINITY;
+
+        for props in &resolved {
+            let Position { x, y, z } = props
+                .resolved_position
+                .expect("resolved_position must be set");
+            let (width, depth, height) = props.size.components();
+            let (hw, hd, hh) = (width / 2.0, depth / 2.0, height / 2.0);
+
+            min_x = min_x.min(x - hw);
+            min_y = min_y.min(y - hd);
+            max_z = max_z.max(z + hh);
+        }
+
+        (min_x - 60.0, min_y - 60.0, max_z + 60.0)
+    };
+
     view! {
         <section
             class="object-3d-scene"
@@ -217,6 +240,11 @@ pub fn Object3dScene(objects: Vec<Object3dProperties>) -> impl IntoView {
                     .into_iter()
                     .map(|props| view! { <Object3d props=props /> })
                     .collect::<Vec<_>>()}
+                <AxisGizmo
+                    offset_x=gizmo_offset_x
+                    offset_y=gizmo_offset_y
+                    elevation=gizmo_elevation
+                />
             </div>
         </section>
     }

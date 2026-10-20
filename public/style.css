@@ -363,7 +363,7 @@ body::before {
 }
 
 .iso-left polygon {
-    fill: var(--face-left, oklch(from var(--color-secondary) l c h / 0.35));
+    fill: var(--face-left, oklch(0.65 0.15 155 / 0.35));
 }
 
 .iso-right polygon {

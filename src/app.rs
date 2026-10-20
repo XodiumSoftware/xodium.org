@@ -1,8 +1,7 @@
 use crate::components::scenes::object_3d_scene::Object3dScene;
 use crate::components::sections::footer::Footer;
 use crate::components::sections::header::Header;
-use crate::components::ui::axis_gizmo::AxisGizmo;
-use crate::components::ui::object_3d::{Attachment, Dimensions, Face, Object3dProperties};
+use crate::components::ui::object_3d::{Attachment, Face, Object3dProperties};
 use leptos::prelude::*;
 
 #[component]
@@ -39,11 +38,6 @@ pub fn App() -> impl IntoView {
                     Object3dProperties {
                         id: "draft_1",
                         name: "SOON™",
-                        size: Dimensions::TriangularPrism {
-                            base_size: 100.0,
-                            length: 100.0,
-                            flip: true,
-                        },
                         attached_to: Some(Attachment {
                             target: "draft_0",
                             face: Face::Top,
@@ -55,8 +49,6 @@ pub fn App() -> impl IntoView {
             </main>
 
             <Footer />
-
-            <AxisGizmo />
 
             <Header />
         </div>
