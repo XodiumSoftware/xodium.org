@@ -175,7 +175,7 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
             class:object-3d-draft=is_draft
             role="button"
             aria-label=name
-            aria-pressed=move || selected.get().to_string()
+            aria-pressed=move || selected().to_string()
             tabindex="0"
             data-tip=tooltip
             style=format!(

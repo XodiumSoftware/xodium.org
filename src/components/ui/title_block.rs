@@ -37,7 +37,7 @@ pub fn TitleBlock() -> impl IntoView {
             return;
         };
         let closure = Closure::wrap(Box::new(move || {
-            set_scale.set(read_scale());
+            set_scale(read_scale());
         }) as Box<dyn FnMut()>);
         let _ = window.add_event_listener_with_callback("resize", closure.as_ref().unchecked_ref());
         closure.forget();

@@ -106,8 +106,8 @@ pub fn Object3dScene(objects: Vec<Object3dProperties>) -> impl IntoView {
                 });
             }
             on:pointerdown=move |ev| {
-                let (px, py) = pan.get();
-                set_drag_origin.set(Some((
+                let (px, py) = pan();
+                set_drag_origin(Some((
                     f64::from(ev.client_x()),
                     f64::from(ev.client_y()),
                     px,
@@ -115,45 +115,45 @@ pub fn Object3dScene(objects: Vec<Object3dProperties>) -> impl IntoView {
                 )));
             }
             on:pointermove=move |ev| {
-                if let Some((sx, sy, px, py)) = drag_origin.get() {
+                if let Some((sx, sy, px, py)) = drag_origin() {
                     if ev.buttons() == 0 {
-                        set_drag_origin.set(None);
+                        set_drag_origin(None);
                         return;
                     }
                     let dx = f64::from(ev.client_x()) - sx;
                     let dy = f64::from(ev.client_y()) - sy;
-                    set_pan.set((px + dx, py + dy));
+                    set_pan((px + dx, py + dy));
                 }
             }
             on:pointerup=move |ev| {
                 if ev.button() == 1 {
                     let now = js_sys::Date::now();
-                    if now - last_middle_up.get() < DBLCLICK_WINDOW_MS {
+                    if now - last_middle_up() < DBLCLICK_WINDOW_MS {
                         ev.prevent_default();
-                        set_pan.set((0.0, 0.0));
-                        set_zoom.set(1.0);
-                        set_last_middle_up.set(0.0);
+                        set_pan((0.0, 0.0));
+                        set_zoom(1.0);
+                        set_last_middle_up(0.0);
                     } else {
-                        set_last_middle_up.set(now);
+                        set_last_middle_up(now);
                     }
                 }
-                if let Some((sx, sy, _, _)) = drag_origin.get() {
+                if let Some((sx, sy, _, _)) = drag_origin() {
                     let dx = f64::from(ev.client_x()) - sx;
                     let dy = f64::from(ev.client_y()) - sy;
                     if (dx * dx + dy * dy).sqrt() > 4.0 {
-                        set_last_drag_end.set(js_sys::Date::now());
+                        set_last_drag_end(js_sys::Date::now());
                     }
                 }
-                set_drag_origin.set(None);
+                set_drag_origin(None);
             }
-            on:pointerleave=move |_| set_drag_origin.set(None)
-            on:pointercancel=move |_| set_drag_origin.set(None)
+            on:pointerleave=move |_| set_drag_origin(None)
+            on:pointercancel=move |_| set_drag_origin(None)
         >
             <div
                 class="object-3d-layer"
                 style=move || {
-                    let (px, py) = pan.get();
-                    format!("--zoom: {:.3}; --pan-x: {:.2}px; --pan-y: {:.2}px;", zoom.get(), px, py)
+                    let (px, py) = pan();
+                    format!("--zoom: {:.3}; --pan-x: {:.2}px; --pan-y: {:.2}px;", zoom(), px, py)
                 }
             >
                 {resolved
