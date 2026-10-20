@@ -408,7 +408,8 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
 
     let navigate = move || {
         if let (Some(url), Some(window)) = (url, web_sys::window()) {
-            let _ = window.open_with_url_and_target(url, "_blank");
+            let _ =
+                window.open_with_url_and_target_and_features(url, "_blank", "noopener,noreferrer");
         }
     };
 
