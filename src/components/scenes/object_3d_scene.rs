@@ -137,6 +137,22 @@ pub fn Object3dScene(objects: Vec<Object3dProperties>) -> impl IntoView {
                 pos.z -= center_z;
             }
         }
+
+        let mut with_depth: Vec<(usize, f64)> = resolved
+            .iter()
+            .enumerate()
+            .map(|(i, props)| {
+                let pos = props
+                    .resolved_position
+                    .expect("resolved_position must be set");
+                let depth = pos.x + pos.y + pos.z;
+                (i, depth)
+            })
+            .collect();
+        with_depth.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap());
+        for (depth_idx, (obj_idx, _)) in with_depth.iter().enumerate() {
+            resolved[*obj_idx].depth_index = Some(i32::try_from(depth_idx).unwrap_or(0));
+        }
     }
 
     view! {

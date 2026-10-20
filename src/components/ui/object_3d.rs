@@ -76,6 +76,10 @@ pub struct Object3dProperties {
     /// Position resolved by the scene after attachments and centering.
     #[doc(hidden)]
     pub resolved_position: Option<Position>,
+    /// Depth index for z-ordering. Set by the scene based on isometric projection.
+    /// Higher values are further back (should be rendered with lower z-index).
+    #[doc(hidden)]
+    pub depth_index: Option<i32>,
     /// Optional per-face colour overrides. `None` uses the blueprint theme
     /// defaults (primary / secondary / accent). `Some(FaceColors { .. })`
     /// replaces all three faces at once.
@@ -100,6 +104,7 @@ impl Default for Object3dProperties {
             },
             attached_to: None,
             resolved_position: None,
+            depth_index: None,
             colors: None,
             is_draft: false,
             url: None,
@@ -138,6 +143,7 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
         colors,
         is_draft,
         url,
+        depth_index,
         ..
     } = props;
     let (hw, hd, hh) = (width / 2.0, depth / 2.0, height / 2.0);
@@ -199,6 +205,13 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
         }
     };
 
+    let z_index = depth_index.map(|d| format!("z-index: {};", 1000 - d));
+    let style_str = format!(
+        "left: calc(50% + {screen_x:.2}px); top: calc(50% + {screen_y:.2}px); {} {}",
+        face_overrides,
+        z_index.unwrap_or_default()
+    );
+
     view! {
         <div
             class="object-3d-target tooltip tooltip-top"
@@ -207,9 +220,7 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
             aria-label=name
             tabindex="0"
             data-tip=tooltip
-            style=format!(
-                "left: calc(50% + {screen_x:.2}px); top: calc(50% + {screen_y:.2}px); {face_overrides}"
-            )
+            style=style_str
             on:click=move |_| navigate()
             on:keydown=move |ev| {
                 if ev.key() == "Enter" || ev.key() == " " {
