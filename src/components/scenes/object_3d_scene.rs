@@ -150,7 +150,7 @@ pub fn Object3dScene(objects: Vec<Object3dProperties>) -> impl IntoView {
                 (i, depth)
             })
             .collect();
-        with_depth.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap());
+        with_depth.sort_by(|a, b| b.1.total_cmp(&a.1));
         for (depth_idx, (obj_idx, _)) in with_depth.iter().enumerate() {
             resolved[*obj_idx].depth_index = Some(i32::try_from(depth_idx).unwrap_or(0));
         }
