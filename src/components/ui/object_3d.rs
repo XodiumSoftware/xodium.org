@@ -26,6 +26,16 @@ pub enum Dimensions {
         /// Height from base to apex (Z axis).
         height: f64,
     },
+    /// Triangular prism: a tube with a triangular cross-section.
+    /// Extruded along the Z axis (vertical).
+    TriangularPrism {
+        /// Size of the triangular base (equilateral).
+        base_size: f64,
+        /// Length of the tube (extrusion distance).
+        length: f64,
+        /// When true, flips the triangle on the X/Y axes.
+        flip: bool,
+    },
 }
 
 impl Dimensions {
@@ -35,7 +45,7 @@ impl Dimensions {
         match self {
             Self::Cuboid { width, .. } => *width,
             Self::Cube(size) => *size,
-            Self::Pyramid { base_size, .. } => *base_size,
+            Self::Pyramid { base_size, .. } | Self::TriangularPrism { base_size, .. } => *base_size,
         }
     }
 
@@ -45,7 +55,7 @@ impl Dimensions {
         match self {
             Self::Cuboid { depth, .. } => *depth,
             Self::Cube(size) => *size,
-            Self::Pyramid { base_size, .. } => *base_size,
+            Self::Pyramid { base_size, .. } | Self::TriangularPrism { base_size, .. } => *base_size,
         }
     }
 
@@ -55,6 +65,7 @@ impl Dimensions {
         match self {
             Self::Cuboid { height, .. } | Self::Pyramid { height, .. } => *height,
             Self::Cube(size) => *size,
+            Self::TriangularPrism { length, .. } => *length,
         }
     }
 
@@ -69,6 +80,9 @@ impl Dimensions {
             } => (*width, *depth, *height),
             Self::Cube(size) => (*size, *size, *size),
             Self::Pyramid { base_size, height } => (*base_size, *base_size, *height),
+            Self::TriangularPrism {
+                base_size, length, ..
+            } => (*base_size, *base_size, *length),
         }
     }
 }
@@ -283,6 +297,66 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
             ];
 
             (base, left_face, right_face, edges, hidden)
+        }
+        Dimensions::TriangularPrism {
+            base_size,
+            length,
+            flip,
+        } => {
+            let hb = base_size / 2.0;
+            let hl = length / 2.0;
+
+            let triangle_points = if flip {
+                [(0.0, hb, 0.0), (-hb, -hb, 0.0), (hb, -hb, 0.0)]
+            } else {
+                [(0.0, -hb, 0.0), (-hb, hb, 0.0), (hb, hb, 0.0)]
+            };
+
+            let p1_bottom = project(triangle_points[0].0, triangle_points[0].1, -hl);
+            let p2_bottom = project(triangle_points[1].0, triangle_points[1].1, -hl);
+            let p3_bottom = project(triangle_points[2].0, triangle_points[2].1, -hl);
+
+            let p1_top = project(triangle_points[0].0, triangle_points[0].1, hl);
+            let p2_top = project(triangle_points[1].0, triangle_points[1].1, hl);
+            let p3_top = project(triangle_points[2].0, triangle_points[2].1, hl);
+
+            let tri_bottom = format!(
+                "{} {} {}",
+                fmt_pt(p1_bottom),
+                fmt_pt(p2_bottom),
+                fmt_pt(p3_bottom)
+            );
+            let _tri_top = format!("{} {} {}", fmt_pt(p1_top), fmt_pt(p2_top), fmt_pt(p3_top));
+
+            let bottom_face = format!(
+                "{} {} {} {}",
+                fmt_pt(p1_bottom),
+                fmt_pt(p2_bottom),
+                fmt_pt(p2_top),
+                fmt_pt(p1_top)
+            );
+
+            let side_face = format!(
+                "{} {} {} {}",
+                fmt_pt(p2_bottom),
+                fmt_pt(p3_bottom),
+                fmt_pt(p3_top),
+                fmt_pt(p2_top)
+            );
+
+            let edges = vec![
+                (p1_bottom, p1_top),
+                (p2_bottom, p2_top),
+                (p3_bottom, p3_top),
+                (p1_bottom, p2_bottom),
+                (p1_bottom, p3_bottom),
+                (p1_top, p2_top),
+                (p1_top, p3_top),
+            ];
+
+            let hidden = vec![(p2_bottom, p3_bottom), (p2_top, p3_top)];
+
+            (bottom_face, tri_bottom, side_face, edges, hidden)
         }
     };
 

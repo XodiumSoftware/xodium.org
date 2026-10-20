@@ -14,6 +14,7 @@ pub mod components {
 
     pub mod ui {
         pub mod ascii_art;
+        pub mod axis_gizmo;
         pub mod legend_block;
         pub mod link_badges;
         pub mod object_3d;
@@ -25,6 +26,7 @@ pub mod components {
     pub use sections::header::Header;
 
     pub use ui::ascii_art::{AsciiArt, XODIUM_ASCII_ART};
+    pub use ui::axis_gizmo::AxisGizmo;
     pub use ui::legend_block::LegendBlock;
     pub use ui::link_badges::LinkBadges;
     pub use ui::object_3d::{
