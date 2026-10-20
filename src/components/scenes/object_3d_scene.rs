@@ -84,7 +84,7 @@ pub fn Object3dScene(objects: Vec<Object3dProperties>) -> impl IntoView {
     provide_context(SceneContext { last_drag_end });
 
     let mut registry: HashMap<&'static str, (Position, Dimensions)> = HashMap::new();
-    let resolved: Vec<Object3dProperties> = objects
+    let mut resolved: Vec<Object3dProperties> = objects
         .into_iter()
         .map(|mut props| {
             let resolved_pos = resolve(props.placement, props.size, &registry);
@@ -93,6 +93,47 @@ pub fn Object3dScene(objects: Vec<Object3dProperties>) -> impl IntoView {
             props
         })
         .collect();
+
+    if !resolved.is_empty() {
+        let mut min_x = f64::INFINITY;
+        let mut max_x = f64::NEG_INFINITY;
+        let mut min_y = f64::INFINITY;
+        let mut max_y = f64::NEG_INFINITY;
+        let mut min_z = f64::INFINITY;
+        let mut max_z = f64::NEG_INFINITY;
+
+        for props in &resolved {
+            let Position { x, y, z } = match props.placement {
+                Placement::At(p) => p,
+                Placement::AttachedTo { .. } => unreachable!(),
+            };
+            let Dimensions {
+                width,
+                depth,
+                height,
+            } = props.size;
+            let (hw, hd, hh) = (width / 2.0, depth / 2.0, height / 2.0);
+
+            min_x = min_x.min(x - hw);
+            max_x = max_x.max(x + hw);
+            min_y = min_y.min(y - hd);
+            max_y = max_y.max(y + hd);
+            min_z = min_z.min(z - hh);
+            max_z = max_z.max(z + hh);
+        }
+
+        let center_x = f64::midpoint(min_x, max_x);
+        let center_y = f64::midpoint(min_y, max_y);
+        let center_z = f64::midpoint(min_z, max_z);
+
+        for props in &mut resolved {
+            if let Placement::At(pos) = &mut props.placement {
+                pos.x -= center_x;
+                pos.y -= center_y;
+                pos.z -= center_z;
+            }
+        }
+    }
 
     view! {
         <section
