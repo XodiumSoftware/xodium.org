@@ -39,22 +39,17 @@ pub enum Face {
     Back,
 }
 
-/// How a block is placed inside a scene.
+/// Attachment to another block's face. The new block's opposite face is
+/// brought flush against the target's face on the same axis: attaching
+/// to `Face::Top` stacks the new block on top; to `Face::Right` places
+/// it to the right of the target, and so on. `target` is the `id` of
+/// a sibling block that must appear earlier in the scene's child list.
 #[derive(Clone, Copy)]
-pub enum Placement {
-    /// Place at an explicit lattice coordinate. No attachment is computed.
-    At(Position),
-    /// Attach to another block's face. The new block's opposite face is
-    /// brought flush against the target's face on the same axis: attaching
-    /// to `Face::Top` stacks the new block on top; to `Face::Right` places
-    /// it to the right of the target, and so on. `target` is the `id` of
-    /// a sibling block that must appear earlier in the scene's child list.
-    AttachedTo {
-        /// Id of the sibling block to attach to.
-        target: &'static str,
-        /// Which face of the target to attach against.
-        face: Face,
-    },
+pub struct Attachment {
+    /// Id of the sibling block to attach to.
+    pub target: &'static str,
+    /// Which face of the target to attach against.
+    pub face: Face,
 }
 
 #[derive(Clone, Copy)]
@@ -75,8 +70,12 @@ pub struct Object3dProperties {
     pub name: &'static str,
     /// Bounding-box size of the object.
     pub size: Dimensions,
-    /// How the object is placed on the lattice.
-    pub placement: Placement,
+    /// Attachment to another block. `None` means this is a root block
+    /// whose position is determined by the scene's centering logic.
+    pub attached_to: Option<Attachment>,
+    /// Position resolved by the scene after attachments and centering.
+    #[doc(hidden)]
+    pub resolved_position: Option<Position>,
     /// Optional per-face colour overrides. `None` uses the blueprint theme
     /// defaults (primary / secondary / accent). `Some(FaceColors { .. })`
     /// replaces all three faces at once.
@@ -87,6 +86,25 @@ pub struct Object3dProperties {
     pub is_draft: bool,
     /// URL to open when the object is clicked. `None` means no action.
     pub url: Option<&'static str>,
+}
+
+impl Default for Object3dProperties {
+    fn default() -> Self {
+        Self {
+            id: "default",
+            name: "Unnamed Object",
+            size: Dimensions {
+                width: 100.0,
+                depth: 100.0,
+                height: 100.0,
+            },
+            attached_to: None,
+            resolved_position: None,
+            colors: None,
+            is_draft: false,
+            url: None,
+        }
+    }
 }
 
 /// A single isometric wireframe object. Renders just the SVG and its
@@ -116,7 +134,7 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
             height,
         },
         name,
-        placement,
+        attached_to: _,
         colors,
         is_draft,
         url,
@@ -126,12 +144,10 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
 
     let project = move |x: f64, y: f64, z: f64| ((x - y) * COS30, (x + y) * SIN30 - z);
 
-    let (screen_x, screen_y) = match placement {
-        Placement::At(Position { x, y, z }) => project(x, y, z),
-        Placement::AttachedTo { .. } => {
-            panic!("AttachedTo placements are resolved by Object3dScene before render")
-        }
-    };
+    let Position { x, y, z } = props
+        .resolved_position
+        .expect("resolved_position must be set by Object3dScene");
+    let (screen_x, screen_y) = project(x, y, z);
 
     let back_top = project(-hw, -hd, hh);
     let right_top = project(hw, -hd, hh);

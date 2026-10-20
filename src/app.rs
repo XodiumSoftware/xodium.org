@@ -1,7 +1,7 @@
 use crate::components::scenes::object_3d_scene::Object3dScene;
 use crate::components::sections::footer::Footer;
 use crate::components::sections::header::Header;
-use crate::components::ui::object_3d::{Dimensions, Face, Object3dProperties, Placement, Position};
+use crate::components::ui::object_3d::{Attachment, Face, Object3dProperties};
 use leptos::prelude::*;
 
 #[component]
@@ -22,51 +22,28 @@ pub fn App() -> impl IntoView {
                     Object3dProperties {
                         id: "cadiotheka_project",
                         name: "Cadiotheka",
-                        size: Dimensions {
-                            width: 100.0,
-                            depth: 100.0,
-                            height: 100.0,
-                        },
-                        placement: Placement::At(Position {
-                            x: 0.0,
-                            y: 0.0,
-                            z: 0.0,
-                        }),
-                        colors: None,
-                        is_draft: false,
-                        url: Some("https://cadiotheka.com/"),
+                        url: Some("https://github.com/XodiumSoftware"),
+                        ..Default::default()
                     },
                     Object3dProperties {
                         id: "draft_0",
                         name: "SOON™",
-                        size: Dimensions {
-                            width: 100.0,
-                            depth: 100.0,
-                            height: 100.0,
-                        },
-                        placement: Placement::AttachedTo {
+                        attached_to: Some(Attachment {
                             target: "cadiotheka_project",
                             face: Face::Left,
-                        },
-                        colors: None,
+                        }),
                         is_draft: true,
-                        url: None,
+                        ..Default::default()
                     },
                     Object3dProperties {
                         id: "draft_1",
                         name: "SOON™",
-                        size: Dimensions {
-                            width: 100.0,
-                            depth: 100.0,
-                            height: 100.0,
-                        },
-                        placement: Placement::AttachedTo {
+                        attached_to: Some(Attachment {
                             target: "draft_0",
                             face: Face::Top,
-                        },
-                        colors: None,
+                        }),
                         is_draft: true,
-                        url: None,
+                        ..Default::default()
                     },
                 ] />
             </main>

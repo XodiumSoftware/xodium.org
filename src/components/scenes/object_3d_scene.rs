@@ -1,5 +1,5 @@
 use crate::components::ui::object_3d::{
-    Dimensions, Face, Object3d, Object3dProperties, Placement, Position,
+    Attachment, Dimensions, Face, Object3d, Object3dProperties, Position,
 };
 use crate::contexts::scene::SceneContext;
 use leptos::prelude::*;
@@ -7,15 +7,19 @@ use std::collections::HashMap;
 
 const DBLCLICK_WINDOW_MS: f64 = 400.0;
 
-/// Resolve a `Placement` against the blocks already registered, in order.
+/// Resolve an attachment against the blocks already registered, in order.
 fn resolve(
-    placement: Placement,
+    attachment: Option<Attachment>,
     size: Dimensions,
     registry: &HashMap<&'static str, (Position, Dimensions)>,
 ) -> Position {
-    match placement {
-        Placement::At(p) => p,
-        Placement::AttachedTo { target, face } => {
+    match attachment {
+        None => Position {
+            x: 0.0,
+            y: 0.0,
+            z: 0.0,
+        },
+        Some(Attachment { target, face }) => {
             let (target_pos, target_size) = registry.get(target).copied().unwrap_or_else(|| {
                 panic!("Attachment target '{target}' not registered before use")
             });
@@ -64,10 +68,11 @@ fn resolve(
 /// `last_drag_end` is stamped so the click that immediately follows does
 /// not also toggle an object's pinned state.
 ///
-/// Placements are resolved in order: `AttachedTo { target, face }` looks up
+/// Attachments are resolved in order: `Attachment { target, face }` looks up
 /// `target` among the already-resolved blocks and offsets the new block's
 /// centre by half the sum of the two sizes along the attachment axis. A
 /// target must appear earlier in `objects` than the block referencing it.
+/// After resolution, the entire collection is centered at the origin.
 #[component]
 #[must_use]
 pub fn Object3dScene(objects: Vec<Object3dProperties>) -> impl IntoView {
@@ -87,9 +92,9 @@ pub fn Object3dScene(objects: Vec<Object3dProperties>) -> impl IntoView {
     let mut resolved: Vec<Object3dProperties> = objects
         .into_iter()
         .map(|mut props| {
-            let resolved_pos = resolve(props.placement, props.size, &registry);
+            let resolved_pos = resolve(props.attached_to, props.size, &registry);
             registry.insert(props.id, (resolved_pos, props.size));
-            props.placement = Placement::At(resolved_pos);
+            props.resolved_position = Some(resolved_pos);
             props
         })
         .collect();
@@ -103,10 +108,9 @@ pub fn Object3dScene(objects: Vec<Object3dProperties>) -> impl IntoView {
         let mut max_z = f64::NEG_INFINITY;
 
         for props in &resolved {
-            let Position { x, y, z } = match props.placement {
-                Placement::At(p) => p,
-                Placement::AttachedTo { .. } => unreachable!(),
-            };
+            let Position { x, y, z } = props
+                .resolved_position
+                .expect("resolved_position must be set");
             let Dimensions {
                 width,
                 depth,
@@ -127,7 +131,7 @@ pub fn Object3dScene(objects: Vec<Object3dProperties>) -> impl IntoView {
         let center_z = f64::midpoint(min_z, max_z);
 
         for props in &mut resolved {
-            if let Placement::At(pos) = &mut props.placement {
+            if let Some(pos) = &mut props.resolved_position {
                 pos.x -= center_x;
                 pos.y -= center_y;
                 pos.z -= center_z;
