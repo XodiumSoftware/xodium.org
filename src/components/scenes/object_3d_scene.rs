@@ -88,7 +88,7 @@ pub fn Object3dScene(objects: Vec<Object3dProperties>) -> impl IntoView {
         .into_iter()
         .map(|mut props| {
             let resolved_pos = resolve(props.placement, props.size, &registry);
-            registry.insert(props.name, (resolved_pos, props.size));
+            registry.insert(props.id, (resolved_pos, props.size));
             props.placement = Placement::At(resolved_pos);
             props
         })

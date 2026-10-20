@@ -1,9 +1,7 @@
 use crate::components::scenes::object_3d_scene::Object3dScene;
 use crate::components::sections::footer::Footer;
 use crate::components::sections::header::Header;
-use crate::components::ui::object_3d::{
-    Dimensions, Face, FaceColors, Object3dProperties, Placement, Position,
-};
+use crate::components::ui::object_3d::{Dimensions, Face, Object3dProperties, Placement, Position};
 use leptos::prelude::*;
 
 #[component]
@@ -22,11 +20,12 @@ pub fn App() -> impl IntoView {
                 <h1 class="sr-only">"Xodium Software — open-source CAD software"</h1>
                 <Object3dScene objects=vec![
                     Object3dProperties {
-                        name: "Building Block",
+                        id: "cadiotheka_project",
+                        name: "Cadiotheka",
                         size: Dimensions {
-                            width: 240.0,
-                            depth: 120.0,
-                            height: 180.0,
+                            width: 100.0,
+                            depth: 100.0,
+                            height: 100.0,
                         },
                         placement: Placement::At(Position {
                             x: 0.0,
@@ -37,32 +36,30 @@ pub fn App() -> impl IntoView {
                         is_draft: false,
                     },
                     Object3dProperties {
-                        name: "Slab",
+                        id: "draft_0",
+                        name: "SOON™",
                         size: Dimensions {
-                            width: 180.0,
-                            depth: 180.0,
-                            height: 90.0,
+                            width: 100.0,
+                            depth: 100.0,
+                            height: 100.0,
                         },
                         placement: Placement::AttachedTo {
-                            target: "Building Block",
+                            target: "cadiotheka_project",
                             face: Face::Left,
                         },
-                        colors: Some(FaceColors {
-                            top: "oklch(0.75 0.15 140 / 0.35)",
-                            left: "oklch(0.65 0.13 140 / 0.35)",
-                            right: "oklch(0.55 0.15 25 / 0.35)",
-                        }),
-                        is_draft: false,
+                        colors: None,
+                        is_draft: true,
                     },
                     Object3dProperties {
-                        name: "Column",
+                        id: "draft_1",
+                        name: "SOON™",
                         size: Dimensions {
-                            width: 75.0,
-                            depth: 75.0,
-                            height: 270.0,
+                            width: 100.0,
+                            depth: 100.0,
+                            height: 100.0,
                         },
                         placement: Placement::AttachedTo {
-                            target: "Slab",
+                            target: "draft_0",
                             face: Face::Top,
                         },
                         colors: None,

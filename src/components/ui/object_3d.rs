@@ -47,10 +47,10 @@ pub enum Placement {
     /// Attach to another block's face. The new block's opposite face is
     /// brought flush against the target's face on the same axis: attaching
     /// to `Face::Top` stacks the new block on top; to `Face::Right` places
-    /// it to the right of the target, and so on. `target` is the `name` of
+    /// it to the right of the target, and so on. `target` is the `id` of
     /// a sibling block that must appear earlier in the scene's child list.
     AttachedTo {
-        /// Name of the sibling block to attach to.
+        /// Id of the sibling block to attach to.
         target: &'static str,
         /// Which face of the target to attach against.
         face: Face,
@@ -69,6 +69,8 @@ pub struct FaceColors {
 
 #[derive(Clone, Copy)]
 pub struct Object3dProperties {
+    /// Unique identifier used for placement references and registry lookups.
+    pub id: &'static str,
     /// Display name shown in the tooltip on hover / when pinned.
     pub name: &'static str,
     /// Bounding-box size of the object.
@@ -117,6 +119,7 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
         placement,
         colors,
         is_draft,
+        ..
     } = props;
     let (hw, hd, hh) = (width / 2.0, depth / 2.0, height / 2.0);
 
