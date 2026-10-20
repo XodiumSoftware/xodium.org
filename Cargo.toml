@@ -4,7 +4,7 @@ edition = "2024"
 publish = false
 
 [dependencies]
-leptos = { version = "0.9.0-beta", features = ["csr"] }
+leptos = { version = "0.9.0-rc0", features = ["csr"] }
 wasm-bindgen = "0.2"
 gloo-net = { version = "0.7", features = ["http", "json"] }
 gloo-timers = { version = "0.4", features = ["futures"] }
