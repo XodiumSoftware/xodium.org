@@ -1,4 +1,3 @@
-use crate::contexts::scene::{DRAG_CLICK_SUPPRESS_MS, SceneContext};
 use core::fmt::Write as _;
 use leptos::prelude::*;
 
@@ -201,8 +200,6 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
     const COS30: f64 = 0.866_025_403_784_438_6;
     const SIN30: f64 = 0.5;
 
-    let scene = use_context::<SceneContext>();
-
     let Object3dProperties {
         size,
         name,
@@ -382,13 +379,8 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
     }
 
     let navigate = move || {
-        if let Some(url) = url {
-            let suppress = scene.is_some_and(|s| {
-                js_sys::Date::now() - s.last_drag_end.get() < DRAG_CLICK_SUPPRESS_MS
-            });
-            if !suppress && let Some(window) = web_sys::window() {
-                let _ = window.open_with_url_and_target(url, "_blank");
-            }
+        if let (Some(url), Some(window)) = (url, web_sys::window()) {
+            let _ = window.open_with_url_and_target(url, "_blank");
         }
     };
 
