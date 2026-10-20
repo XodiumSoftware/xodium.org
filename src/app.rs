@@ -29,7 +29,7 @@ pub fn App() -> impl IntoView {
                     Object3dProperties {
                         id: "draft_0",
                         name: "SOON™",
-                        attached_to: Some(Attachment {
+                        attached_to: Some(Attachment::Face {
                             target: "cadiotheka_project",
                             face: Face::Left,
                         }),
@@ -39,7 +39,7 @@ pub fn App() -> impl IntoView {
                     Object3dProperties {
                         id: "draft_1",
                         name: "SOON™",
-                        attached_to: Some(Attachment {
+                        attached_to: Some(Attachment::Face  {
                             target: "draft_0",
                             face: Face::Top,
                         }),
@@ -49,7 +49,7 @@ pub fn App() -> impl IntoView {
                     AxisGizmoProperties {
                         attached_to: Attachment::Corner {
                             target: "draft_0",
-                            corner: Corner::BackLeftTop,
+                            corner: Corner::FrontLeftBottom,
                         },
                     }.into(),
                 ] />
