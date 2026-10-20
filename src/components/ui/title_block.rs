@@ -12,10 +12,10 @@ use crate::utils::{GITHUB_REPO_URL, read_scale};
 /// `GIT_SHA` environment variable set by the CI workflow; local builds leave
 /// it unset and the cell renders as "N.A." with no link.
 ///
-/// The SCALE cell shows the live device pixel ratio as a drafting-style
-/// scale pair: 1:1 at 100% zoom, 1:1.25 at 125%, and so on. The value is
-/// re-read on window resize so the cell tracks the browser zoom control
-/// without requiring a page reload.
+/// The DPR cell shows the live device pixel ratio (physical-to-CSS pixel
+/// ratio, not browser zoom) as a drafting-style pair: 1:1 at DPR 1, 1:1.25
+/// at DPR 1.25, and so on. The value is re-read on window resize so the
+/// cell tracks display or zoom changes without requiring a page reload.
 ///
 /// Rendered as a real `<table>` so screen readers announce it as tabular
 /// metadata rather than as page content.
@@ -59,7 +59,7 @@ pub fn TitleBlock() -> impl IntoView {
                         <span class="title-block-value">"01/01"</span>
                     </td>
                     <td class="title-block-cell">
-                        <span class="title-block-label">"SCALE"</span>
+                        <span class="title-block-label">"DPR"</span>
                         <span class="title-block-value">{scale}</span>
                     </td>
                 </tr>

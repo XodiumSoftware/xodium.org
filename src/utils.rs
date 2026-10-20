@@ -3,8 +3,10 @@
 pub const GITHUB_REPO_URL: &str = "https://github.com/XodiumSoftware/xodium.org/commit";
 
 /// Read the current device pixel ratio and format it as a drafting-style
-/// scale pair. 1.0 (100% zoom) reads as "1:1"; anything else reads "1:N.NN"
-/// so the value matches engineering drawing conventions.
+/// ratio pair. 1.0 reads as "1:1"; anything else reads "1:N.NN". This is
+/// *not* browser zoom — it's the physical-to-CSS pixel ratio reported by
+/// the display/OS, surfaced in the title block under the "DPR" label so the
+/// two aren't conflated.
 #[must_use]
 pub fn read_scale() -> String {
     leptos::web_sys::window().map_or_else(
