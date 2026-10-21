@@ -14,7 +14,7 @@
 
 | Category          | Technology                    | Purpose                         |
 | ----------------- | ----------------------------- | ------------------------------- |
-| **Framework**     | Leptos 0.8.17 (CSR)           | Reactive web framework          |
+| **Framework**     | Leptos (CSR)                  | Reactive web framework          |
 | **Build Tool**    | Trunk                         | WASM bundler + dev server       |
 | **Styling**       | Tailwind CSS + DaisyUI        | Utility-first CSS               |
 | **HTTP Client**   | gloo-net                      | Fetch API wrapper for WASM      |
