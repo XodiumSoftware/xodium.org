@@ -1,30 +1,33 @@
 use leptos::prelude::*;
 
+/// An entry in the drawing viewport's interaction legend.
 struct LegendEntry {
-    icon: &'static str,
-    action: &'static str,
+    /// The mouse action or keyboard input displayed to the user.
+    kbd: &'static str,
+    /// A short description of the action performed by the input.
+    desc: &'static str,
 }
 
 const LEGEND_ENTRIES: &[LegendEntry] = &[
     LegendEntry {
-        icon: "DRAG",
-        action: "Pan view",
+        kbd: "DRAG",
+        desc: "Pan view",
     },
     LegendEntry {
-        icon: "WHEEL",
-        action: "Zoom in / out",
+        kbd: "WHEEL",
+        desc: "Zoom in / out",
     },
     LegendEntry {
-        icon: "2× MMB",
-        action: "Reset view",
+        kbd: "2× MMB",
+        desc: "Reset view",
     },
     LegendEntry {
-        icon: "CLICK",
-        action: "Pin block",
+        kbd: "CLICK",
+        desc: "Pin block",
     },
     LegendEntry {
-        icon: "SPACE",
-        action: "Pin block (kbd)",
+        kbd: "SPACE",
+        desc: "Pin block (kbd)",
     },
 ];
 
@@ -42,8 +45,8 @@ pub fn LegendBlock() -> impl IntoView {
                 .iter()
                 .map(|entry| view! {
                     <div class="legend-row" role="listitem">
-                        <span class="legend-swatch">{entry.icon}</span>
-                        <span class="legend-label">{entry.action}</span>
+                        <span class="legend-swatch">{entry.kbd}</span>
+                        <span class="legend-label">{entry.desc}</span>
                     </div>
                 })
                 .collect::<Vec<_>>()}
