@@ -162,7 +162,7 @@ fn paginated_endpoint(endpoint: &str, page: u32, per_page: usize) -> String {
     format!("{endpoint}{separator}page={page}&per_page={per_page}")
 }
 
-/// Fetch public members of the XodiumSoftware GitHub organization.
+/// Fetch public members of the `XodiumSoftware` GitHub organization.
 ///
 /// Members are labeled as `Owner` when their login appears in the
 /// organization's admin-member endpoint, and `Member` otherwise.
