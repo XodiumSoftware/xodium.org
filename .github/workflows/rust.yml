@@ -189,6 +189,8 @@ jobs:
 
       - id: build_app
         name: Build App
+        env:
+          GIT_SHA: ${{ github.sha }}
         run: trunk build --release
 
       - id: wasm_size_budget

@@ -1,46 +1,63 @@
-use crate::components::{
-    Footer, Header, LandingSection, LineDraw, ProjectsSection, TeamDeckSection,
-};
+use crate::components::scenes::object_3d_scene::Object3dScene;
+use crate::components::sections::footer::Footer;
+use crate::components::sections::header::Header;
+use crate::components::ui::axis_gizmo::AxisGizmoProperties;
+use crate::components::ui::object_3d::{Attachment, Corner, Face, Object3dProperties};
 use leptos::prelude::*;
 
 #[component]
 #[must_use]
 pub fn App() -> impl IntoView {
     view! {
-        <div>
+        <div class="blueprint-frame">
             <a
                 href="#main-content"
                 class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-content focus:rounded"
             >
                 "Skip to main content"
             </a>
-            <div class="relative">
-                {/* Sentinel used by Header to detect when the page has scrolled. */}
-                <div id="header-scroll-sentinel" class="absolute top-0 left-0 h-px w-full -z-20" />
 
-                <Header />
+            <main id="main-content" tabindex="-1">
+                <h1 class="sr-only">"Xodium Software — open-source CAD software"</h1>
+                <Object3dScene objects=vec![
+                    Object3dProperties {
+                        id: "cadiotheka_project",
+                        name: "Cadiotheka",
+                        url: Some("https://cadiotheka.com/"),
+                        ..Default::default()
+                    },
+                    Object3dProperties {
+                        id: "draft_0",
+                        name: "SOON™",
+                        attached_to: Some(Attachment::Face {
+                            target: "cadiotheka_project",
+                            face: Face::Left,
+                        }),
+                        is_draft: true,
+                        ..Default::default()
+                    },
+                    Object3dProperties {
+                        id: "draft_1",
+                        name: "SOON™",
+                        attached_to: Some(Attachment::Face  {
+                            target: "draft_0",
+                            face: Face::Top,
+                        }),
+                        is_draft: true,
+                        ..Default::default()
+                    },
+                    AxisGizmoProperties {
+                        attached_to: Attachment::Corner {
+                            target: "draft_0",
+                            corner: Corner::FrontLeftBottom,
+                        },
+                    }.into(),
+                ] />
+            </main>
 
-                <div class="absolute inset-x-0 top-0 h-128 bg-gradient-to-b from-base-100 to-transparent pointer-events-none z-10" />
+            <Footer />
 
-                <LandingSection />
-            </div>
-
-        <main id="main-content" tabindex="-1">
-
-        // Line divider between hero and projects
-        <LineDraw />
-
-        // Projects section
-        <ProjectsSection />
-
-        // Line draw divider
-        <LineDraw />
-
-        // Team section
-        <TeamDeckSection />
-        </main>
-
-        <Footer />
-    </div>
+            <Header />
+        </div>
     }
 }

@@ -14,7 +14,7 @@
 
 | Category          | Technology                    | Purpose                         |
 | ----------------- | ----------------------------- | ------------------------------- |
-| **Framework**     | Leptos 0.8.17 (CSR)           | Reactive web framework          |
+| **Framework**     | Leptos (CSR)                  | Reactive web framework          |
 | **Build Tool**    | Trunk                         | WASM bundler + dev server       |
 | **Styling**       | Tailwind CSS + DaisyUI        | Utility-first CSS               |
 | **HTTP Client**   | gloo-net                      | Fetch API wrapper for WASM      |
@@ -74,13 +74,12 @@ These also exist as `just` recipes (`just lint`, `just test`, `just build`, `jus
 The single-page application follows this structure:
 
 1. **Skip Link** — accessibility anchor to `#main-content`
-2. **`Header`** — sticky navbar with logo and navigation
-3. **`#landing`** — hero section with `LandingSection`
-4. **Divider** — `LineDraw` animation
-5. **`#projects`** — sidebar layout with `ProjectsSection`
-6. **Divider** — `LineDraw` animation
-7. **`#team`** — `TeamDeckSection`
-8. **`Footer`** — site footer
+2. **`#landing`** — hero section with `LandingSection`
+3. **Divider** — `LineDraw` animation
+4. **`#projects`** — sidebar layout with `ProjectsSection`
+5. **Divider** — `LineDraw` animation
+6. **`#team`** — `TeamDeckSection`
+7. **`Footer`** — site footer
 
 ### Component Organization
 
@@ -90,7 +89,6 @@ Components are grouped by function in `src/components/`:
 
 | Component         | File           | Purpose                                         |
 | ----------------- | -------------- | ----------------------------------------------- |
-| `Header`          | `header.rs`    | Sticky navbar                                   |
 | `LandingSection`  | `landing.rs`   | Hero section with visual effects and code block |
 | `ProjectsSection` | `projects.rs`  | Fetches GitHub repos, renders `ProjectCard`s    |
 | `TeamDeckSection` | `team_deck.rs` | Fetches org members, renders `TeamCard`s        |
@@ -152,11 +150,9 @@ src/
 ├── lib.rs                     # Crate root, module declarations
 ├── app.rs                     # Root App component
 ├── github.rs                  # GitHub API client
-├── mcp.rs                     # WebMCP tools exposed to browser agents (window.xodiumwebMcp)
 ├── utils.rs                   # Shared utilities
 ├── components/
 │   ├── sections/              # Page sections
-│   │   ├── header.rs
 │   │   ├── landing.rs
 │   │   ├── projects.rs
 │   │   ├── team_deck.rs
@@ -165,11 +161,15 @@ src/
 │   │   ├── project.rs
 │   │   └── team.rs
 │   ├── animations/            # Animation components
-│   │   └── line_draw.rs
+│   │   ├── line_draw.rs
+│   │   └── section_marker.rs
 │   └── ui/                    # UI primitives, effects, utilities
 │       ├── code_block.rs
 │       ├── corner_frame.rs
 │       ├── data_grid.rs
+│       ├── link_badges.rs
+│       ├── title_block.rs
+│       ├── viewport.rs
 │       └── effects/           # Visual effects
 │           ├── blueprint_grid.rs
 │           ├── hex_grid.rs
@@ -183,7 +183,7 @@ public/
 
 index.html                     # Trunk entry template
 Trunk.toml                     # Trunk configuration
-build.rs                       # Build script
+
 ```
 
 ### Key Conventions
@@ -197,6 +197,7 @@ build.rs                       # Build script
 - **External links:** Always use `target="_blank" rel="noopener noreferrer"`
 - **Static data:** Define `const` slices at top of component files
 - **CSS:** Tailwind utility classes via `style.css`
+- **Do not add `//` line comments.** Use `///` doc comments (or `//!` module docs) to explain intent; keep the code itself self-documenting. This applies to `view!` macro blocks too — meaningful intent in a template should live on the component's or helper's doc comment, not as a structural label inside the view.
 
 ### Component Patterns
 
@@ -271,7 +272,6 @@ view! {
 1. **Trunk** bundles WASM, processes Tailwind CSS, copies the `public/` assets declared via `data-trunk` links in `index.html` → `dist/`
     - `Trunk.toml` pins the `tailwindcss` tool version. This is the version of Trunk’s bundled Tailwind distribution (`dobicinaitis/tailwind-cli-extra`), not the upstream Tailwind CSS version. The bundle includes the latest Tailwind CSS + DaisyUI; the actual Tailwind CSS version resolved at build time is shown in the build log (e.g. `tailwindcss v4.2.2`).
     - Renovate manages this version via a custom regex manager in `.github/renovate.json`; the TOML line is annotated with `# renovate: datasource=github-releases depName=dobicinaitis/tailwind-cli-extra`.
-    - `build.rs` generates the Agent Skills Discovery files into `public/.well-known/agent-skills/` (git-ignored) while cargo compiles; a Trunk `post_build` hook then syncs them into the staging dir — Trunk copies assets concurrently with the cargo build, so without the hook the files are missed on clean checkouts (e.g. CI).
 2. **Cargo release profile** optimizations:
     - `opt-level = "z"` (size)
     - `lto = true` (link-time optimization)

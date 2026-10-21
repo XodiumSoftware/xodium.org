@@ -3,64 +3,56 @@
 mod app;
 
 pub mod components {
+    pub mod scenes {
+        pub mod object_3d_scene;
+    }
+
     pub mod sections {
         pub mod footer;
         pub mod header;
-        pub mod landing;
-        pub mod projects;
-        pub mod team_deck;
-    }
-
-    pub mod cards {
-        pub mod project;
-        pub mod team;
-    }
-
-    pub mod animations {
-        pub mod line_draw;
     }
 
     pub mod ui {
-        pub mod code_block;
-        pub mod corner_frame;
-        pub mod data_grid;
-
-        pub mod effects {
-            pub mod blueprint_grid;
-            pub mod hex_grid;
-            pub mod parallax;
-            pub mod section_fade;
-            pub mod wire_frames;
+        pub mod icons {
+            pub mod buy_me_a_coffee;
+            pub mod github;
         }
+
+        pub mod ascii_art;
+        pub mod axis_gizmo;
+        pub mod legend_block;
+        pub mod link_badges;
+        pub mod object_3d;
+        pub mod title_block;
+
+        pub use icons::buy_me_a_coffee::BuyMeACoffeeIcon;
+        pub use icons::github::GitHubIcon;
     }
 
+    pub use scenes::object_3d_scene::Object3dScene;
     pub use sections::footer::Footer;
     pub use sections::header::Header;
-    pub use sections::landing::LandingSection;
-    pub use sections::projects::ProjectsSection;
-    pub use sections::team_deck::TeamDeckSection;
 
-    pub use cards::project::{ProjectCard, ProjectCardProperties};
-    pub use cards::team::{TeamCard, TeamCardProperties};
-
-    pub use animations::line_draw::{LineDraw, LineDrawHero};
-
-    pub use ui::code_block::CodeBlock;
-    pub use ui::corner_frame::CornerFrame;
-    pub use ui::data_grid::data_grid;
-    pub use ui::effects::blueprint_grid::BlueprintGrid;
-    pub use ui::effects::hex_grid::HexPattern;
-    pub use ui::effects::parallax::ParallaxLanding;
-    pub use ui::effects::section_fade::FadeOverlay;
-    pub use ui::effects::wire_frames::WireframeShapes;
+    pub use ui::ascii_art::{AsciiArt, XODIUM_ASCII_ART};
+    pub use ui::axis_gizmo::{AxisGizmo, AxisGizmoProperties};
+    pub use ui::legend_block::LegendBlock;
+    pub use ui::link_badges::LinkBadges;
+    pub use ui::object_3d::{
+        Attachment, Corner, Dimensions, Face, FaceColors, Object3d, Object3dProperties, Position,
+    };
+    pub use ui::title_block::TitleBlock;
 }
 
+pub mod contexts {
+    pub mod scene;
+}
+
+pub use contexts::scene::{DRAG_CLICK_SUPPRESS_MS, SceneContext};
+
 pub mod github;
-pub mod mcp;
 pub mod utils;
 
 pub use app::*;
 pub use components::*;
 pub use github::*;
-pub use mcp::*;
 pub use utils::*;
