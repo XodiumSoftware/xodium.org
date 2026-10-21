@@ -13,12 +13,20 @@ pub mod components {
     }
 
     pub mod ui {
+        pub mod icons {
+            pub mod buy_me_a_coffee;
+            pub mod github;
+        }
+
         pub mod ascii_art;
         pub mod axis_gizmo;
         pub mod legend_block;
         pub mod link_badges;
         pub mod object_3d;
         pub mod title_block;
+
+        pub use icons::buy_me_a_coffee::BuyMeACoffeeIcon;
+        pub use icons::github::GitHubIcon;
     }
 
     pub use scenes::object_3d_scene::Object3dScene;
