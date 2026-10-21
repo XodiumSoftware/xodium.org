@@ -45,7 +45,7 @@ pub fn LegendBlock() -> impl IntoView {
                 .iter()
                 .map(|entry| view! {
                     <div class="legend-row" role="listitem">
-                        <span class="legend-swatch">{entry.kbd}</span>
+                        <kbd class="kbd kbd-sm">{entry.kbd}</kbd>
                         <span class="legend-label">{entry.desc}</span>
                     </div>
                 })

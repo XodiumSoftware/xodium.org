@@ -258,7 +258,8 @@ body::before {
 }
 
 .legend-row {
-    display: inline-flex;
+    display: grid;
+    grid-template-columns: 5.5rem 1fr;
     align-items: center;
     gap: 0.5rem;
     margin: 0;
@@ -267,25 +268,15 @@ body::before {
 
 .legend-label {
     line-height: 1;
-}
-
-.legend-swatch {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 3.5rem;
-    height: 1.125rem;
-    padding-inline: 0.375rem;
-    border: 1px solid var(--color-base-content);
-    background-color: oklch(from var(--color-base-content) l c h / 0.22);
-    font-size: 0.55rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    color: var(--color-base-content);
+    white-space: nowrap;
 }
 
 .legend-row .legend-label {
     opacity: 0.85;
+}
+
+.legend-row .kbd {
+    justify-self: start;
 }
 
 .title-block-anchor {
