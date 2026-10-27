@@ -219,9 +219,7 @@ impl Default for Object3dProperties {
 /// `Object3dScene`, so multiple objects move as one scene.
 ///
 /// Clicking the object opens its `url` if one is configured; otherwise the
-/// click is a no-op. Keyboard-accessible via Enter or Space. A click that
-/// follows a drag is suppressed via [`SceneContext::last_drag_end`] so
-/// releasing the mouse after panning does not trigger navigation.
+/// click is a no-op. Keyboard-accessible via Enter or Space.
 ///
 /// With [`Object3dProperties::is_draft`] set the object is rendered in the
 /// draft style used for uncommitted geometry: no face fills, every edge

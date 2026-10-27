@@ -45,12 +45,6 @@ pub mod components {
     pub use ui::title_block::TitleBlock;
 }
 
-pub mod contexts {
-    pub mod scene;
-}
-
-pub use contexts::scene::{DRAG_CLICK_SUPPRESS_MS, SceneContext};
-
 pub mod github;
 pub mod utils;
 
