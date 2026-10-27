@@ -38,8 +38,8 @@ Use this skill when writing or reviewing Leptos components in the xodium.org CSR
 ## Browser APIs
 
 - `web-sys` for DOM / window / events, `js-sys` for JS types and reflection, `gloo-net` for HTTP, `gloo-timers` for async sleeps, `gloo-storage` for localStorage.
-- When you need to attach an event listener outside the Leptos lifecycle (drag handlers on `window`, etc.), build a `Closure::wrap(Box::new(...))`, register it via `add_event_listener_with_callback`, then `forget()` the closure so it lives for the page's lifetime. See `ZoneMarker`'s drag flow in `src/components/ui/effects/viewport_frame.rs` for the canonical pattern.
-- JS pixel values (`inner_width`, `client_x`, etc.) arrive as `f64`; convert via `crate::utils::to_i32_saturated` rather than casting directly (pedantic lints reject the naive cast).
+- When you need to attach an event listener outside the Leptos lifecycle (global keyboard shortcuts, resize handlers, etc.), build a `Closure::wrap(Box::new(...))`, register it via `add_event_listener_with_callback`, then `forget()` the closure so it lives for the page's lifetime. See `LinkBadges` in `src/components/ui/link_badges.rs` for the canonical pattern.
+- JS pixel values (`inner_width`, `client_x`, etc.) arrive as `f64`; cast carefully and prefer keeping calculations in `f64` until you absolutely need an integer.
 
 ## Comments and docs
 

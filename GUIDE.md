@@ -115,11 +115,13 @@ xodium.org/
 │   ├── main.rs           # WASM entry point
 │   ├── lib.rs            # Crate root
 │   ├── app.rs            # Main App component
-│   ├── components/       # UI components
-│   │   ├── sections/     # Footer
-│   │   ├── ui/           # AsciiArt, LinkBadges, TitleBlock
-│   │   └── ui/effects/   # ViewportFrame (zone markers + connectors)
-│   └── github.rs         # GitHub API client
+│   ├── github.rs         # GitHub API client
+│   ├── utils.rs          # Shared constants and helpers
+│   └── components/       # UI components
+│       ├── sections/     # Header, Footer
+│       ├── scenes/         # Object3dScene
+│       └── ui/             # AsciiArt, AxisGizmo, LegendBlock,
+│                           # LinkBadges, Object3d, TeamAvatars, TitleBlock
 ├── public/
 │   ├── style.css         # Tailwind + DaisyUI styles
 │   └── icons/            # SVG icons
@@ -152,7 +154,7 @@ xodium.org/
 
 The site caches GitHub API responses in `localStorage` with a 5-minute TTL. If you see:
 
-- Empty project/team sections: API rate limit may be exceeded
+- Empty team data: API rate limit may be exceeded
 - Wait a few minutes and refresh, or clear site data
 
 ### Deploy failed
