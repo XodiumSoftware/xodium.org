@@ -1,4 +1,5 @@
 use leptos::prelude::*;
+use leptos::wasm_bindgen::JsCast;
 
 use crate::ui::{BuyMeACoffeeIcon, GitHubIcon};
 
@@ -17,16 +18,22 @@ struct LinkBadge {
     icon: IconRenderer,
 }
 
+/// URL opened by the GitHub badge and the `Alt + G` keyboard shortcut.
+const GITHUB_URL: &str = "https://github.com/XodiumSoftware";
+
+/// URL opened by the Buy Me a Coffee badge and the `Alt + C` keyboard shortcut.
+const BMC_URL: &str = "https://buymeacoffee.com/illyrius";
+
 /// External links displayed beside the title block.
 const LINK_BADGES: &[LinkBadge] = &[
     LinkBadge {
-        href: "https://github.com/XodiumSoftware",
+        href: GITHUB_URL,
         aria_label: "Xodium Software on GitHub",
         tooltip: "GitHub",
         icon: || view! { <GitHubIcon /> }.into_any(),
     },
     LinkBadge {
-        href: "https://buymeacoffee.com/illyrius",
+        href: BMC_URL,
         aria_label: "Buy me a coffee",
         tooltip: "Buy Me a Coffee",
         icon: || view! { <BuyMeACoffeeIcon /> }.into_any(),
@@ -42,11 +49,52 @@ const LINK_BADGES: &[LinkBadge] = &[
 ///
 /// The navigation contains direct anchor children so flexbox can stretch the
 /// badge cells to match the height of the adjacent title block.
+///
+/// Pressing `Alt + G` opens the GitHub page and `Alt + C` opens the Buy Me a
+/// Coffee page so keyboard users can reach either link quickly without tabbing
+/// through the badge row.
 #[component]
 #[must_use]
 pub fn LinkBadges() -> impl IntoView {
+    let (announcement, set_announcement) = signal(String::new());
+
+    Effect::new(move |_| {
+        use leptos::wasm_bindgen::closure::Closure;
+        use leptos::web_sys;
+
+        let closure = Closure::wrap(Box::new(move |event: web_sys::KeyboardEvent| {
+            if !event.alt_key() {
+                return;
+            }
+
+            let (url, label) = match event.key().to_ascii_lowercase().as_str() {
+                "g" => (GITHUB_URL, "GitHub"),
+                "c" => (BMC_URL, "Buy Me a Coffee"),
+                _ => return,
+            };
+
+            event.prevent_default();
+            if let Some(window) = web_sys::window() {
+                let _ = window.open_with_url_and_target(url, "_blank");
+            }
+            set_announcement(format!("Opened {label} in a new tab."));
+        }) as Box<dyn FnMut(_)>);
+        let _ = web_sys::window().map(|window| {
+            window.add_event_listener_with_callback("keydown", closure.as_ref().unchecked_ref())
+        });
+        closure.forget();
+    });
+
     view! {
         <nav aria-label="External links" class="link-badges">
+            <span
+                id="github-shortcut-announcement"
+                class="sr-only"
+                aria-live="polite"
+                aria-atomic="true"
+            >
+                {announcement}
+            </span>
             {LINK_BADGES
                 .iter()
                 .map(|badge| {

@@ -10,24 +10,12 @@ struct LegendEntry {
 
 const LEGEND_ENTRIES: &[LegendEntry] = &[
     LegendEntry {
-        kbd: "DRAG",
-        desc: "Pan view",
+        kbd: "Alt + g",
+        desc: "GitHub",
     },
     LegendEntry {
-        kbd: "WHEEL",
-        desc: "Zoom in / out",
-    },
-    LegendEntry {
-        kbd: "2× MMB",
-        desc: "Reset view",
-    },
-    LegendEntry {
-        kbd: "CLICK",
-        desc: "Pin block",
-    },
-    LegendEntry {
-        kbd: "SPACE",
-        desc: "Pin block (kbd)",
+        kbd: "Alt + c",
+        desc: "Buy Me a Coffee",
     },
 ];
 
