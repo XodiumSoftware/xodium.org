@@ -1,7 +1,6 @@
 use crate::components::ui::ascii_art::AsciiArt;
 use crate::components::ui::legend_block::LegendBlock;
 use crate::components::ui::link_badges::LinkBadges;
-use crate::components::ui::team_deck::TeamDeck;
 use crate::components::ui::title_block::TitleBlock;
 use leptos::prelude::*;
 
@@ -16,12 +15,9 @@ pub fn Header() -> impl IntoView {
             <AsciiArt />
             <hr class="corner-stack-sep" />
             <LegendBlock />
-            <div class="title-block-assembly">
-                <TeamDeck />
-                <div class="title-block-anchor">
-                    <LinkBadges />
-                    <TitleBlock />
-                </div>
+            <div class="title-block-anchor">
+                <LinkBadges />
+                <TitleBlock />
             </div>
         </aside>
     }
