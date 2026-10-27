@@ -301,14 +301,9 @@ body::before {
     font-size: 0.75rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    cursor: grab;
     user-select: none;
     clip-path: inset(0);
     animation: block-in 400ms ease-out 1100ms both;
-}
-
-.object-3d-scene:active {
-    cursor: grabbing;
 }
 
 .object-3d-scene:active .object-3d-layer {
