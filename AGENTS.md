@@ -63,23 +63,27 @@ These also exist as `just` recipes (`just lint`, `just test`, `just build`, `jus
 
 ### Entry Points
 
-| File      | Purpose                                          |
-| --------- | ------------------------------------------------ |
-| `main.rs` | WASM entry point, mounts `App` to `&lt;body&gt;` |
-| `lib.rs`  | Crate root; declares every module and re-export  |
-| `app.rs`  | Root `App` component with full page layout       |
+| File      | Purpose                                         |
+| --------- | ----------------------------------------------- |
+| `main.rs` | WASM entry point, mounts `App` to `<body>`      |
+| `lib.rs`  | Crate root; declares every module and re-export |
+| `app.rs`  | Root `App` component with full page layout      |
 
 ### Page Layout (`App` component)
 
-The single-page application follows this structure:
+The single-page application is a blueprint-style drawing with a fixed corner
+stack of metadata and controls:
 
 1. **Skip Link** — accessibility anchor to `#main-content`
-2. **`#landing`** — hero section with `LandingSection`
-3. **Divider** — `LineDraw` animation
-4. **`#projects`** — sidebar layout with `ProjectsSection`
-5. **Divider** — `LineDraw` animation
-6. **`#team`** — `TeamDeckSection`
-7. **`Footer`** — site footer
+2. **`main#content`** — full-viewport drawing viewport containing the
+   isometric `Object3dScene`
+3. **Corner stack** (`<aside class="corner-stack">`) — fixed bottom-right
+   metadata panel:
+    - `AsciiArt` — XODIUM glyph mark
+    - separator line
+    - `LegendBlock` — keyboard shortcut legend
+    - `LinkBadges` + `TitleBlock` — external links and sheet metadata
+4. **`Footer`** — fixed bottom-left copyright / revision link
 
 ### Component Organization
 
@@ -87,44 +91,35 @@ Components are grouped by function in `src/components/`:
 
 #### Sections (`src/components/sections/`)
 
-| Component         | File           | Purpose                                         |
-| ----------------- | -------------- | ----------------------------------------------- |
-| `LandingSection`  | `landing.rs`   | Hero section with visual effects and code block |
-| `ProjectsSection` | `projects.rs`  | Fetches GitHub repos, renders `ProjectCard`s    |
-| `TeamDeckSection` | `team_deck.rs` | Fetches org members, renders `TeamCard`s        |
-| `Footer`          | `footer.rs`    | Site footer                                     |
+| Component | File        | Purpose                            |
+| --------- | ----------- | ---------------------------------- |
+| `Header`  | `header.rs` | Bottom-right corner stack assembly |
+| `Footer`  | `footer.rs` | Bottom-left site footer            |
 
-#### Cards (`src/components/cards/`)
+#### Scenes (`src/components/scenes/`)
 
-| Component     | File         | Purpose                                           |
-| ------------- | ------------ | ------------------------------------------------- |
-| `ProjectCard` | `project.rs` | Repo card with name, description, stars, language |
-| `TeamCard`    | `team.rs`    | Member avatar, login, role badge                  |
-
-#### Visual Effects (`src/components/ui/effects/`)
-
-| Component         | File                | Purpose                     |
-| ----------------- | ------------------- | --------------------------- |
-| `BlueprintGrid`   | `blueprint_grid.rs` | Animated SVG blueprint grid |
-| `WireframeShapes` | `wire_frames.rs`    | Floating 3D wireframes      |
-| `ParallaxLanding` | `parallax.rs`       | Parallax scroll effect      |
-| `HexPattern`      | `hex_grid.rs`       | Hexagonal grid overlay      |
-| `FadeOverlay`     | `section_fade.rs`   | Gradient fade transitions   |
-
-#### Animations (`src/components/animations/`)
-
-| Component      | File           | Purpose                   |
-| -------------- | -------------- | ------------------------- |
-| `LineDraw`     | `line_draw.rs` | Section divider animation |
-| `LineDrawHero` | `line_draw.rs` | Hero variant              |
+| Component       | File                 | Purpose                                          |
+| --------------- | -------------------- | ------------------------------------------------ |
+| `Object3dScene` | `object_3d_scene.rs` | Hosts isometric `Object3d` and `AxisGizmo` items |
 
 #### UI Primitives (`src/components/ui/`)
 
-| Component     | File              | Purpose                           |
-| ------------- | ----------------- | --------------------------------- |
-| `CodeBlock`   | `code_block.rs`   | Animated typewriter code display  |
-| `CornerFrame` | `corner_frame.rs` | Decorative corner frame           |
-| `data_grid`   | `data_grid.rs`    | `Suspense` wrapper for async data |
+| Component     | File              | Purpose                                          |
+| ------------- | ----------------- | ------------------------------------------------ |
+| `AsciiArt`    | `ascii_art.rs`    | XODIUM ASCII glyph mark                          |
+| `AxisGizmo`   | `axis_gizmo.rs`   | XYZ direction indicator for the 3D scene         |
+| `LegendBlock` | `legend_block.rs` | Keyboard shortcut legend                         |
+| `LinkBadges`  | `link_badges.rs`  | External link icons (GitHub, Buy Me a Coffee)    |
+| `Object3d`    | `object_3d.rs`    | Isometric wireframe block                        |
+| `TeamAvatars` | `team_avatars.rs` | GitHub org member avatar group                   |
+| `TitleBlock`  | `title_block.rs`  | Blueprint metadata table (sheet, DPR, rev, date) |
+
+#### UI Icons (`src/components/ui/icons/`)
+
+| Component          | File                 | Purpose             |
+| ------------------ | -------------------- | ------------------- |
+| `BuyMeACoffeeIcon` | `buy_me_a_coffee.rs` | Buy Me a Coffee cup |
+| `GitHubIcon`       | `github.rs`          | GitHub Octocat      |
 
 ### GitHub API (`src/github.rs`)
 
@@ -137,8 +132,8 @@ Centralized data fetching with `localStorage` caching:
 
 **Internal helpers:**
 
-- `fetch&lt;T&gt;(endpoint)` — cache-then-network with retry logic (4 attempts, exponential backoff)
-- `fetch_all&lt;T&gt;(endpoint)` — paginates `fetch` with `?page=N&per_page=100` until a short page is returned
+- `fetch<T>(endpoint)` — cache-then-network with retry logic (4 attempts, exponential backoff)
+- `fetch_all<T>(endpoint)` — paginates `fetch` with `?page=N&per_page=100` until a short page is returned
 - `LocalResource` used for async (runs on WASM thread)
 - `xodium:{endpoint}` cache key format
 
@@ -147,43 +142,34 @@ Centralized data fetching with `localStorage` caching:
 ```
 src/
 ├── main.rs                    # WASM entry point
-├── lib.rs                     # Crate root, module declarations
+├── lib.rs                     # Crate root, module declarations and re-exports
 ├── app.rs                     # Root App component
 ├── github.rs                  # GitHub API client
 ├── utils.rs                   # Shared utilities
 ├── components/
 │   ├── sections/              # Page sections
-│   │   ├── landing.rs
-│   │   ├── projects.rs
-│   │   ├── team_deck.rs
+│   │   ├── header.rs
 │   │   └── footer.rs
-│   ├── cards/                 # Card components
-│   │   ├── project.rs
-│   │   └── team.rs
-│   ├── animations/            # Animation components
-│   │   ├── line_draw.rs
-│   │   └── section_marker.rs
-│   └── ui/                    # UI primitives, effects, utilities
-│       ├── code_block.rs
-│       ├── corner_frame.rs
-│       ├── data_grid.rs
+│   ├── scenes/                # Viewport scenes
+│   │   └── object_3d_scene.rs
+│   └── ui/                    # UI primitives and icons
+│       ├── ascii_art.rs
+│       ├── axis_gizmo.rs
+│       ├── icons/
+│       │   ├── buy_me_a_coffee.rs
+│       │   └── github.rs
+│       ├── legend_block.rs
 │       ├── link_badges.rs
-│       ├── title_block.rs
-│       ├── viewport.rs
-│       └── effects/           # Visual effects
-│           ├── blueprint_grid.rs
-│           ├── hex_grid.rs
-│           ├── parallax.rs
-│           ├── section_fade.rs
-│           └── wire_frames.rs
+│       ├── object_3d.rs
+│       ├── team_avatars.rs
+│       └── title_block.rs
 
 public/
-├── style.css                  # Tailwind + custom theme
+├── style.css                  # Tailwind + custom blueprint theme
 └── icons/                     # SVG icons
 
 index.html                     # Trunk entry template
 Trunk.toml                     # Trunk configuration
-
 ```
 
 ### Key Conventions
@@ -191,12 +177,11 @@ Trunk.toml                     # Trunk configuration
 - **Register modules and re-exports in `src/lib.rs` explicitly.** Do not use `mod.rs` files, and do not nest `mod` declarations inside other module files. Every module in the crate must be declared directly in the crate root (`src/lib.rs`). Use `#[path = "..."]` attributes when a module file lives in a subdirectory.
 - All Clippy warnings enabled; run with `-W clippy::pedantic -D warnings` to catch pedantic lints as errors.
 - No `unsafe` code — where JS handles must satisfy `Send + Sync` (e.g. for `on_cleanup`), use `send_wrapper::SendWrapper`
-- **Props:** `#[derive(Clone)]` structs named `{Component}Properties`
+- **Props:** `#[derive(Clone)]` structs named `{Component}Properties` (e.g. `Object3dProperties`, `AxisGizmoProperties`)
 - **Async data:** Use `LocalResource` (not `Resource`) for WASM thread execution
-- **Suspense:** Use `data_grid` helper, don't inline ad-hoc boundaries
 - **External links:** Always use `target="_blank" rel="noopener noreferrer"`
 - **Static data:** Define `const` slices at top of component files
-- **CSS:** Tailwind utility classes via `style.css`
+- **CSS:** Tailwind utility classes via `style.css`; custom component styles live in `public/style.css`
 - **Do not add `//` line comments.** Use `///` doc comments (or `//!` module docs) to explain intent; keep the code itself self-documenting. This applies to `view!` macro blocks too — meaningful intent in a template should live on the component's or helper's doc comment, not as a structural label inside the view.
 
 ### Component Patterns
@@ -239,32 +224,9 @@ impl From<Repo> for ProjectCardProperties {
 **Async data with LocalResource:**
 
 ```rust
-let repos = LocalResource::new( move | | async move {
-fetch_repos().await.unwrap_or_default()
+let repos = LocalResource::new(move || async move {
+    fetch_repos().await.unwrap_or_default()
 });
-```
-
-**Suspense wrapper:**
-
-```rust
-view! {
-    {data_grid(
-        resource,
-        move || "No projects found.",
-        |projects: Vec<Repo>| {
-            view! {
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {projects
-                        .into_iter()
-                        .map(|project| view! { <ProjectCard props=project.into() /> })
-                        .collect_view()}
-                </div>
-            }
-        },
-        Some(retry),
-        "Retry",
-    )}
-}
 ```
 
 ### Build Pipeline
@@ -279,6 +241,27 @@ view! {
     - `panic = "abort"` (no unwinding)
     - `strip = true` (remove symbols)
 
+### 3D Scene
+
+The viewport uses a static isometric scene (`Object3dScene`). Objects are
+positioned via `Attachment` to faces or corners of earlier objects and are
+centered as a group. Each `Object3d` renders an SVG wireframe block with a
+clickable target that opens its `url`.
+
+- `Object3dProperties` defines id, name, size, attachment, colors, draft mode, and optional URL
+- `AxisGizmoProperties` is a special object type rendered as an `AxisGizmo`
+- Team data can be rendered in the scene via the `TeamAvatars` component (fetched from `fetch_members()`)
+
+### Keyboard Shortcuts
+
+Global shortcuts handled in `LinkBadges`:
+
+| Shortcut  | Action               |
+| --------- | -------------------- |
+| `Alt + 1` | Open Cadiotheka      |
+| `Alt + G` | Open GitHub org page |
+| `Alt + C` | Open Buy Me a Coffee |
+
 ### Caching Strategy
 
 GitHub API responses cached in `localStorage`:
@@ -291,7 +274,7 @@ GitHub API responses cached in `localStorage`:
 
 ## Testing
 
-- **Browser-based WASM tests** (`wasm-bindgen-test`, `run_in_browser`) live alongside the code in `src/github.rs` and `src/components/cards/project.rs`
+- **Browser-based WASM tests** (`wasm-bindgen-test`, `run_in_browser`) live alongside the code in `src/github.rs`
 - Run them with `wasm-pack test --headless --chrome` (or `just test`); the CI `test` job runs the same
 - Also verify manually with `trunk serve`; check the console for WASM panics (in debug builds)
 
@@ -302,7 +285,7 @@ GitHub API responses cached in `localStorage`:
 - **GitHub API** has rate limits (60 req/hour unauthenticated)
 - **Cache invalidation** — manual refresh or wait for 5-min TTL
 - **WASM size** optimized heavily for fast page loads
-- **`prefers-reduced-motion`** — CSS animations and transitions are suppressed via a global media query, and JS-driven effects (`CodeBlock`, `ParallaxLanding`) read `utils::prefers_reduced_motion()`; `main.rs` also applies a `reduced-motion` class to `<html>` so future CSS/JS can share the same signal
+- **`prefers-reduced-motion`** — CSS animations and transitions are suppressed via a global media query; `main.rs` applies a `reduced-motion` class to `<html>` so future CSS/JS can share the same signal
 
 ## Claude Code Workflow
 
@@ -310,7 +293,7 @@ GitHub API responses cached in `localStorage`:
 
 **When creating tasks:**
 
-- Number tasks in the name (e.g., "1. Add new section", "2. Update TeamCard styling")
+- Number tasks in the name (e.g., "1. Add new shortcut", "2. Update TeamAvatars styling")
 
 **After completing each task:**
 
@@ -329,6 +312,7 @@ GitHub API responses cached in `localStorage`:
     - Change component interfaces
     - Add complex logic
     - **Run `trunk build`** to verify compilation
+    - **Update `AGENTS.md`** if architecture, layout, or conventions change
 
 **Rule of thumb:** If a code change would confuse someone reading the docs, update the docs.
 
@@ -345,19 +329,19 @@ To add a new page section:
 
 1. Create file in `src/components/sections/{section}.rs`
 2. Define `{Section}` component with `#[component]` macro
-3. Add the module declaration in `src/lib.rs` under the `sections` block with `#[path = "components/sections/{section}.rs"]`
+3. Add the module declaration in `src/lib.rs` under the `sections` block
 4. Add a `pub use sections::{section}::{Section};` re-export in `src/lib.rs`
 5. Import in `src/app.rs` and add to `App` view
-6. Add `LineDraw` divider before/after if needed
 
 ### Adding a New Component
 
-1. Determine category (cards, effects, animations, ui)
-2. Create file in appropriate subdirectory
-3. Define component with props struct named `{Component}Properties`
-4. Add the module declaration in `src/lib.rs` under the appropriate block with `#[path = "..."]`
+1. Determine category (`sections`, `scenes`, or `ui`)
+2. Create file in the appropriate subdirectory
+3. Define component with props struct named `{Component}Properties` where applicable
+4. Add the module declaration in `src/lib.rs` under the appropriate block
 5. Add a re-export in `src/lib.rs`
 6. Add rustdoc comments explaining purpose
+7. Update `AGENTS.md` architecture tables if the component is part of the page layout
 
 ## Memory System
 
