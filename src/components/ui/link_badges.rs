@@ -2,6 +2,7 @@ use leptos::prelude::*;
 use leptos::wasm_bindgen::JsCast;
 
 use crate::ui::{BuyMeACoffeeIcon, GitHubIcon};
+use crate::utils::CADIOTHEKA_URL;
 
 /// Function pointer that renders an icon as a type-erased view.
 type IconRenderer = fn() -> AnyView;
@@ -50,9 +51,9 @@ const LINK_BADGES: &[LinkBadge] = &[
 /// The navigation contains direct anchor children so flexbox can stretch the
 /// badge cells to match the height of the adjacent title block.
 ///
-/// Pressing `Alt + G` opens the GitHub page and `Alt + C` opens the Buy Me a
-/// Coffee page so keyboard users can reach either link quickly without tabbing
-/// through the badge row.
+/// Pressing `Alt + 1` opens Cadiotheka, `Alt + G` opens GitHub, and
+/// `Alt + C` opens Buy Me a Coffee so keyboard users can reach any of these
+/// links quickly without tabbing through the badge row.
 #[component]
 #[must_use]
 pub fn LinkBadges() -> impl IntoView {
@@ -68,6 +69,7 @@ pub fn LinkBadges() -> impl IntoView {
             }
 
             let (url, label) = match event.key().to_ascii_lowercase().as_str() {
+                "1" => (CADIOTHEKA_URL, "Cadiotheka"),
                 "g" => (GITHUB_URL, "GitHub"),
                 "c" => (BMC_URL, "Buy Me a Coffee"),
                 _ => return,

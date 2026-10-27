@@ -3,6 +3,7 @@ use crate::components::sections::footer::Footer;
 use crate::components::sections::header::Header;
 use crate::components::ui::axis_gizmo::AxisGizmoProperties;
 use crate::components::ui::object_3d::{Attachment, Corner, Face, Object3dProperties};
+use crate::utils::CADIOTHEKA_URL;
 use leptos::prelude::*;
 
 #[component]
@@ -23,7 +24,7 @@ pub fn App() -> impl IntoView {
                     Object3dProperties {
                         id: "cadiotheka_project",
                         name: "Cadiotheka",
-                        url: Some("https://cadiotheka.com/"),
+                        url: Some(CADIOTHEKA_URL),
                         ..Default::default()
                     },
                     Object3dProperties {

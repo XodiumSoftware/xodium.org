@@ -10,6 +10,10 @@ struct LegendEntry {
 
 const LEGEND_ENTRIES: &[LegendEntry] = &[
     LegendEntry {
+        kbd: "Alt + 1",
+        desc: "Cadiotheka",
+    },
+    LegendEntry {
         kbd: "Alt + g",
         desc: "GitHub",
     },
