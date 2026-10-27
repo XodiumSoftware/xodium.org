@@ -23,6 +23,7 @@ pub mod components {
         pub mod legend_block;
         pub mod link_badges;
         pub mod object_3d;
+        pub mod team_deck;
         pub mod title_block;
 
         pub use icons::buy_me_a_coffee::BuyMeACoffeeIcon;
@@ -40,6 +41,7 @@ pub mod components {
     pub use ui::object_3d::{
         Attachment, Corner, Dimensions, Face, FaceColors, Object3d, Object3dProperties, Position,
     };
+    pub use ui::team_deck::TeamDeck;
     pub use ui::title_block::TitleBlock;
 }
 

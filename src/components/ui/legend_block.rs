@@ -14,6 +14,10 @@ const LEGEND_ENTRIES: &[LegendEntry] = &[
         desc: "Cadiotheka",
     },
     LegendEntry {
+        kbd: "Alt + t",
+        desc: "Team",
+    },
+    LegendEntry {
         kbd: "Alt + g",
         desc: "GitHub",
     },
