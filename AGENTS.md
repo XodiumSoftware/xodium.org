@@ -190,32 +190,34 @@ Trunk.toml                     # Trunk configuration
 
 ```rust
 #[derive(Clone)]
-pub struct ProjectCardProperties {
-    pub title: String,
-    pub description: String,
-    pub link: Option<String>,
-    pub language: Option<String>,
-    pub stargazers_count: u32,
-    pub topics: Vec<String>,
+pub struct Object3dProperties {
+    pub id: &'static str,
+    pub name: &'static str,
+    pub size: Dimensions,
+    pub attached_to: Option<Attachment>,
+    pub resolved_position: Option<Position>,
+    pub depth_index: Option<i32>,
+    pub colors: Option<FaceColors>,
+    pub is_draft: bool,
+    pub url: Option<&'static str>,
 }
 ```
 
 **Props with `From` conversion:**
 
 ```rust
-impl From<Repo> for ProjectCardProperties {
-    fn from(repo: Repo) -> Self {
-        let description = repo
-            .description
-            .filter(|d| !d.trim().is_empty())
-            .unwrap_or_else(|| "(No description)".to_string());
+impl From<AxisGizmoProperties> for Object3dProperties {
+    fn from(props: AxisGizmoProperties) -> Self {
         Self {
-            title: repo.name,
-            description,
-            link: Some(repo.html_url),
-            language: repo.language,
-            stargazers_count: repo.stargazers_count,
-            topics: repo.topics,
+            id: "axis_gizmo",
+            name: "Axis Gizmo",
+            size: Dimensions::Cube(30.0),
+            attached_to: Some(props.attached_to),
+            resolved_position: None,
+            depth_index: None,
+            colors: None,
+            is_draft: false,
+            url: None,
         }
     }
 }
