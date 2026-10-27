@@ -82,7 +82,14 @@ pub fn LinkBadges() -> impl IntoView {
             set_announcement(format!("Opened {label} in a new tab."));
         }) as Box<dyn FnMut(_)>);
         let _ = web_sys::window().map(|window| {
-            window.add_event_listener_with_callback("keydown", closure.as_ref().unchecked_ref())
+            window
+                .add_event_listener_with_callback("keydown", closure.as_ref().unchecked_ref())
+                .map_err(|error| {
+                    web_sys::console::warn_1(
+                        &format!("Failed to register keydown listener on link badges: {error:?}")
+                            .into(),
+                    );
+                })
         });
         closure.forget();
     });

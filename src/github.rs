@@ -32,9 +32,18 @@ fn cache_read<T: for<'de> Deserialize<'de>>(key: &str) -> Option<(T, f64)> {
 }
 
 /// Serialize data and its timestamp into local storage.
+///
+/// Failures are logged to the console but not propagated; the caller already
+/// has the fetched data and can continue without caching.
 fn cache_set<T: Serialize>(key: &str, data: &T) {
-    let _ = LocalStorage::set(key, data);
-    let _ = LocalStorage::set(format!("{key}:ts"), js_sys::Date::now());
+    if let Err(error) = LocalStorage::set(key, data) {
+        web_sys::console::warn_1(&format!("Failed to write cache entry {key}: {error}").into());
+    }
+    if let Err(error) = LocalStorage::set(format!("{key}:ts"), js_sys::Date::now()) {
+        web_sys::console::warn_1(
+            &format!("Failed to write cache timestamp for {key}: {error}").into(),
+        );
+    }
 }
 
 /// Format an HTTP error status into a user-facing message.

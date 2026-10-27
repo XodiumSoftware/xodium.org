@@ -401,9 +401,10 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
 
     let mut face_overrides = String::new();
     if let Some(FaceColors { top, left, right }) = colors {
-        let _ = write!(face_overrides, "--face-top: {top};");
-        let _ = write!(face_overrides, "--face-left: {left};");
-        let _ = write!(face_overrides, "--face-right: {right};");
+        write!(face_overrides, "--face-top: {top};").expect("writing to a String is infallible");
+        write!(face_overrides, "--face-left: {left};").expect("writing to a String is infallible");
+        write!(face_overrides, "--face-right: {right};")
+            .expect("writing to a String is infallible");
     }
 
     let navigate = move || {
