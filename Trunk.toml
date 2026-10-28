@@ -1,6 +1,6 @@
 [tools]
 # renovate: datasource=github-releases depName=dobicinaitis/tailwind-cli-extra
-tailwindcss = "2.10.10"
+tailwindcss = "2.10.34"
 
 [build.wasm-opt]
 level = "z"
