@@ -49,7 +49,7 @@ pub fn TeamAvatars() -> impl IntoView {
                                         .collect::<Vec<_>>()}
                                     {move || {
                                         let remaining = list.len().saturating_sub(VISIBLE_AVATARS);
-                                        if remaining > 0 {
+                                        (remaining > 0).then(|| {
                                             view! {
                                                 <li class="team-avatars-item" role="listitem">
                                                     <span
@@ -61,9 +61,7 @@ pub fn TeamAvatars() -> impl IntoView {
                                                 </li>
                                             }
                                                 .into_any()
-                                        } else {
-                                            view! {}.into_any()
-                                        }
+                                        })
                                     }}
                                 </ul>
                             }
