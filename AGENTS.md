@@ -97,24 +97,24 @@ Components are grouped by function in `src/components/`:
 
 #### Sections (`src/components/sections/`)
 
-| Component     | File         | Purpose                                           |
-| ------------- | ------------ | ------------------------------------------------- |
-| `Main`        | `main.rs`    | Central isometric drawing viewport                |
-| `ThreeDScene` | `three_d.rs` | Isometric scene that hosts `Object3d` item blocks |
-| `Team`        | `team.rs`    | Team modal opened from the 3D scene               |
-| `Header`      | `header.rs`  | Bottom-right corner stack assembly                |
-| `Footer`      | `footer.rs`  | Bottom-left site footer                           |
+| Component     | File         | Purpose                                               |
+| ------------- | ------------ | ----------------------------------------------------- |
+| `Main`        | `main.rs`    | Central isometric drawing viewport                    |
+| `ThreeDScene` | `three_d.rs` | Isometric scene that hosts `ThreeDObject` item blocks |
+| `Team`        | `team.rs`    | Team modal opened from the 3D scene                   |
+| `Header`      | `header.rs`  | Bottom-right corner stack assembly                    |
+| `Footer`      | `footer.rs`  | Bottom-left site footer                               |
 
 #### UI Primitives (`src/components/ui/`)
 
-| Component     | File              | Purpose                                          |
-| ------------- | ----------------- | ------------------------------------------------ |
-| `AsciiArt`    | `ascii_art.rs`    | XODIUM ASCII glyph mark                          |
-| `LegendBlock` | `legend_block.rs` | Keyboard shortcut legend                         |
-| `LinkBadges`  | `link_badges.rs`  | External link icons (GitHub, Buy Me a Coffee)    |
-| `Object3d`    | `shapes.rs`       | Isometric wireframe block and shape registry     |
-| `Avatar`      | `avatar.rs`       | Single GitHub member avatar item                 |
-| `TitleBlock`  | `title_block.rs`  | Blueprint metadata table (sheet, DPR, rev, date) |
+| Component      | File              | Purpose                                          |
+| -------------- | ----------------- | ------------------------------------------------ |
+| `AsciiArt`     | `ascii_art.rs`    | XODIUM ASCII glyph mark                          |
+| `LegendBlock`  | `legend_block.rs` | Keyboard shortcut legend                         |
+| `LinkBadges`   | `link_badges.rs`  | External link icons (GitHub, Buy Me a Coffee)    |
+| `ThreeDObject` | `shapes.rs`       | Isometric wireframe block and shape registry     |
+| `Avatar`       | `avatar.rs`       | Single GitHub member avatar item                 |
+| `TitleBlock`   | `title_block.rs`  | Blueprint metadata table (sheet, DPR, rev, date) |
 
 #### UI Icons (`src/components/ui/icons/`)
 
@@ -182,7 +182,7 @@ Trunk.toml                     # Trunk configuration
 - All Clippy warnings enabled; run with `-W clippy::pedantic -D warnings` to catch pedantic lints as errors.
 - `missing_docs` is enabled in `Cargo.toml` under `[lints.rust]`. Every public module, type, function, and field must have a rustdoc comment.
 - No `unsafe` code — where JS handles must satisfy `Send + Sync` (e.g. for `on_cleanup`), use `send_wrapper::SendWrapper`
-- **Props:** `#[derive(Clone)]` structs named `{Component}Properties` (e.g. `Object3dProperties`)
+- **Props:** `#[derive(Clone)]` structs named `{Component}Properties` (e.g. `ThreeDProperties`)
 - **Async data:** Use `LocalResource` (not `Resource`) for WASM thread execution
 - **External links:** Always use `target="_blank" rel="noopener noreferrer"`
 - **Static data:** Define `const` slices at top of component files
@@ -195,7 +195,7 @@ Trunk.toml                     # Trunk configuration
 
 ```rust
 #[derive(Clone)]
-pub struct Object3dProperties {
+pub struct ThreeDProperties {
     pub id: &'static str,
     pub name: &'static str,
     pub shape: Shape,
@@ -231,13 +231,13 @@ let repos = LocalResource::new(move || async move {
 
 ### 3D Scene
 
-The viewport uses a static isometric scene (`Object3dScene`). Objects are
+The viewport uses a static isometric scene (`ThreeDScene`). Objects are
 positioned via `Attachment` to faces of earlier objects and are
-centered as a group. Each `Object3d` renders an SVG wireframe block with a
+centered as a group. Each `ThreeDObject` renders an SVG wireframe block with a
 clickable target that opens its `url` or, if `on_click` is provided, runs a
 custom in-app action.
 
-- `Object3dProperties` defines id, name, shape, attachment, colors, draft mode, optional URL, and optional `on_click` callback
+- `ThreeDProperties` defines id, name, shape, attachment, colors, draft mode, optional URL, and optional `on_click` callback
 - Shapes implement the shared `Dimensions` trait (`src/components/ui/object_3d/dimensions.rs`) and expose a `render()` method; currently only `Cuboid` and `Cube` are implemented
 - Team data can be rendered in the scene via the `TeamAvatars` component (fetched from `fetch_members()`)
 

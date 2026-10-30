@@ -1,5 +1,5 @@
 use crate::components::ui::shapes::{
-    Attachment, Face, Object3d, Object3dProperties, Position, Shape,
+    Attachment, Face, Position, Shape, ThreeDObject, ThreeDProperties,
 };
 use leptos::prelude::*;
 use std::collections::HashMap;
@@ -66,10 +66,10 @@ fn resolve(
 #[must_use]
 pub fn ThreeDScene(
     /// Objects to place and render inside the scene, in dependency order.
-    objects: Vec<Object3dProperties>,
+    objects: Vec<ThreeDProperties>,
 ) -> impl IntoView {
     let mut registry: HashMap<&'static str, (Position, Shape)> = HashMap::new();
-    let mut resolved: Vec<Object3dProperties> = objects
+    let mut resolved: Vec<ThreeDProperties> = objects
         .into_iter()
         .map(|mut props| {
             let resolved_pos = resolve(props.attached_to, props.shape, &registry);
@@ -139,7 +139,7 @@ pub fn ThreeDScene(
             <div class="object-3d-layer">
                 {resolved
                     .into_iter()
-                    .map(|props| view! { <Object3d props=props /> }.into_any())
+                    .map(|props| view! { <ThreeDObject props=props /> }.into_any())
                     .collect::<Vec<_>>()}
             </div>
         </section>

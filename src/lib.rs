@@ -68,7 +68,7 @@ pub mod components {
     pub use ui::legend_block::LegendBlock;
     pub use ui::link_badges::LinkBadges;
     pub use ui::shapes::{
-        Attachment, Face, FaceColors, Object3d, Object3dProperties, Position, Shape,
+        Attachment, Face, FaceColors, Position, Shape, ThreeDObject, ThreeDProperties,
     };
     pub use ui::title_block::TitleBlock;
 }

@@ -137,7 +137,7 @@ pub enum Attachment {
     },
 }
 
-/// Per-face CSS colour overrides used by [`Object3d`].
+/// Per-face CSS colour overrides used by [`ThreeDObject`].
 #[derive(Clone, Copy)]
 #[must_use]
 pub struct FaceColors {
@@ -149,7 +149,7 @@ pub struct FaceColors {
     pub right: &'static str,
 }
 
-/// Configuration for a single [`Object3d`] instance.
+/// Configuration for a single [`ThreeDObject`] instance.
 ///
 /// Most callers only need to set `id`, `name`, `shape`, and optional
 /// `attached_to`, `colors`, `url`, or `on_click`. The `resolved_position`
@@ -157,7 +157,7 @@ pub struct FaceColors {
 /// and should not be set manually.
 #[derive(Clone)]
 #[must_use]
-pub struct Object3dProperties {
+pub struct ThreeDProperties {
     /// Unique identifier used for placement references and registry lookups.
     pub id: &'static str,
     /// Display name shown in the tooltip on hover / when pinned.
@@ -190,7 +190,7 @@ pub struct Object3dProperties {
     pub on_click: Option<Rc<dyn Fn() + 'static>>,
 }
 
-impl Default for Object3dProperties {
+impl Default for ThreeDProperties {
     fn default() -> Self {
         Self {
             id: "default",
@@ -423,7 +423,7 @@ mod tests {
 
     #[wasm_bindgen_test]
     fn test_default_properties_has_no_callback() {
-        let props = Object3dProperties::default();
+        let props = ThreeDProperties::default();
         assert!(props.on_click.is_none());
         assert!(props.url.is_none());
     }
@@ -480,16 +480,16 @@ fn render_edge_lines(edges: &[(Point2d, Point2d)], class: &'static str) -> impl 
 /// Clicking the object opens its `url` if one is configured; otherwise the
 /// click is a no-op. Keyboard-accessible via Enter or Space.
 ///
-/// With [`Object3dProperties::is_draft`] set the object is rendered in the
+/// With [`ThreeDProperties::is_draft`] set the object is rendered in the
 /// draft style used for uncommitted geometry: no face fills, every edge
 /// dashed (not just the hidden ones).
 #[component]
 #[must_use]
-pub fn Object3d(
+pub fn ThreeDObject(
     /// Configuration for this object: shape, placement, colours, URL, etc.
-    props: Object3dProperties,
+    props: ThreeDProperties,
 ) -> impl IntoView {
-    let Object3dProperties {
+    let ThreeDProperties {
         shape,
         name,
         attached_to: _,

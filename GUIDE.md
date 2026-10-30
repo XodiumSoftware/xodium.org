@@ -119,8 +119,8 @@ xodium.org/
 │   ├── utils.rs          # Shared constants and helpers
 │   └── components/       # UI components
 │       ├── sections/     # Header, Footer
-│       ├── scenes/         # Object3dScene
-│       └── ui/             # AsciiArt, LegendBlock, Object3d,
+│       ├── scenes/         # ThreeDScene
+│       └── ui/             # AsciiArt, LegendBlock, ThreeDObject,
 │                           # LinkBadges, TeamAvatars, TitleBlock
 ├── public/
 │   ├── style.css         # Tailwind + DaisyUI styles

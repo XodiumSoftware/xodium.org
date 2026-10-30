@@ -5,7 +5,7 @@
 
 use crate::components::sections::team::Team;
 use crate::components::sections::three_d::ThreeDScene;
-use crate::components::ui::shapes::{Attachment, Face, FaceColors, Object3dProperties};
+use crate::components::ui::shapes::{Attachment, Face, FaceColors, ThreeDProperties};
 use crate::utils::CADIOTHEKA_URL;
 use leptos::prelude::*;
 use std::rc::Rc;
@@ -25,13 +25,13 @@ pub fn Main() -> impl IntoView {
         <main id="main-content" tabindex="-1">
             <h1 class="sr-only">"Xodium Software — open-source CAD software"</h1>
             <ThreeDScene objects=vec![
-                Object3dProperties {
+                ThreeDProperties {
                     id: "cadiotheka_project",
                     name: "Cadiotheka",
                     url: Some(CADIOTHEKA_URL),
                     ..Default::default()
                 },
-                Object3dProperties {
+                ThreeDProperties {
                     id: "team_hub",
                     name: "Team",
                     attached_to: Some(Attachment::Face {
@@ -46,7 +46,7 @@ pub fn Main() -> impl IntoView {
                     on_click: Some(Rc::clone(&open_team)),
                     ..Default::default()
                 },
-                Object3dProperties {
+                ThreeDProperties {
                     id: "draft_1",
                     name: "SOON™",
                     attached_to: Some(Attachment::Face {
