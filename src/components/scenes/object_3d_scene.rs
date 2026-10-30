@@ -1,5 +1,5 @@
 use crate::components::ui::object_3d::{
-    Attachment, Dimensions, Face, Object3d, Object3dProperties, Position,
+    Attachment, Face, Object3d, Object3dProperties, Position, Shape,
 };
 use leptos::prelude::*;
 use std::collections::HashMap;
@@ -7,8 +7,8 @@ use std::collections::HashMap;
 /// Resolve an attachment against the blocks already registered, in order.
 fn resolve(
     attachment: Option<Attachment>,
-    size: Dimensions,
-    registry: &HashMap<&'static str, (Position, Dimensions)>,
+    shape: Shape,
+    registry: &HashMap<&'static str, (Position, Shape)>,
 ) -> Position {
     match attachment {
         None => Position {
@@ -17,13 +17,13 @@ fn resolve(
             z: 0.0,
         },
         Some(Attachment::Face { target, face }) => {
-            let (target_pos, target_size) = registry.get(target).copied().unwrap_or_else(|| {
+            let (target_pos, target_shape) = registry.get(target).copied().unwrap_or_else(|| {
                 panic!("Attachment target '{target}' not registered before use")
             });
             let (axis_target_ext, axis_self_ext) = match face {
-                Face::Top | Face::Bottom => (target_size.height(), size.height()),
-                Face::Left | Face::Right => (target_size.width(), size.width()),
-                Face::Front | Face::Back => (target_size.depth(), size.depth()),
+                Face::Top | Face::Bottom => (target_shape.height(), shape.height()),
+                Face::Left | Face::Right => (target_shape.width(), shape.width()),
+                Face::Front | Face::Back => (target_shape.depth(), shape.depth()),
             };
             let offset = f64::midpoint(axis_target_ext, axis_self_ext);
             match face {
@@ -65,12 +65,12 @@ fn resolve(
 #[component]
 #[must_use]
 pub fn Object3dScene(objects: Vec<Object3dProperties>) -> impl IntoView {
-    let mut registry: HashMap<&'static str, (Position, Dimensions)> = HashMap::new();
+    let mut registry: HashMap<&'static str, (Position, Shape)> = HashMap::new();
     let mut resolved: Vec<Object3dProperties> = objects
         .into_iter()
         .map(|mut props| {
-            let resolved_pos = resolve(props.attached_to, props.size, &registry);
-            registry.insert(props.id, (resolved_pos, props.size));
+            let resolved_pos = resolve(props.attached_to, props.shape, &registry);
+            registry.insert(props.id, (resolved_pos, props.shape));
             props.resolved_position = Some(resolved_pos);
             props
         })
@@ -88,7 +88,7 @@ pub fn Object3dScene(objects: Vec<Object3dProperties>) -> impl IntoView {
             let Position { x, y, z } = props
                 .resolved_position
                 .expect("resolved_position must be set");
-            let (width, depth, height) = props.size.components();
+            let (width, depth, height) = props.shape.components();
             let (hw, hd, hh) = (width / 2.0, depth / 2.0, height / 2.0);
 
             min_x = min_x.min(x - hw);

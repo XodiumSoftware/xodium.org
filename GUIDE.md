@@ -120,8 +120,8 @@ xodium.org/
 │   └── components/       # UI components
 │       ├── sections/     # Header, Footer
 │       ├── scenes/         # Object3dScene
-│       └── ui/             # AsciiArt, LegendBlock,
-│                           # LinkBadges, Object3d, TeamAvatars, TitleBlock
+│       └── ui/             # AsciiArt, LegendBlock, Object3d,
+│                           # LinkBadges, TeamAvatars, TitleBlock
 ├── public/
 │   ├── style.css         # Tailwind + DaisyUI styles
 │   └── icons/            # SVG icons

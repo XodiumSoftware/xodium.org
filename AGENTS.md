@@ -159,6 +159,9 @@ src/
 │       ├── legend_block.rs
 │       ├── link_badges.rs
 │       ├── object_3d.rs
+│       │   ├── cuboid.rs
+│       │   ├── pyramid.rs
+│       │   └── triangular_prism.rs
 │       ├── team_avatars.rs
 │       └── title_block.rs
 
@@ -172,7 +175,7 @@ Trunk.toml                     # Trunk configuration
 
 ### Key Conventions
 
-- **Register modules and re-exports in `src/lib.rs` explicitly.** Do not use `mod.rs` files, and do not nest `mod` declarations inside other module files. Every module in the crate must be declared directly in the crate root (`src/lib.rs`). Use `#[path = "..."]` attributes when a module file lives in a subdirectory.
+- **Register modules and re-exports in `src/lib.rs` explicitly.** Do not use `mod.rs` files. The crate root declares the top-level module tree; nested `pub mod` declarations are allowed inside module root files (e.g. `object_3d.rs` declares `pub mod cuboid;`). Use `#[path = "..."]` attributes when a module file lives in a subdirectory and cannot be reached by the conventional module path.
 - All Clippy warnings enabled; run with `-W clippy::pedantic -D warnings` to catch pedantic lints as errors.
 - No `unsafe` code — where JS handles must satisfy `Send + Sync` (e.g. for `on_cleanup`), use `send_wrapper::SendWrapper`
 - **Props:** `#[derive(Clone)]` structs named `{Component}Properties` (e.g. `Object3dProperties`)
@@ -191,7 +194,7 @@ Trunk.toml                     # Trunk configuration
 pub struct Object3dProperties {
     pub id: &'static str,
     pub name: &'static str,
-    pub size: Dimensions,
+    pub shape: Shape,
     pub attached_to: Option<Attachment>,
     pub resolved_position: Option<Position>,
     pub depth_index: Option<i32>,
@@ -228,7 +231,7 @@ positioned via `Attachment` to faces of earlier objects and are
 centered as a group. Each `Object3d` renders an SVG wireframe block with a
 clickable target that opens its `url`.
 
-- `Object3dProperties` defines id, name, size, attachment, colors, draft mode, and optional URL
+- `Object3dProperties` defines id, name, shape, attachment, colors, draft mode, and optional URL
 - Team data can be rendered in the scene via the `TeamAvatars` component (fetched from `fetch_members()`)
 
 ### Keyboard Shortcuts

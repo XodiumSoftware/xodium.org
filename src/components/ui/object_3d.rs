@@ -1,70 +1,57 @@
+use crate::components::ui::object_3d::cuboid::Cuboid;
+use crate::components::ui::object_3d::pyramid::Pyramid;
+use crate::components::ui::object_3d::triangular_prism::TriangularPrism;
 use core::fmt::Write as _;
 use leptos::prelude::*;
 
-/// Dimensions for an object. Can be specified explicitly or using a
-/// convenience shape constructor.
+pub mod cuboid;
+pub mod pyramid;
+pub mod triangular_prism;
+
+/// A shape that can be rendered inside the isometric scene.
 #[derive(Clone, Copy)]
-pub enum Dimensions {
+pub enum Shape {
     /// A rectangular cuboid with explicit dimensions in all three axes.
-    Cuboid {
-        /// Size along the X axis (screen right-down in projection).
-        width: f64,
-        /// Size along the Y axis (screen down-left to up-right on top face).
-        depth: f64,
-        /// Size along the Z axis (screen up).
-        height: f64,
-    },
+    Cuboid(Cuboid),
     /// Convenience constructor: applies one value to width, depth, and height.
-    /// Useful for cubes and as a foundation for future shape types.
     Cube(f64),
-    /// Square pyramid: `base_size` applies to width and depth (base),
-    /// `height` is the height from base to apex.
-    Pyramid {
-        /// Base size (width and depth are equal for pyramids).
-        base_size: f64,
-        /// Height from base to apex (Z axis).
-        height: f64,
-    },
-    /// Triangular prism: a tube with a triangular cross-section.
-    /// Extruded along the Z axis (vertical).
-    TriangularPrism {
-        /// Size of the triangular base (equilateral).
-        base_size: f64,
-        /// Length of the tube (extrusion distance).
-        length: f64,
-        /// When true, flips the triangle on the X/Y axes.
-        flip: bool,
-    },
+    /// Square pyramid: a square base with an apex above it.
+    Pyramid(Pyramid),
+    /// Triangular prism: an equilateral triangle extruded along the Z axis.
+    TriangularPrism(TriangularPrism),
 }
 
-impl Dimensions {
-    /// Extract the width component.
+impl Shape {
+    /// Extract the width component for attachment and scene bounds.
     #[must_use]
     pub fn width(&self) -> f64 {
         match self {
-            Self::Cuboid { width, .. } => *width,
+            Self::Cuboid(c) => c.width(),
             Self::Cube(size) => *size,
-            Self::Pyramid { base_size, .. } | Self::TriangularPrism { base_size, .. } => *base_size,
+            Self::Pyramid(p) => p.width(),
+            Self::TriangularPrism(t) => t.width(),
         }
     }
 
-    /// Extract the depth component.
+    /// Extract the depth component for attachment and scene bounds.
     #[must_use]
     pub fn depth(&self) -> f64 {
         match self {
-            Self::Cuboid { depth, .. } => *depth,
+            Self::Cuboid(c) => c.depth(),
             Self::Cube(size) => *size,
-            Self::Pyramid { base_size, .. } | Self::TriangularPrism { base_size, .. } => *base_size,
+            Self::Pyramid(p) => p.depth(),
+            Self::TriangularPrism(t) => t.depth(),
         }
     }
 
-    /// Extract the height component.
+    /// Extract the height component for attachment and scene bounds.
     #[must_use]
     pub fn height(&self) -> f64 {
         match self {
-            Self::Cuboid { height, .. } | Self::Pyramid { height, .. } => *height,
+            Self::Cuboid(c) => c.height(),
             Self::Cube(size) => *size,
-            Self::TriangularPrism { length, .. } => *length,
+            Self::Pyramid(p) => p.height(),
+            Self::TriangularPrism(t) => t.height(),
         }
     }
 
@@ -72,17 +59,17 @@ impl Dimensions {
     #[must_use]
     pub fn components(&self) -> (f64, f64, f64) {
         match self {
-            Self::Cuboid {
-                width,
-                depth,
-                height,
-            } => (*width, *depth, *height),
+            Self::Cuboid(c) => c.components(),
             Self::Cube(size) => (*size, *size, *size),
-            Self::Pyramid { base_size, height } => (*base_size, *base_size, *height),
-            Self::TriangularPrism {
-                base_size, length, ..
-            } => (*base_size, *base_size, *length),
+            Self::Pyramid(p) => p.components(),
+            Self::TriangularPrism(t) => t.components(),
         }
+    }
+}
+
+impl Default for Shape {
+    fn default() -> Self {
+        Self::Cube(100.0)
     }
 }
 
@@ -113,7 +100,6 @@ pub enum Face {
     Back,
 }
 
-/// A face of a cuboid. Used to stack objects relative to one another.
 /// Attachment to another object in the scene.
 #[derive(Clone, Copy)]
 pub enum Attachment {
@@ -145,8 +131,8 @@ pub struct Object3dProperties {
     pub id: &'static str,
     /// Display name shown in the tooltip on hover / when pinned.
     pub name: &'static str,
-    /// Bounding-box size of the object.
-    pub size: Dimensions,
+    /// Shape to render and size in the isometric projection.
+    pub shape: Shape,
     /// Attachment to another block. `None` means this is a root block
     /// whose position is determined by the scene's centering logic.
     pub attached_to: Option<Attachment>,
@@ -174,7 +160,7 @@ impl Default for Object3dProperties {
         Self {
             id: "default",
             name: "Unnamed Object",
-            size: Dimensions::Cube(100.0),
+            shape: Shape::default(),
             attached_to: None,
             resolved_position: None,
             depth_index: None,
@@ -182,6 +168,164 @@ impl Default for Object3dProperties {
             is_draft: false,
             url: None,
         }
+    }
+}
+
+/// Rendered geometry returned by a shape renderer. The three faces are SVG
+/// polygon `points` strings; visible edges and hidden edges are lists of
+/// screen-space line endpoints.
+pub struct RenderedGeometry {
+    /// Polygon points for the top/primary face.
+    pub top_face: String,
+    /// Polygon points for the left face.
+    pub left_face: String,
+    /// Polygon points for the right face.
+    pub right_face: String,
+    /// Visible edges.
+    pub edges: Vec<((f64, f64), (f64, f64))>,
+    /// Hidden/dashed edges.
+    pub hidden: Vec<((f64, f64), (f64, f64))>,
+}
+
+fn project(x: f64, y: f64, z: f64) -> (f64, f64) {
+    const COS30: f64 = 0.866_025_403_784_438_6;
+    const SIN30: f64 = 0.5;
+    ((x - y) * COS30, (x + y) * SIN30 - z)
+}
+
+fn fmt_pt(p: (f64, f64)) -> String {
+    format!("{:.2},{:.2}", p.0, p.1)
+}
+
+fn quad(a: (f64, f64), b: (f64, f64), c: (f64, f64), d: (f64, f64)) -> String {
+    format!("{} {} {} {}", fmt_pt(a), fmt_pt(b), fmt_pt(c), fmt_pt(d))
+}
+
+fn tri(a: (f64, f64), b: (f64, f64), c: (f64, f64)) -> String {
+    format!("{} {} {}", fmt_pt(a), fmt_pt(b), fmt_pt(c))
+}
+
+/// Render a cuboid into isometric screen-space geometry.
+#[must_use]
+pub fn render_cuboid(cuboid: &Cuboid) -> RenderedGeometry {
+    let (width, depth, height) = cuboid.components();
+    let (hw, hd, hh) = (width / 2.0, depth / 2.0, height / 2.0);
+
+    let back_top = project(-hw, -hd, hh);
+    let right_top = project(hw, -hd, hh);
+    let left_top = project(-hw, hd, hh);
+    let front_top = project(hw, hd, hh);
+    let back_bottom = project(-hw, -hd, -hh);
+    let right_bottom = project(hw, -hd, -hh);
+    let left_bottom = project(-hw, hd, -hh);
+    let front_bottom = project(hw, hd, -hh);
+
+    let top_face = quad(back_top, right_top, front_top, left_top);
+    let left_face = quad(left_top, front_top, front_bottom, left_bottom);
+    let right_face = quad(front_top, right_top, right_bottom, front_bottom);
+
+    let edges = vec![];
+
+    let hidden = vec![
+        (back_top, back_bottom),
+        (back_bottom, left_bottom),
+        (back_bottom, right_bottom),
+    ];
+
+    RenderedGeometry {
+        top_face,
+        left_face,
+        right_face,
+        edges,
+        hidden,
+    }
+}
+
+/// Render a pyramid into isometric screen-space geometry.
+#[must_use]
+pub fn render_pyramid(pyramid: &Pyramid) -> RenderedGeometry {
+    let (width, _depth, height) = pyramid.components();
+    let hb = width / 2.0;
+    let hh = height / 2.0;
+    let apex = project(0.0, 0.0, hh);
+
+    let back_base = project(-hb, -hb, -hh);
+    let right_base = project(hb, -hb, -hh);
+    let left_base = project(-hb, hb, -hh);
+    let front_base = project(hb, hb, -hh);
+
+    let top_face = quad(back_base, right_base, front_base, left_base);
+    let left_face = tri(left_base, front_base, apex);
+    let right_face = tri(front_base, right_base, apex);
+
+    let edges = vec![
+        (left_base, apex),
+        (right_base, apex),
+        (front_base, apex),
+        (left_base, front_base),
+        (front_base, right_base),
+    ];
+
+    let hidden = vec![
+        (back_base, apex),
+        (back_base, left_base),
+        (back_base, right_base),
+    ];
+
+    RenderedGeometry {
+        top_face,
+        left_face,
+        right_face,
+        edges,
+        hidden,
+    }
+}
+
+/// Render a triangular prism into isometric screen-space geometry.
+#[must_use]
+pub fn render_triangular_prism(prism: &TriangularPrism) -> RenderedGeometry {
+    let (width, _depth, height) = prism.components();
+    let hb = width / 2.0;
+    let hl = height / 2.0;
+
+    let triangle_points = if prism.flip {
+        [(0.0, hb, 0.0), (-hb, -hb, 0.0), (hb, -hb, 0.0)]
+    } else {
+        [(0.0, -hb, 0.0), (-hb, hb, 0.0), (hb, hb, 0.0)]
+    };
+
+    let p1_bottom = project(triangle_points[0].0, triangle_points[0].1, -hl);
+    let p2_bottom = project(triangle_points[1].0, triangle_points[1].1, -hl);
+    let p3_bottom = project(triangle_points[2].0, triangle_points[2].1, -hl);
+
+    let p1_top = project(triangle_points[0].0, triangle_points[0].1, hl);
+    let p2_top = project(triangle_points[1].0, triangle_points[1].1, hl);
+    let p3_top = project(triangle_points[2].0, triangle_points[2].1, hl);
+
+    let _tri_bottom = tri(p1_bottom, p2_bottom, p3_bottom);
+
+    let top_face = quad(p1_bottom, p2_bottom, p2_top, p1_top);
+    let left_face = tri(p2_bottom, p3_bottom, p3_top);
+    let right_face = quad(p2_bottom, p3_bottom, p3_top, p2_top);
+
+    let edges = vec![
+        (p1_bottom, p1_top),
+        (p2_bottom, p2_top),
+        (p3_bottom, p3_top),
+        (p1_bottom, p2_bottom),
+        (p1_bottom, p3_bottom),
+        (p1_top, p2_top),
+        (p1_top, p3_top),
+    ];
+
+    let hidden = vec![(p2_bottom, p3_bottom), (p2_top, p3_top)];
+
+    RenderedGeometry {
+        top_face,
+        left_face,
+        right_face,
+        edges,
+        hidden,
     }
 }
 
@@ -198,11 +342,8 @@ impl Default for Object3dProperties {
 #[component]
 #[must_use]
 pub fn Object3d(props: Object3dProperties) -> impl IntoView {
-    const COS30: f64 = 0.866_025_403_784_438_6;
-    const SIN30: f64 = 0.5;
-
     let Object3dProperties {
-        size,
+        shape,
         name,
         attached_to: _,
         colors,
@@ -212,150 +353,31 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
         ..
     } = props;
 
-    let (width, depth, height) = size.components();
-    let (hw, hd, hh) = (width / 2.0, depth / 2.0, height / 2.0);
-
-    let project = move |x: f64, y: f64, z: f64| ((x - y) * COS30, (x + y) * SIN30 - z);
+    let (hw, hd, hh) = {
+        let (width, depth, height) = shape.components();
+        (width / 2.0, depth / 2.0, height / 2.0)
+    };
 
     let Position { x, y, z } = props
         .resolved_position
         .expect("resolved_position must be set by Object3dScene");
     let (screen_x, screen_y) = project(x, y, z);
 
-    let fmt_pt = |p: (f64, f64)| format!("{:.2},{:.2}", p.0, p.1);
-
-    let (top_face, left_face, right_face, edges, hidden) = match size {
-        Dimensions::Cuboid { .. } | Dimensions::Cube(_) => {
-            let back_top = project(-hw, -hd, hh);
-            let right_top = project(hw, -hd, hh);
-            let left_top = project(-hw, hd, hh);
-            let front_top = project(hw, hd, hh);
-            let back_bottom = project(-hw, -hd, -hh);
-            let right_bottom = project(hw, -hd, -hh);
-            let left_bottom = project(-hw, hd, -hh);
-            let front_bottom = project(hw, hd, -hh);
-
-            let quad = |a: (f64, f64), b: (f64, f64), c: (f64, f64), d: (f64, f64)| {
-                format!("{} {} {} {}", fmt_pt(a), fmt_pt(b), fmt_pt(c), fmt_pt(d))
-            };
-
-            let top_face = quad(back_top, right_top, front_top, left_top);
-            let left_face = quad(left_top, front_top, front_bottom, left_bottom);
-            let right_face = quad(front_top, right_top, right_bottom, front_bottom);
-
-            let edges = vec![];
-
-            let hidden = vec![
-                (back_top, back_bottom),
-                (back_bottom, left_bottom),
-                (back_bottom, right_bottom),
-            ];
-
-            (top_face, left_face, right_face, edges, hidden)
-        }
-        Dimensions::Pyramid {
-            base_size,
-            height: _,
-        } => {
-            let hb = base_size / 2.0;
-            let apex = project(0.0, 0.0, hh);
-
-            let back_base = project(-hb, -hb, -hh);
-            let right_base = project(hb, -hb, -hh);
-            let left_base = project(-hb, hb, -hh);
-            let front_base = project(hb, hb, -hh);
-
-            let quad = |a: (f64, f64), b: (f64, f64), c: (f64, f64), d: (f64, f64)| {
-                format!("{} {} {} {}", fmt_pt(a), fmt_pt(b), fmt_pt(c), fmt_pt(d))
-            };
-            let tri = |a: (f64, f64), b: (f64, f64), c: (f64, f64)| {
-                format!("{} {} {}", fmt_pt(a), fmt_pt(b), fmt_pt(c))
-            };
-
-            let base = quad(back_base, right_base, front_base, left_base);
-            let left_face = tri(left_base, front_base, apex);
-            let right_face = tri(front_base, right_base, apex);
-
-            let edges = vec![
-                (left_base, apex),
-                (right_base, apex),
-                (front_base, apex),
-                (left_base, front_base),
-                (front_base, right_base),
-            ];
-
-            let hidden = vec![
-                (back_base, apex),
-                (back_base, left_base),
-                (back_base, right_base),
-            ];
-
-            (base, left_face, right_face, edges, hidden)
-        }
-        Dimensions::TriangularPrism {
-            base_size,
-            length,
-            flip,
-        } => {
-            let hb = base_size / 2.0;
-            let hl = length / 2.0;
-
-            let triangle_points = if flip {
-                [(0.0, hb, 0.0), (-hb, -hb, 0.0), (hb, -hb, 0.0)]
-            } else {
-                [(0.0, -hb, 0.0), (-hb, hb, 0.0), (hb, hb, 0.0)]
-            };
-
-            let p1_bottom = project(triangle_points[0].0, triangle_points[0].1, -hl);
-            let p2_bottom = project(triangle_points[1].0, triangle_points[1].1, -hl);
-            let p3_bottom = project(triangle_points[2].0, triangle_points[2].1, -hl);
-
-            let p1_top = project(triangle_points[0].0, triangle_points[0].1, hl);
-            let p2_top = project(triangle_points[1].0, triangle_points[1].1, hl);
-            let p3_top = project(triangle_points[2].0, triangle_points[2].1, hl);
-
-            let tri_bottom = format!(
-                "{} {} {}",
-                fmt_pt(p1_bottom),
-                fmt_pt(p2_bottom),
-                fmt_pt(p3_bottom)
-            );
-            let _tri_top = format!("{} {} {}", fmt_pt(p1_top), fmt_pt(p2_top), fmt_pt(p3_top));
-
-            let bottom_face = format!(
-                "{} {} {} {}",
-                fmt_pt(p1_bottom),
-                fmt_pt(p2_bottom),
-                fmt_pt(p2_top),
-                fmt_pt(p1_top)
-            );
-
-            let side_face = format!(
-                "{} {} {} {}",
-                fmt_pt(p2_bottom),
-                fmt_pt(p3_bottom),
-                fmt_pt(p3_top),
-                fmt_pt(p2_top)
-            );
-
-            let edges = vec![
-                (p1_bottom, p1_top),
-                (p2_bottom, p2_top),
-                (p3_bottom, p3_top),
-                (p1_bottom, p2_bottom),
-                (p1_bottom, p3_bottom),
-                (p1_top, p2_top),
-                (p1_top, p3_top),
-            ];
-
-            let hidden = vec![(p2_bottom, p3_bottom), (p2_top, p3_top)];
-
-            (bottom_face, tri_bottom, side_face, edges, hidden)
-        }
+    let RenderedGeometry {
+        top_face,
+        left_face,
+        right_face,
+        edges,
+        hidden,
+    } = match shape {
+        Shape::Cuboid(ref c) => render_cuboid(c),
+        Shape::Cube(size) => render_cuboid(&Cuboid::cube(size)),
+        Shape::Pyramid(ref p) => render_pyramid(p),
+        Shape::TriangularPrism(ref t) => render_triangular_prism(t),
     };
 
-    let extent_x = (hw + hd) * COS30;
-    let extent_y = (hw + hd) * SIN30 + hh;
+    let extent_x = f64::midpoint(hw, hd) * 0.866_025_403_784_438_6 * 2.0;
+    let extent_y = f64::midpoint(hw, hd) + hh;
     let max_extent = extent_x.max(extent_y) + 8.0;
     let view_box = format!(
         "{:.2} {:.2} {:.2} {:.2}",
