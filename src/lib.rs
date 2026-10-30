@@ -1,66 +1,84 @@
-#![allow(clippy::must_use_candidate, clippy::too_many_lines)]
+//! xodiumweb — a blueprint-styled static website for Xodium Software.
+//!
+//! Built with Leptos (client-side rendering) and compiled to WebAssembly via
+//! Trunk. The crate exposes the root [`App`] component plus the public
+//! modules that make up the page layout, UI primitives, GitHub API client,
+//! and shared utilities.
+
+// The Leptos `#[component]` macro rewrites function signatures and strips
+// `#[must_use]`, so we allow this lint crate-wide rather than fighting the macro.
+#![allow(clippy::must_use_candidate)]
 
 mod app;
 
 pub mod components {
+    //! Page sections and reusable UI primitives.
+
     pub mod sections {
+        //! Page sections that form the blueprint page layout.
+        /// Bottom-left site footer.
         pub mod footer;
+        /// Bottom-right corner metadata stack.
         pub mod header;
-        pub mod landing;
-        pub mod projects;
-        pub mod team_deck;
-    }
-
-    pub mod cards {
-        pub mod project;
+        /// Main isometric drawing viewport.
+        pub mod main;
+        /// Team modal opened from the isometric scene.
         pub mod team;
-    }
-
-    pub mod animations {
-        pub mod line_draw;
+        /// Isometric 3D object viewport used by `Main`.
+        pub mod three_d;
     }
 
     pub mod ui {
-        pub mod code_block;
-        pub mod corner_frame;
-        pub mod data_grid;
+        //! Reusable UI primitives, icons, and 3D drawing helpers.
 
-        pub mod effects {
-            pub mod blueprint_grid;
-            pub mod hex_grid;
-            pub mod parallax;
-            pub mod section_fade;
-            pub mod wire_frames;
+        pub mod icons {
+            //! Inline SVG icons used by link badges and controls.
+            /// Buy Me a Coffee cup icon.
+            pub mod buy_me_a_coffee;
+            /// GitHub Octocat icon.
+            pub mod github;
         }
+
+        /// XODIUM ASCII art header.
+        pub mod ascii_art;
+        /// GitHub member avatar item.
+        pub mod avatar;
+        /// Keyboard shortcut legend.
+        pub mod legend_block;
+        /// External link badges with keyboard shortcuts.
+        pub mod link_badges;
+        /// Isometric wireframe objects and shape primitives.
+        pub mod shapes;
+        /// Blueprint title-block metadata table.
+        pub mod title_block;
+
+        pub use icons::buy_me_a_coffee::BuyMeACoffeeIcon;
+        pub use icons::github::GitHubIcon;
     }
 
     pub use sections::footer::Footer;
     pub use sections::header::Header;
-    pub use sections::landing::LandingSection;
-    pub use sections::projects::ProjectsSection;
-    pub use sections::team_deck::TeamDeckSection;
+    pub use sections::main::Main;
+    pub use sections::team::{Team, TeamProperties};
+    pub use sections::three_d::ThreeDScene;
 
-    pub use cards::project::{ProjectCard, ProjectCardProperties};
-    pub use cards::team::{TeamCard, TeamCardProperties};
+    pub use ui::ascii_art::{AsciiArt, XODIUM_ASCII_ART};
 
-    pub use animations::line_draw::{LineDraw, LineDrawHero};
-
-    pub use ui::code_block::CodeBlock;
-    pub use ui::corner_frame::CornerFrame;
-    pub use ui::data_grid::data_grid;
-    pub use ui::effects::blueprint_grid::BlueprintGrid;
-    pub use ui::effects::hex_grid::HexPattern;
-    pub use ui::effects::parallax::ParallaxLanding;
-    pub use ui::effects::section_fade::FadeOverlay;
-    pub use ui::effects::wire_frames::WireframeShapes;
+    pub use ui::avatar::Avatar;
+    pub use ui::legend_block::LegendBlock;
+    pub use ui::link_badges::LinkBadges;
+    pub use ui::shapes::{
+        Attachment, Container, Face, FaceColors, Position, Shape, ThreeDObject, ThreeDProperties,
+    };
+    pub use ui::title_block::TitleBlock;
 }
 
 pub mod github;
-pub mod mcp;
+
+/// Shared utilities and constants used across the site.
 pub mod utils;
 
 pub use app::*;
 pub use components::*;
 pub use github::*;
-pub use mcp::*;
 pub use utils::*;

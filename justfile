@@ -1,6 +1,12 @@
 # xodium.org task runner
 # Install `just` once: https://github.com/casey/just
 
+[unix]
+set shell := ["sh", "-cu"]
+
+[windows]
+set shell := ["powershell.exe", "-NoLogo", "-Command"]
+
 _default:
     @just --list
 
@@ -17,9 +23,9 @@ fmt:
     cargo fmt --all
 
 # Run browser-based WASM tests
-# Note: requires wasm-pack and a headless browser (e.g. Chrome)
+# Note: requires wasm-pack and a headless browser (e.g. Firefox)
 test:
-    wasm-pack test --headless --chrome
+    wasm-pack test --headless --firefox
 
 # Build the release WASM bundle with Trunk
 build:
@@ -33,5 +39,9 @@ serve:
 clean:
     trunk clean
 
+# Check for unused crate dependencies
+deps-check:
+    cargo machete
+
 # Run the full validation suite used in CI
-validate: lint fmt-check test build
+validate: lint fmt-check deps-check test build

@@ -1,46 +1,37 @@
-use crate::components::{
-    Footer, Header, LandingSection, LineDraw, ProjectsSection, TeamDeckSection,
-};
+//! Root application component and the single-page layout.
+//!
+//! `App` assembles the skip link, main drawing viewport, footer, and the
+//! bottom-right corner metadata stack into one blueprint-styled page. The
+//! Xodium GitHub team is rendered as bouncing avatars inside the "Team" block
+//! of the isometric scene.
+
+use crate::components::sections::footer::Footer;
+use crate::components::sections::header::Header;
+use crate::components::sections::main::Main;
 use leptos::prelude::*;
 
+/// The full single-page blueprint drawing.
+///
+/// Renders a fixed-layout page: the isometric drawing viewport fills the
+/// viewport, the corner stack sits bottom-right, and the footer sits
+/// bottom-left. The interactive 3D scene lives in [`Main`].
 #[component]
 #[must_use]
 pub fn App() -> impl IntoView {
     view! {
-        <div>
+        <div class="blueprint-frame">
             <a
                 href="#main-content"
                 class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-content focus:rounded"
             >
                 "Skip to main content"
             </a>
-            <div class="relative">
-                {/* Sentinel used by Header to detect when the page has scrolled. */}
-                <div id="header-scroll-sentinel" class="absolute top-0 left-0 h-px w-full -z-20" />
 
-                <Header />
+            <Main />
 
-                <div class="absolute inset-x-0 top-0 h-128 bg-gradient-to-b from-base-100 to-transparent pointer-events-none z-10" />
+            <Footer />
 
-                <LandingSection />
-            </div>
-
-        <main id="main-content" tabindex="-1">
-
-        // Line divider between hero and projects
-        <LineDraw />
-
-        // Projects section
-        <ProjectsSection />
-
-        // Line draw divider
-        <LineDraw />
-
-        // Team section
-        <TeamDeckSection />
-        </main>
-
-        <Footer />
-    </div>
+            <Header />
+        </div>
     }
 }

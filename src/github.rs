@@ -1,3 +1,9 @@
+//! GitHub API client with `localStorage` caching and exponential backoff.
+//!
+//! Public endpoints for organization members are exposed as async functions.
+//! Internal helpers handle cache reads/writes, pagination, retries, and
+//! user-facing error formatting.
+
 use gloo_net::http::Request;
 use gloo_storage::{LocalStorage, Storage};
 use leptos::web_sys;
@@ -12,42 +18,47 @@ const MAX_RETRIES: u32 = 3;
 const RETRY_BASE_MS: u64 = 1000;
 const PER_PAGE: usize = 100;
 
+/// A public member of the `XodiumSoftware` GitHub organization.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Member {
+    /// GitHub login / username.
     pub login: String,
+    /// Public GitHub profile URL.
     pub html_url: String,
+    /// Avatar image URL.
     pub avatar_url: String,
+    /// Organizational role, set by [`fetch_members`] after comparing the
+    /// member list against the organization's admins.
     pub role: Option<String>,
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct Repo {
-    pub name: String,
-    pub description: Option<String>,
-    pub html_url: String,
-    pub language: Option<String>,
-    pub stargazers_count: u32,
-    pub fork: bool,
-    pub topics: Vec<String>,
 }
 
 /// Read and deserialize a cache entry together with its timestamp.
 ///
 /// Returns `None` when storage is unavailable, the entry is missing, or the
-/// payload cannot be deserialized into `T`. The caller decides freshness
-/// from the returned timestamp — expired entries are deliberately retained
-/// so they can be served as a stale-if-error fallback.
+/// payload cannot be deserialized into `T`. Expired entries are retained for
+/// use as a stale-if-error fallback.
 fn cache_read<T: for<'de> Deserialize<'de>>(key: &str) -> Option<(T, f64)> {
     let ts: f64 = LocalStorage::get(format!("{key}:ts")).ok()?;
     let data: T = LocalStorage::get(key).ok()?;
     Some((data, ts))
 }
 
+/// Serialize data and its timestamp into local storage.
+///
+/// Failures are logged to the console but not propagated; the caller already
+/// has the fetched data and can continue without caching.
 fn cache_set<T: Serialize>(key: &str, data: &T) {
-    let _ = LocalStorage::set(key, data);
-    let _ = LocalStorage::set(format!("{key}:ts"), js_sys::Date::now());
+    if let Err(error) = LocalStorage::set(key, data) {
+        web_sys::console::warn_1(&format!("Failed to write cache entry {key}: {error}").into());
+    }
+    if let Err(error) = LocalStorage::set(format!("{key}:ts"), js_sys::Date::now()) {
+        web_sys::console::warn_1(
+            &format!("Failed to write cache timestamp for {key}: {error}").into(),
+        );
+    }
 }
 
+/// Format an HTTP error status into a user-facing message.
 fn format_api_error(status: u16) -> String {
     match status {
         403 => "GitHub API rate limit reached. Please try again later.".to_string(),
@@ -59,10 +70,20 @@ fn format_api_error(status: u16) -> String {
     }
 }
 
+/// Return a user-facing network error message.
 fn format_network_error() -> String {
     "Could not reach GitHub. Please check your network connection and try again.".to_string()
 }
 
+/// Fetch `T` from the GitHub API using a local storage cache and exponential backoff.
+///
+/// Fresh cached data is returned immediately. Otherwise, the endpoint is
+/// requested up to `MAX_RETRIES + 1` times. If all attempts fail, expired
+/// cached data is returned when available.
+///
+/// # Errors
+///
+/// Returns an error when all attempts fail and no stale cached data is available.
 async fn fetch<T: for<'de> Deserialize<'de> + Serialize>(endpoint: &str) -> Result<T, String> {
     let cache_key = format!("xodium:{endpoint}");
 
@@ -82,10 +103,10 @@ async fn fetch<T: for<'de> Deserialize<'de> + Serialize>(endpoint: &str) -> Resu
         }
 
         let response = match Request::get(&url).send().await {
-            Ok(r) => r,
-            Err(e) => {
+            Ok(response) => response,
+            Err(error) => {
                 network_failure_count += 1;
-                last_err = e.to_string();
+                last_err = error.to_string();
                 continue;
             }
         };
@@ -99,17 +120,20 @@ async fn fetch<T: for<'de> Deserialize<'de> + Serialize>(endpoint: &str) -> Resu
             return Err(format_api_error(response.status()));
         }
 
-        let data = response.json::<T>().await.map_err(|e| e.to_string())?;
+        let data = response
+            .json::<T>()
+            .await
+            .map_err(|error| error.to_string())?;
         cache_set(&cache_key, &data);
+
         return Ok(data);
     }
 
-    // All attempts failed: serve a stale cache entry if one exists (with a
-    // console warning) instead of surfacing an error to the user.
     if let Some(stale) = stale {
         web_sys::console::warn_1(
             &format!("GitHub API request failed for {endpoint}; serving stale cached data.").into(),
         );
+
         return Ok(stale);
     }
 
@@ -120,80 +144,86 @@ async fn fetch<T: for<'de> Deserialize<'de> + Serialize>(endpoint: &str) -> Resu
     }
 }
 
+/// Fetch all pages from a paginated GitHub API endpoint.
+///
+/// # Errors
+///
+/// Returns an error if fetching any page fails without a usable cached fallback.
 async fn fetch_all<T: for<'de> Deserialize<'de> + Serialize>(
     endpoint: &str,
 ) -> Result<Vec<T>, String> {
     let mut all = Vec::new();
     let mut page = 1u32;
+
     loop {
         let page_endpoint = paginated_endpoint(endpoint, page, PER_PAGE);
         let items: Vec<T> = fetch(&page_endpoint).await?;
         let done = items.len() < PER_PAGE;
+
         all.extend(items);
+
         if done {
             break;
         }
+
         page += 1;
     }
+
     Ok(all)
 }
 
 /// Build a paginated endpoint URL.
 ///
-/// Preserves any existing query parameters in `endpoint` and appends the
-/// page and `per_page` parameters with the correct separator.
+/// Preserves existing query parameters and appends the page and `per_page`
+/// parameters using the appropriate separator.
 #[must_use]
 fn paginated_endpoint(endpoint: &str, page: u32, per_page: usize) -> String {
-    let sep = if endpoint.contains('?') { '&' } else { '?' };
-    format!("{endpoint}{sep}page={page}&per_page={per_page}")
+    let separator = if endpoint.contains('?') { '&' } else { '?' };
+
+    format!("{endpoint}{separator}page={page}&per_page={per_page}")
 }
 
-/// Fetches public organization members from the GitHub API.
+/// Fetch public members of the `XodiumSoftware` GitHub organization.
+///
+/// Members are labeled as `Owner` when their login appears in the
+/// organization's admin-member endpoint, and `Member` otherwise.
 ///
 /// # Errors
 ///
-/// Returns an error if the GitHub API request fails and no cached data is
-/// available. Expired cache entries are served as a last-resort fallback
-/// (stale-if-error) rather than failing outright.
+/// Returns an error if fetching the member list fails and no cached data
+/// is available. Expired cached data is used as a stale-if-error fallback.
 pub async fn fetch_members() -> Result<Vec<Member>, String> {
     let mut members = fetch_all::<Member>(&format!("/orgs/{ORG}/members")).await?;
 
-    // Fetch all admins (owners) using role filter
     let owners = match fetch_all::<Member>(&format!("/orgs/{ORG}/members?role=admin")).await {
-        Ok(o) => o,
-        Err(e) => {
+        Ok(owners) => owners,
+        Err(error) => {
             web_sys::console::warn_1(
-                &format!("Failed to fetch owner roles from GitHub API: {e}. All members will be labeled as 'Member'.").into()
+                &format!(
+                    "Failed to fetch owner roles from GitHub API: {error}. \
+                    All members will be labeled as 'Member'."
+                )
+                .into(),
             );
+
             Vec::new()
         }
     };
-    let owner_logins: HashSet<String> = owners.into_iter().map(|m| m.login).collect();
 
-    // Mark role for each member
+    let owner_logins: HashSet<String> = owners.into_iter().map(|member| member.login).collect();
+
     for member in &mut members {
-        member.role = if owner_logins.contains(&member.login) {
-            Some("Owner".to_string())
-        } else {
-            Some("Member".to_string())
-        };
+        member.role = Some(
+            if owner_logins.contains(&member.login) {
+                "Owner"
+            } else {
+                "Member"
+            }
+            .to_string(),
+        );
     }
 
     Ok(members)
-}
-
-/// Fetches public organization repositories from the GitHub API.
-///
-/// # Errors
-///
-/// Returns an error if the GitHub API request fails and no cached data is
-/// available. Expired cache entries are served as a last-resort fallback
-/// (stale-if-error) rather than failing outright.
-pub async fn fetch_repos() -> Result<Vec<Repo>, String> {
-    let mut repos = fetch_all::<Repo>(&format!("/orgs/{ORG}/repos?type=public")).await?;
-    repos.retain(|r| !r.fork);
-    repos.sort_by_key(|b| std::cmp::Reverse(b.stargazers_count));
-    Ok(repos)
 }
 
 #[cfg(test)]
@@ -212,15 +242,12 @@ mod tests {
         "xodium:test:github-cache"
     }
 
-    fn sample_repo(name: &str) -> Repo {
-        Repo {
-            name: name.to_string(),
-            description: None,
-            html_url: format!("https://github.com/XodiumSoftware/{name}"),
-            language: Some("Rust".to_string()),
-            stargazers_count: 0,
-            fork: false,
-            topics: vec![],
+    fn sample_member(login: &str) -> Member {
+        Member {
+            login: login.to_string(),
+            html_url: format!("https://github.com/{login}"),
+            avatar_url: format!("https://avatars.githubusercontent.com/{login}"),
+            role: Some("Member".to_string()),
         }
     }
 
@@ -237,13 +264,10 @@ mod tests {
 
     #[wasm_bindgen_test]
     fn test_retry_backoff_delays() {
-        // Exponential backoff: RETRY_BASE_MS << (attempt - 1)
-        // attempt 1: 1000 << 0 = 1000ms
-        // attempt 2: 1000 << 1 = 2000ms
-        // attempt 3: 1000 << 2 = 4000ms
         let expected: Vec<u64> = (1..=MAX_RETRIES)
             .map(|attempt| RETRY_BASE_MS << (attempt - 1))
             .collect();
+
         assert_eq!(expected, vec![1000, 2000, 4000]);
     }
 
@@ -256,45 +280,14 @@ mod tests {
         }"#;
 
         let member: Member = serde_json::from_str(json).unwrap();
+
         assert_eq!(member.login, "testuser");
         assert_eq!(member.html_url, "https://github.com/testuser");
         assert_eq!(
             member.avatar_url,
             "https://avatars.githubusercontent.com/u/123?v=4"
         );
-    }
-
-    #[wasm_bindgen_test]
-    fn test_repo_deserialization() {
-        let json = r#"{
-            "name": "test-repo",
-            "description": "A test repository",
-            "html_url": "https://github.com/XodiumSoftware/test-repo",
-            "language": "Rust",
-            "stargazers_count": 42,
-            "fork": false,
-            "topics": ["cad", "cli", "rust"]
-        }"#;
-
-        let repo: Repo = serde_json::from_str(json).unwrap();
-        assert_eq!(repo.name, "test-repo");
-        assert_eq!(repo.description, Some("A test repository".to_string()));
-        assert_eq!(repo.language, Some("Rust".to_string()));
-        assert_eq!(repo.stargazers_count, 42);
-        assert!(!repo.fork);
-        assert_eq!(repo.topics, vec!["cad", "cli", "rust"]);
-    }
-
-    #[wasm_bindgen_test]
-    async fn test_cache_operations() {
-        // Test cache key format
-        let endpoint = "/orgs/XodiumSoftware/members";
-        let cache_key = format!("xodium:{endpoint}");
-        assert_eq!(cache_key, "xodium:/orgs/XodiumSoftware/members");
-
-        // Note: Full cache_read/cache_set tests require localStorage
-        // which needs a browser environment. These are covered by
-        // the integration tests when running with wasm-pack test.
+        assert_eq!(member.role, None);
     }
 
     #[wasm_bindgen_test]
@@ -303,7 +296,7 @@ mod tests {
         clear_cache(key);
 
         assert!(
-            cache_read::<Vec<Repo>>(key).is_none(),
+            cache_read::<Vec<Member>>(key).is_none(),
             "Missing cache key should return None"
         );
     }
@@ -313,14 +306,15 @@ mod tests {
         let key = test_cache_key();
         clear_cache(key);
 
-        let data = vec![sample_repo("roundtrip-repo")];
+        let data = vec![sample_member("roundtrip-user")];
         cache_set(key, &data);
 
-        let Some((cached, ts)) = cache_read::<Vec<Repo>>(key) else {
+        let Some((cached, ts)) = cache_read::<Vec<Member>>(key) else {
             panic!("Fresh cache entry should be returned");
         };
+
         assert_eq!(cached.len(), 1);
-        assert_eq!(cached[0].name, "roundtrip-repo");
+        assert_eq!(cached[0].login, "roundtrip-user");
         assert!(
             js_sys::Date::now() - ts <= CACHE_TTL_MS,
             "Fresh entry should be within its TTL"
@@ -334,19 +328,18 @@ mod tests {
         let key = test_cache_key();
         clear_cache(key);
 
-        let data = vec![sample_repo("expired-repo")];
+        let data = vec![sample_member("expired-user")];
         cache_set(key, &data);
 
-        // Backdate the timestamp so the entry is past its TTL
         let expired_ts = js_sys::Date::now() - CACHE_TTL_MS - 1.0;
-        let _ = LocalStorage::set(format!("{key}:ts"), expired_ts);
+        LocalStorage::set(format!("{key}:ts"), expired_ts)
+            .expect("backdated timestamp should be written to test cache");
 
-        // Expired entries stay readable (with their old timestamp) so fetch
-        // can fall back to them when the network is unavailable.
-        let Some((cached, ts)) = cache_read::<Vec<Repo>>(key) else {
+        let Some((cached, ts)) = cache_read::<Vec<Member>>(key) else {
             panic!("Expired cache entry should be retained as a stale fallback");
         };
-        assert_eq!(cached[0].name, "expired-repo");
+
+        assert_eq!(cached[0].login, "expired-user");
         assert!(
             js_sys::Date::now() - ts > CACHE_TTL_MS,
             "Backdated entry should be past its TTL"
@@ -365,12 +358,14 @@ mod tests {
             format_api_error(404),
             "Organization or resource not found on GitHub."
         );
+
         for status in [500, 502, 503, 504] {
             assert_eq!(
                 format_api_error(status),
                 "GitHub is temporarily unavailable. Please try again later."
             );
         }
+
         assert_eq!(
             format_api_error(418),
             "Failed to load data from GitHub (status 418). Please try again later."
@@ -392,8 +387,8 @@ mod tests {
             "/orgs/XodiumSoftware/members?page=1&per_page=100"
         );
         assert_eq!(
-            paginated_endpoint("/orgs/XodiumSoftware/repos?type=public", 2, 50),
-            "/orgs/XodiumSoftware/repos?type=public&page=2&per_page=50"
+            paginated_endpoint("/orgs/XodiumSoftware/members?role=admin", 2, 50),
+            "/orgs/XodiumSoftware/members?role=admin&page=2&per_page=50"
         );
         assert_eq!(
             paginated_endpoint("/endpoint?foo=bar", 10, 30),
@@ -402,43 +397,22 @@ mod tests {
     }
 
     #[wasm_bindgen_test]
-    fn test_repo_filtering_and_sorting() {
-        let mut repos = vec![
-            Repo {
-                name: "repo-a".to_string(),
-                description: None,
-                html_url: "https://github.com/XodiumSoftware/repo-a".to_string(),
-                language: Some("Rust".to_string()),
-                stargazers_count: 10,
-                fork: false,
-                topics: vec!["cad".to_string()],
-            },
-            Repo {
-                name: "repo-b".to_string(),
-                description: None,
-                html_url: "https://github.com/XodiumSoftware/repo-b".to_string(),
-                language: Some("Python".to_string()),
-                stargazers_count: 50,
-                fork: false,
-                topics: vec!["python".to_string()],
-            },
-            Repo {
-                name: "repo-c".to_string(),
-                description: None,
-                html_url: "https://github.com/XodiumSoftware/repo-c".to_string(),
-                language: Some("Go".to_string()),
-                stargazers_count: 30,
-                fork: true, // This should be filtered out
-                topics: vec![],
-            },
-        ];
+    fn test_member_role_assignment() {
+        let mut members = vec![sample_member("owner-user"), sample_member("regular-user")];
+        let owner_logins: HashSet<String> = ["owner-user".to_string()].into();
 
-        // Apply the same logic as fetch_repos
-        repos.retain(|r| !r.fork);
-        repos.sort_by_key(|b| std::cmp::Reverse(b.stargazers_count));
+        for member in &mut members {
+            member.role = Some(
+                if owner_logins.contains(&member.login) {
+                    "Owner"
+                } else {
+                    "Member"
+                }
+                .to_string(),
+            );
+        }
 
-        assert_eq!(repos.len(), 2);
-        assert_eq!(repos[0].name, "repo-b"); // 50 stars
-        assert_eq!(repos[1].name, "repo-a"); // 10 stars
+        assert_eq!(members[0].role.as_deref(), Some("Owner"));
+        assert_eq!(members[1].role.as_deref(), Some("Member"));
     }
 }
