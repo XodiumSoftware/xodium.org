@@ -171,6 +171,34 @@ impl Default for Object3dProperties {
     }
 }
 
+/// A 3D lattice point used during shape construction.
+#[derive(Clone, Copy, Debug, Default, PartialEq)]
+pub struct Point3d {
+    /// Lattice X coordinate.
+    pub x: f64,
+    /// Lattice Y coordinate.
+    pub y: f64,
+    /// Lattice Z coordinate.
+    pub z: f64,
+}
+
+impl Point3d {
+    /// Convenience constructor for a lattice point.
+    #[must_use]
+    pub const fn new(x: f64, y: f64, z: f64) -> Self {
+        Self { x, y, z }
+    }
+}
+
+/// A 2D screen-space point returned by the isometric projection.
+#[derive(Clone, Copy, Debug, Default, PartialEq)]
+pub struct Point2d {
+    /// Horizontal screen coordinate.
+    pub x: f64,
+    /// Vertical screen coordinate.
+    pub y: f64,
+}
+
 /// Rendered geometry returned by a shape renderer. The three faces are SVG
 /// polygon `points` strings; visible edges and hidden edges are lists of
 /// screen-space line endpoints.
@@ -182,27 +210,44 @@ pub struct RenderedGeometry {
     /// Polygon points for the right face.
     pub right_face: String,
     /// Visible edges.
-    pub edges: Vec<((f64, f64), (f64, f64))>,
+    pub edges: Vec<(Point2d, Point2d)>,
     /// Hidden/dashed edges.
-    pub hidden: Vec<((f64, f64), (f64, f64))>,
+    pub hidden: Vec<(Point2d, Point2d)>,
 }
 
-fn project(x: f64, y: f64, z: f64) -> (f64, f64) {
+fn project(point: Point3d) -> Point2d {
     const COS30: f64 = 0.866_025_403_784_438_6;
     const SIN30: f64 = 0.5;
-    ((x - y) * COS30, (x + y) * SIN30 - z)
+    Point2d {
+        x: (point.x - point.y) * COS30,
+        y: (point.x + point.y) * SIN30 - point.z,
+    }
 }
 
-fn fmt_pt(p: (f64, f64)) -> String {
-    format!("{:.2},{:.2}", p.0, p.1)
+fn fmt_pt(out: &mut String, p: Point2d) {
+    write!(out, "{:.2},{:.2}", p.x, p.y).expect("writing to a String is infallible");
 }
 
-fn quad(a: (f64, f64), b: (f64, f64), c: (f64, f64), d: (f64, f64)) -> String {
-    format!("{} {} {} {}", fmt_pt(a), fmt_pt(b), fmt_pt(c), fmt_pt(d))
+fn quad(a: Point2d, b: Point2d, c: Point2d, d: Point2d) -> String {
+    let mut out = String::new();
+    fmt_pt(&mut out, a);
+    out.push(' ');
+    fmt_pt(&mut out, b);
+    out.push(' ');
+    fmt_pt(&mut out, c);
+    out.push(' ');
+    fmt_pt(&mut out, d);
+    out
 }
 
-fn tri(a: (f64, f64), b: (f64, f64), c: (f64, f64)) -> String {
-    format!("{} {} {}", fmt_pt(a), fmt_pt(b), fmt_pt(c))
+fn tri(a: Point2d, b: Point2d, c: Point2d) -> String {
+    let mut out = String::new();
+    fmt_pt(&mut out, a);
+    out.push(' ');
+    fmt_pt(&mut out, b);
+    out.push(' ');
+    fmt_pt(&mut out, c);
+    out
 }
 
 /// Render a cuboid into isometric screen-space geometry.
@@ -211,14 +256,14 @@ pub fn render_cuboid(cuboid: &Cuboid) -> RenderedGeometry {
     let (width, depth, height) = cuboid.components();
     let (hw, hd, hh) = (width / 2.0, depth / 2.0, height / 2.0);
 
-    let back_top = project(-hw, -hd, hh);
-    let right_top = project(hw, -hd, hh);
-    let left_top = project(-hw, hd, hh);
-    let front_top = project(hw, hd, hh);
-    let back_bottom = project(-hw, -hd, -hh);
-    let right_bottom = project(hw, -hd, -hh);
-    let left_bottom = project(-hw, hd, -hh);
-    let front_bottom = project(hw, hd, -hh);
+    let back_top = project(Point3d::new(-hw, -hd, hh));
+    let right_top = project(Point3d::new(hw, -hd, hh));
+    let left_top = project(Point3d::new(-hw, hd, hh));
+    let front_top = project(Point3d::new(hw, hd, hh));
+    let back_bottom = project(Point3d::new(-hw, -hd, -hh));
+    let right_bottom = project(Point3d::new(hw, -hd, -hh));
+    let left_bottom = project(Point3d::new(-hw, hd, -hh));
+    let front_bottom = project(Point3d::new(hw, hd, -hh));
 
     let top_face = quad(back_top, right_top, front_top, left_top);
     let left_face = quad(left_top, front_top, front_bottom, left_bottom);
@@ -247,12 +292,12 @@ pub fn render_pyramid(pyramid: &Pyramid) -> RenderedGeometry {
     let (width, _depth, height) = pyramid.components();
     let hb = width / 2.0;
     let hh = height / 2.0;
-    let apex = project(0.0, 0.0, hh);
+    let apex = project(Point3d::new(0.0, 0.0, hh));
 
-    let back_base = project(-hb, -hb, -hh);
-    let right_base = project(hb, -hb, -hh);
-    let left_base = project(-hb, hb, -hh);
-    let front_base = project(hb, hb, -hh);
+    let back_base = project(Point3d::new(-hb, -hb, -hh));
+    let right_base = project(Point3d::new(hb, -hb, -hh));
+    let left_base = project(Point3d::new(-hb, hb, -hh));
+    let front_base = project(Point3d::new(hb, hb, -hh));
 
     let top_face = quad(back_base, right_base, front_base, left_base);
     let left_face = tri(left_base, front_base, apex);
@@ -289,18 +334,38 @@ pub fn render_triangular_prism(prism: &TriangularPrism) -> RenderedGeometry {
     let hl = height / 2.0;
 
     let triangle_points = if prism.flip {
-        [(0.0, hb, 0.0), (-hb, -hb, 0.0), (hb, -hb, 0.0)]
+        [
+            Point3d::new(0.0, hb, 0.0),
+            Point3d::new(-hb, -hb, 0.0),
+            Point3d::new(hb, -hb, 0.0),
+        ]
     } else {
-        [(0.0, -hb, 0.0), (-hb, hb, 0.0), (hb, hb, 0.0)]
+        [
+            Point3d::new(0.0, -hb, 0.0),
+            Point3d::new(-hb, hb, 0.0),
+            Point3d::new(hb, hb, 0.0),
+        ]
     };
 
-    let p1_bottom = project(triangle_points[0].0, triangle_points[0].1, -hl);
-    let p2_bottom = project(triangle_points[1].0, triangle_points[1].1, -hl);
-    let p3_bottom = project(triangle_points[2].0, triangle_points[2].1, -hl);
+    let p1_bottom = project(Point3d::new(
+        triangle_points[0].x,
+        triangle_points[0].y,
+        -hl,
+    ));
+    let p2_bottom = project(Point3d::new(
+        triangle_points[1].x,
+        triangle_points[1].y,
+        -hl,
+    ));
+    let p3_bottom = project(Point3d::new(
+        triangle_points[2].x,
+        triangle_points[2].y,
+        -hl,
+    ));
 
-    let p1_top = project(triangle_points[0].0, triangle_points[0].1, hl);
-    let p2_top = project(triangle_points[1].0, triangle_points[1].1, hl);
-    let p3_top = project(triangle_points[2].0, triangle_points[2].1, hl);
+    let p1_top = project(Point3d::new(triangle_points[0].x, triangle_points[0].y, hl));
+    let p2_top = project(Point3d::new(triangle_points[1].x, triangle_points[1].y, hl));
+    let p3_top = project(Point3d::new(triangle_points[2].x, triangle_points[2].y, hl));
 
     let _tri_bottom = tri(p1_bottom, p2_bottom, p3_bottom);
 
@@ -418,7 +483,10 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
     let Position { x, y, z } = props
         .resolved_position
         .expect("resolved_position must be set by Object3dScene");
-    let (screen_x, screen_y) = project(x, y, z);
+    let Point2d {
+        x: screen_x,
+        y: screen_y,
+    } = project(Point3d::new(x, y, z));
 
     let RenderedGeometry {
         top_face,
@@ -473,10 +541,10 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
                         .iter()
                         .map(|(p1, p2)| view! {
                             <line
-                                x1=format!("{:.2}", p1.0)
-                                y1=format!("{:.2}", p1.1)
-                                x2=format!("{:.2}", p2.0)
-                                y2=format!("{:.2}", p2.1)
+                                x1=format!("{:.2}", p1.x)
+                                y1=format!("{:.2}", p1.y)
+                                x2=format!("{:.2}", p2.x)
+                                y2=format!("{:.2}", p2.y)
                             />
                         })
                         .collect::<Vec<_>>()}
@@ -486,10 +554,10 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
                         .iter()
                         .map(|(p1, p2)| view! {
                             <line
-                                x1=format!("{:.2}", p1.0)
-                                y1=format!("{:.2}", p1.1)
-                                x2=format!("{:.2}", p2.0)
-                                y2=format!("{:.2}", p2.1)
+                                x1=format!("{:.2}", p1.x)
+                                y1=format!("{:.2}", p1.y)
+                                x2=format!("{:.2}", p2.x)
+                                y2=format!("{:.2}", p2.y)
                             />
                         })
                         .collect::<Vec<_>>()}
