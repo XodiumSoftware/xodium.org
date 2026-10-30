@@ -13,7 +13,7 @@ pub const CADIOTHEKA_URL: &str = "https://cadiotheka.com/";
 /// two aren't conflated.
 #[must_use]
 pub fn read_scale() -> String {
-    leptos::web_sys::window().map_or_else(
+    web_sys::window().map_or_else(
         || "1:1".to_string(),
         |w| {
             let ratio = w.device_pixel_ratio();

@@ -25,6 +25,8 @@ ignored = ["wasm-bindgen"]
 missing_docs = "warn"
 unsafe_code = "deny"
 unreachable_pub = "warn"
+unused_import_braces = "warn"
+unused_qualifications = "warn"
 
 [profile.release]
 opt-level = "z"
