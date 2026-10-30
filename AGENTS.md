@@ -97,13 +97,13 @@ Components are grouped by function in `src/components/`:
 
 #### Sections (`src/components/sections/`)
 
-| Component  | File           | Purpose                                           |
-| ---------- | -------------- | ------------------------------------------------- |
-| `Main`     | `main.rs`      | Central isometric drawing viewport                |
-| `Object3d` | `object_3d.rs` | Isometric scene that hosts `Object3d` item blocks |
-| `Team`     | `team.rs`      | Team modal opened from the 3D scene               |
-| `Header`   | `header.rs`    | Bottom-right corner stack assembly                |
-| `Footer`   | `footer.rs`    | Bottom-left site footer                           |
+| Component  | File         | Purpose                                           |
+| ---------- | ------------ | ------------------------------------------------- |
+| `Main`     | `main.rs`    | Central isometric drawing viewport                |
+| `Object3d` | `three_d.rs` | Isometric scene that hosts `Object3d` item blocks |
+| `Team`     | `team.rs`    | Team modal opened from the 3D scene               |
+| `Header`   | `header.rs`  | Bottom-right corner stack assembly                |
+| `Footer`   | `footer.rs`  | Bottom-left site footer                           |
 
 #### UI Primitives (`src/components/ui/`)
 
@@ -112,7 +112,7 @@ Components are grouped by function in `src/components/`:
 | `AsciiArt`    | `ascii_art.rs`    | XODIUM ASCII glyph mark                          |
 | `LegendBlock` | `legend_block.rs` | Keyboard shortcut legend                         |
 | `LinkBadges`  | `link_badges.rs`  | External link icons (GitHub, Buy Me a Coffee)    |
-| `Object3d`    | `object_3d.rs`    | Isometric wireframe block and shape registry     |
+| `Object3d`    | `shapes.rs`       | Isometric wireframe block and shape registry     |
 | `Avatar`      | `avatar.rs`       | Single GitHub member avatar item                 |
 | `TitleBlock`  | `title_block.rs`  | Blueprint metadata table (sheet, DPR, rev, date) |
 
@@ -151,7 +151,7 @@ src/
 ├── components/
 │   ├── sections/              # Page sections
 │   │   ├── main.rs
-│   │   ├── object_3d.rs
+│   │   ├── three_d.rs
 │   │   ├── team.rs
 │   │   ├── header.rs
 │   │   └── footer.rs
@@ -162,7 +162,7 @@ src/
 │       │   └── github.rs
 │       ├── legend_block.rs
 │       ├── link_badges.rs
-│       ├── object_3d.rs
+│       ├── shapes.rs
 │       │   ├── cuboid.rs
 │       │   └── dimensions.rs
 │       ├── avatar.rs

@@ -1,5 +1,5 @@
-use crate::components::ui::object_3d::cuboid::Cuboid;
-use crate::components::ui::object_3d::dimensions::Dimensions;
+use crate::components::ui::shapes::cuboid::Cuboid;
+use crate::components::ui::shapes::dimensions::Dimensions;
 use core::fmt::Write as _;
 use leptos::prelude::*;
 use std::rc::Rc;

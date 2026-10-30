@@ -1,4 +1,4 @@
-use crate::components::ui::object_3d::{
+use crate::components::ui::shapes::{
     Attachment, Face, Object3d, Object3dProperties, Position, Shape,
 };
 use leptos::prelude::*;

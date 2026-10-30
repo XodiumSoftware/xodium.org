@@ -22,10 +22,10 @@ pub mod components {
         pub mod header;
         /// Main isometric drawing viewport.
         pub mod main;
-        /// Isometric 3D object viewport used by `Main`.
-        pub mod object_3d;
         /// Team modal overlay triggered from the 3D scene.
         pub mod team;
+        /// Isometric 3D object viewport used by `Main`.
+        pub mod three_d;
     }
 
     pub mod ui {
@@ -48,7 +48,7 @@ pub mod components {
         /// External link badges with keyboard shortcuts.
         pub mod link_badges;
         /// Isometric wireframe objects and shape primitives.
-        pub mod object_3d;
+        pub mod shapes;
         /// Blueprint title-block metadata table.
         pub mod title_block;
 
@@ -59,15 +59,15 @@ pub mod components {
     pub use sections::footer::Footer;
     pub use sections::header::Header;
     pub use sections::main::Main;
-    pub use sections::object_3d::Object3dScene;
     pub use sections::team::Team;
+    pub use sections::three_d::Object3dScene;
 
     pub use ui::ascii_art::{AsciiArt, XODIUM_ASCII_ART};
 
     pub use ui::avatar::Avatar;
     pub use ui::legend_block::LegendBlock;
     pub use ui::link_badges::LinkBadges;
-    pub use ui::object_3d::{
+    pub use ui::shapes::{
         Attachment, Face, FaceColors, Object3d, Object3dProperties, Position, Shape,
     };
     pub use ui::title_block::TitleBlock;
