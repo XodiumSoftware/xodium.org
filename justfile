@@ -1,6 +1,12 @@
 # xodium.org task runner
 # Install `just` once: https://github.com/casey/just
 
+[unix]
+set shell := ["sh", "-cu"]
+
+[windows]
+set shell := ["powershell.exe", "-NoLogo", "-Command"]
+
 _default:
     @just --list
 
