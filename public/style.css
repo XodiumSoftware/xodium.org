@@ -356,14 +356,6 @@ body::before {
     animation: block-in 400ms ease-out 1100ms both;
 }
 
-.object-3d-scene:active {
-    cursor: grabbing;
-}
-
-.object-3d-scene:active .object-3d-layer {
-    transition: none;
-}
-
 .object-3d-layer {
     position: absolute;
     inset: 0;
