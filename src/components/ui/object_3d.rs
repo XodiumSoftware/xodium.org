@@ -5,9 +5,13 @@ use crate::components::ui::object_3d::triangular_prism::TriangularPrism;
 use core::fmt::Write as _;
 use leptos::prelude::*;
 
+/// Rectangular cuboid / cube shape.
 pub mod cuboid;
+/// Shared spatial-extent trait for isometric shapes.
 pub mod dimensions;
+/// Square pyramid shape.
 pub mod pyramid;
+/// Triangular prism shape.
 pub mod triangular_prism;
 
 /// A shape that can be rendered inside the isometric scene.
@@ -384,7 +388,10 @@ fn render_edge_lines(edges: &[(Point2d, Point2d)], class: &'static str) -> impl 
 /// dashed (not just the hidden ones).
 #[component]
 #[must_use]
-pub fn Object3d(props: Object3dProperties) -> impl IntoView {
+pub fn Object3d(
+    /// Configuration for this object: shape, placement, colours, URL, etc.
+    props: Object3dProperties,
+) -> impl IntoView {
     let Object3dProperties {
         shape,
         name,

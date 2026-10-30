@@ -64,7 +64,10 @@ fn resolve(
 /// After resolution, the entire collection is centered at the origin.
 #[component]
 #[must_use]
-pub fn Object3dScene(objects: Vec<Object3dProperties>) -> impl IntoView {
+pub fn Object3dScene(
+    /// Objects to place and render inside the scene, in dependency order.
+    objects: Vec<Object3dProperties>,
+) -> impl IntoView {
     let mut registry: HashMap<&'static str, (Position, Shape)> = HashMap::new();
     let mut resolved: Vec<Object3dProperties> = objects
         .into_iter()

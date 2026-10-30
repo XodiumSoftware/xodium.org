@@ -16,29 +16,40 @@ pub mod components {
 
     pub mod scenes {
         //! Static viewport scenes that host collections of objects.
+        /// Isometric 3D object viewport.
         pub mod object_3d_scene;
     }
 
     pub mod sections {
         //! Page sections that form the blueprint corner and footer stacks.
+        /// Bottom-left site footer.
         pub mod footer;
+        /// Bottom-right corner metadata stack.
         pub mod header;
     }
 
     pub mod ui {
         //! Reusable UI primitives, icons, and 3D drawing helpers.
+
         pub mod icons {
             //! Inline SVG icons used by link badges and controls.
+            /// Buy Me a Coffee cup icon.
             pub mod buy_me_a_coffee;
+            /// GitHub Octocat icon.
             pub mod github;
         }
 
+        /// XODIUM ASCII art header.
         pub mod ascii_art;
-
+        /// Keyboard shortcut legend.
         pub mod legend_block;
+        /// External link badges with keyboard shortcuts.
         pub mod link_badges;
+        /// Isometric wireframe objects and shape primitives.
         pub mod object_3d;
+        /// GitHub team avatar group.
         pub mod team_avatars;
+        /// Blueprint title-block metadata table.
         pub mod title_block;
 
         pub use icons::buy_me_a_coffee::BuyMeACoffeeIcon;
@@ -61,6 +72,8 @@ pub mod components {
 }
 
 pub mod github;
+
+/// Shared utilities and constants used across the site.
 pub mod utils;
 
 pub use app::*;

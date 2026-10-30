@@ -21,6 +21,9 @@ wasm-bindgen-test = "0.3"
 [package.metadata.cargo-machete]
 ignored = ["wasm-bindgen"]
 
+[lints.rust]
+missing_docs = "warn"
+
 [profile.release]
 opt-level = "z"
 lto = true
