@@ -39,5 +39,9 @@ serve:
 clean:
     trunk clean
 
+# Check for unused crate dependencies
+deps-check:
+    cargo machete
+
 # Run the full validation suite used in CI
-validate: lint fmt-check test build
+validate: lint fmt-check deps-check test build
