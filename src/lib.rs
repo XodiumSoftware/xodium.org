@@ -1,19 +1,34 @@
+//! xodiumweb — a blueprint-styled static website for Xodium Software.
+//!
+//! Built with Leptos (client-side rendering) and compiled to WebAssembly via
+//! Trunk. The crate exposes the root [`App`] component plus the public
+//! modules that make up the page layout, UI primitives, GitHub API client,
+//! and shared utilities.
+
+// The Leptos `#[component]` macro rewrites function signatures and strips
+// `#[must_use]`, so we allow this lint crate-wide rather than fighting the macro.
 #![allow(clippy::must_use_candidate)]
 
 mod app;
 
 pub mod components {
+    //! Page sections, viewport scenes, and reusable UI primitives.
+
     pub mod scenes {
+        //! Static viewport scenes that host collections of objects.
         pub mod object_3d_scene;
     }
 
     pub mod sections {
+        //! Page sections that form the blueprint corner and footer stacks.
         pub mod footer;
         pub mod header;
     }
 
     pub mod ui {
+        //! Reusable UI primitives, icons, and 3D drawing helpers.
         pub mod icons {
+            //! Inline SVG icons used by link badges and controls.
             pub mod buy_me_a_coffee;
             pub mod github;
         }

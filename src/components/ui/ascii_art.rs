@@ -1,5 +1,6 @@
 use leptos::prelude::*;
 
+/// ASCII glyph block spelling "XODIUM" for the drawing header.
 pub const XODIUM_ASCII_ART: &str = r"
          ,-.--,  _,.---._                 .=-.-.                   ___
 .--.-.  /=/, .',-.' , -  `.   _,..---._  /==/_ /.--.-. .-.-..-._ .='.'\

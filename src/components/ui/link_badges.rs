@@ -7,7 +7,7 @@ use crate::utils::CADIOTHEKA_URL;
 /// Function pointer that renders an icon as a type-erased view.
 type IconRenderer = fn() -> AnyView;
 
-/// Metadata for an external link badge.
+/// Metadata for an external link badge in the corner stack.
 struct LinkBadge {
     /// Destination URL opened by the badge.
     href: &'static str,

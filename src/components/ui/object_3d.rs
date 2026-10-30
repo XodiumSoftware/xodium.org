@@ -171,6 +171,11 @@ pub struct FaceColors {
 }
 
 /// Configuration for a single [`Object3d`] instance.
+///
+/// Most callers only need to set `id`, `name`, `shape`, and optional
+/// `attached_to`, `colors`, and `url`. The `resolved_position` and
+/// `depth_index` fields are populated automatically by [`Object3dScene`]
+/// and should not be set manually.
 #[derive(Clone, Copy)]
 #[must_use]
 pub struct Object3dProperties {

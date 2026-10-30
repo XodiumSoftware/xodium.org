@@ -1,11 +1,16 @@
 use leptos::prelude::*;
 
+/// A single link rendered in the blueprint footer.
 struct FooterLink {
+    /// Destination URL or mailto/path.
     href: &'static str,
+    /// Uppercase label displayed in the footer.
     label: &'static str,
+    /// When true, the link opens in a new tab with `noopener noreferrer`.
     is_external: bool,
 }
 
+/// Fixed footer links shown bottom-left of every sheet.
 const FOOTER_LINKS: &[FooterLink] = &[
     FooterLink {
         href: "https://github.com/XodiumSoftware",

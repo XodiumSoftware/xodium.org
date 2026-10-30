@@ -1,3 +1,9 @@
+//! GitHub API client with `localStorage` caching and exponential backoff.
+//!
+//! Public endpoints for organization members are exposed as async functions.
+//! Internal helpers handle cache reads/writes, pagination, retries, and
+//! user-facing error formatting.
+
 use gloo_net::http::Request;
 use gloo_storage::{LocalStorage, Storage};
 use leptos::web_sys;
@@ -12,11 +18,17 @@ const MAX_RETRIES: u32 = 3;
 const RETRY_BASE_MS: u64 = 1000;
 const PER_PAGE: usize = 100;
 
+/// A public member of the `XodiumSoftware` GitHub organization.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Member {
+    /// GitHub login / username.
     pub login: String,
+    /// Public GitHub profile URL.
     pub html_url: String,
+    /// Avatar image URL.
     pub avatar_url: String,
+    /// Organizational role, set by [`fetch_members`] after comparing the
+    /// member list against the organization's admins.
     pub role: Option<String>,
 }
 

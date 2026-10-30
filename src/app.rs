@@ -1,3 +1,8 @@
+//! Root application component and the single-page layout.
+//!
+//! `App` assembles the skip link, main drawing viewport, footer, and the
+//! bottom-right corner metadata stack into one blueprint-styled page.
+
 use crate::components::scenes::object_3d_scene::Object3dScene;
 use crate::components::sections::footer::Footer;
 use crate::components::sections::header::Header;
@@ -5,6 +10,12 @@ use crate::components::ui::object_3d::{Attachment, Face, Object3dProperties};
 use crate::utils::CADIOTHEKA_URL;
 use leptos::prelude::*;
 
+/// The full single-page blueprint drawing.
+///
+/// Renders a fixed-layout page: the isometric drawing viewport fills the
+/// viewport, the corner stack sits bottom-right, and the footer sits
+/// bottom-left. The only interactive 3D objects are defined here and passed
+/// to [`Object3dScene`] for placement and rendering.
 #[component]
 #[must_use]
 pub fn App() -> impl IntoView {
