@@ -40,13 +40,13 @@ pub fn TitleBlock() -> impl IntoView {
             set_scale(read_scale());
         });
         let closure = Closure::wrap(boxed);
-        let _ = window
-            .add_event_listener_with_callback("resize", closure.as_ref().unchecked_ref())
-            .map_err(|error| {
-                web_sys::console::warn_1(
-                    &format!("Failed to register resize listener on title block: {error:?}").into(),
-                );
-            });
+        if let Err(error) =
+            window.add_event_listener_with_callback("resize", closure.as_ref().unchecked_ref())
+        {
+            web_sys::console::warn_1(
+                &format!("Failed to register resize listener on title block: {error:?}").into(),
+            );
+        }
         closure.forget();
     });
 

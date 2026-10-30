@@ -332,7 +332,8 @@ mod tests {
         cache_set(key, &data);
 
         let expired_ts = js_sys::Date::now() - CACHE_TTL_MS - 1.0;
-        let _ = LocalStorage::set(format!("{key}:ts"), expired_ts);
+        LocalStorage::set(format!("{key}:ts"), expired_ts)
+            .expect("backdated timestamp should be written to test cache");
 
         let Some((cached, ts)) = cache_read::<Vec<Member>>(key) else {
             panic!("Expired cache entry should be retained as a stale fallback");

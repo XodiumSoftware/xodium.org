@@ -78,21 +78,32 @@ pub fn LinkBadges() -> impl IntoView {
 
                 event.prevent_default();
                 if let Some(window) = web_sys::window() {
-                    let _ = window.open_with_url_and_target(url, "_blank");
+                    if let Err(error) = window.open_with_url_and_target(url, "_blank") {
+                        web_sys::console::warn_1(
+                            &format!("Failed to open {label} from keyboard shortcut: {error:?}")
+                                .into(),
+                        );
+                    }
+                } else {
+                    web_sys::console::warn_1(
+                        &format!(
+                            "No browser window available to open {label} from keyboard shortcut."
+                        )
+                        .into(),
+                    );
                 }
                 set_announcement(format!("Opened {label} in a new tab."));
             });
         let closure = Closure::wrap(boxed);
-        let _ = web_sys::window().map(|window| {
-            window
-                .add_event_listener_with_callback("keydown", closure.as_ref().unchecked_ref())
-                .map_err(|error| {
-                    web_sys::console::warn_1(
-                        &format!("Failed to register keydown listener on link badges: {error:?}")
-                            .into(),
-                    );
-                })
-        });
+
+        if let Some(window) = web_sys::window()
+            && let Err(error) =
+                window.add_event_listener_with_callback("keydown", closure.as_ref().unchecked_ref())
+        {
+            web_sys::console::warn_1(
+                &format!("Failed to register keydown listener on link badges: {error:?}").into(),
+            );
+        }
         closure.forget();
     });
 
