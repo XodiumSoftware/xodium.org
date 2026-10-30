@@ -3,7 +3,7 @@
 //! Hosts the isometric [`Object3dScene`], the interactive objects that make up
 //! the blueprint drawing, and the [`Team`] modal that is opened from the scene.
 
-use crate::components::scenes::object_3d_scene::Object3dScene;
+use crate::components::sections::object_3d::Object3dScene;
 use crate::components::sections::team::Team;
 use crate::components::ui::object_3d::{Attachment, Face, FaceColors, Object3dProperties};
 use crate::utils::CADIOTHEKA_URL;

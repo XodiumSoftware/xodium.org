@@ -12,22 +12,18 @@
 mod app;
 
 pub mod components {
-    //! Page sections, viewport scenes, and reusable UI primitives.
-
-    pub mod scenes {
-        //! Static viewport scenes that host collections of objects.
-        /// Isometric 3D object viewport.
-        pub mod object_3d_scene;
-    }
+    //! Page sections and reusable UI primitives.
 
     pub mod sections {
-        //! Page sections that form the blueprint corner and footer stacks.
+        //! Page sections that form the blueprint page layout.
         /// Bottom-left site footer.
         pub mod footer;
         /// Bottom-right corner metadata stack.
         pub mod header;
         /// Main isometric drawing viewport.
         pub mod main;
+        /// Isometric 3D object viewport used by `Main`.
+        pub mod object_3d;
         /// Team modal overlay triggered from the 3D scene.
         pub mod team;
     }
@@ -63,6 +59,7 @@ pub mod components {
     pub use sections::footer::Footer;
     pub use sections::header::Header;
     pub use sections::main::Main;
+    pub use sections::object_3d::Object3dScene;
     pub use sections::team::Team;
 
     pub use ui::ascii_art::{AsciiArt, XODIUM_ASCII_ART};
