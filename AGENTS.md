@@ -53,11 +53,14 @@ trunk clean
 # Run browser-based WASM tests (requires wasm-pack + Firefox)
 wasm-pack test --headless --firefox
 
+# Check for unused crate dependencies
+cargo machete
+
 # Lint with pedantic lints enabled; every warning is treated as an error.
 cargo clippy --all-targets --all-features --target wasm32-unknown-unknown -- -W clippy::pedantic -D warnings
 ```
 
-These also exist as `just` recipes (`just lint`, `just test`, `just build`, `just serve`, `just validate`); see `just --list`.
+These also exist as `just` recipes (`just lint`, `just fmt-check`, `just deps-check`, `just test`, `just build`, `just serve`, `just validate`); see `just --list`.
 
 ## Architecture Overview
 
