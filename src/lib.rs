@@ -60,7 +60,7 @@ pub mod components {
     pub use sections::header::Header;
     pub use sections::main::Main;
     pub use sections::team::Team;
-    pub use sections::three_d::Object3dScene;
+    pub use sections::three_d::ThreeDScene;
 
     pub use ui::ascii_art::{AsciiArt, XODIUM_ASCII_ART};
 

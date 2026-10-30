@@ -153,7 +153,7 @@ pub struct FaceColors {
 ///
 /// Most callers only need to set `id`, `name`, `shape`, and optional
 /// `attached_to`, `colors`, `url`, or `on_click`. The `resolved_position`
-/// and `depth_index` fields are populated automatically by [`Object3dScene`]
+/// `resolved_position` and `depth_index` fields are populated automatically by [`ThreeDScene`]
 /// and should not be set manually.
 #[derive(Clone)]
 #[must_use]
@@ -475,7 +475,7 @@ fn render_edge_lines(edges: &[(Point2d, Point2d)], class: &'static str) -> impl 
 
 /// A single isometric wireframe object. Renders just the SVG and its
 /// interactive target wrapper; pan and zoom are applied by the enclosing
-/// `Object3dScene`, so multiple objects move as one scene.
+/// `ThreeDScene`, so multiple objects move as one scene.
 ///
 /// Clicking the object opens its `url` if one is configured; otherwise the
 /// click is a no-op. Keyboard-accessible via Enter or Space.
@@ -508,7 +508,7 @@ pub fn Object3d(
 
     let Position { x, y, z } = props
         .resolved_position
-        .expect("resolved_position must be set by Object3dScene");
+        .expect("resolved_position must be set by ThreeDScene");
     let Point2d {
         x: screen_x,
         y: screen_y,

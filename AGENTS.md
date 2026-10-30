@@ -79,7 +79,7 @@ stack of metadata and controls:
 
 1. **Skip Link** — accessibility anchor to `#main-content`
 2. **`main#content`** — full-viewport drawing viewport containing the
-   isometric `Object3dScene` and the `Team` modal, rendered by the `Main`
+   isometric `ThreeDScene` and the `Team` modal, rendered by the `Main`
    section component
 3. **Corner stack** (`<aside class="corner-stack">`) — fixed bottom-right
    metadata panel:
@@ -97,13 +97,13 @@ Components are grouped by function in `src/components/`:
 
 #### Sections (`src/components/sections/`)
 
-| Component  | File         | Purpose                                           |
-| ---------- | ------------ | ------------------------------------------------- |
-| `Main`     | `main.rs`    | Central isometric drawing viewport                |
-| `Object3d` | `three_d.rs` | Isometric scene that hosts `Object3d` item blocks |
-| `Team`     | `team.rs`    | Team modal opened from the 3D scene               |
-| `Header`   | `header.rs`  | Bottom-right corner stack assembly                |
-| `Footer`   | `footer.rs`  | Bottom-left site footer                           |
+| Component     | File         | Purpose                                           |
+| ------------- | ------------ | ------------------------------------------------- |
+| `Main`        | `main.rs`    | Central isometric drawing viewport                |
+| `ThreeDScene` | `three_d.rs` | Isometric scene that hosts `Object3d` item blocks |
+| `Team`        | `team.rs`    | Team modal opened from the 3D scene               |
+| `Header`      | `header.rs`  | Bottom-right corner stack assembly                |
+| `Footer`      | `footer.rs`  | Bottom-left site footer                           |
 
 #### UI Primitives (`src/components/ui/`)
 

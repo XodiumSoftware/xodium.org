@@ -64,7 +64,7 @@ fn resolve(
 /// After resolution, the entire collection is centered at the origin.
 #[component]
 #[must_use]
-pub fn Object3dScene(
+pub fn ThreeDScene(
     /// Objects to place and render inside the scene, in dependency order.
     objects: Vec<Object3dProperties>,
 ) -> impl IntoView {
