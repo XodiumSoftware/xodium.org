@@ -4,7 +4,7 @@ use leptos::prelude::*;
 /// A single team member avatar linking to their GitHub profile.
 #[component]
 #[must_use]
-pub fn TeamAvatar(
+pub fn Avatar(
     /// GitHub member whose avatar and profile link are rendered.
     member: Member,
 ) -> impl IntoView {

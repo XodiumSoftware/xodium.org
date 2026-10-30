@@ -1,4 +1,4 @@
-use crate::components::ui::team_avatar::TeamAvatar;
+use crate::components::ui::avatar::Avatar;
 use crate::github::fetch_members;
 use leptos::prelude::*;
 
@@ -83,7 +83,7 @@ pub fn Team(
                                                     .take(VISIBLE_AVATARS)
                                                     .cloned()
                                                     .map(|member| {
-                                                        view! { <TeamAvatar member=member /> }
+                                                        view! { <Avatar member=member /> }
                                                     })
                                                     .collect::<Vec<_>>()}
                                                 {move || {

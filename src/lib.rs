@@ -41,14 +41,14 @@ pub mod components {
 
         /// XODIUM ASCII art header.
         pub mod ascii_art;
+        /// GitHub member avatar item.
+        pub mod avatar;
         /// Keyboard shortcut legend.
         pub mod legend_block;
         /// External link badges with keyboard shortcuts.
         pub mod link_badges;
         /// Isometric wireframe objects and shape primitives.
         pub mod object_3d;
-        /// GitHub team avatar group.
-        pub mod team_avatar;
         /// Blueprint title-block metadata table.
         pub mod title_block;
 
@@ -64,12 +64,12 @@ pub mod components {
 
     pub use ui::ascii_art::{AsciiArt, XODIUM_ASCII_ART};
 
+    pub use ui::avatar::Avatar;
     pub use ui::legend_block::LegendBlock;
     pub use ui::link_badges::LinkBadges;
     pub use ui::object_3d::{
         Attachment, Face, FaceColors, Object3d, Object3dProperties, Position, Shape,
     };
-    pub use ui::team_avatar::TeamAvatar;
     pub use ui::title_block::TitleBlock;
 }
 
