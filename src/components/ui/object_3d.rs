@@ -113,29 +113,8 @@ pub enum Face {
     Back,
 }
 
-/// A corner of an object, used for precise positioning.
-#[derive(Clone, Copy)]
-pub enum Corner {
-    /// Corner at (-X, -Y, -Z): back-bottom-left
-    BackLeftBottom,
-    /// Corner at (+X, -Y, -Z): back-bottom-right
-    BackRightBottom,
-    /// Corner at (-X, +Y, -Z): back-top-left
-    BackLeftTop,
-    /// Corner at (+X, +Y, -Z): back-top-right
-    BackRightTop,
-    /// Corner at (-X, -Y, +Z): front-bottom-left
-    FrontLeftBottom,
-    /// Corner at (+X, -Y, +Z): front-bottom-right
-    FrontRightBottom,
-    /// Corner at (-X, +Y, +Z): front-top-left
-    FrontLeftTop,
-    /// Corner at (+X, +Y, +Z): front-top-right
-    FrontRightTop,
-}
-
-/// Attachment to another block. Can attach to a face for flush placement,
-/// or to a corner for precise point positioning.
+/// A face of a cuboid. Used to stack objects relative to one another.
+/// Attachment to another object in the scene.
 #[derive(Clone, Copy)]
 pub enum Attachment {
     /// Attach to a face. The new block's opposite face is brought flush
@@ -147,14 +126,6 @@ pub enum Attachment {
         target: &'static str,
         /// Which face of the target to attach against.
         face: Face,
-    },
-    /// Attach to a corner point with precise positioning. The new block's
-    /// center is placed at the specified corner of the target block.
-    Corner {
-        /// Id of the sibling block to attach to.
-        target: &'static str,
-        /// Which corner of the target to position at.
-        corner: Corner,
     },
 }
 

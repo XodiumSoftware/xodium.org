@@ -19,7 +19,7 @@ pub mod components {
         }
 
         pub mod ascii_art;
-        pub mod axis_gizmo;
+
         pub mod legend_block;
         pub mod link_badges;
         pub mod object_3d;
@@ -35,11 +35,11 @@ pub mod components {
     pub use sections::header::Header;
 
     pub use ui::ascii_art::{AsciiArt, XODIUM_ASCII_ART};
-    pub use ui::axis_gizmo::{AxisGizmo, AxisGizmoProperties};
+
     pub use ui::legend_block::LegendBlock;
     pub use ui::link_badges::LinkBadges;
     pub use ui::object_3d::{
-        Attachment, Corner, Dimensions, Face, FaceColors, Object3d, Object3dProperties, Position,
+        Attachment, Dimensions, Face, FaceColors, Object3d, Object3dProperties, Position,
     };
     pub use ui::team_avatars::TeamAvatars;
     pub use ui::title_block::TitleBlock;

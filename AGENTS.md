@@ -98,16 +98,15 @@ Components are grouped by function in `src/components/`:
 
 #### Scenes (`src/components/scenes/`)
 
-| Component       | File                 | Purpose                                          |
-| --------------- | -------------------- | ------------------------------------------------ |
-| `Object3dScene` | `object_3d_scene.rs` | Hosts isometric `Object3d` and `AxisGizmo` items |
+| Component       | File                 | Purpose                          |
+| --------------- | -------------------- | -------------------------------- |
+| `Object3dScene` | `object_3d_scene.rs` | Hosts isometric `Object3d` items |
 
 #### UI Primitives (`src/components/ui/`)
 
 | Component     | File              | Purpose                                          |
 | ------------- | ----------------- | ------------------------------------------------ |
 | `AsciiArt`    | `ascii_art.rs`    | XODIUM ASCII glyph mark                          |
-| `AxisGizmo`   | `axis_gizmo.rs`   | XYZ direction indicator for the 3D scene         |
 | `LegendBlock` | `legend_block.rs` | Keyboard shortcut legend                         |
 | `LinkBadges`  | `link_badges.rs`  | External link icons (GitHub, Buy Me a Coffee)    |
 | `Object3d`    | `object_3d.rs`    | Isometric wireframe block                        |
@@ -154,7 +153,6 @@ src/
 │   │   └── object_3d_scene.rs
 │   └── ui/                    # UI primitives and icons
 │       ├── ascii_art.rs
-│       ├── axis_gizmo.rs
 │       ├── icons/
 │       │   ├── buy_me_a_coffee.rs
 │       │   └── github.rs
@@ -177,7 +175,7 @@ Trunk.toml                     # Trunk configuration
 - **Register modules and re-exports in `src/lib.rs` explicitly.** Do not use `mod.rs` files, and do not nest `mod` declarations inside other module files. Every module in the crate must be declared directly in the crate root (`src/lib.rs`). Use `#[path = "..."]` attributes when a module file lives in a subdirectory.
 - All Clippy warnings enabled; run with `-W clippy::pedantic -D warnings` to catch pedantic lints as errors.
 - No `unsafe` code — where JS handles must satisfy `Send + Sync` (e.g. for `on_cleanup`), use `send_wrapper::SendWrapper`
-- **Props:** `#[derive(Clone)]` structs named `{Component}Properties` (e.g. `Object3dProperties`, `AxisGizmoProperties`)
+- **Props:** `#[derive(Clone)]` structs named `{Component}Properties` (e.g. `Object3dProperties`)
 - **Async data:** Use `LocalResource` (not `Resource`) for WASM thread execution
 - **External links:** Always use `target="_blank" rel="noopener noreferrer"`
 - **Static data:** Define `const` slices at top of component files
@@ -200,26 +198,6 @@ pub struct Object3dProperties {
     pub colors: Option<FaceColors>,
     pub is_draft: bool,
     pub url: Option<&'static str>,
-}
-```
-
-**Props with `From` conversion:**
-
-```rust
-impl From<AxisGizmoProperties> for Object3dProperties {
-    fn from(props: AxisGizmoProperties) -> Self {
-        Self {
-            id: "axis_gizmo",
-            name: "Axis Gizmo",
-            size: Dimensions::Cube(30.0),
-            attached_to: Some(props.attached_to),
-            resolved_position: None,
-            depth_index: None,
-            colors: None,
-            is_draft: false,
-            url: None,
-        }
-    }
 }
 ```
 
@@ -246,12 +224,11 @@ let repos = LocalResource::new(move || async move {
 ### 3D Scene
 
 The viewport uses a static isometric scene (`Object3dScene`). Objects are
-positioned via `Attachment` to faces or corners of earlier objects and are
+positioned via `Attachment` to faces of earlier objects and are
 centered as a group. Each `Object3d` renders an SVG wireframe block with a
 clickable target that opens its `url`.
 
 - `Object3dProperties` defines id, name, size, attachment, colors, draft mode, and optional URL
-- `AxisGizmoProperties` is a special object type rendered as an `AxisGizmo`
 - Team data can be rendered in the scene via the `TeamAvatars` component (fetched from `fetch_members()`)
 
 ### Keyboard Shortcuts

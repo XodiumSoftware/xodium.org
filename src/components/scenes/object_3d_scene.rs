@@ -1,6 +1,5 @@
-use crate::components::ui::axis_gizmo::AxisGizmo;
 use crate::components::ui::object_3d::{
-    Attachment, Corner, Dimensions, Face, Object3d, Object3dProperties, Position,
+    Attachment, Dimensions, Face, Object3d, Object3dProperties, Position,
 };
 use leptos::prelude::*;
 use std::collections::HashMap;
@@ -52,33 +51,6 @@ fn resolve(
                     y: target_pos.y - offset,
                     ..target_pos
                 },
-            }
-        }
-        Some(Attachment::Corner { target, corner }) => {
-            let (target_pos, target_size) = registry.get(target).copied().unwrap_or_else(|| {
-                panic!("Attachment target '{target}' not registered before use")
-            });
-            let (hw, hd, hh) = (
-                target_size.width() / 2.0,
-                target_size.depth() / 2.0,
-                target_size.height() / 2.0,
-            );
-
-            let (dx, dy, dz) = match corner {
-                Corner::BackLeftBottom => (-hw, -hd, -hh),
-                Corner::BackRightBottom => (hw, -hd, -hh),
-                Corner::BackLeftTop => (-hw, hd, -hh),
-                Corner::BackRightTop => (hw, hd, -hh),
-                Corner::FrontLeftBottom => (-hw, -hd, hh),
-                Corner::FrontRightBottom => (hw, -hd, hh),
-                Corner::FrontLeftTop => (-hw, hd, hh),
-                Corner::FrontRightTop => (hw, hd, hh),
-            };
-
-            Position {
-                x: target_pos.x + dx,
-                y: target_pos.y + dy,
-                z: target_pos.z + dz,
             }
         }
     }
@@ -164,13 +136,7 @@ pub fn Object3dScene(objects: Vec<Object3dProperties>) -> impl IntoView {
             <div class="object-3d-layer">
                 {resolved
                     .into_iter()
-                    .map(|props| {
-                        if props.id == "axis_gizmo" {
-                            view! { <AxisGizmo props=props /> }.into_any()
-                        } else {
-                            view! { <Object3d props=props /> }.into_any()
-                        }
-                    })
+                    .map(|props| view! { <Object3d props=props /> }.into_any())
                     .collect::<Vec<_>>()}
             </div>
         </section>

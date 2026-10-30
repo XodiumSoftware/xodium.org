@@ -1,8 +1,7 @@
 use crate::components::scenes::object_3d_scene::Object3dScene;
 use crate::components::sections::footer::Footer;
 use crate::components::sections::header::Header;
-use crate::components::ui::axis_gizmo::AxisGizmoProperties;
-use crate::components::ui::object_3d::{Attachment, Corner, Face, Object3dProperties};
+use crate::components::ui::object_3d::{Attachment, Face, Object3dProperties};
 use crate::utils::CADIOTHEKA_URL;
 use leptos::prelude::*;
 
@@ -47,12 +46,6 @@ pub fn App() -> impl IntoView {
                         is_draft: true,
                         ..Default::default()
                     },
-                    AxisGizmoProperties {
-                        attached_to: Attachment::Corner {
-                            target: "draft_0",
-                            corner: Corner::FrontLeftBottom,
-                        },
-                    }.into(),
                 ] />
             </main>
 
