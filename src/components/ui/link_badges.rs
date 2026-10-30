@@ -63,24 +63,26 @@ pub fn LinkBadges() -> impl IntoView {
         use leptos::wasm_bindgen::closure::Closure;
         use leptos::web_sys;
 
-        let closure = Closure::wrap(Box::new(move |event: web_sys::KeyboardEvent| {
-            if !event.alt_key() {
-                return;
-            }
+        let boxed: Box<dyn FnMut(web_sys::KeyboardEvent)> =
+            Box::new(move |event: web_sys::KeyboardEvent| {
+                if !event.alt_key() {
+                    return;
+                }
 
-            let (url, label) = match event.key().to_ascii_lowercase().as_str() {
-                "1" => (CADIOTHEKA_URL, "Cadiotheka"),
-                "g" => (GITHUB_URL, "GitHub"),
-                "c" => (BMC_URL, "Buy Me a Coffee"),
-                _ => return,
-            };
+                let (url, label) = match event.key().to_ascii_lowercase().as_str() {
+                    "1" => (CADIOTHEKA_URL, "Cadiotheka"),
+                    "g" => (GITHUB_URL, "GitHub"),
+                    "c" => (BMC_URL, "Buy Me a Coffee"),
+                    _ => return,
+                };
 
-            event.prevent_default();
-            if let Some(window) = web_sys::window() {
-                let _ = window.open_with_url_and_target(url, "_blank");
-            }
-            set_announcement(format!("Opened {label} in a new tab."));
-        }) as Box<dyn FnMut(_)>);
+                event.prevent_default();
+                if let Some(window) = web_sys::window() {
+                    let _ = window.open_with_url_and_target(url, "_blank");
+                }
+                set_announcement(format!("Opened {label} in a new tab."));
+            });
+        let closure = Closure::wrap(boxed);
         let _ = web_sys::window().map(|window| {
             window
                 .add_event_listener_with_callback("keydown", closure.as_ref().unchecked_ref())

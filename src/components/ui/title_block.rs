@@ -36,9 +36,10 @@ pub fn TitleBlock() -> impl IntoView {
         let Some(window) = web_sys::window() else {
             return;
         };
-        let closure = Closure::wrap(Box::new(move || {
+        let boxed: Box<dyn FnMut()> = Box::new(move || {
             set_scale(read_scale());
-        }) as Box<dyn FnMut()>);
+        });
+        let closure = Closure::wrap(boxed);
         let _ = window
             .add_event_listener_with_callback("resize", closure.as_ref().unchecked_ref())
             .map_err(|error| {

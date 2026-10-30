@@ -27,6 +27,9 @@ unsafe_code = "deny"
 unreachable_pub = "warn"
 unused_import_braces = "warn"
 unused_qualifications = "warn"
+trivial_casts = "warn"
+trivial_numeric_casts = "warn"
+variant_size_differences = "warn"
 
 [profile.release]
 opt-level = "z"
