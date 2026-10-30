@@ -8,7 +8,7 @@
 use crate::components::sections::footer::Footer;
 use crate::components::sections::header::Header;
 use crate::components::sections::main::Main;
-use crate::components::ui::team_modal::TeamModal;
+use crate::components::sections::team::Team;
 use leptos::prelude::*;
 use std::rc::Rc;
 
@@ -16,9 +16,9 @@ use std::rc::Rc;
 ///
 /// Renders a fixed-layout page: the isometric drawing viewport fills the
 /// viewport, the corner stack sits bottom-right, and the footer sits
-/// bottom-left. The only interactive 3D objects are defined here and passed
-/// to [`Object3dScene`] for placement and rendering. Clicking the "Team"
-/// object opens [`TeamModal`].
+/// bottom-left. The only interactive 3D objects are defined in [`Main`] and
+/// rendered by [`Object3dScene`](crate::components::scenes::object_3d_scene::Object3dScene).
+/// Clicking the "Team" object opens [`Team`].
 #[component]
 #[must_use]
 pub fn App() -> impl IntoView {
@@ -36,7 +36,7 @@ pub fn App() -> impl IntoView {
 
             <Main on_open_team=open_team />
 
-            <TeamModal open=show_team />
+            <Team open=show_team />
 
             <Footer />
 

@@ -28,6 +28,8 @@ pub mod components {
         pub mod header;
         /// Main isometric drawing viewport.
         pub mod main;
+        /// Team modal overlay triggered from the 3D scene.
+        pub mod team;
     }
 
     pub mod ui {
@@ -51,8 +53,6 @@ pub mod components {
         pub mod object_3d;
         /// GitHub team avatar group.
         pub mod team_avatars;
-        /// Team modal overlay triggered from the 3D scene.
-        pub mod team_modal;
         /// Blueprint title-block metadata table.
         pub mod title_block;
 
@@ -60,10 +60,10 @@ pub mod components {
         pub use icons::github::GitHubIcon;
     }
 
-    pub use scenes::object_3d_scene::Object3dScene;
     pub use sections::footer::Footer;
     pub use sections::header::Header;
     pub use sections::main::{Main, MainProperties};
+    pub use sections::team::Team;
 
     pub use ui::ascii_art::{AsciiArt, XODIUM_ASCII_ART};
 
@@ -73,7 +73,6 @@ pub mod components {
         Attachment, Face, FaceColors, Object3d, Object3dProperties, Position, Shape,
     };
     pub use ui::team_avatars::TeamAvatars;
-    pub use ui::team_modal::TeamModal;
     pub use ui::title_block::TitleBlock;
 }
 

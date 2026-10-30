@@ -8,7 +8,7 @@ use leptos::prelude::*;
 /// clicking the backdrop, or by activating the close button.
 #[component]
 #[must_use]
-pub fn TeamModal(
+pub fn Team(
     /// Reactive flag controlling visibility. Set to `true` to open the modal.
     open: RwSignal<bool>,
 ) -> impl IntoView {

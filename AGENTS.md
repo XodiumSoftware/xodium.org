@@ -86,7 +86,7 @@ stack of metadata and controls:
     - separator line
     - `LegendBlock` — keyboard shortcut legend
     - `LinkBadges` + `TitleBlock` — external links and sheet metadata
-4. **`TeamModal`** — centered dialog opened by the "Team" object in the
+4. **`Team`** — centered team dialog opened by the "Team" object in the
    isometric scene, showing `TeamAvatars`
 5. **`Footer`** — fixed bottom-left copyright / revision link
 
@@ -96,11 +96,12 @@ Components are grouped by function in `src/components/`:
 
 #### Sections (`src/components/sections/`)
 
-| Component | File        | Purpose                            |
-| --------- | ----------- | ---------------------------------- |
-| `Main`    | `main.rs`   | Central isometric drawing viewport |
-| `Header`  | `header.rs` | Bottom-right corner stack assembly |
-| `Footer`  | `footer.rs` | Bottom-left site footer            |
+| Component | File        | Purpose                             |
+| --------- | ----------- | ----------------------------------- |
+| `Main`    | `main.rs`   | Central isometric drawing viewport  |
+| `Team`    | `team.rs`   | Team modal opened from the 3D scene |
+| `Header`  | `header.rs` | Bottom-right corner stack assembly  |
+| `Footer`  | `footer.rs` | Bottom-left site footer             |
 
 #### Scenes (`src/components/scenes/`)
 
@@ -117,7 +118,6 @@ Components are grouped by function in `src/components/`:
 | `LinkBadges`  | `link_badges.rs`  | External link icons (GitHub, Buy Me a Coffee)    |
 | `Object3d`    | `object_3d.rs`    | Isometric wireframe block and shape registry     |
 | `TeamAvatars` | `team_avatars.rs` | GitHub org member avatar group                   |
-| `TeamModal`   | `team_modal.rs`   | Modal overlay for the team avatar group          |
 | `TitleBlock`  | `title_block.rs`  | Blueprint metadata table (sheet, DPR, rev, date) |
 
 #### UI Icons (`src/components/ui/icons/`)
@@ -155,6 +155,7 @@ src/
 ├── components/
 │   ├── sections/              # Page sections
 │   │   ├── main.rs
+│   │   ├── team.rs
 │   │   ├── header.rs
 │   │   └── footer.rs
 │   ├── scenes/                # Viewport scenes
