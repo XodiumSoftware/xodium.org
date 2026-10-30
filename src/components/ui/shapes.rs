@@ -1,8 +1,17 @@
 use crate::components::ui::shapes::cuboid::Cuboid;
 use crate::components::ui::shapes::dimensions::Dimensions;
+use crate::github::Member;
 use core::fmt::Write as _;
 use leptos::prelude::*;
 use std::rc::Rc;
+
+/// Content that can be rendered inside a [`ThreeDObject`] bounding box.
+#[derive(Clone, Debug)]
+#[must_use]
+pub enum Container {
+    /// Bouncing team-member avatars linking to GitHub profiles.
+    Avatars(Vec<Member>),
+}
 
 /// Rectangular cuboid / cube shape.
 pub mod cuboid;
@@ -182,6 +191,9 @@ pub struct ThreeDProperties {
     /// unfilled and all edges use dashed strokes so the block reads as
     /// proposed/work-in-progress geometry rather than committed structure.
     pub is_draft: bool,
+    /// Optional content rendered inside the object's bounding box.
+    /// Currently supports bouncing team avatars that link to GitHub profiles.
+    pub content: Option<Container>,
     /// URL to open when the object is clicked. `None` means no action.
     pub url: Option<&'static str>,
     /// Optional callback invoked when the object is activated by click or
@@ -203,6 +215,7 @@ impl Default for ThreeDProperties {
             is_draft: false,
             url: None,
             on_click: None,
+            content: None,
         }
     }
 }
@@ -484,6 +497,7 @@ fn render_edge_lines(edges: &[(Point2d, Point2d)], class: &'static str) -> impl 
 /// draft style used for uncommitted geometry: no face fills, every edge
 /// dashed (not just the hidden ones).
 #[component]
+#[allow(clippy::too_many_lines)]
 #[must_use]
 pub fn ThreeDObject(
     /// Configuration for this object: shape, placement, colours, URL, etc.
@@ -498,6 +512,7 @@ pub fn ThreeDObject(
         url,
         on_click,
         depth_index,
+        content,
         ..
     } = props;
 
@@ -566,6 +581,50 @@ pub fn ThreeDObject(
                 {render_edge_lines(&edges, "iso-edges")}
                 {render_edge_lines(&hidden, "iso-hidden")}
             </svg>
+            {content.map(|container| match container {
+                Container::Avatars(list) => view! {
+                    <div
+                        class="object-3d-avatars"
+                        aria-label="Team members"
+                        style=format!(
+                            "--avatar-box-size: {:.2}px;",
+                            svg_pixel_size * 0.55,
+                        )
+                    >
+                        {list
+                            .into_iter()
+                            .enumerate()
+                            .map(|(index, member)| {
+                                let index_f64 = f64::from(u32::try_from(index).unwrap_or(0));
+                                let login = member.login.clone();
+                                let html_url = member.html_url;
+                                let avatar_url = member.avatar_url;
+                                let offset = index_f64 * 137.5;
+                                let duration = 3.0 + (index_f64 * 0.7) % 2.5;
+                                let delay = (index_f64 * 0.4) % 1.5;
+                                view! {
+                                    <a
+                                        class="object-3d-avatar"
+                                        href=html_url
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        aria-label=format!("{login} on GitHub")
+                                        style=format!(
+                                            "--avatar-angle: {offset:.1}deg; --avatar-duration: {duration:.2}s; --avatar-delay: {delay:.2}s;",
+                                        )
+                                    >
+                                        <img
+                                            src=avatar_url
+                                            alt=login.clone()
+                                            loading="lazy"
+                                        />
+                                    </a>
+                                }
+                            })
+                            .collect::<Vec<_>>()}
+                    </div>
+                }.into_any(),
+            })}
         </div>
     }
 }

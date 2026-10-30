@@ -8,16 +8,21 @@ pub fn Avatar(
     /// GitHub member whose avatar and profile link are rendered.
     member: Member,
 ) -> impl IntoView {
+    let Member {
+        login,
+        html_url,
+        avatar_url,
+        role,
+    } = member;
     let alt = format!(
         "{login} — {role}",
-        login = member.login,
-        role = member.role.as_deref().unwrap_or("Member"),
+        role = role.as_deref().unwrap_or("Member"),
     );
 
     view! {
         <li class="team-avatars-item" role="listitem">
             <a
-                href={member.html_url}
+                href={html_url}
                 target="_blank"
                 rel="noopener noreferrer"
                 class="avatar"
@@ -25,8 +30,8 @@ pub fn Avatar(
             >
                 <div class="h-10 w-10 rounded-none">
                     <img
-                        src={member.avatar_url}
-                        alt={member.login}
+                        src={avatar_url}
+                        alt={login.clone()}
                         class="w-full h-full object-cover"
                         loading="lazy"
                     />

@@ -121,7 +121,7 @@ xodium.org/
 │       ├── sections/     # Header, Footer
 │       ├── scenes/         # ThreeDScene
 │       └── ui/             # AsciiArt, LegendBlock, ThreeDObject,
-│                           # LinkBadges, TeamAvatars, TitleBlock
+│                           # LinkBadges, Avatar, TitleBlock
 ├── public/
 │   ├── style.css         # Tailwind + DaisyUI styles
 │   └── icons/            # SVG icons

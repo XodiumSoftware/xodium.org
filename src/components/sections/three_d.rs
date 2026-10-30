@@ -66,70 +66,74 @@ fn resolve(
 #[must_use]
 pub fn ThreeDScene(
     /// Objects to place and render inside the scene, in dependency order.
-    objects: Vec<ThreeDProperties>,
+    objects: impl Fn() -> Vec<ThreeDProperties> + Send + 'static,
 ) -> impl IntoView {
-    let mut registry: HashMap<&'static str, (Position, Shape)> = HashMap::new();
-    let mut resolved: Vec<ThreeDProperties> = objects
-        .into_iter()
-        .map(|mut props| {
-            let resolved_pos = resolve(props.attached_to, props.shape, &registry);
-            registry.insert(props.id, (resolved_pos, props.shape));
-            props.resolved_position = Some(resolved_pos);
-            props
-        })
-        .collect();
+    let resolved = move || {
+        let mut registry: HashMap<&'static str, (Position, Shape)> = HashMap::new();
+        let mut resolved: Vec<ThreeDProperties> = objects()
+            .into_iter()
+            .map(|mut props| {
+                let resolved_pos = resolve(props.attached_to, props.shape, &registry);
+                registry.insert(props.id, (resolved_pos, props.shape));
+                props.resolved_position = Some(resolved_pos);
+                props
+            })
+            .collect();
 
-    if !resolved.is_empty() {
-        let mut min_x = f64::INFINITY;
-        let mut max_x = f64::NEG_INFINITY;
-        let mut min_y = f64::INFINITY;
-        let mut max_y = f64::NEG_INFINITY;
-        let mut min_z = f64::INFINITY;
-        let mut max_z = f64::NEG_INFINITY;
+        if !resolved.is_empty() {
+            let mut min_x = f64::INFINITY;
+            let mut max_x = f64::NEG_INFINITY;
+            let mut min_y = f64::INFINITY;
+            let mut max_y = f64::NEG_INFINITY;
+            let mut min_z = f64::INFINITY;
+            let mut max_z = f64::NEG_INFINITY;
 
-        for props in &resolved {
-            let Position { x, y, z } = props
-                .resolved_position
-                .expect("resolved_position must be set");
-            let (width, depth, height) = props.shape.components();
-            let (hw, hd, hh) = (width / 2.0, depth / 2.0, height / 2.0);
+            for props in &resolved {
+                let Position { x, y, z } = props
+                    .resolved_position
+                    .expect("resolved_position must be set");
+                let (width, depth, height) = props.shape.components();
+                let (hw, hd, hh) = (width / 2.0, depth / 2.0, height / 2.0);
 
-            min_x = min_x.min(x - hw);
-            max_x = max_x.max(x + hw);
-            min_y = min_y.min(y - hd);
-            max_y = max_y.max(y + hd);
-            min_z = min_z.min(z - hh);
-            max_z = max_z.max(z + hh);
-        }
+                min_x = min_x.min(x - hw);
+                max_x = max_x.max(x + hw);
+                min_y = min_y.min(y - hd);
+                max_y = max_y.max(y + hd);
+                min_z = min_z.min(z - hh);
+                max_z = max_z.max(z + hh);
+            }
 
-        let center_x = f64::midpoint(min_x, max_x);
-        let center_y = f64::midpoint(min_y, max_y);
-        let center_z = f64::midpoint(min_z, max_z);
+            let center_x = f64::midpoint(min_x, max_x);
+            let center_y = f64::midpoint(min_y, max_y);
+            let center_z = f64::midpoint(min_z, max_z);
 
-        for props in &mut resolved {
-            if let Some(pos) = &mut props.resolved_position {
-                pos.x -= center_x;
-                pos.y -= center_y;
-                pos.z -= center_z;
+            for props in &mut resolved {
+                if let Some(pos) = &mut props.resolved_position {
+                    pos.x -= center_x;
+                    pos.y -= center_y;
+                    pos.z -= center_z;
+                }
+            }
+
+            let mut with_depth: Vec<(usize, f64)> = resolved
+                .iter()
+                .enumerate()
+                .map(|(i, props)| {
+                    let pos = props
+                        .resolved_position
+                        .expect("resolved_position must be set");
+                    let depth = pos.x + pos.y + pos.z;
+                    (i, depth)
+                })
+                .collect();
+            with_depth.sort_by(|a, b| b.1.total_cmp(&a.1));
+            for (depth_idx, (obj_idx, _)) in with_depth.iter().enumerate() {
+                resolved[*obj_idx].depth_index = Some(i32::try_from(depth_idx).unwrap_or(0));
             }
         }
 
-        let mut with_depth: Vec<(usize, f64)> = resolved
-            .iter()
-            .enumerate()
-            .map(|(i, props)| {
-                let pos = props
-                    .resolved_position
-                    .expect("resolved_position must be set");
-                let depth = pos.x + pos.y + pos.z;
-                (i, depth)
-            })
-            .collect();
-        with_depth.sort_by(|a, b| b.1.total_cmp(&a.1));
-        for (depth_idx, (obj_idx, _)) in with_depth.iter().enumerate() {
-            resolved[*obj_idx].depth_index = Some(i32::try_from(depth_idx).unwrap_or(0));
-        }
-    }
+        resolved
+    };
 
     view! {
         <section
@@ -137,10 +141,12 @@ pub fn ThreeDScene(
             aria-label="Drawing viewport"
         >
             <div class="object-3d-layer">
-                {resolved
-                    .into_iter()
-                    .map(|props| view! { <ThreeDObject props=props /> }.into_any())
-                    .collect::<Vec<_>>()}
+                {move || {
+                    resolved()
+                        .into_iter()
+                        .map(|props| view! { <ThreeDObject props=props /> }.into_any())
+                        .collect::<Vec<_>>()
+                }}
             </div>
         </section>
     }

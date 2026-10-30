@@ -22,8 +22,6 @@ pub mod components {
         pub mod header;
         /// Main isometric drawing viewport.
         pub mod main;
-        /// Team modal overlay triggered from the 3D scene.
-        pub mod team;
         /// Isometric 3D object viewport used by `Main`.
         pub mod three_d;
     }
@@ -59,7 +57,6 @@ pub mod components {
     pub use sections::footer::Footer;
     pub use sections::header::Header;
     pub use sections::main::Main;
-    pub use sections::team::Team;
     pub use sections::three_d::ThreeDScene;
 
     pub use ui::ascii_art::{AsciiArt, XODIUM_ASCII_ART};
@@ -68,7 +65,7 @@ pub mod components {
     pub use ui::legend_block::LegendBlock;
     pub use ui::link_badges::LinkBadges;
     pub use ui::shapes::{
-        Attachment, Face, FaceColors, Position, Shape, ThreeDObject, ThreeDProperties,
+        Attachment, Container, Face, FaceColors, Position, Shape, ThreeDObject, ThreeDProperties,
     };
     pub use ui::title_block::TitleBlock;
 }

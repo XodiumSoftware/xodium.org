@@ -79,16 +79,15 @@ stack of metadata and controls:
 
 1. **Skip Link** — accessibility anchor to `#main-content`
 2. **`main#content`** — full-viewport drawing viewport containing the
-   isometric `ThreeDScene` and the `Team` modal, rendered by the `Main`
-   section component
+   isometric [`ThreeDScene`], rendered by the [`Main`] section component
 3. **Corner stack** (`<aside class="corner-stack">`) — fixed bottom-right
    metadata panel:
     - `AsciiArt` — XODIUM glyph mark
     - separator line
     - `LegendBlock` — keyboard shortcut legend
     - `LinkBadges` + `TitleBlock` — external links and sheet metadata
-4. **`Team`** — centered team dialog opened by the "Team" object in the
-   isometric scene, showing `TeamAvatars`
+4. _(removed)_ ~~`Team`~~ — team members are now rendered as bouncing
+   avatars inside the "Team" object in the isometric scene
 5. **`Footer`** — fixed bottom-left copyright / revision link
 
 ### Component Organization
@@ -101,7 +100,6 @@ Components are grouped by function in `src/components/`:
 | ------------- | ------------ | ----------------------------------------------------- |
 | `Main`        | `main.rs`    | Central isometric drawing viewport                    |
 | `ThreeDScene` | `three_d.rs` | Isometric scene that hosts `ThreeDObject` item blocks |
-| `Team`        | `team.rs`    | Team modal opened from the 3D scene                   |
 | `Header`      | `header.rs`  | Bottom-right corner stack assembly                    |
 | `Footer`      | `footer.rs`  | Bottom-left site footer                               |
 
@@ -152,7 +150,6 @@ src/
 │   ├── sections/              # Page sections
 │   │   ├── main.rs
 │   │   ├── three_d.rs
-│   │   ├── team.rs
 │   │   ├── header.rs
 │   │   └── footer.rs
 │   └── ui/                    # UI primitives and icons
@@ -233,13 +230,16 @@ let repos = LocalResource::new(move || async move {
 
 The viewport uses a static isometric scene (`ThreeDScene`). Objects are
 positioned via `Attachment` to faces of earlier objects and are
-centered as a group. Each `ThreeDObject` renders an SVG wireframe block with a
-clickable target that opens its `url` or, if `on_click` is provided, runs a
-custom in-app action.
+centered as a group. Each [`ThreeDObject`] renders an SVG wireframe block
+with a clickable target that opens its `url` or, if `on_click` is provided,
+runs a custom in-app action.
 
-- `ThreeDProperties` defines id, name, shape, attachment, colors, draft mode, optional URL, and optional `on_click` callback
+- `ThreeDProperties` defines id, name, shape, attachment, colors, draft mode,
+  optional URL, optional `on_click` callback, and optional `avatars` that are
+  rendered as bouncing particles inside the object's bounding box
 - Shapes implement the shared `Dimensions` trait (`src/components/ui/object_3d/dimensions.rs`) and expose a `render()` method; currently only `Cuboid` and `Cube` are implemented
-- Team data can be rendered in the scene via the `TeamAvatars` component (fetched from `fetch_members()`)
+- Team member data is fetched once in [`Main`] and passed to the `team_hub`
+  object as `avatars`; the standalone `Team` modal has been removed
 
 ### Keyboard Shortcuts
 
