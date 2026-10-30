@@ -548,8 +548,26 @@ body::before {
 }
 
 .team-modal-open .object-3d-avatars {
-    opacity: 0;
-    transition: opacity 150ms ease;
+    opacity: 1;
+}
+
+.team-modal-open .object-3d-avatar {
+    animation: team-avatar-escape 600ms cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+}
+
+@keyframes team-avatar-escape {
+    0% {
+        transform: rotate(var(--avatar-angle, 0deg)) translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    70% {
+        opacity: 1;
+    }
+    100% {
+        transform: rotate(var(--avatar-angle, 0deg))
+            translate(var(--escape-x, 0rem), var(--escape-y, -3rem)) scale(5);
+        opacity: 0;
+    }
 }
 
 .team-modal-backdrop {

@@ -601,12 +601,14 @@ pub fn ThreeDObject(
                                 let offset = index_f64 * 137.5;
                                 let duration = 3.0 + (index_f64 * 0.7) % 2.5;
                                 let delay = (index_f64 * 0.4) % 1.5;
+                                let escape_x = if index % 2 == 0 { -4.0 } else { 4.0 };
+                                let escape_y = -4.0;
                                 view! {
                                     <div
                                         class="object-3d-avatar"
                                         aria-label=format!("{login} on GitHub")
                                         style=format!(
-                                            "--avatar-angle: {offset:.1}deg; --avatar-duration: {duration:.2}s; --avatar-delay: {delay:.2}s;",
+                                            "--avatar-angle: {offset:.1}deg; --avatar-duration: {duration:.2}s; --avatar-delay: {delay:.2}s; --escape-x: {escape_x:.1}rem; --escape-y: {escape_y:.1}rem;",
                                         )
                                     >
                                         <img
