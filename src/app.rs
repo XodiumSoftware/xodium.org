@@ -26,23 +26,6 @@ use std::rc::Rc;
 pub fn App() -> impl IntoView {
     let show_team = RwSignal::new(false);
 
-    let team_object = Object3dProperties {
-        id: "team_hub",
-        name: "Team",
-        shape: Shape::Cube(70.0),
-        attached_to: Some(Attachment::Face {
-            target: "cadiotheka_project",
-            face: Face::Front,
-        }),
-        colors: Some(FaceColors {
-            top: "var(--color-primary)",
-            left: "var(--color-secondary)",
-            right: "var(--color-accent)",
-        }),
-        on_click: Some(Rc::new(move || show_team.set(true))),
-        ..Default::default()
-    };
-
     view! {
         <div class="blueprint-frame">
             <a
@@ -81,7 +64,22 @@ pub fn App() -> impl IntoView {
                         is_draft: true,
                         ..Default::default()
                     },
-                    team_object,
+                    Object3dProperties {
+                        id: "team_hub",
+                        name: "Team",
+                        shape: Shape::Cube(70.0),
+                        attached_to: Some(Attachment::Face {
+                            target: "cadiotheka_project",
+                            face: Face::Front,
+                        }),
+                        colors: Some(FaceColors {
+                            top: "var(--color-primary)",
+                            left: "var(--color-secondary)",
+                            right: "var(--color-accent)",
+                        }),
+                        on_click: Some(Rc::new(move || show_team.set(true))),
+                        ..Default::default()
+                    },
                 ] />
             </main>
 
