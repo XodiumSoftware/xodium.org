@@ -30,6 +30,10 @@ unused_qualifications = "warn"
 trivial_casts = "warn"
 trivial_numeric_casts = "warn"
 variant_size_differences = "warn"
+unstable_features = "warn"
+unused_extern_crates = "warn"
+unused_lifetimes = "warn"
+single_use_lifetimes = "warn"
 
 [profile.release]
 opt-level = "z"
