@@ -350,14 +350,160 @@ fn build_view_box(hw: f64, hd: f64, hh: f64) -> (String, f64) {
 
 fn make_navigate(url: Option<&'static str>) -> impl Fn() + Copy {
     move || {
-        if let (Some(url), Some(window)) = (url, web_sys::window()) {
-            let _ =
-                window.open_with_url_and_target_and_features(url, "_blank", "noopener,noreferrer");
+        if let (Some(url), Some(window)) = (url, web_sys::window())
+            && let Err(error) =
+                window.open_with_url_and_target_and_features(url, "_blank", "noopener,noreferrer")
+        {
+            web_sys::console::warn_1(
+                &format!("Failed to open {url} from object click: {error:?}").into(),
+            );
         }
     }
 }
 
-/// Render a list of screen-space edges as SVG lines inside a group.
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use wasm_bindgen_test::*;
+
+    wasm_bindgen_test_configure!(run_in_browser);
+
+    #[wasm_bindgen_test]
+    fn test_project_origin() {
+        let origin = project(Point3d::new(0.0, 0.0, 0.0));
+        assert!((origin.x - 0.0).abs() < f64::EPSILON);
+        assert!((origin.y - 0.0).abs() < f64::EPSILON);
+    }
+
+    #[wasm_bindgen_test]
+    fn test_dimensions_trait_for_shapes() {
+        let cuboid = Cuboid {
+            width: 10.0,
+            depth: 20.0,
+            height: 30.0,
+        };
+        assert_eq!(cuboid.components(), (10.0, 20.0, 30.0));
+
+        let cube = Cuboid::cube(15.0);
+        assert_eq!(cube.components(), (15.0, 15.0, 15.0));
+
+        let pyramid = Pyramid {
+            base_size: 40.0,
+            height: 50.0,
+        };
+        assert_eq!(pyramid.components(), (40.0, 40.0, 50.0));
+
+        let prism = TriangularPrism {
+            base_size: 12.0,
+            length: 18.0,
+            flip: false,
+        };
+        assert_eq!(prism.components(), (12.0, 12.0, 18.0));
+    }
+
+    #[wasm_bindgen_test]
+    fn test_shape_enum_dimensions() {
+        assert_eq!(Shape::Cube(10.0).components(), (10.0, 10.0, 10.0));
+        assert_eq!(
+            Shape::Cuboid(Cuboid {
+                width: 1.0,
+                depth: 2.0,
+                height: 3.0,
+            })
+            .components(),
+            (1.0, 2.0, 3.0)
+        );
+    }
+
+    #[wasm_bindgen_test]
+    fn test_shape_render_produces_faces_and_edges() {
+        let geometry = Shape::Cube(10.0).render();
+
+        assert_ne!(geometry.top_face, "");
+        assert_ne!(geometry.left_face, "");
+        assert_ne!(geometry.right_face, "");
+        // A cube has no visible silhouette edges in this renderer; hidden edges
+        // carry the back-corner geometry.
+        assert_eq!(geometry.edges, []);
+        assert_eq!(geometry.hidden.len(), 3);
+    }
+
+    #[wasm_bindgen_test]
+    fn test_pyramid_render_geometry() {
+        let geometry = Shape::Pyramid(Pyramid {
+            base_size: 20.0,
+            height: 30.0,
+        })
+        .render();
+
+        assert_ne!(geometry.top_face, "");
+        assert_ne!(geometry.left_face, "");
+        assert_ne!(geometry.right_face, "");
+        assert_eq!(geometry.edges.len(), 5);
+        assert_eq!(geometry.hidden.len(), 3);
+    }
+
+    #[wasm_bindgen_test]
+    fn test_triangular_prism_render_geometry() {
+        let geometry = Shape::TriangularPrism(TriangularPrism {
+            base_size: 16.0,
+            length: 24.0,
+            flip: false,
+        })
+        .render();
+
+        assert_ne!(geometry.top_face, "");
+        assert_ne!(geometry.left_face, "");
+        assert_ne!(geometry.right_face, "");
+        assert_eq!(geometry.edges.len(), 6);
+        assert_eq!(geometry.hidden.len(), 3);
+    }
+
+    #[wasm_bindgen_test]
+    fn test_build_style_without_depth_index() {
+        let style = build_style(10.5, -20.25, None, "");
+        assert!(style.contains("left: calc(50% + 10.50px)"));
+        assert!(style.contains("top: calc(50% + -20.25px)"));
+        assert!(!style.contains("z-index"));
+    }
+
+    #[wasm_bindgen_test]
+    fn test_build_style_with_depth_index() {
+        let style = build_style(0.0, 0.0, Some(5), "");
+        assert!(style.contains("z-index: 995;"));
+    }
+
+    #[wasm_bindgen_test]
+    fn test_build_face_overrides() {
+        let overrides = build_face_overrides(Some(FaceColors {
+            top: "#a",
+            left: "#b",
+            right: "#c",
+        }));
+        assert!(overrides.contains("--face-top: #a;"));
+        assert!(overrides.contains("--face-left: #b;"));
+        assert!(overrides.contains("--face-right: #c;"));
+    }
+
+    #[wasm_bindgen_test]
+    fn test_build_face_overrides_none_is_empty() {
+        assert_eq!(build_face_overrides(None), "");
+    }
+
+    #[wasm_bindgen_test]
+    fn test_fmt_pt_and_polygon_helpers() {
+        let mut out = String::new();
+        fmt_pt(&mut out, Point2d { x: 1.0, y: 2.0 });
+        assert_eq!(out, "1.00,2.00");
+
+        let tri_points = tri(
+            Point2d { x: 0.0, y: 0.0 },
+            Point2d { x: 1.0, y: 0.0 },
+            Point2d { x: 0.5, y: 1.0 },
+        );
+        assert_eq!(tri_points, "0.00,0.00 1.00,0.00 0.50,1.00");
+    }
+}
 fn render_edge_lines(edges: &[(Point2d, Point2d)], class: &'static str) -> impl IntoView + use<> {
     view! {
         <g class=class>
