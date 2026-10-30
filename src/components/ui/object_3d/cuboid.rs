@@ -1,3 +1,5 @@
+use crate::components::ui::object_3d::{Point3d, RenderedGeometry, project, quad};
+
 /// A rectangular cuboid with explicit dimensions in all three axes.
 #[derive(Clone, Copy)]
 pub struct Cuboid {
@@ -42,5 +44,41 @@ impl Cuboid {
     #[must_use]
     pub fn components(&self) -> (f64, f64, f64) {
         (self.width, self.depth, self.height)
+    }
+
+    /// Render this cuboid into isometric screen-space geometry.
+    #[must_use]
+    pub fn render(&self) -> RenderedGeometry {
+        let (width, depth, height) = self.components();
+        let (hw, hd, hh) = (width / 2.0, depth / 2.0, height / 2.0);
+
+        let back_top = project(Point3d::new(-hw, -hd, hh));
+        let right_top = project(Point3d::new(hw, -hd, hh));
+        let left_top = project(Point3d::new(-hw, hd, hh));
+        let front_top = project(Point3d::new(hw, hd, hh));
+        let back_bottom = project(Point3d::new(-hw, -hd, -hh));
+        let right_bottom = project(Point3d::new(hw, -hd, -hh));
+        let left_bottom = project(Point3d::new(-hw, hd, -hh));
+        let front_bottom = project(Point3d::new(hw, hd, -hh));
+
+        let top_face = quad(back_top, right_top, front_top, left_top);
+        let left_face = quad(left_top, front_top, front_bottom, left_bottom);
+        let right_face = quad(front_top, right_top, right_bottom, front_bottom);
+
+        let edges = vec![];
+
+        let hidden = vec![
+            (back_top, back_bottom),
+            (back_bottom, left_bottom),
+            (back_bottom, right_bottom),
+        ];
+
+        RenderedGeometry {
+            top_face,
+            left_face,
+            right_face,
+            edges,
+            hidden,
+        }
     }
 }

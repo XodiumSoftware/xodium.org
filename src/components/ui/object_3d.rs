@@ -215,7 +215,7 @@ pub struct RenderedGeometry {
     pub hidden: Vec<(Point2d, Point2d)>,
 }
 
-fn project(point: Point3d) -> Point2d {
+pub(crate) fn project(point: Point3d) -> Point2d {
     const COS30: f64 = 0.866_025_403_784_438_6;
     const SIN30: f64 = 0.5;
     Point2d {
@@ -224,11 +224,11 @@ fn project(point: Point3d) -> Point2d {
     }
 }
 
-fn fmt_pt(out: &mut String, p: Point2d) {
+pub(crate) fn fmt_pt(out: &mut String, p: Point2d) {
     write!(out, "{:.2},{:.2}", p.x, p.y).expect("writing to a String is infallible");
 }
 
-fn quad(a: Point2d, b: Point2d, c: Point2d, d: Point2d) -> String {
+pub(crate) fn quad(a: Point2d, b: Point2d, c: Point2d, d: Point2d) -> String {
     let mut out = String::new();
     fmt_pt(&mut out, a);
     out.push(' ');
@@ -240,7 +240,7 @@ fn quad(a: Point2d, b: Point2d, c: Point2d, d: Point2d) -> String {
     out
 }
 
-fn tri(a: Point2d, b: Point2d, c: Point2d) -> String {
+pub(crate) fn tri(a: Point2d, b: Point2d, c: Point2d) -> String {
     let mut out = String::new();
     fmt_pt(&mut out, a);
     out.push(' ');
@@ -250,156 +250,12 @@ fn tri(a: Point2d, b: Point2d, c: Point2d) -> String {
     out
 }
 
-/// Render a cuboid into isometric screen-space geometry.
-#[must_use]
-pub fn render_cuboid(cuboid: &Cuboid) -> RenderedGeometry {
-    let (width, depth, height) = cuboid.components();
-    let (hw, hd, hh) = (width / 2.0, depth / 2.0, height / 2.0);
-
-    let back_top = project(Point3d::new(-hw, -hd, hh));
-    let right_top = project(Point3d::new(hw, -hd, hh));
-    let left_top = project(Point3d::new(-hw, hd, hh));
-    let front_top = project(Point3d::new(hw, hd, hh));
-    let back_bottom = project(Point3d::new(-hw, -hd, -hh));
-    let right_bottom = project(Point3d::new(hw, -hd, -hh));
-    let left_bottom = project(Point3d::new(-hw, hd, -hh));
-    let front_bottom = project(Point3d::new(hw, hd, -hh));
-
-    let top_face = quad(back_top, right_top, front_top, left_top);
-    let left_face = quad(left_top, front_top, front_bottom, left_bottom);
-    let right_face = quad(front_top, right_top, right_bottom, front_bottom);
-
-    let edges = vec![];
-
-    let hidden = vec![
-        (back_top, back_bottom),
-        (back_bottom, left_bottom),
-        (back_bottom, right_bottom),
-    ];
-
-    RenderedGeometry {
-        top_face,
-        left_face,
-        right_face,
-        edges,
-        hidden,
-    }
-}
-
-/// Render a pyramid into isometric screen-space geometry.
-#[must_use]
-pub fn render_pyramid(pyramid: &Pyramid) -> RenderedGeometry {
-    let (width, _depth, height) = pyramid.components();
-    let hb = width / 2.0;
-    let hh = height / 2.0;
-    let apex = project(Point3d::new(0.0, 0.0, hh));
-
-    let back_base = project(Point3d::new(-hb, -hb, -hh));
-    let right_base = project(Point3d::new(hb, -hb, -hh));
-    let left_base = project(Point3d::new(-hb, hb, -hh));
-    let front_base = project(Point3d::new(hb, hb, -hh));
-
-    let top_face = quad(back_base, right_base, front_base, left_base);
-    let left_face = tri(left_base, front_base, apex);
-    let right_face = tri(front_base, right_base, apex);
-
-    let edges = vec![
-        (left_base, apex),
-        (right_base, apex),
-        (front_base, apex),
-        (left_base, front_base),
-        (front_base, right_base),
-    ];
-
-    let hidden = vec![
-        (back_base, apex),
-        (back_base, left_base),
-        (back_base, right_base),
-    ];
-
-    RenderedGeometry {
-        top_face,
-        left_face,
-        right_face,
-        edges,
-        hidden,
-    }
-}
-
-/// Render a triangular prism into isometric screen-space geometry.
-#[must_use]
-pub fn render_triangular_prism(prism: &TriangularPrism) -> RenderedGeometry {
-    let (width, _depth, height) = prism.components();
-    let hb = width / 2.0;
-    let hl = height / 2.0;
-
-    let triangle_points = if prism.flip {
-        [
-            Point3d::new(0.0, hb, 0.0),
-            Point3d::new(-hb, -hb, 0.0),
-            Point3d::new(hb, -hb, 0.0),
-        ]
-    } else {
-        [
-            Point3d::new(0.0, -hb, 0.0),
-            Point3d::new(-hb, hb, 0.0),
-            Point3d::new(hb, hb, 0.0),
-        ]
-    };
-
-    let p1_bottom = project(Point3d::new(
-        triangle_points[0].x,
-        triangle_points[0].y,
-        -hl,
-    ));
-    let p2_bottom = project(Point3d::new(
-        triangle_points[1].x,
-        triangle_points[1].y,
-        -hl,
-    ));
-    let p3_bottom = project(Point3d::new(
-        triangle_points[2].x,
-        triangle_points[2].y,
-        -hl,
-    ));
-
-    let p1_top = project(Point3d::new(triangle_points[0].x, triangle_points[0].y, hl));
-    let p2_top = project(Point3d::new(triangle_points[1].x, triangle_points[1].y, hl));
-    let p3_top = project(Point3d::new(triangle_points[2].x, triangle_points[2].y, hl));
-
-    let _tri_bottom = tri(p1_bottom, p2_bottom, p3_bottom);
-
-    let top_face = quad(p1_bottom, p2_bottom, p2_top, p1_top);
-    let left_face = tri(p2_bottom, p3_bottom, p3_top);
-    let right_face = quad(p2_bottom, p3_bottom, p3_top, p2_top);
-
-    let edges = vec![
-        (p1_bottom, p1_top),
-        (p2_bottom, p2_top),
-        (p3_bottom, p3_top),
-        (p1_bottom, p2_bottom),
-        (p1_bottom, p3_bottom),
-        (p1_top, p2_top),
-        (p1_top, p3_top),
-    ];
-
-    let hidden = vec![(p2_bottom, p3_bottom), (p2_top, p3_top)];
-
-    RenderedGeometry {
-        top_face,
-        left_face,
-        right_face,
-        edges,
-        hidden,
-    }
-}
-
 fn render_geometry(shape: Shape) -> RenderedGeometry {
     match shape {
-        Shape::Cuboid(ref c) => render_cuboid(c),
-        Shape::Cube(size) => render_cuboid(&Cuboid::cube(size)),
-        Shape::Pyramid(ref p) => render_pyramid(p),
-        Shape::TriangularPrism(ref t) => render_triangular_prism(t),
+        Shape::Cuboid(ref c) => c.render(),
+        Shape::Cube(size) => Cuboid::cube(size).render(),
+        Shape::Pyramid(ref p) => p.render(),
+        Shape::TriangularPrism(ref t) => t.render(),
     }
 }
 
