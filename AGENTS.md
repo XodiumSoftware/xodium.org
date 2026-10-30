@@ -170,9 +170,7 @@ src/
 │       ├── link_badges.rs
 │       ├── object_3d.rs
 │       │   ├── cuboid.rs
-│       │   ├── dimensions.rs
-│       │   ├── pyramid.rs
-│       │   └── triangular_prism.rs
+│       │   └── dimensions.rs
 │       ├── team_avatars.rs
 │       ├── team_modal.rs
 │       └── title_block.rs
@@ -247,8 +245,7 @@ clickable target that opens its `url` or, if `on_click` is provided, runs a
 custom in-app action.
 
 - `Object3dProperties` defines id, name, shape, attachment, colors, draft mode, optional URL, and optional `on_click` callback
-- Shapes implement the shared `Dimensions` trait (`src/components/ui/object_3d/dimensions.rs`) and expose a `render()` method
-- `Shape::render()` dispatches to the appropriate shape renderer
+- Shapes implement the shared `Dimensions` trait (`src/components/ui/object_3d/dimensions.rs`) and expose a `render()` method; currently only `Cuboid` and `Cube` are implemented
 - Team data can be rendered in the scene via the `TeamAvatars` component (fetched from `fetch_members()`)
 
 ### Keyboard Shortcuts

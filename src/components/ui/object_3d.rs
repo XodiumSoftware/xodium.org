@@ -1,7 +1,5 @@
 use crate::components::ui::object_3d::cuboid::Cuboid;
 use crate::components::ui::object_3d::dimensions::Dimensions;
-use crate::components::ui::object_3d::pyramid::Pyramid;
-use crate::components::ui::object_3d::triangular_prism::TriangularPrism;
 use core::fmt::Write as _;
 use leptos::prelude::*;
 use std::rc::Rc;
@@ -10,10 +8,6 @@ use std::rc::Rc;
 pub mod cuboid;
 /// Shared spatial-extent trait for isometric shapes.
 pub mod dimensions;
-/// Square pyramid shape.
-pub mod pyramid;
-/// Triangular prism shape.
-pub mod triangular_prism;
 
 /// A shape that can be rendered inside the isometric scene.
 #[derive(Clone, Copy)]
@@ -22,10 +16,6 @@ pub enum Shape {
     Cuboid(Cuboid),
     /// Convenience constructor: applies one value to width, depth, and height.
     Cube(f64),
-    /// Square pyramid: a square base with an apex above it.
-    Pyramid(Pyramid),
-    /// Triangular prism: an equilateral triangle extruded along the Z axis.
-    TriangularPrism(TriangularPrism),
 }
 
 impl Shape {
@@ -34,8 +24,6 @@ impl Shape {
         match self {
             Self::Cuboid(c) => c.render(),
             Self::Cube(size) => Cuboid::cube(*size).render(),
-            Self::Pyramid(p) => p.render(),
-            Self::TriangularPrism(t) => t.render(),
         }
     }
 
@@ -45,8 +33,6 @@ impl Shape {
         match self {
             Self::Cuboid(c) => c.width(),
             Self::Cube(size) => *size,
-            Self::Pyramid(p) => p.width(),
-            Self::TriangularPrism(t) => t.width(),
         }
     }
 
@@ -56,8 +42,6 @@ impl Shape {
         match self {
             Self::Cuboid(c) => c.depth(),
             Self::Cube(size) => *size,
-            Self::Pyramid(p) => p.depth(),
-            Self::TriangularPrism(t) => t.depth(),
         }
     }
 
@@ -67,8 +51,6 @@ impl Shape {
         match self {
             Self::Cuboid(c) => c.height(),
             Self::Cube(size) => *size,
-            Self::Pyramid(p) => p.height(),
-            Self::TriangularPrism(t) => t.height(),
         }
     }
 
@@ -78,8 +60,6 @@ impl Shape {
         match self {
             Self::Cuboid(c) => c.components(),
             Self::Cube(size) => (*size, *size, *size),
-            Self::Pyramid(p) => p.components(),
-            Self::TriangularPrism(t) => t.components(),
         }
     }
 }
@@ -95,8 +75,6 @@ impl Dimensions for Shape {
         match self {
             Self::Cuboid(c) => c.width(),
             Self::Cube(size) => *size,
-            Self::Pyramid(p) => p.width(),
-            Self::TriangularPrism(t) => t.width(),
         }
     }
 
@@ -104,8 +82,6 @@ impl Dimensions for Shape {
         match self {
             Self::Cuboid(c) => c.depth(),
             Self::Cube(size) => *size,
-            Self::Pyramid(p) => p.depth(),
-            Self::TriangularPrism(t) => t.depth(),
         }
     }
 
@@ -113,8 +89,6 @@ impl Dimensions for Shape {
         match self {
             Self::Cuboid(c) => c.height(),
             Self::Cube(size) => *size,
-            Self::Pyramid(p) => p.height(),
-            Self::TriangularPrism(t) => t.height(),
         }
     }
 }
@@ -305,16 +279,6 @@ pub(crate) fn quad(a: Point2d, b: Point2d, c: Point2d, d: Point2d) -> String {
     out
 }
 
-pub(crate) fn tri(a: Point2d, b: Point2d, c: Point2d) -> String {
-    let mut out = String::new();
-    fmt_pt(&mut out, a);
-    out.push(' ');
-    fmt_pt(&mut out, b);
-    out.push(' ');
-    fmt_pt(&mut out, c);
-    out
-}
-
 fn build_face_overrides(colors: Option<FaceColors>) -> String {
     let mut face_overrides = String::new();
     if let Some(FaceColors { top, left, right }) = colors {
@@ -397,19 +361,6 @@ mod tests {
 
         let cube = Cuboid::cube(15.0);
         assert_eq!(cube.components(), (15.0, 15.0, 15.0));
-
-        let pyramid = Pyramid {
-            base_size: 40.0,
-            height: 50.0,
-        };
-        assert_eq!(pyramid.components(), (40.0, 40.0, 50.0));
-
-        let prism = TriangularPrism {
-            base_size: 12.0,
-            length: 18.0,
-            flip: false,
-        };
-        assert_eq!(prism.components(), (12.0, 12.0, 18.0));
     }
 
     #[wasm_bindgen_test]
@@ -436,37 +387,6 @@ mod tests {
         // A cube has no visible silhouette edges in this renderer; hidden edges
         // carry the back-corner geometry.
         assert_eq!(geometry.edges, []);
-        assert_eq!(geometry.hidden.len(), 3);
-    }
-
-    #[wasm_bindgen_test]
-    fn test_pyramid_render_geometry() {
-        let geometry = Shape::Pyramid(Pyramid {
-            base_size: 20.0,
-            height: 30.0,
-        })
-        .render();
-
-        assert_ne!(geometry.top_face, "");
-        assert_ne!(geometry.left_face, "");
-        assert_ne!(geometry.right_face, "");
-        assert_eq!(geometry.edges.len(), 5);
-        assert_eq!(geometry.hidden.len(), 3);
-    }
-
-    #[wasm_bindgen_test]
-    fn test_triangular_prism_render_geometry() {
-        let geometry = Shape::TriangularPrism(TriangularPrism {
-            base_size: 16.0,
-            length: 24.0,
-            flip: false,
-        })
-        .render();
-
-        assert_ne!(geometry.top_face, "");
-        assert_ne!(geometry.left_face, "");
-        assert_ne!(geometry.right_face, "");
-        assert_eq!(geometry.edges.len(), 6);
         assert_eq!(geometry.hidden.len(), 3);
     }
 
@@ -521,17 +441,18 @@ mod tests {
     }
 
     #[wasm_bindgen_test]
-    fn test_fmt_pt_and_polygon_helpers() {
+    fn test_fmt_pt_and_quad_helpers() {
         let mut out = String::new();
         fmt_pt(&mut out, Point2d { x: 1.0, y: 2.0 });
         assert_eq!(out, "1.00,2.00");
 
-        let tri_points = tri(
+        let quad_points = quad(
             Point2d { x: 0.0, y: 0.0 },
             Point2d { x: 1.0, y: 0.0 },
-            Point2d { x: 0.5, y: 1.0 },
+            Point2d { x: 1.0, y: 1.0 },
+            Point2d { x: 0.0, y: 1.0 },
         );
-        assert_eq!(tri_points, "0.00,0.00 1.00,0.00 0.50,1.00");
+        assert_eq!(quad_points, "0.00,0.00 1.00,0.00 1.00,1.00 0.00,1.00");
     }
 }
 fn render_edge_lines(edges: &[(Point2d, Point2d)], class: &'static str) -> impl IntoView + use<> {
