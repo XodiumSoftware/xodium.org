@@ -1,5 +1,5 @@
 use crate::components::ui::object_3d::dimensions::Dimensions;
-use crate::components::ui::object_3d::{Point3d, RenderedGeometry, project, quad, tri};
+use crate::components::ui::object_3d::{Point3d, RenderedGeometry, project, quad};
 
 /// A triangular prism: a tube with an equilateral triangular cross-section
 /// extruded along the Z axis (vertical).
@@ -69,23 +69,24 @@ impl TriangularPrism {
         let p2_top = project(Point3d::new(triangle_points[1].x, triangle_points[1].y, hl));
         let p3_top = project(Point3d::new(triangle_points[2].x, triangle_points[2].y, hl));
 
-        let _tri_bottom = tri(p1_bottom, p2_bottom, p3_bottom);
-
         let top_face = quad(p1_bottom, p2_bottom, p2_top, p1_top);
-        let left_face = tri(p2_bottom, p3_bottom, p3_top);
-        let right_face = quad(p2_bottom, p3_bottom, p3_top, p2_top);
+        let left_face = quad(p2_bottom, p3_bottom, p3_top, p2_top);
+        let right_face = quad(p3_bottom, p1_bottom, p1_top, p3_top);
 
         let edges = vec![
             (p1_bottom, p1_top),
             (p2_bottom, p2_top),
             (p3_bottom, p3_top),
-            (p1_bottom, p2_bottom),
-            (p1_bottom, p3_bottom),
             (p1_top, p2_top),
-            (p1_top, p3_top),
+            (p2_top, p3_top),
+            (p3_top, p1_top),
         ];
 
-        let hidden = vec![(p2_bottom, p3_bottom), (p2_top, p3_top)];
+        let hidden = vec![
+            (p1_bottom, p2_bottom),
+            (p2_bottom, p3_bottom),
+            (p3_bottom, p1_bottom),
+        ];
 
         RenderedGeometry {
             top_face,
