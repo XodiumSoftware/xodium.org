@@ -22,6 +22,17 @@ pub enum Shape {
 }
 
 impl Shape {
+    /// Render this shape into isometric screen-space geometry.
+    #[must_use]
+    pub fn render(&self) -> RenderedGeometry {
+        match self {
+            Self::Cuboid(c) => c.render(),
+            Self::Cube(size) => Cuboid::cube(*size).render(),
+            Self::Pyramid(p) => p.render(),
+            Self::TriangularPrism(t) => t.render(),
+        }
+    }
+
     /// Extract the width component for attachment and scene bounds.
     #[must_use]
     pub fn width(&self) -> f64 {
@@ -250,15 +261,6 @@ pub(crate) fn tri(a: Point2d, b: Point2d, c: Point2d) -> String {
     out
 }
 
-fn render_geometry(shape: Shape) -> RenderedGeometry {
-    match shape {
-        Shape::Cuboid(ref c) => c.render(),
-        Shape::Cube(size) => Cuboid::cube(size).render(),
-        Shape::Pyramid(ref p) => p.render(),
-        Shape::TriangularPrism(ref t) => t.render(),
-    }
-}
-
 fn build_face_overrides(colors: Option<FaceColors>) -> String {
     let mut face_overrides = String::new();
     if let Some(FaceColors { top, left, right }) = colors {
@@ -369,7 +371,7 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
         right_face,
         edges,
         hidden,
-    } = render_geometry(shape);
+    } = shape.render();
 
     let (view_box, svg_pixel_size) = build_view_box(hw, hd, hh);
     let face_overrides = build_face_overrides(colors);
