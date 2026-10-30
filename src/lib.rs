@@ -1,4 +1,4 @@
-#![allow(clippy::must_use_candidate, clippy::too_many_lines)]
+#![allow(clippy::must_use_candidate)]
 
 mod app;
 

@@ -329,6 +329,63 @@ pub fn render_triangular_prism(prism: &TriangularPrism) -> RenderedGeometry {
     }
 }
 
+fn render_geometry(shape: Shape) -> RenderedGeometry {
+    match shape {
+        Shape::Cuboid(ref c) => render_cuboid(c),
+        Shape::Cube(size) => render_cuboid(&Cuboid::cube(size)),
+        Shape::Pyramid(ref p) => render_pyramid(p),
+        Shape::TriangularPrism(ref t) => render_triangular_prism(t),
+    }
+}
+
+fn build_face_overrides(colors: Option<FaceColors>) -> String {
+    let mut face_overrides = String::new();
+    if let Some(FaceColors { top, left, right }) = colors {
+        write!(face_overrides, "--face-top: {top};").expect("writing to a String is infallible");
+        write!(face_overrides, "--face-left: {left};").expect("writing to a String is infallible");
+        write!(face_overrides, "--face-right: {right};")
+            .expect("writing to a String is infallible");
+    }
+    face_overrides
+}
+
+fn build_style(
+    screen_x: f64,
+    screen_y: f64,
+    depth_index: Option<i32>,
+    face_overrides: &str,
+) -> String {
+    let z_index = depth_index.map(|d| format!("z-index: {};", 1000 - d));
+    format!(
+        "left: calc(50% + {screen_x:.2}px); top: calc(50% + {screen_y:.2}px); {} {}",
+        face_overrides,
+        z_index.unwrap_or_default()
+    )
+}
+
+fn build_view_box(hw: f64, hd: f64, hh: f64) -> (String, f64) {
+    let extent_x = f64::midpoint(hw, hd) * 0.866_025_403_784_438_6 * 2.0;
+    let extent_y = f64::midpoint(hw, hd) + hh;
+    let max_extent = extent_x.max(extent_y) + 8.0;
+    let view_box = format!(
+        "{:.2} {:.2} {:.2} {:.2}",
+        -max_extent,
+        -max_extent,
+        max_extent * 2.0,
+        max_extent * 2.0
+    );
+    (view_box, max_extent * 2.0)
+}
+
+fn make_navigate(url: Option<&'static str>) -> impl Fn() + Copy {
+    move || {
+        if let (Some(url), Some(window)) = (url, web_sys::window()) {
+            let _ =
+                window.open_with_url_and_target_and_features(url, "_blank", "noopener,noreferrer");
+        }
+    }
+}
+
 /// A single isometric wireframe object. Renders just the SVG and its
 /// interactive target wrapper; pan and zoom are applied by the enclosing
 /// `Object3dScene`, so multiple objects move as one scene.
@@ -369,48 +426,13 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
         right_face,
         edges,
         hidden,
-    } = match shape {
-        Shape::Cuboid(ref c) => render_cuboid(c),
-        Shape::Cube(size) => render_cuboid(&Cuboid::cube(size)),
-        Shape::Pyramid(ref p) => render_pyramid(p),
-        Shape::TriangularPrism(ref t) => render_triangular_prism(t),
-    };
+    } = render_geometry(shape);
 
-    let extent_x = f64::midpoint(hw, hd) * 0.866_025_403_784_438_6 * 2.0;
-    let extent_y = f64::midpoint(hw, hd) + hh;
-    let max_extent = extent_x.max(extent_y) + 8.0;
-    let view_box = format!(
-        "{:.2} {:.2} {:.2} {:.2}",
-        -max_extent,
-        -max_extent,
-        max_extent * 2.0,
-        max_extent * 2.0
-    );
-    let svg_pixel_size = max_extent * 2.0;
-
+    let (view_box, svg_pixel_size) = build_view_box(hw, hd, hh);
+    let face_overrides = build_face_overrides(colors);
+    let style_str = build_style(screen_x, screen_y, depth_index, &face_overrides);
+    let navigate = make_navigate(url);
     let tooltip = name.to_string();
-
-    let mut face_overrides = String::new();
-    if let Some(FaceColors { top, left, right }) = colors {
-        write!(face_overrides, "--face-top: {top};").expect("writing to a String is infallible");
-        write!(face_overrides, "--face-left: {left};").expect("writing to a String is infallible");
-        write!(face_overrides, "--face-right: {right};")
-            .expect("writing to a String is infallible");
-    }
-
-    let navigate = move || {
-        if let (Some(url), Some(window)) = (url, web_sys::window()) {
-            let _ =
-                window.open_with_url_and_target_and_features(url, "_blank", "noopener,noreferrer");
-        }
-    };
-
-    let z_index = depth_index.map(|d| format!("z-index: {};", 1000 - d));
-    let style_str = format!(
-        "left: calc(50% + {screen_x:.2}px); top: calc(50% + {screen_y:.2}px); {} {}",
-        face_overrides,
-        z_index.unwrap_or_default()
-    );
 
     view! {
         <div
