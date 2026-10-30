@@ -50,8 +50,8 @@ cargo doc --no-deps
 # Clean build artifacts
 trunk clean
 
-# Run browser-based WASM tests (requires wasm-pack + Chrome/Chromium)
-wasm-pack test --headless --chrome
+# Run browser-based WASM tests (requires wasm-pack + Firefox)
+wasm-pack test --headless --firefox
 
 # Lint with pedantic lints enabled; every warning is treated as an error.
 cargo clippy --all-targets --all-features --target wasm32-unknown-unknown -- -W clippy::pedantic -D warnings
@@ -109,7 +109,7 @@ Components are grouped by function in `src/components/`:
 | `AsciiArt`    | `ascii_art.rs`    | XODIUM ASCII glyph mark                          |
 | `LegendBlock` | `legend_block.rs` | Keyboard shortcut legend                         |
 | `LinkBadges`  | `link_badges.rs`  | External link icons (GitHub, Buy Me a Coffee)    |
-| `Object3d`    | `object_3d.rs`    | Isometric wireframe block                        |
+| `Object3d`    | `object_3d.rs`    | Isometric wireframe block and shape registry     |
 | `TeamAvatars` | `team_avatars.rs` | GitHub org member avatar group                   |
 | `TitleBlock`  | `title_block.rs`  | Blueprint metadata table (sheet, DPR, rev, date) |
 
@@ -160,6 +160,7 @@ src/
 │       ├── link_badges.rs
 │       ├── object_3d.rs
 │       │   ├── cuboid.rs
+│       │   ├── dimensions.rs
 │       │   ├── pyramid.rs
 │       │   └── triangular_prism.rs
 │       ├── team_avatars.rs
@@ -177,6 +178,7 @@ Trunk.toml                     # Trunk configuration
 
 - **Register modules and re-exports in `src/lib.rs` explicitly.** Do not use `mod.rs` files. The crate root declares the top-level module tree; nested `pub mod` declarations are allowed inside module root files (e.g. `object_3d.rs` declares `pub mod cuboid;`). Use `#[path = "..."]` attributes when a module file lives in a subdirectory and cannot be reached by the conventional module path.
 - All Clippy warnings enabled; run with `-W clippy::pedantic -D warnings` to catch pedantic lints as errors.
+- `missing_docs` is enabled in `Cargo.toml` under `[lints.rust]`. Every public module, type, function, and field must have a rustdoc comment.
 - No `unsafe` code — where JS handles must satisfy `Send + Sync` (e.g. for `on_cleanup`), use `send_wrapper::SendWrapper`
 - **Props:** `#[derive(Clone)]` structs named `{Component}Properties` (e.g. `Object3dProperties`)
 - **Async data:** Use `LocalResource` (not `Resource`) for WASM thread execution
@@ -232,6 +234,8 @@ centered as a group. Each `Object3d` renders an SVG wireframe block with a
 clickable target that opens its `url`.
 
 - `Object3dProperties` defines id, name, shape, attachment, colors, draft mode, and optional URL
+- Shapes implement the shared `Dimensions` trait (`src/components/ui/object_3d/dimensions.rs`) and expose a `render()` method
+- `Shape::render()` dispatches to the appropriate shape renderer
 - Team data can be rendered in the scene via the `TeamAvatars` component (fetched from `fetch_members()`)
 
 ### Keyboard Shortcuts
@@ -257,7 +261,7 @@ GitHub API responses cached in `localStorage`:
 ## Testing
 
 - **Browser-based WASM tests** (`wasm-bindgen-test`, `run_in_browser`) live alongside the code in `src/github.rs`
-- Run them with `wasm-pack test --headless --chrome` (or `just test`); the CI `test` job runs the same
+- Run them with `wasm-pack test --headless --firefox` (or `just test`); the `justfile` and CI `test` job use Firefox
 - Also verify manually with `trunk serve`; check the console for WASM panics (in debug builds)
 
 ## Important Notes
