@@ -451,6 +451,25 @@ fn make_navigate(url: Option<&'static str>) -> impl Fn() + Copy {
     }
 }
 
+/// Render a list of screen-space edges as SVG lines inside a group.
+fn render_edge_lines(edges: &[(Point2d, Point2d)], class: &'static str) -> impl IntoView + use<> {
+    view! {
+        <g class=class>
+            {edges
+                .iter()
+                .map(|(p1, p2)| view! {
+                    <line
+                        x1=format!("{:.2}", p1.x)
+                        y1=format!("{:.2}", p1.y)
+                        x2=format!("{:.2}", p2.x)
+                        y2=format!("{:.2}", p2.y)
+                    />
+                })
+                .collect::<Vec<_>>()}
+        </g>
+    }
+}
+
 /// A single isometric wireframe object. Renders just the SVG and its
 /// interactive target wrapper; pan and zoom are applied by the enclosing
 /// `Object3dScene`, so multiple objects move as one scene.
@@ -536,32 +555,8 @@ pub fn Object3d(props: Object3dProperties) -> impl IntoView {
                 <g class="iso-face iso-right">
                     <polygon points=right_face />
                 </g>
-                <g class="iso-edges">
-                    {edges
-                        .iter()
-                        .map(|(p1, p2)| view! {
-                            <line
-                                x1=format!("{:.2}", p1.x)
-                                y1=format!("{:.2}", p1.y)
-                                x2=format!("{:.2}", p2.x)
-                                y2=format!("{:.2}", p2.y)
-                            />
-                        })
-                        .collect::<Vec<_>>()}
-                </g>
-                <g class="iso-hidden">
-                    {hidden
-                        .iter()
-                        .map(|(p1, p2)| view! {
-                            <line
-                                x1=format!("{:.2}", p1.x)
-                                y1=format!("{:.2}", p1.y)
-                                x2=format!("{:.2}", p2.x)
-                                y2=format!("{:.2}", p2.y)
-                            />
-                        })
-                        .collect::<Vec<_>>()}
-                </g>
+                {render_edge_lines(&edges, "iso-edges")}
+                {render_edge_lines(&hidden, "iso-hidden")}
             </svg>
         </div>
     }
