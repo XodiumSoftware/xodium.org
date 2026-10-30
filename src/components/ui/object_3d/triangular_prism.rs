@@ -29,7 +29,6 @@ impl Dimensions for TriangularPrism {
 
 impl TriangularPrism {
     /// Render this triangular prism into isometric screen-space geometry.
-    #[must_use]
     pub fn render(&self) -> RenderedGeometry {
         let (width, _depth, height) = self.components();
         let hb = width / 2.0;

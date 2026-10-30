@@ -27,7 +27,6 @@ impl Dimensions for Pyramid {
 
 impl Pyramid {
     /// Render this pyramid into isometric screen-space geometry.
-    #[must_use]
     pub fn render(&self) -> RenderedGeometry {
         let (width, _depth, height) = self.components();
         let hb = width / 2.0;

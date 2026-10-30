@@ -40,7 +40,6 @@ impl Dimensions for Cuboid {
 
 impl Cuboid {
     /// Render this cuboid into isometric screen-space geometry.
-    #[must_use]
     pub fn render(&self) -> RenderedGeometry {
         let (hw, hd, hh) = {
             let (width, depth, height) = self.components();

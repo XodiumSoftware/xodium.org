@@ -25,7 +25,6 @@ pub enum Shape {
 
 impl Shape {
     /// Render this shape into isometric screen-space geometry.
-    #[must_use]
     pub fn render(&self) -> RenderedGeometry {
         match self {
             Self::Cuboid(c) => c.render(),
@@ -115,7 +114,9 @@ impl Dimensions for Shape {
     }
 }
 
+/// Lattice position of an object's centre after scene layout.
 #[derive(Clone, Copy)]
+#[must_use]
 pub struct Position {
     /// Lattice X coordinate of the object's centre, in drawing units.
     pub x: f64,
@@ -157,7 +158,9 @@ pub enum Attachment {
     },
 }
 
+/// Per-face CSS colour overrides used by [`Object3d`].
 #[derive(Clone, Copy)]
+#[must_use]
 pub struct FaceColors {
     /// CSS colour for the top face.
     pub top: &'static str,
@@ -167,7 +170,9 @@ pub struct FaceColors {
     pub right: &'static str,
 }
 
+/// Configuration for a single [`Object3d`] instance.
 #[derive(Clone, Copy)]
+#[must_use]
 pub struct Object3dProperties {
     /// Unique identifier used for placement references and registry lookups.
     pub id: &'static str,
@@ -215,6 +220,7 @@ impl Default for Object3dProperties {
 
 /// A 3D lattice point used during shape construction.
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
+#[must_use]
 pub struct Point3d {
     /// Lattice X coordinate.
     pub x: f64,
@@ -226,7 +232,6 @@ pub struct Point3d {
 
 impl Point3d {
     /// Convenience constructor for a lattice point.
-    #[must_use]
     pub const fn new(x: f64, y: f64, z: f64) -> Self {
         Self { x, y, z }
     }
@@ -234,6 +239,7 @@ impl Point3d {
 
 /// A 2D screen-space point returned by the isometric projection.
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
+#[must_use]
 pub struct Point2d {
     /// Horizontal screen coordinate.
     pub x: f64,
@@ -244,6 +250,8 @@ pub struct Point2d {
 /// Rendered geometry returned by a shape renderer. The three faces are SVG
 /// polygon `points` strings; visible edges and hidden edges are lists of
 /// screen-space line endpoints.
+#[derive(Clone)]
+#[must_use]
 pub struct RenderedGeometry {
     /// Polygon points for the top/primary face.
     pub top_face: String,
