@@ -5,12 +5,10 @@
 //! dedicated "Team" object in the isometric scene opens a modal with the
 //! Xodium GitHub team.
 
-use crate::components::scenes::object_3d_scene::Object3dScene;
 use crate::components::sections::footer::Footer;
 use crate::components::sections::header::Header;
-use crate::components::ui::object_3d::{Attachment, Face, FaceColors, Object3dProperties, Shape};
+use crate::components::sections::main::Main;
 use crate::components::ui::team_modal::TeamModal;
-use crate::utils::CADIOTHEKA_URL;
 use leptos::prelude::*;
 use std::rc::Rc;
 
@@ -25,6 +23,7 @@ use std::rc::Rc;
 #[must_use]
 pub fn App() -> impl IntoView {
     let show_team = RwSignal::new(false);
+    let open_team = Rc::new(move || show_team.set(true));
 
     view! {
         <div class="blueprint-frame">
@@ -35,53 +34,7 @@ pub fn App() -> impl IntoView {
                 "Skip to main content"
             </a>
 
-            <main id="main-content" tabindex="-1">
-                <h1 class="sr-only">"Xodium Software — open-source CAD software"</h1>
-                <Object3dScene objects=vec![
-                    Object3dProperties {
-                        id: "cadiotheka_project",
-                        name: "Cadiotheka",
-                        url: Some(CADIOTHEKA_URL),
-                        ..Default::default()
-                    },
-                    Object3dProperties {
-                        id: "draft_0",
-                        name: "SOON™",
-                        attached_to: Some(Attachment::Face {
-                            target: "cadiotheka_project",
-                            face: Face::Left,
-                        }),
-                        is_draft: true,
-                        ..Default::default()
-                    },
-                    Object3dProperties {
-                        id: "draft_1",
-                        name: "SOON™",
-                        attached_to: Some(Attachment::Face {
-                            target: "draft_0",
-                            face: Face::Top,
-                        }),
-                        is_draft: true,
-                        ..Default::default()
-                    },
-                    Object3dProperties {
-                        id: "team_hub",
-                        name: "Team",
-                        shape: Shape::Cube(70.0),
-                        attached_to: Some(Attachment::Face {
-                            target: "cadiotheka_project",
-                            face: Face::Front,
-                        }),
-                        colors: Some(FaceColors {
-                            top: "var(--color-primary)",
-                            left: "var(--color-secondary)",
-                            right: "var(--color-accent)",
-                        }),
-                        on_click: Some(Rc::new(move || show_team.set(true))),
-                        ..Default::default()
-                    },
-                ] />
-            </main>
+            <Main on_open_team=open_team />
 
             <TeamModal open=show_team />
 

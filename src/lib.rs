@@ -26,6 +26,8 @@ pub mod components {
         pub mod footer;
         /// Bottom-right corner metadata stack.
         pub mod header;
+        /// Main isometric drawing viewport.
+        pub mod main;
     }
 
     pub mod ui {
@@ -61,6 +63,7 @@ pub mod components {
     pub use scenes::object_3d_scene::Object3dScene;
     pub use sections::footer::Footer;
     pub use sections::header::Header;
+    pub use sections::main::{Main, MainProperties};
 
     pub use ui::ascii_art::{AsciiArt, XODIUM_ASCII_ART};
 
