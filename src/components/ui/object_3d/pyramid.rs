@@ -1,3 +1,4 @@
+use crate::components::ui::object_3d::dimensions::Dimensions;
 use crate::components::ui::object_3d::{Point3d, RenderedGeometry, project, quad, tri};
 
 /// A square pyramid: the base is a square in the X/Y plane and the apex
@@ -10,31 +11,21 @@ pub struct Pyramid {
     pub height: f64,
 }
 
-impl Pyramid {
-    /// Extract the width component (same as `base_size`).
-    #[must_use]
-    pub fn width(&self) -> f64 {
+impl Dimensions for Pyramid {
+    fn width(&self) -> f64 {
         self.base_size
     }
 
-    /// Extract the depth component (same as `base_size`).
-    #[must_use]
-    pub fn depth(&self) -> f64 {
+    fn depth(&self) -> f64 {
         self.base_size
     }
 
-    /// Extract the height component.
-    #[must_use]
-    pub fn height(&self) -> f64 {
+    fn height(&self) -> f64 {
         self.height
     }
+}
 
-    /// Decompose into (width, depth, height).
-    #[must_use]
-    pub fn components(&self) -> (f64, f64, f64) {
-        (self.base_size, self.base_size, self.height)
-    }
-
+impl Pyramid {
     /// Render this pyramid into isometric screen-space geometry.
     #[must_use]
     pub fn render(&self) -> RenderedGeometry {

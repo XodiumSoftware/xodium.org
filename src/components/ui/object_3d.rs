@@ -1,10 +1,12 @@
 use crate::components::ui::object_3d::cuboid::Cuboid;
+use crate::components::ui::object_3d::dimensions::Dimensions;
 use crate::components::ui::object_3d::pyramid::Pyramid;
 use crate::components::ui::object_3d::triangular_prism::TriangularPrism;
 use core::fmt::Write as _;
 use leptos::prelude::*;
 
 pub mod cuboid;
+pub mod dimensions;
 pub mod pyramid;
 pub mod triangular_prism;
 
@@ -81,6 +83,35 @@ impl Shape {
 impl Default for Shape {
     fn default() -> Self {
         Self::Cube(100.0)
+    }
+}
+
+impl Dimensions for Shape {
+    fn width(&self) -> f64 {
+        match self {
+            Self::Cuboid(c) => c.width(),
+            Self::Cube(size) => *size,
+            Self::Pyramid(p) => p.width(),
+            Self::TriangularPrism(t) => t.width(),
+        }
+    }
+
+    fn depth(&self) -> f64 {
+        match self {
+            Self::Cuboid(c) => c.depth(),
+            Self::Cube(size) => *size,
+            Self::Pyramid(p) => p.depth(),
+            Self::TriangularPrism(t) => t.depth(),
+        }
+    }
+
+    fn height(&self) -> f64 {
+        match self {
+            Self::Cuboid(c) => c.height(),
+            Self::Cube(size) => *size,
+            Self::Pyramid(p) => p.height(),
+            Self::TriangularPrism(t) => t.height(),
+        }
     }
 }
 

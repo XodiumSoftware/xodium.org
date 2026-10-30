@@ -1,3 +1,4 @@
+use crate::components::ui::object_3d::dimensions::Dimensions;
 use crate::components::ui::object_3d::{Point3d, RenderedGeometry, project, quad};
 
 /// A rectangular cuboid with explicit dimensions in all three axes.
@@ -21,36 +22,30 @@ impl Cuboid {
             height: size,
         }
     }
+}
 
-    /// Extract the width component.
-    #[must_use]
-    pub fn width(&self) -> f64 {
+impl Dimensions for Cuboid {
+    fn width(&self) -> f64 {
         self.width
     }
 
-    /// Extract the depth component.
-    #[must_use]
-    pub fn depth(&self) -> f64 {
+    fn depth(&self) -> f64 {
         self.depth
     }
 
-    /// Extract the height component.
-    #[must_use]
-    pub fn height(&self) -> f64 {
+    fn height(&self) -> f64 {
         self.height
     }
+}
 
-    /// Decompose into (width, depth, height).
-    #[must_use]
-    pub fn components(&self) -> (f64, f64, f64) {
-        (self.width, self.depth, self.height)
-    }
-
+impl Cuboid {
     /// Render this cuboid into isometric screen-space geometry.
     #[must_use]
     pub fn render(&self) -> RenderedGeometry {
-        let (width, depth, height) = self.components();
-        let (hw, hd, hh) = (width / 2.0, depth / 2.0, height / 2.0);
+        let (hw, hd, hh) = {
+            let (width, depth, height) = self.components();
+            (width / 2.0, depth / 2.0, height / 2.0)
+        };
 
         let back_top = project(Point3d::new(-hw, -hd, hh));
         let right_top = project(Point3d::new(hw, -hd, hh));

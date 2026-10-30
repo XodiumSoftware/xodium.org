@@ -1,3 +1,4 @@
+use crate::components::ui::object_3d::dimensions::Dimensions;
 use crate::components::ui::object_3d::{Point3d, RenderedGeometry, project, quad, tri};
 
 /// A triangular prism: a tube with an equilateral triangular cross-section
@@ -12,31 +13,21 @@ pub struct TriangularPrism {
     pub flip: bool,
 }
 
-impl TriangularPrism {
-    /// Extract the width component (same as `base_size`).
-    #[must_use]
-    pub fn width(&self) -> f64 {
+impl Dimensions for TriangularPrism {
+    fn width(&self) -> f64 {
         self.base_size
     }
 
-    /// Extract the depth component (same as `base_size`).
-    #[must_use]
-    pub fn depth(&self) -> f64 {
+    fn depth(&self) -> f64 {
         self.base_size
     }
 
-    /// Extract the height component (same as `length`).
-    #[must_use]
-    pub fn height(&self) -> f64 {
+    fn height(&self) -> f64 {
         self.length
     }
+}
 
-    /// Decompose into (width, depth, height).
-    #[must_use]
-    pub fn components(&self) -> (f64, f64, f64) {
-        (self.base_size, self.base_size, self.length)
-    }
-
+impl TriangularPrism {
     /// Render this triangular prism into isometric screen-space geometry.
     #[must_use]
     pub fn render(&self) -> RenderedGeometry {
