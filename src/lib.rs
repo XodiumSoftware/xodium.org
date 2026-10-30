@@ -62,7 +62,7 @@ pub mod components {
 
     pub use sections::footer::Footer;
     pub use sections::header::Header;
-    pub use sections::main::{Main, MainProperties};
+    pub use sections::main::Main;
     pub use sections::team::Team;
 
     pub use ui::ascii_art::{AsciiArt, XODIUM_ASCII_ART};

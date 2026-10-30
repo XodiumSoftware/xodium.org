@@ -8,23 +8,16 @@
 use crate::components::sections::footer::Footer;
 use crate::components::sections::header::Header;
 use crate::components::sections::main::Main;
-use crate::components::sections::team::Team;
 use leptos::prelude::*;
-use std::rc::Rc;
 
 /// The full single-page blueprint drawing.
 ///
 /// Renders a fixed-layout page: the isometric drawing viewport fills the
 /// viewport, the corner stack sits bottom-right, and the footer sits
-/// bottom-left. The only interactive 3D objects are defined in [`Main`] and
-/// rendered by [`Object3dScene`](crate::components::scenes::object_3d_scene::Object3dScene).
-/// Clicking the "Team" object opens [`Team`].
+/// bottom-left. The interactive 3D scene and its team modal live in [`Main`].
 #[component]
 #[must_use]
 pub fn App() -> impl IntoView {
-    let show_team = RwSignal::new(false);
-    let open_team = Rc::new(move || show_team.set(true));
-
     view! {
         <div class="blueprint-frame">
             <a
@@ -34,9 +27,7 @@ pub fn App() -> impl IntoView {
                 "Skip to main content"
             </a>
 
-            <Main on_open_team=open_team />
-
-            <Team open=show_team />
+            <Main />
 
             <Footer />
 

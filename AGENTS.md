@@ -79,7 +79,8 @@ stack of metadata and controls:
 
 1. **Skip Link** — accessibility anchor to `#main-content`
 2. **`main#content`** — full-viewport drawing viewport containing the
-   isometric `Object3dScene`, rendered by the `Main` section component
+   isometric `Object3dScene` and the `Team` modal, rendered by the `Main`
+   section component
 3. **Corner stack** (`<aside class="corner-stack">`) — fixed bottom-right
    metadata panel:
     - `AsciiArt` — XODIUM glyph mark

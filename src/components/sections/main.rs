@@ -1,37 +1,25 @@
 //! Main drawing viewport section.
 //!
-//! Hosts the isometric [`Object3dScene`] and the interactive objects that make
-//! up the blueprint drawing. Kept separate from [`App`](crate::app::App) so the
-//! scene data and modal trigger logic live close to the other page sections.
+//! Hosts the isometric [`Object3dScene`], the interactive objects that make up
+//! the blueprint drawing, and the [`Team`] modal that is opened from the scene.
 
 use crate::components::scenes::object_3d_scene::Object3dScene;
+use crate::components::sections::team::Team;
 use crate::components::ui::object_3d::{Attachment, Face, FaceColors, Object3dProperties, Shape};
 use crate::utils::CADIOTHEKA_URL;
 use leptos::prelude::*;
 use std::rc::Rc;
 
-/// Properties for the main drawing viewport.
-#[derive(Clone)]
-#[must_use]
-pub struct MainProperties {
-    /// Callback invoked when the user activates the "Team" object.
-    pub on_open_team: Rc<dyn Fn() + 'static>,
-}
-
 /// The central drawing viewport containing the isometric scene.
 ///
 /// Defines the interactive project blocks — Cadiotheka, two upcoming drafts,
 /// and the Team block — and renders them via [`Object3dScene`]. Clicking the
-/// "Team" object fires `on_open_team` to open the team modal managed by the
-/// parent [`App`](crate::app::App).
+/// "Team" object opens the [`Team`] modal rendered alongside the viewport.
 #[component]
-#[allow(clippy::needless_pass_by_value)]
 #[must_use]
-pub fn Main(
-    /// Callback fired when the Team object is activated.
-    on_open_team: Rc<dyn Fn() + 'static>,
-) -> impl IntoView {
-    let on_open_team_click = Rc::clone(&on_open_team);
+pub fn Main() -> impl IntoView {
+    let show_team = RwSignal::new(false);
+    let open_team: Rc<dyn Fn() + 'static> = Rc::new(move || show_team.set(true));
 
     view! {
         <main id="main-content" tabindex="-1">
@@ -76,10 +64,12 @@ pub fn Main(
                         left: "var(--color-secondary)",
                         right: "var(--color-accent)",
                     }),
-                    on_click: Some(on_open_team_click),
+                    on_click: Some(Rc::clone(&open_team)),
                     ..Default::default()
                 },
             ] />
         </main>
+
+        <Team open=show_team />
     }
 }
