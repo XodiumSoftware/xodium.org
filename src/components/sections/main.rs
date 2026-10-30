@@ -10,6 +10,7 @@ use crate::github::{Member, fetch_members};
 use crate::utils::CADIOTHEKA_URL;
 use leptos::prelude::*;
 use std::rc::Rc;
+use web_sys::wasm_bindgen::JsCast;
 
 /// The central drawing viewport containing the isometric scene.
 ///
@@ -33,6 +34,30 @@ pub fn Main() -> impl IntoView {
             set_open.set(true);
         }
     };
+
+    Effect::new(move |_| {
+        if let Some(document) = web_sys::window().and_then(|w| w.document())
+            && let Some(html) = document
+                .document_element()
+                .and_then(|el| el.dyn_into::<web_sys::HtmlElement>().ok())
+        {
+            let _ = if modal_open.get() {
+                html.class_list().add_1("team-modal-open")
+            } else {
+                html.class_list().remove_1("team-modal-open")
+            };
+        }
+    });
+
+    on_cleanup(move || {
+        if let Some(document) = web_sys::window().and_then(|w| w.document())
+            && let Some(html) = document
+                .document_element()
+                .and_then(|el| el.dyn_into::<web_sys::HtmlElement>().ok())
+        {
+            let _ = html.class_list().remove_1("team-modal-open");
+        }
+    });
 
     view! {
         <main id="main-content" tabindex="-1">

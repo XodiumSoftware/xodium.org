@@ -597,17 +597,13 @@ pub fn ThreeDObject(
                             .map(|(index, member)| {
                                 let index_f64 = f64::from(u32::try_from(index).unwrap_or(0));
                                 let login = member.login.clone();
-                                let html_url = member.html_url;
                                 let avatar_url = member.avatar_url;
                                 let offset = index_f64 * 137.5;
                                 let duration = 3.0 + (index_f64 * 0.7) % 2.5;
                                 let delay = (index_f64 * 0.4) % 1.5;
                                 view! {
-                                    <a
+                                    <div
                                         class="object-3d-avatar"
-                                        href=html_url
-                                        target="_blank"
-                                        rel="noopener noreferrer"
                                         aria-label=format!("{login} on GitHub")
                                         style=format!(
                                             "--avatar-angle: {offset:.1}deg; --avatar-duration: {duration:.2}s; --avatar-delay: {delay:.2}s;",
@@ -618,7 +614,7 @@ pub fn ThreeDObject(
                                             alt=login.clone()
                                             loading="lazy"
                                         />
-                                    </a>
+                                    </div>
                                 }
                             })
                             .collect::<Vec<_>>()}

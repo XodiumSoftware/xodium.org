@@ -22,6 +22,10 @@ pub struct TeamProperties {
 /// The modal is a barebones centered card over a translucent backdrop.
 /// Pressing Escape or clicking the backdrop closes it. Each avatar links to
 /// the member's GitHub profile in a new tab.
+///
+/// When opened the avatars animate from the center of the modal (as if they
+/// flew out of the "Team" cube) to their final horizontal positions,
+/// scaling up from a small size to the full display size.
 #[component]
 #[must_use]
 pub fn Team(
@@ -30,6 +34,9 @@ pub fn Team(
 ) -> impl IntoView {
     let TeamProperties { members, on_close } = props;
     let close = on_close.clone();
+    let count = members.len().max(1);
+    let spacing = 9.0;
+    let half_span = f64::from(u32::try_from(count.saturating_sub(1)).unwrap_or(0)) * spacing / 2.0;
 
     view! {
         <div
@@ -51,7 +58,8 @@ pub fn Team(
             >
                 {members
                     .into_iter()
-                    .map(|member| {
+                    .enumerate()
+                    .map(|(index, member)| {
                         let Member {
                             login,
                             html_url,
@@ -62,6 +70,8 @@ pub fn Team(
                             "{login} — {role}",
                             role = role.as_deref().unwrap_or("Member"),
                         );
+                        let index_f64 = f64::from(u32::try_from(index).unwrap_or(0));
+                        let offset = (index_f64 * spacing) - half_span;
                         view! {
                             <a
                                 class="team-modal-avatar"
@@ -69,6 +79,7 @@ pub fn Team(
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 aria-label=label
+                                style=format!("--avatar-target-x: {offset:.2}rem;")
                             >
                                 <img src=avatar_url alt=login loading="lazy" />
                             </a>
