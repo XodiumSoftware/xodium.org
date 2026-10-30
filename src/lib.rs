@@ -48,7 +48,7 @@ pub mod components {
         /// Isometric wireframe objects and shape primitives.
         pub mod object_3d;
         /// GitHub team avatar group.
-        pub mod team_avatars;
+        pub mod team_avatar;
         /// Blueprint title-block metadata table.
         pub mod title_block;
 
@@ -69,7 +69,7 @@ pub mod components {
     pub use ui::object_3d::{
         Attachment, Face, FaceColors, Object3d, Object3dProperties, Position, Shape,
     };
-    pub use ui::team_avatars::TeamAvatars;
+    pub use ui::team_avatar::TeamAvatar;
     pub use ui::title_block::TitleBlock;
 }
 

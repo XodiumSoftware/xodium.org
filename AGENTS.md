@@ -113,7 +113,7 @@ Components are grouped by function in `src/components/`:
 | `LegendBlock` | `legend_block.rs` | Keyboard shortcut legend                         |
 | `LinkBadges`  | `link_badges.rs`  | External link icons (GitHub, Buy Me a Coffee)    |
 | `Object3d`    | `object_3d.rs`    | Isometric wireframe block and shape registry     |
-| `TeamAvatars` | `team_avatars.rs` | GitHub org member avatar group                   |
+| `TeamAvatar`  | `team_avatar.rs`  | Single GitHub member avatar item                 |
 | `TitleBlock`  | `title_block.rs`  | Blueprint metadata table (sheet, DPR, rev, date) |
 
 #### UI Icons (`src/components/ui/icons/`)
@@ -165,8 +165,7 @@ src/
 │       ├── object_3d.rs
 │       │   ├── cuboid.rs
 │       │   └── dimensions.rs
-│       ├── team_avatars.rs
-│       ├── team_modal.rs
+│       ├── team_avatar.rs
 │       └── title_block.rs
 
 public/
