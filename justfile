@@ -23,9 +23,9 @@ fmt:
     cargo fmt --all
 
 # Run browser-based WASM tests
-# Note: requires wasm-pack and a headless browser (e.g. Chrome)
+# Note: requires wasm-pack and a headless browser (e.g. Firefox)
 test:
-    wasm-pack test --headless --chrome
+    wasm-pack test --headless --firefox
 
 # Build the release WASM bundle with Trunk
 build:
