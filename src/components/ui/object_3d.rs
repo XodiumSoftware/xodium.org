@@ -4,6 +4,7 @@ use crate::components::ui::object_3d::pyramid::Pyramid;
 use crate::components::ui::object_3d::triangular_prism::TriangularPrism;
 use core::fmt::Write as _;
 use leptos::prelude::*;
+use std::rc::Rc;
 
 /// Rectangular cuboid / cube shape.
 pub mod cuboid;
@@ -177,10 +178,10 @@ pub struct FaceColors {
 /// Configuration for a single [`Object3d`] instance.
 ///
 /// Most callers only need to set `id`, `name`, `shape`, and optional
-/// `attached_to`, `colors`, and `url`. The `resolved_position` and
-/// `depth_index` fields are populated automatically by [`Object3dScene`]
+/// `attached_to`, `colors`, `url`, or `on_click`. The `resolved_position`
+/// and `depth_index` fields are populated automatically by [`Object3dScene`]
 /// and should not be set manually.
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 #[must_use]
 pub struct Object3dProperties {
     /// Unique identifier used for placement references and registry lookups.
@@ -209,6 +210,10 @@ pub struct Object3dProperties {
     pub is_draft: bool,
     /// URL to open when the object is clicked. `None` means no action.
     pub url: Option<&'static str>,
+    /// Optional callback invoked when the object is activated by click or
+    /// keyboard. If present this overrides `url` and keeps the user inside the
+    /// app instead of navigating away.
+    pub on_click: Option<Rc<dyn Fn() + 'static>>,
 }
 
 impl Default for Object3dProperties {
@@ -223,6 +228,7 @@ impl Default for Object3dProperties {
             colors: None,
             is_draft: false,
             url: None,
+            on_click: None,
         }
     }
 }
@@ -348,9 +354,14 @@ fn build_view_box(hw: f64, hd: f64, hh: f64) -> (String, f64) {
     (view_box, max_extent * 2.0)
 }
 
-fn make_navigate(url: Option<&'static str>) -> impl Fn() + Copy {
+fn make_handler(
+    url: Option<&'static str>,
+    on_click: Option<Rc<dyn Fn() + 'static>>,
+) -> impl Fn() + Clone {
     move || {
-        if let (Some(url), Some(window)) = (url, web_sys::window())
+        if let Some(on_click) = on_click.clone() {
+            on_click.as_ref()();
+        } else if let (Some(url), Some(window)) = (url, web_sys::window())
             && let Err(error) =
                 window.open_with_url_and_target_and_features(url, "_blank", "noopener,noreferrer")
         {
@@ -491,6 +502,25 @@ mod tests {
     }
 
     #[wasm_bindgen_test]
+    fn test_default_properties_has_no_callback() {
+        let props = Object3dProperties::default();
+        assert!(props.on_click.is_none());
+        assert!(props.url.is_none());
+    }
+
+    #[wasm_bindgen_test]
+    fn test_handler_invokes_callback_when_provided() {
+        let called = Rc::new(core::cell::Cell::new(false));
+        let called_clone = Rc::clone(&called);
+        let callback: Option<Rc<dyn Fn()>> = Some(Rc::new(move || called_clone.set(true)));
+
+        let handler = make_handler(None, callback);
+        handler();
+
+        assert!(called.get());
+    }
+
+    #[wasm_bindgen_test]
     fn test_fmt_pt_and_polygon_helpers() {
         let mut out = String::new();
         fmt_pt(&mut out, Point2d { x: 1.0, y: 2.0 });
@@ -545,6 +575,7 @@ pub fn Object3d(
         colors,
         is_draft,
         url,
+        on_click,
         depth_index,
         ..
     } = props;
@@ -573,7 +604,8 @@ pub fn Object3d(
     let (view_box, svg_pixel_size) = build_view_box(hw, hd, hh);
     let face_overrides = build_face_overrides(colors);
     let style_str = build_style(screen_x, screen_y, depth_index, &face_overrides);
-    let navigate = make_navigate(url);
+    let navigate = make_handler(url, on_click);
+    let key_navigate = navigate.clone();
     let tooltip = name.to_string();
 
     view! {
@@ -589,7 +621,7 @@ pub fn Object3d(
             on:keydown=move |ev| {
                 if ev.key() == "Enter" || ev.key() == " " {
                     ev.prevent_default();
-                    navigate();
+                    key_navigate();
                 }
             }
         >

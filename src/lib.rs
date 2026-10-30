@@ -49,6 +49,8 @@ pub mod components {
         pub mod object_3d;
         /// GitHub team avatar group.
         pub mod team_avatars;
+        /// Team modal overlay triggered from the 3D scene.
+        pub mod team_modal;
         /// Blueprint title-block metadata table.
         pub mod title_block;
 
@@ -68,6 +70,7 @@ pub mod components {
         Attachment, Face, FaceColors, Object3d, Object3dProperties, Position, Shape,
     };
     pub use ui::team_avatars::TeamAvatars;
+    pub use ui::team_modal::TeamModal;
     pub use ui::title_block::TitleBlock;
 }
 

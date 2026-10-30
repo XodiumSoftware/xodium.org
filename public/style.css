@@ -329,6 +329,78 @@ body::before {
     text-align: center;
 }
 
+.team-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: grid;
+    place-items: center;
+    padding: 2rem;
+    background-color: oklch(from var(--color-base-100) l c h / 0.85);
+    backdrop-filter: blur(2px);
+    animation: fade-in 200ms ease-out both;
+}
+
+.team-modal-backdrop.hidden {
+    display: none;
+}
+
+.team-modal {
+    position: relative;
+    width: min(28rem, calc(100vw - 2rem));
+    max-height: calc(100dvh - 4rem);
+    overflow-y: auto;
+    padding: 1.5rem;
+    border: 1px solid var(--color-base-content);
+    background-color: var(--color-base-100);
+    color: var(--color-base-content);
+    box-shadow: 8px 8px 0 0 var(--shadow-drop);
+    animation: block-in 250ms ease-out both;
+}
+
+.team-modal:focus {
+    outline: none;
+}
+
+.team-modal-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 2rem;
+    height: 2rem;
+    display: grid;
+    place-items: center;
+    font-size: 1.25rem;
+    line-height: 1;
+    color: var(--color-base-content);
+    background-color: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition:
+        color 0.12s ease,
+        border-color 0.12s ease;
+}
+
+.team-modal-close:hover,
+.team-modal-close:focus {
+    color: var(--color-primary);
+    border-color: var(--color-base-content);
+}
+
+.team-modal-title {
+    margin: 0 2rem 1rem 0;
+    font-family: var(--font-mono, ui-monospace, monospace);
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-base-content);
+}
+
+.team-modal-content {
+    display: flex;
+    justify-content: center;
+}
+
 .title-block-anchor {
     display: flex;
     align-items: stretch;

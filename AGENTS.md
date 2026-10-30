@@ -86,7 +86,9 @@ stack of metadata and controls:
     - separator line
     - `LegendBlock` — keyboard shortcut legend
     - `LinkBadges` + `TitleBlock` — external links and sheet metadata
-4. **`Footer`** — fixed bottom-left copyright / revision link
+4. **`TeamModal`** — centered dialog opened by the "Team" object in the
+   isometric scene, showing `TeamAvatars`
+5. **`Footer`** — fixed bottom-left copyright / revision link
 
 ### Component Organization
 
@@ -114,6 +116,7 @@ Components are grouped by function in `src/components/`:
 | `LinkBadges`  | `link_badges.rs`  | External link icons (GitHub, Buy Me a Coffee)    |
 | `Object3d`    | `object_3d.rs`    | Isometric wireframe block and shape registry     |
 | `TeamAvatars` | `team_avatars.rs` | GitHub org member avatar group                   |
+| `TeamModal`   | `team_modal.rs`   | Modal overlay for the team avatar group          |
 | `TitleBlock`  | `title_block.rs`  | Blueprint metadata table (sheet, DPR, rev, date) |
 
 #### UI Icons (`src/components/ui/icons/`)
@@ -167,6 +170,7 @@ src/
 │       │   ├── pyramid.rs
 │       │   └── triangular_prism.rs
 │       ├── team_avatars.rs
+│       ├── team_modal.rs
 │       └── title_block.rs
 
 public/
@@ -206,6 +210,7 @@ pub struct Object3dProperties {
     pub colors: Option<FaceColors>,
     pub is_draft: bool,
     pub url: Option<&'static str>,
+    pub on_click: Option<Rc<dyn Fn() + 'static>>,
 }
 ```
 
@@ -234,9 +239,10 @@ let repos = LocalResource::new(move || async move {
 The viewport uses a static isometric scene (`Object3dScene`). Objects are
 positioned via `Attachment` to faces of earlier objects and are
 centered as a group. Each `Object3d` renders an SVG wireframe block with a
-clickable target that opens its `url`.
+clickable target that opens its `url` or, if `on_click` is provided, runs a
+custom in-app action.
 
-- `Object3dProperties` defines id, name, shape, attachment, colors, draft mode, and optional URL
+- `Object3dProperties` defines id, name, shape, attachment, colors, draft mode, optional URL, and optional `on_click` callback
 - Shapes implement the shared `Dimensions` trait (`src/components/ui/object_3d/dimensions.rs`) and expose a `render()` method
 - `Shape::render()` dispatches to the appropriate shape renderer
 - Team data can be rendered in the scene via the `TeamAvatars` component (fetched from `fetch_members()`)
