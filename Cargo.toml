@@ -23,6 +23,8 @@ ignored = ["wasm-bindgen"]
 
 [lints.rust]
 missing_docs = "warn"
+unsafe_code = "deny"
+unreachable_pub = "warn"
 
 [profile.release]
 opt-level = "z"
