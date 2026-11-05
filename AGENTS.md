@@ -60,7 +60,12 @@ cargo machete
 cargo clippy --all-targets --all-features --target wasm32-unknown-unknown -- -W clippy::pedantic -D warnings
 ```
 
-These also exist as `just` recipes (`just lint`, `just fmt-check`, `just deps-check`, `just test`, `just build`, `just serve`, `just validate`); see `just --list`.
+These also exist as `just` recipes (`just lint`, `just fmt-check`, `just deps-check`, `just test`, `just build`, `just serve`, `just size`, `just validate`); see `just --list`.
+
+The `justfile` works on Windows and Unix: it defaults to `sh` and switches to
+PowerShell via `[windows]`. Recipes whose shell syntax differs (e.g. `size`) are
+defined twice under `[unix]` and `[windows]`; shared paths live in
+platform-neutral variables at the top of the file.
 
 ## Architecture Overview
 
