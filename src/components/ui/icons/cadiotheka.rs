@@ -6,18 +6,19 @@
 
 use leptos::prelude::*;
 
-/// A short diagonal tick drawn on the light bracket.
+/// A short diagonal tick drawn along one of the brackets.
+///
+/// `x` and `y` are the translation of the source asset's tick matrix, not the
+/// rect's own position: every tick inherits that matrix's fixed rotation.
 struct Tick {
-    /// `x` of the rect's unrotated origin.
+    /// `x` translation applied by the tick matrix.
     x: f64,
-    /// `y` of the rect's unrotated origin.
+    /// `y` translation applied by the tick matrix.
     y: f64,
     /// Rect width.
     width: f64,
     /// Rect height.
     height: f64,
-    /// Clockwise rotation in degrees around the rect origin.
-    rotation: f64,
 }
 
 /// Ticks scattered along the amber bracket.
@@ -27,98 +28,84 @@ const LIGHT_TICKS: &[Tick] = &[
         y: 49.7928,
         width: 7.95494,
         height: 1.32582,
-        rotation: 135.0,
     },
     Tick {
         x: 116.562,
         y: 57.2928,
         width: 5.3033,
         height: 1.32582,
-        rotation: 135.0,
     },
     Tick {
         x: 94.0624,
         y: 34.7929,
         width: 7.95494,
         height: 1.32582,
-        rotation: 135.0,
     },
     Tick {
         x: 101.562,
         y: 42.2928,
         width: 5.3033,
         height: 1.32582,
-        rotation: 135.0,
     },
     Tick {
         x: 79.0624,
         y: 19.7929,
         width: 7.95494,
         height: 1.32582,
-        rotation: 135.0,
     },
     Tick {
         x: 86.5624,
         y: 27.2929,
         width: 5.3033,
         height: 1.32582,
-        rotation: 135.0,
     },
     Tick {
         x: 71.5624,
         y: 12.2929,
         width: 5.3033,
         height: 1.32582,
-        rotation: 135.0,
     },
     Tick {
         x: 104.375,
         y: 71.3553,
         width: 1.32582,
         height: 7.95494,
-        rotation: 135.0,
     },
     Tick {
         x: 89.3749,
         y: 86.3553,
         width: 1.32582,
         height: 7.95494,
-        rotation: 135.0,
     },
     Tick {
         x: 113.75,
         y: 65.7303,
         width: 1.32582,
         height: 5.3033,
-        rotation: 135.0,
     },
     Tick {
         x: 74.3749,
         y: 101.355,
         width: 1.32582,
         height: 7.95494,
-        rotation: 135.0,
     },
     Tick {
         x: 83.7499,
         y: 95.7303,
         width: 1.32582,
         height: 5.3033,
-        rotation: 135.0,
     },
     Tick {
         x: 68.7499,
         y: 110.73,
         width: 1.32582,
         height: 5.3033,
-        rotation: 135.0,
     },
     Tick {
         x: 98.7499,
         y: 80.7303,
         width: 1.32582,
         height: 5.3033,
-        rotation: 135.0,
     },
 ];
 
@@ -129,98 +116,84 @@ const DARK_TICKS: &[Tick] = &[
         y: 49.7928,
         width: 7.95494,
         height: 1.32582,
-        rotation: 45.0,
     },
     Tick {
         x: 11.5521,
         y: 57.2928,
         width: 5.3033,
         height: 1.32582,
-        rotation: 45.0,
     },
     Tick {
         x: 34.052,
         y: 34.7929,
         width: 7.95494,
         height: 1.32582,
-        rotation: 45.0,
     },
     Tick {
         x: 26.552,
         y: 42.2928,
         width: 5.3033,
         height: 1.32582,
-        rotation: 45.0,
     },
     Tick {
         x: 49.052,
         y: 19.7929,
         width: 7.95494,
         height: 1.32582,
-        rotation: 45.0,
     },
     Tick {
         x: 41.552,
         y: 27.2929,
         width: 5.3033,
         height: 1.32582,
-        rotation: 45.0,
     },
     Tick {
         x: 56.552,
         y: 12.2929,
         width: 5.3033,
         height: 1.32582,
-        rotation: 45.0,
     },
     Tick {
         x: 23.7396,
         y: 71.3553,
         width: 1.32582,
         height: 7.95494,
-        rotation: 45.0,
     },
     Tick {
         x: 38.7395,
         y: 86.3553,
         width: 1.32582,
         height: 7.95494,
-        rotation: 45.0,
     },
     Tick {
         x: 14.3646,
         y: 65.7303,
         width: 1.32582,
         height: 5.3033,
-        rotation: 45.0,
     },
     Tick {
         x: 53.7395,
         y: 101.355,
         width: 1.32582,
         height: 7.95494,
-        rotation: 45.0,
     },
     Tick {
         x: 44.3645,
         y: 95.7303,
         width: 1.32582,
         height: 5.3033,
-        rotation: 45.0,
     },
     Tick {
         x: 59.3645,
         y: 110.73,
         width: 1.32582,
         height: 5.3033,
-        rotation: 45.0,
     },
     Tick {
         x: 29.3646,
         y: 80.7303,
         width: 1.32582,
         height: 5.3033,
-        rotation: 45.0,
     },
 ];
 
@@ -234,21 +207,44 @@ const SILVER: &str = "url(#cadiotheka-silver)";
 const INK: &str = "#001728";
 
 /// Renders one tick as a rotated rect.
-fn tick(tick: &Tick, fill: &'static str) -> impl IntoView {
-    view! {
-        <rect
-            x=tick.x.to_string()
-            y=tick.y.to_string()
-            width=tick.width.to_string()
-            height=tick.height.to_string()
-            transform=format!(
-                "rotate({} {} {})",
-                tick.rotation,
-                tick.x,
-                tick.y,
-            )
-            fill=fill
-        />
+///
+/// The two brackets place their ticks differently in the source asset, and the
+/// difference is load-bearing:
+///
+/// - The right bracket uses
+///   `matrix(-0.707107 0.707107 0.707107 0.707107 tx ty)` on a rect whose own
+///   `x`/`y` are zero, i.e. the matrix carries both the rotation and the
+///   translation, with the rotation applied to the local origin first.
+/// - The left bracket uses `<rect x=".." y=".." transform="rotate(45 x y)">`,
+///   which rotates the rect about its own top-left corner. Reusing the matrix
+///   there would swing every tick around the view-box origin and scatter them.
+fn tick(tick: &Tick, mirror: bool, fill: &'static str) -> impl IntoView {
+    if mirror {
+        view! {
+            <rect
+                x=tick.x.to_string()
+                y=tick.y.to_string()
+                width=tick.width.to_string()
+                height=tick.height.to_string()
+                transform=format!("rotate(45 {} {})", tick.x, tick.y)
+                fill=fill
+            />
+        }
+        .into_any()
+    } else {
+        view! {
+            <rect
+                width=tick.width.to_string()
+                height=tick.height.to_string()
+                transform=format!(
+                    "matrix(-0.707107 0.707107 0.707107 0.707107 {} {})",
+                    tick.x,
+                    tick.y,
+                )
+                fill=fill
+            />
+        }
+        .into_any()
     }
 }
 
@@ -260,8 +256,11 @@ fn tick(tick: &Tick, fill: &'static str) -> impl IntoView {
 /// mark reads as brushed metal on the project's orange tile.
 #[component]
 pub fn CadioThekaIcon() -> AnyView {
-    let light_ticks = LIGHT_TICKS.iter().map(|t| tick(t, SILVER)).collect_view();
-    let dark_ticks = DARK_TICKS.iter().map(|t| tick(t, INK)).collect_view();
+    let light_ticks = LIGHT_TICKS
+        .iter()
+        .map(|t| tick(t, false, SILVER))
+        .collect_view();
+    let dark_ticks = DARK_TICKS.iter().map(|t| tick(t, true, INK)).collect_view();
 
     view! {
         <svg
