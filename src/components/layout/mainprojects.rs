@@ -116,11 +116,11 @@ pub fn MainProjects() -> impl IntoView {
                     let is_selected = move || selected.0.get() == index;
                     let panel_id = format!("project-panel-{index}");
                     view! {
-                        <article class="grid grid-cols-[9.0625rem_minmax(0,1fr)]">
+                        <article class="grid grid-cols-[8.875rem_minmax(0,1fr)]">
                             <button
                                 type="button"
                                 class=format!(
-                                    "relative overflow-hidden w-[9.0625rem] h-[9.0625rem] cursor-pointer border border-base-content/30 {}",
+                                    "relative overflow-hidden w-[8.875rem] h-[8.875rem] cursor-pointer border border-base-content/30 {}",
                                     project.mark,
                                 )
                                 role="tab"

@@ -182,14 +182,22 @@ body::before {
  * Drafting grid overlaid on a filled project tile. Same minor/major line
  * rhythm as the sheet grid, drawn in black so it reads against the colour
  * rather than as a lighter wash of it.
+ *
+ * The mark is border-box, so its 1px border shrinks the painted area by 2px
+ * on each axis. The declared size is therefore a multiple of the cell size
+ * plus that border (142px = 14 x 10px + 2px), leaving a 140px square canvas
+ * that closes on a full cell at both far edges instead of clipping mid-cell.
+ * Keep the declared extent at `n * 10px + 2px` when resizing the mark.
  */
 .tile-grid {
+    --tile-size: 8.875rem;
+    --tile-cell: 10px;
     background-image:
         linear-gradient(to right, oklch(0% 0 0 / 0.35) 1px, transparent 1px),
         linear-gradient(to bottom, oklch(0% 0 0 / 0.35) 1px, transparent 1px);
     background-size:
-        10px 10px,
-        10px 10px;
+        var(--tile-cell) var(--tile-cell),
+        var(--tile-cell) var(--tile-cell);
 }
 
 /*
