@@ -3,11 +3,11 @@
 //! Hosts the accessible page heading and stacks the layout regions that make
 //! up the sheet, in reading order.
 
-use crate::components::sections::footer::Footer;
-use crate::components::sections::header::Header;
-use crate::components::sections::hero::Hero;
-use crate::components::sections::layout::tri_column::TriColumn;
-use crate::components::sections::layout::two_column::TwoColumn;
+use crate::components::layout::footer::Footer;
+use crate::components::layout::header::Header;
+use crate::components::layout::hero::Hero;
+use crate::components::layout::tri_column::TriColumn;
+use crate::components::layout::two_column::TwoColumn;
 use leptos::prelude::*;
 
 /// The central content area of the page.

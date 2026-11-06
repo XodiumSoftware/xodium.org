@@ -3,7 +3,7 @@
 //! `App` assembles the skip link and main content section into one
 //! blueprint-styled page.
 
-use crate::components::sections::main::Main;
+use crate::components::layout::main::Main;
 use leptos::prelude::*;
 
 /// The full single-page blueprint drawing.

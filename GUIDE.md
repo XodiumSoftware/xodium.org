@@ -118,9 +118,8 @@ xodium.org/
 │   ├── github.rs         # GitHub API client
 │   ├── utils.rs          # Shared constants and helpers
 │   └── components/
-│       ├── sections/     # Main, ThreeDScene, Team, Header, Footer
-│       └── ui/           # AsciiArt, LegendBlock, LinkBadges, ThreeDObject,
-│                         # Avatar, TitleBlock, shapes/, icons/
+│   ├── layout/     # Main, Header, Hero, TwoColumn, TriColumn, Footer, Team
+│   └── ui/         # AsciiArt, LegendBlock, LinkBadges, TitleBlock, icons/
 ├── public/
 │   ├── style.css         # Tailwind + DaisyUI styles
 │   ├── favicon.svg       # Site icon

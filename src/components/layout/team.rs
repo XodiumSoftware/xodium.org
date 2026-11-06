@@ -2,7 +2,7 @@
 //!
 //! Shows the Xodium GitHub members as large round avatars, each linking to
 //! the member's GitHub profile. Not currently mounted by the page; it is kept
-//! decoupled from [`Main`](crate::components::sections::main::Main) so the
+//! decoupled from [`Main`](crate::components::layout::main::Main) so the
 //! layout redesign can place it where it belongs.
 
 use crate::github::Member;

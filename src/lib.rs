@@ -14,20 +14,22 @@ mod app;
 pub mod components {
     //! Page sections and reusable UI primitives.
 
-    pub mod sections {
-        //! Page sections that form the blueprint page layout.
+    pub mod layout {
+        //! Sheet bands that form the blueprint page layout.
         /// Bottom-left site footer.
         pub mod footer;
         /// Sheet opening band.
         pub mod header;
         /// Large focal band of the sheet.
         pub mod hero;
-        /// Layout regions stacked inside the drawing sheet.
-        pub mod layout;
         /// Main content section.
         pub mod main;
         /// Team member overview.
         pub mod team;
+        /// Three-column band of the sheet.
+        pub mod tri_column;
+        /// Two-column band of the sheet.
+        pub mod two_column;
     }
 
     pub mod ui {
@@ -54,13 +56,13 @@ pub mod components {
         pub use icons::github::GitHubIcon;
     }
 
-    pub use sections::footer::Footer;
-    pub use sections::header::Header;
-    pub use sections::hero::Hero;
-    pub use sections::layout::tri_column::TriColumn;
-    pub use sections::layout::two_column::TwoColumn;
-    pub use sections::main::Main;
-    pub use sections::team::{Team, TeamProperties};
+    pub use layout::footer::Footer;
+    pub use layout::header::Header;
+    pub use layout::hero::Hero;
+    pub use layout::main::Main;
+    pub use layout::team::{Team, TeamProperties};
+    pub use layout::tri_column::TriColumn;
+    pub use layout::two_column::TwoColumn;
 
     pub use ui::ascii_art::{AsciiArt, XODIUM_ASCII_ART};
 

@@ -107,14 +107,17 @@ All of this is wrapped in a single `<div class="blueprint-frame">` in
 
 Components are grouped by function in `src/components/`:
 
-#### Sections (`src/components/sections/`)
+#### Layout Bands (`src/components/layout/`)
 
-| Component | File        | Purpose                                                        |
-| --------- | ----------- | -------------------------------------------------------------- |
-| `Main`    | `main.rs`   | Accessible page heading; currently mounts no content sections  |
-| `Team`    | `team.rs`   | Team member section with large round avatars (not mounted yet) |
-| `Header`  | `header.rs` | Bottom-right corner stack assembly                             |
-| `Footer`  | `footer.rs` | Bottom-left site footer                                        |
+| Component   | File            | Purpose                                                 |
+| ----------- | --------------- | ------------------------------------------------------- |
+| `Main`      | `main.rs`       | Heading and the band stack, in reading order            |
+| `Header`    | `header.rs`     | Opening band; currently only the ASCII mark is mounted  |
+| `TwoColumn` | `two_column.rs` | Equal-width left/right panels                           |
+| `Hero`      | `hero.rs`       | Focal band that grows to fill leftover height           |
+| `TriColumn` | `tri_column.rs` | Equal-width left/center/right panels                    |
+| `Footer`    | `footer.rs`     | Closing band with copyright and site links              |
+| `Team`      | `team.rs`       | Team section with large round avatars (not mounted yet) |
 
 #### UI Primitives (`src/components/ui/`)
 
@@ -163,11 +166,14 @@ src/
 ├── github.rs                  # GitHub API client
 ├── utils.rs                   # Shared utilities
 ├── components/
-│   ├── sections/              # Page sections
+│   ├── layout/                # Sheet bands, stacked top to bottom
 │   │   ├── main.rs
-│   │   ├── team.rs
 │   │   ├── header.rs
-│   │   └── footer.rs
+│   │   ├── two_column.rs
+│   │   ├── hero.rs
+│   │   ├── tri_column.rs
+│   │   ├── footer.rs
+│   │   └── team.rs
 │   └── ui/                    # UI primitives and icons
 │       ├── ascii_art.rs
 │       ├── icons/
@@ -188,7 +194,7 @@ Trunk.toml                     # Trunk configuration
 
 ### Key Conventions
 
-- **Register modules and re-exports in `src/lib.rs` explicitly.** Do not use `mod.rs` files. The crate root declares the module tree inside inline `pub mod components { pub mod sections { .. } pub mod ui { .. } }` blocks. Use `#[path = "..."]` attributes when a module file lives in a subdirectory and cannot be reached by the conventional module path.
+- **Register modules and re-exports in `src/lib.rs` explicitly.** Do not use `mod.rs` files. The crate root declares the module tree inside inline `pub mod components { pub mod layout { .. } pub mod ui { .. } }` blocks. Use `#[path = "..."]` attributes when a module file lives in a subdirectory and cannot be reached by the conventional module path.
 - All Clippy warnings enabled; run with `-W clippy::pedantic -D warnings` to catch pedantic lints as errors.
 - `missing_docs` is enabled in `Cargo.toml` under `[lints.rust]` as `"deny"`, so a public item without a rustdoc comment fails `cargo build`, `trunk build`, and `just lint` alike. Every public module, type, function, and field must have a rustdoc comment.
 - No `unsafe` code (`unsafe_code = "deny"`).
@@ -353,17 +359,17 @@ that a sentence describes behaviour that no longer exists.
 
 To add a new page section:
 
-1. Create file in `src/components/sections/{section}.rs`
+1. Create file in `src/components/layout/{section}.rs`
 2. Define `{Section}` component with the `#[component]` macro
-3. Add the `pub mod {section};` declaration inside `pub mod components { pub mod sections { .. } }` in `src/lib.rs`
-4. Add a `pub use sections::{section}::{Section};` re-export next to the other
-   `pub use sections::..` lines in `src/lib.rs`
-5. Import it (`crate::components::sections::..` or the re-exported path) in
+3. Add the `pub mod {section};` declaration inside `pub mod components { pub mod layout { .. } }` in `src/lib.rs`
+4. Add a `pub use layout::{section}::{Section};` re-export next to the other
+   `pub use layout::..` lines in `src/lib.rs`
+5. Import it (`crate::components::layout::..` or the re-exported path) in
    `src/app.rs` and add it to the `App` view
 
 ### Adding a New Component
 
-1. Determine category (`sections` or `ui`, plus `ui/icons` for icons)
+1. Determine category (`layout` or `ui`, plus `ui/icons` for icons)
 2. Create file in the appropriate subdirectory
 3. Define component with props struct named `{Component}Properties` where applicable
 4. Add the module declaration in `src/lib.rs` under the appropriate block
