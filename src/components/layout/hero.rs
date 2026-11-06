@@ -17,6 +17,17 @@ use leptos::prelude::*;
 ///
 /// The heading and copy swap when a different project is selected above, and the
 /// `aria-live` region announces the change for assistive technology.
+///
+/// The featured project sits inside a `DaisyUI` mockup window using its
+/// background variant, tinted with `base-100` so the panel reads as a window
+/// cut into the sheet rather than a raised surface. Its border is the same
+/// `base-content/40` rule as the band borders, so the window frames the hero in
+/// the sheet's own line colour.
+///
+/// The band's `p-6` is the only inset: the window stretches to the remaining
+/// box on both axes, so it frames the hero instead of floating in the middle
+/// of it. `min-h-0` lets it shrink inside the flex-column band rather than
+/// forcing the band taller than its share of the sheet.
 #[component]
 #[must_use]
 pub fn Hero() -> impl IntoView {
@@ -27,7 +38,7 @@ pub fn Hero() -> impl IntoView {
         <section
             class=move || {
                 format!(
-                    "sheet-band sheet-band-hero {} grid place-items-center grow basis-80 py-16 border-b border-base-content/40",
+                    "sheet-band sheet-band-hero {} p-6 grow basis-80 min-h-0 border-x border-b border-base-content/40",
                     entrance.band_class(),
                 )
             }
@@ -37,13 +48,17 @@ pub fn Hero() -> impl IntoView {
             {move || {
                 let project = project_at(selected.0.get());
                 view! {
-                    <div class="flex flex-col items-center gap-2 text-center">
-                        <h2 class="text-lg font-semibold uppercase tracking-[0.08em]">
-                            {project.title}
-                        </h2>
-                        <p class="text-xs leading-relaxed text-base-content/70">
-                            {project.description}
-                        </p>
+                    <div class="mockup-window bg-base-100 border border-base-content/40 rounded-lg h-full w-full overflow-hidden">
+                        <div class="grid flex-1 place-content-center overflow-auto p-6">
+                            <div class="flex flex-col items-center gap-2 text-center">
+                                <h2 class="text-lg font-semibold uppercase tracking-[0.08em]">
+                                    {project.title}
+                                </h2>
+                                <p class="text-xs leading-relaxed text-base-content/70">
+                                    {project.description}
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 }
             }}

@@ -319,6 +319,22 @@ body::before {
 }
 
 /*
+ * Hero window traffic lights. `mockup-window` paints its three title-bar dots
+ * from a single `::before` stamped three times with a `box-shadow`, so the
+ * colours come from three shadow stops rather than three elements. They use the
+ * theme's error/warning/success tokens so the dots follow the palette instead
+ * of fixed hex values, and skip the 30% opacity DaisyUI applies so the colours
+ * read true.
+ */
+.sheet-band-hero .mockup-window::before {
+    opacity: 1;
+    box-shadow:
+        1.4em 0 var(--color-error),
+        2.8em 0 var(--color-warning),
+        4.2em 0 var(--color-success);
+}
+
+/*
  * Team band. Occupies the same slot as the subprojects row, so it keeps the
  * same border, padding and reveal rhythm rather than floating above the sheet.
  *
