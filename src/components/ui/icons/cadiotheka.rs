@@ -2,11 +2,11 @@
 
 use leptos::prelude::*;
 
-/// Renders a stylised capital Sigma (Σ) glyph as an inline SVG icon.
+/// Renders a geometric capital Sigma (Σ) glyph as an inline SVG icon.
 ///
-/// The letter is drawn with a double-stroke outline and clipped horizontal
-/// bars that break the silhouette into three stacked segments, giving it an
-/// engineering-drawing feel.
+/// The letter is built from three stacked, slightly inset bars — a top bar, a
+/// middle chevron, and a bottom bar — with subtle construction guidelines that
+/// read as a drafting-grid detail rather than a decorative flourish.
 #[component]
 pub fn CadioThekaIcon() -> AnyView {
     view! {
@@ -18,24 +18,27 @@ pub fn CadioThekaIcon() -> AnyView {
         >
             <g
                 stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="square"
+                stroke-width="1.75"
+                stroke-linecap="butt"
                 stroke-linejoin="miter"
             >
-                <!-- Outer frame of the Sigma -->
-                <path d="M6 4h12l-5 8 5 8H6" />
+                {/* Top horizontal bar */}
+                <path d="M4 5h16" />
 
-                <!-- Inner inset outline -->
-                <path
-                    d="M7.5 6h8l-3.5 6 3.5 6h-8"
-                    stroke-width="1"
-                    opacity="0.6"
-                />
+                {/* Middle chevron — two segments meeting at the centre */}
+                <path d="M4 5 L20 12 L4 12" />
+                <path d="M4 12 L20 19" />
 
-                <!-- Horizontal break lines -->
-                <line x1="3" y1="12" x2="21" y2="12" stroke-dasharray="4 4" opacity="0.9" />
-                <line x1="4" y1="8" x2="20" y2="8" stroke-width="1" opacity="0.4" />
-                <line x1="4" y1="16" x2="20" y2="16" stroke-width="1" opacity="0.4" />
+                {/* Bottom horizontal bar */}
+                <path d="M4 19h16" />
+
+                {/* Construction detail: thin vertical ticks marking the bar edges */}
+                <line x1="4" y1="4" x2="4" y2="6" stroke-width="1" opacity="0.6" />
+                <line x1="20" y1="4" x2="20" y2="6" stroke-width="1" opacity="0.6" />
+                <line x1="20" y1="11" x2="20" y2="13" stroke-width="1" opacity="0.6" />
+                <line x1="4" y1="11" x2="4" y2="13" stroke-width="1" opacity="0.6" />
+                <line x1="4" y1="18" x2="4" y2="20" stroke-width="1" opacity="0.6" />
+                <line x1="20" y1="18" x2="20" y2="20" stroke-width="1" opacity="0.6" />
             </g>
         </svg>
     }
