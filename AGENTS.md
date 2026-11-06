@@ -128,6 +128,12 @@ Components are grouped by function in `src/components/`:
 | `BuyMeACoffeeIcon` | `buy_me_a_coffee.rs` | Buy Me a Coffee cup |
 | `GitHubIcon`       | `github.rs`          | GitHub Octocat      |
 
+#### Effects (`src/components/effects/`)
+
+| Component        | File      | Purpose                                       |
+| ---------------- | --------- | --------------------------------------------- |
+| `BlobBackground` | `blob.rs` | Animated SVG blob wash; caller sets placement |
+
 ### GitHub API (`src/github.rs`)
 
 Centralized data fetching with `localStorage` caching. The only public
@@ -166,6 +172,8 @@ src/
 │   │   ├── subprojects.rs
 │   │   ├── footer.rs
 │   │   └── team.rs
+│   ├── effects/               # Decorative background effects
+│   │   └── blob.rs
 │   └── ui/                    # UI primitives and icons
 │       ├── ascii_art.rs
 │       └── icons/
@@ -290,10 +298,12 @@ box, showing whichever project the main projects marks select.
 - The window's three traffic lights come from one `::before` stamped with a
   `box-shadow`; `public/style.css` recolours them through the shadow stops and
   forces `opacity: 1`, since DaisyUI fades them to 30%.
-- The colour wash is `.sheet-band-hero::before`: several low-alpha
-  `radial-gradient` layers built from palette tokens. The band sets
-  `isolation: isolate` so `z-index: -1` keeps the wash inside the band rather
-  than dropping it behind the sheet.
+- The colour wash is `BlobBackground` (`components/effects/blob.rs`): one `<svg>`
+  of `<circle>`s sharing a single `feTurbulence` + `feDisplacementMap` filter,
+  so the roughening costs one turbulence evaluation rather than one per blob.
+  Its placement comes from the caller's `class`, so it is not tied to the hero.
+  The band sets `isolation: isolate` so `z-index: -1` keeps the wash inside the
+  band rather than dropping it behind the sheet.
 
 ### Team Section
 
@@ -414,7 +424,7 @@ To add a new page section:
 
 ### Adding a New Component
 
-1. Determine category (`layout` or `ui`, plus `ui/icons` for icons)
+1. Determine category (`layout`, `ui`, or `effects`; plus `ui/icons` for icons)
 2. Create file in the appropriate subdirectory
 3. Define component with props struct named `{Component}Properties` where applicable
 4. Add the module declaration in `src/lib.rs` under the appropriate block
