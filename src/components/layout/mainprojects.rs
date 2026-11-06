@@ -1,27 +1,103 @@
 //! Main projects band, directly below the header.
 //!
-//! Two equal-width panels separated by a vertical rule.
+//! Two equal-width panels separated by a vertical rule, each showing a main
+//! project as a title row, a description row, and a pair of action buttons.
 
 use leptos::prelude::*;
 
+/// A single main project panel in the [`MainProjects`] band.
+#[derive(Clone)]
+#[must_use]
+pub struct MainProject {
+    /// Tailwind background utility standing in for the project mark.
+    pub mark: &'static str,
+    /// Project name, rendered as an `h2`.
+    pub title: &'static str,
+    /// Year the project was established.
+    pub established: &'static str,
+    /// Short project description.
+    pub description: &'static str,
+    /// Label of the left action button.
+    pub left_button: &'static str,
+    /// Destination of the left action button.
+    pub left_href: &'static str,
+    /// Label of the right action button.
+    pub right_button: &'static str,
+    /// Destination of the right action button.
+    pub right_href: &'static str,
+}
+
+/// Panels rendered by [`MainProjects`], in reading order.
+///
+/// Placeholder copy, marks and links until the real projects exist.
+const MAIN_PROJECTS: &[MainProject] = &[
+    MainProject {
+        mark: "bg-primary",
+        title: "Project 1",
+        established: "Est 2026",
+        description: "Placeholder description for the first main project.",
+        left_button: "Button",
+        left_href: "#",
+        right_button: "Learn More",
+        right_href: "#",
+    },
+    MainProject {
+        mark: "bg-secondary",
+        title: "Project 2",
+        established: "Est 2026",
+        description: "Placeholder description for the second main project.",
+        left_button: "Button",
+        left_href: "#",
+        right_button: "Learn More",
+        right_href: "#",
+    },
+];
+
 /// Main projects region below the header.
 ///
-/// Renders an equal-width left panel and right panel separated by a vertical
-/// rule. The panels stack on narrow viewports, with the left panel on top.
+/// Each panel is a 2x2 grid: a full-height icon in the left column spanning
+/// both rows, and the text stacked in the right column — title with
+/// establishment year, then description, then the two action buttons. The
+/// panels stack on narrow viewports, with the first on top.
 #[component]
 #[must_use]
 pub fn MainProjects() -> impl IntoView {
     view! {
         <section
-            class="grid grid-cols-1 md:grid-cols-2 gap-6 border-b border-base-content/40"
+            class="sheet-band sheet-band-mainprojects grid grid-cols-1 md:grid-cols-2 gap-6 md:divide-x md:divide-base-content/40 border-b border-base-content/40"
             aria-label="Main projects"
         >
-            <div class="min-h-24 grid place-items-center text-xs uppercase tracking-widest opacity-50">
-                "Main project 1"
-            </div>
-            <div class="min-h-24 grid place-items-center text-xs uppercase tracking-widest opacity-50 md:border-l md:border-base-content/40 md:pl-6">
-                "Main project 2"
-            </div>
+            {MAIN_PROJECTS
+                .iter()
+                .map(|project| {
+                    view! {
+                        <article class="grid grid-cols-[9.0625rem_minmax(0,1fr)] gap-x-4">
+                            <span class=format!("w-[9.0625rem] h-[9.0625rem] {}", project.mark)></span>
+                            <div class="col-start-2 row-start-1 flex min-w-0 flex-col justify-center gap-2 p-1">
+                                <div class="flex min-w-0 items-center gap-3">
+                                    <h2 class="text-sm font-semibold uppercase tracking-[0.08em]">
+                                        {project.title}
+                                    </h2>
+                                    <span class="ml-auto text-xs uppercase tracking-widest opacity-50">
+                                        {project.established}
+                                    </span>
+                                </div>
+                                <p class="text-xs leading-relaxed text-base-content/70">
+                                    {project.description}
+                                </p>
+                                <div class="flex min-w-0 items-center gap-3">
+                                    <a class="kbd kbd-lg keycap-btn flex-1" href=project.left_href>
+                                        {project.left_button}
+                                    </a>
+                                    <a class="kbd kbd-lg keycap-btn flex-1" href=project.right_href>
+                                        {project.right_button}
+                                    </a>
+                                </div>
+                            </div>
+                        </article>
+                    }
+                })
+                .collect_view()}
         </section>
     }
 }

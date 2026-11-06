@@ -144,6 +144,23 @@ body::before {
 }
 
 /*
+ * Bands that fade up as the sheet is drawn. Each band sets its own
+ * `--band-delay` so the stack reveals top to bottom after the borders and the
+ * glyph mark have settled.
+ */
+.sheet-band {
+    animation: slide-up 400ms ease-out var(--band-delay, 500ms) both;
+}
+
+.sheet-band-mainprojects {
+    --band-delay: 500ms;
+}
+
+.sheet-band-subprojects {
+    --band-delay: 700ms;
+}
+
+/*
  * Constrained drafting grid. Currently unmounted: the sheet renders without a
  * `.blueprint-grid` child while the grid is settled separately from `main`.
  * Add <div class="blueprint-grid"></div> inside `.blueprint-sheet` to restore it.
@@ -182,6 +199,72 @@ body::before {
         12px 12px;
 }
 
+.btn-lift {
+    border-radius: 0;
+    border-width: 2px;
+    box-shadow: 4px 4px 0 0 var(--shadow-drop);
+    transition:
+        transform 0.1s ease,
+        box-shadow 0.1s ease;
+}
+
+/*
+ * Ghost treatment for a lift button that should recede into the sheet: the
+ * page surface as background with a `base-content` outline, so it reads as
+ * drawn on the sheet rather than filled.
+ */
+.btn-lift-ghost,
+.btn-lift-ghost:hover {
+    background-color: var(--color-base-100);
+    border-color: var(--color-base-content);
+    color: var(--color-base-content);
+}
+
+.btn-lift:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 0 var(--shadow-drop);
+}
+
+.btn-lift:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 0 var(--shadow-drop);
+}
+
+/*
+ * Keycap button: reuses DaisyUI's `kbd` look but keeps real button semantics,
+ * so a `<button>` or `<a>` styled this way stays focusable and activatable.
+ * `kbd` itself sets a fixed height and the bottom lip `kbd` uses for its 3D
+ * press; both are reset here so the cap sizes to its label instead.
+ */
+.keycap-btn {
+    display: inline-flex;
+    flex-shrink: 1;
+    height: auto;
+    min-width: 0;
+    padding-inline: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    cursor: pointer;
+    white-space: nowrap;
+    text-align: center;
+    transform: translateY(0);
+    transition:
+        transform 0.1s ease,
+        box-shadow 0.1s ease,
+        background-color 0.1s ease;
+}
+
+.keycap-btn:hover {
+    background-color: var(--color-base-300);
+}
+
+.keycap-btn:active {
+    transform: translateY(2px);
+    box-shadow: none;
+    border-bottom-width: var(--border);
+}
+
 .ascii-art {
     align-self: stretch;
     font-family: var(--font-mono, ui-monospace, monospace);
@@ -191,10 +274,19 @@ body::before {
     color: var(--color-base-content);
     text-align: center;
     margin: 0;
+    padding: 0;
     user-select: none;
     pointer-events: none;
     white-space: pre;
     animation: fade-in 400ms ease-out 400ms both;
+}
+
+/*
+ * The tagline follows the glyph mark, so the opener reads as one line being
+ * drawn left to right: mark, then note.
+ */
+.header-tagline {
+    animation: slide-up 400ms ease-out 500ms both;
 }
 
 .legend-block {
@@ -518,8 +610,18 @@ body::before {
     .blueprint-frame::after,
     body::before,
     .ascii-art,
+    .header-tagline,
     .blueprint-footer,
     .legend-block {
+        animation: none;
+    }
+
+    .btn-lift {
+        transition: none;
+        transform: none;
+    }
+
+    .sheet-band {
         animation: none;
     }
 }
