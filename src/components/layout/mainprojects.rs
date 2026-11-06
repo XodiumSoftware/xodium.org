@@ -4,6 +4,7 @@
 //! title row, a description row, and a pair of action buttons. The coloured
 //! mark doubles as the tab that selects which project the hero shows.
 
+use crate::components::layout::main::SheetEntrance;
 use leptos::prelude::*;
 
 /// A single main project panel in the [`MainProjects`] band.
@@ -103,10 +104,16 @@ pub fn project_at(index: usize) -> &'static MainProject {
 #[must_use]
 pub fn MainProjects() -> impl IntoView {
     let selected = SelectedProject::use_context();
+    let entrance = SheetEntrance::use_context();
 
     view! {
         <section
-            class="sheet-band sheet-band-mainprojects grid grid-cols-1 md:grid-cols-2 md:divide-x md:divide-base-content/40 border-b border-base-content/40"
+            class=move || {
+                format!(
+                    "sheet-band sheet-band-mainprojects {} grid grid-cols-1 md:grid-cols-2 md:divide-x md:divide-base-content/40 border-b border-base-content/40",
+                    entrance.band_class(),
+                )
+            }
             aria-label="Main projects"
         >
             {MAIN_PROJECTS

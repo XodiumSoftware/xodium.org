@@ -101,7 +101,7 @@ All of this is wrapped in a single `<div class="blueprint-frame">` in
     - separator line (`<hr class="corner-stack-sep">`)
     - `LegendBlock` — keyboard shortcut legend
     - `LinkBadges` + `TitleBlock` — external links and sheet metadata
-4. **`Footer`** — fixed bottom-left copyright / navigation links
+4. **`Footer`** — fixed bottom-left copyright, band toggle and navigation links
 
 ### Component Organization
 
@@ -109,15 +109,15 @@ Components are grouped by function in `src/components/`:
 
 #### Layout Bands (`src/components/layout/`)
 
-| Component      | File              | Purpose                                                 |
-| -------------- | ----------------- | ------------------------------------------------------- |
-| `Main`         | `main.rs`         | Heading and the band stack, in reading order            |
-| `Header`       | `header.rs`       | Opening band; currently only the ASCII mark is mounted  |
-| `MainProjects` | `mainprojects.rs` | Equal-width left/right main project panels              |
-| `Hero`         | `hero.rs`         | Focal band that grows to fill leftover height           |
-| `Subprojects`  | `subprojects.rs`  | Equal-width three-card subproject links                 |
-| `Footer`       | `footer.rs`       | Closing band with copyright and site links              |
-| `Team`         | `team.rs`         | Team section with large round avatars (not mounted yet) |
+| Component      | File              | Purpose                                                      |
+| -------------- | ----------------- | ------------------------------------------------------------ |
+| `Main`         | `main.rs`         | Heading and the band stack, in reading order                 |
+| `Header`       | `header.rs`       | Opening band; currently only the ASCII mark is mounted       |
+| `MainProjects` | `mainprojects.rs` | Equal-width left/right main project panels                   |
+| `Hero`         | `hero.rs`         | Focal band that grows to fill leftover height                |
+| `Subprojects`  | `subprojects.rs`  | Equal-width three-card subproject links                      |
+| `Footer`       | `footer.rs`       | Closing band: copyright, band toggle, site links             |
+| `Team`         | `team.rs`         | Team band with large round avatars; swaps with `Subprojects` |
 
 #### UI Primitives (`src/components/ui/`)
 
@@ -216,19 +216,19 @@ Trunk.toml                     # Trunk configuration
 ```rust
 #[derive(Clone)]
 pub struct TeamProperties {
-    pub members: Vec<Member>,
     pub on_close: Rc<dyn Fn() + 'static>,
 }
 ```
 
 **Async data with LocalResource:**
 
-GitHub members were previously fetched in `Main`. Nothing fetches them now;
-when a section needs them, use:
+`Team` fetches its own members when it mounts, so the request is only made
+once the band is opened:
 
 ```rust
-let members =
-    LocalResource::new(move || async move { fetch_members().await.unwrap_or_default() });
+let members = LocalResource::new(|| async {
+    fetch_members().await.unwrap_or_default()
+});
 ```
 
 ### Build Pipeline
@@ -243,22 +243,42 @@ let members =
     - `panic = "abort"` (no unwinding)
     - `strip = true` (remove symbols)
 
+### Lower Band Swap
+
+The band below the hero is a single slot that shows either `Subprojects` or
+`Team`. `Main` provides the shared state as context, following the
+`SelectedProject` pattern:
+
+```rust
+let lower_band = LowerBandState::provide();
+```
+
+- `LowerBand` is the enum of bands (`Subprojects` is the default).
+- `LowerBandState` wraps the `RwSignal` and exposes `get`, `set` and `toggle`.
+  `Footer` reads it via `LowerBandState::use_context()` and renders a button
+  that toggles the slot.
+- The footer entry is a `<button>`, not a link: a link cannot change state,
+  and `aria-pressed` is what communicates the toggle to assistive tech. It
+  labels the band that is _not_ currently shown, so it reads `TEAM` on the
+  default view and `SUBPROJECTS` once the team is open.
+- `Main::view` picks the band with `match lower_band.get()`, rendering each arm
+  through `.into_any()` because the two branches are different view types.
+- `Team` keeps the `id="team"` anchor so `#team` still resolves, and pressing
+  Escape calls `on_close`, which switches the slot back to `Subprojects`.
+
 ### Team Section
 
-`Team` is intentionally **not** mounted by the page. `Main` no longer fetches
-members or owns a close signal, so the two are decoupled for the redesign:
-the caller that eventually renders `Team` is responsible for fetching members
-via `fetch_members` and for supplying the `on_close` callback. The component
-still ships and is exercised by no one yet — do not assume it appears on the
-page.
+`Team` is mounted in the lower band slot (see [Lower Band Swap](#lower-band-swap)),
+not as a modal. It is a ruled band matching `Subprojects`: a wrapping centred
+row of round avatars, each linking to a member's GitHub profile in a new tab.
 
-When mounted, it shows each member as a large round avatar linking to their
-GitHub profile in a new tab.
-
-- The `Team` component manages its own focus: it focuses the card on mount,
-  closes on Escape via a document-level listener (so focus position does not
-  matter), and restores focus to the previously active element on cleanup
-- Clicking the backdrop or pressing Escape calls the `on_close` callback
+- The component fetches its own members via `fetch_members` on mount, so
+  opening the band is the only thing that costs an API call.
+- It manages its own focus: it focuses the band on mount, closes on Escape via
+  a document-level listener (so focus position does not matter), and restores
+  focus to the previously active element on cleanup.
+- `.team-band-avatar` in `public/style.css` holds the avatar styles; there is
+  no backdrop or dialog styling any more.
 
 ### Keyboard Shortcuts
 

@@ -5,6 +5,7 @@
 //! pushed to the bottom of the sheet. Its content follows the project selected
 //! through the main projects marks.
 
+use crate::components::layout::main::SheetEntrance;
 use crate::components::layout::mainprojects::{SelectedProject, project_at};
 use leptos::prelude::*;
 
@@ -20,10 +21,16 @@ use leptos::prelude::*;
 #[must_use]
 pub fn Hero() -> impl IntoView {
     let selected = SelectedProject::use_context();
+    let entrance = SheetEntrance::use_context();
 
     view! {
         <section
-            class="sheet-band sheet-band-hero grid place-items-center grow basis-80 py-16 border-b border-base-content/40"
+            class=move || {
+                format!(
+                    "sheet-band sheet-band-hero {} grid place-items-center grow basis-80 py-16 border-b border-base-content/40",
+                    entrance.band_class(),
+                )
+            }
             aria-label="Featured project"
             aria-live="polite"
         >

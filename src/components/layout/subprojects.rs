@@ -3,6 +3,7 @@
 //! The cards share equal width and are separated by vertical rules so the row
 //! reads as three drafted cells rather than flowing text.
 
+use crate::components::layout::main::SheetEntrance;
 use leptos::prelude::*;
 
 /// A single card in the [`Subprojects`] band.
@@ -18,23 +19,21 @@ pub struct SubprojectItem {
 }
 
 /// Cards rendered by [`Subprojects`], in reading order.
-///
-/// Placeholder copy and links until the real destinations are decided.
 const SUBPROJECT_ITEMS: &[SubprojectItem] = &[
     SubprojectItem {
-        title: "Placeholder 1",
-        desc: "Placeholder description 1.",
-        href: "#",
+        title: "zed-kotlin-ext",
+        desc: "Zed IDE Kotlin support.",
+        href: "https://github.com/XodiumSoftware/zed-kotlin-ext",
     },
     SubprojectItem {
-        title: "Placeholder 2",
-        desc: "Placeholder description 2.",
-        href: "#",
+        title: "msi-coolerboost",
+        desc: "Noctalia bar widget for MSI laptop fan boost.",
+        href: "https://github.com/XodiumSoftware/msi-coolerboost",
     },
     SubprojectItem {
-        title: "Placeholder 3",
-        desc: "Placeholder description 3.",
-        href: "#",
+        title: "pumpkinplus",
+        desc: "Minecraft Pumpkin plugin that enhances the base gameplay.",
+        href: "https://github.com/XodiumSoftware/pumpkinplus",
     },
 ];
 
@@ -42,12 +41,24 @@ const SUBPROJECT_ITEMS: &[SubprojectItem] = &[
 ///
 /// Each card is a single anchor so the whole cell is clickable, and stacks to a
 /// single column on narrow viewports.
+///
+/// This band shares the lower slot with [`Team`](crate::components::layout::team::Team), so it takes its entrance from
+/// [`SheetEntrance`] rather than a static class: it animates on first paint and
+/// crossfades in when the footer swaps back to it.
 #[component]
 #[must_use]
 pub fn Subprojects() -> impl IntoView {
+    let entrance = SheetEntrance::use_context();
+
     view! {
         <section
-            class="sheet-band sheet-band-subprojects grid grid-cols-1 md:grid-cols-3 md:divide-x md:divide-base-content/40 border-b border-base-content/40"
+            class=move || {
+                format!(
+                    "sheet-band sheet-band-subprojects {} {} grid grid-cols-1 md:grid-cols-3 md:divide-x md:divide-base-content/40 border-b border-base-content/40",
+                    entrance.band_class(),
+                    entrance.swap_class(),
+                )
+            }
             aria-label="Subprojects"
         >
             {SUBPROJECT_ITEMS
@@ -55,7 +66,7 @@ pub fn Subprojects() -> impl IntoView {
                 .map(|item| {
                     view! {
                         <a
-                            class="group flex flex-col gap-2 px-6 py-4 transition-colors hover:bg-base-content/5"
+                            class="group flex flex-col gap-2 px-6 py-(--lower-band-padding-y) transition-colors hover:bg-base-content/5"
                             href=item.href
                             target="_blank"
                             rel="noopener noreferrer"

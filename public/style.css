@@ -147,9 +147,20 @@ body::before {
  * Bands that fade up as the sheet is drawn. Each band sets its own
  * `--band-delay` so the stack reveals top to bottom after the borders and the
  * glyph mark have settled.
+ *
+ * This class is applied by `SheetEntrance` in `main.rs`, not written into the
+ * band markup: the flag is only set while the page is loading in, so the bands
+ * animate once on first paint and are drawn fully formed whenever the
+ * lower-band slot swaps between subprojects and team. That matters most for
+ * `Subprojects`, which is both a first-paint band and one of the two swapped
+ * ones.
  */
-.sheet-band {
+.sheet-band-enter {
     animation: slide-up 400ms ease-out var(--band-delay, 500ms) both;
+}
+
+.sheet-band-header {
+    --band-delay: 500ms;
 }
 
 .sheet-band-mainprojects {
@@ -162,6 +173,40 @@ body::before {
 
 .sheet-band-hero {
     --band-delay: 600ms;
+}
+
+/*
+ * Swap animation for the two bands that trade places below the hero. It is
+ * deliberately a plain opacity crossfade: the load-in entrance slides and
+ * fades, but a swap should not move the band's bottom rule or the sheet would
+ * look like it re-drew itself under the reader.
+ *
+ * `SheetEntrance::swap_class` only applies this once the load-in entrance is
+ * over, so a band is never running both animations at once and first paint
+ * keeps its `slide-up` reveal.
+ */
+@keyframes band-swap-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.sheet-band-swap {
+    animation: band-swap-in 220ms ease-out both;
+}
+
+/*
+ * Height shared by the two bands that take turns below the hero. It is set to
+ * the subprojects row's natural height (a title line, a description line and
+ * the card padding) so the team band matches it instead of forcing the row
+ * taller. Retune it if the card type scale changes.
+ */
+:root {
+    --lower-band-height: 6rem;
+    --lower-band-padding-y: 1rem;
 }
 
 /*
@@ -495,98 +540,61 @@ body::before {
     height: 1.25rem;
 }
 
-.team-modal-backdrop {
-    position: fixed;
-    inset: 0;
-    z-index: 60;
-    display: grid;
-    place-items: center;
-    background-color: oklch(from var(--color-base-100) l c h / 0.75);
-    backdrop-filter: blur(2px);
-    animation: team-modal-fade-in 200ms ease-out both;
+/*
+ * Team band. Occupies the same slot as the subprojects row, so it keeps the
+ * same border, padding and reveal rhythm rather than floating above the sheet.
+ *
+ * The band is pinned to `--lower-band-height`, which is measured from the
+ * subprojects row, so swapping the slot does not resize the sheet. The avatar
+ * size is the band height less the vertical padding and border, and `DaisyUI`'s
+ * `avatar-group` overlaps them within that single line.
+ */
+.sheet-band-team {
+    --band-delay: 700ms;
+    --team-avatar-size: calc(
+        var(--lower-band-height) - (2 * var(--lower-band-padding-y)) - 2px
+    );
+
+    box-sizing: border-box;
+    height: var(--lower-band-height);
 }
 
-@keyframes team-modal-fade-in {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-.team-modal {
-    position: relative;
-    width: min(36rem, 100%);
-    height: 12rem;
+.team-band-avatar {
+    width: var(--team-avatar-size);
+    height: var(--team-avatar-size);
     display: flex;
     align-items: center;
     justify-content: center;
-    animation: block-in 250ms ease-out both;
-}
-
-.team-modal-avatar {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 8rem;
-    height: 8rem;
-    margin-left: -4rem;
-    margin-top: -4rem;
-    border-radius: 50%;
+    border-radius: 9999px;
     overflow: hidden;
     background-color: var(--color-base-100);
     border: 2px solid var(--color-base-content);
-    animation: team-modal-avatar-enter 500ms cubic-bezier(0.22, 1, 0.36, 1)
-        forwards;
-    transform: translate(-50%, -50%) scale(0.25);
-    transition:
-        border-color 0.12s ease,
-        filter 0.12s ease;
+    transition: border-color 0.12s ease;
 }
 
-.team-modal-avatar img {
+.team-band-avatar img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     background-color: var(--color-base-100);
 }
 
-.team-modal-avatar:hover {
+.team-band-avatar:hover {
     border-color: var(--color-primary);
     filter: brightness(1.1);
 }
 
-@keyframes team-modal-avatar-enter {
-    from {
-        transform: translate(-50%, -50%) scale(0.25);
-    }
-    to {
-        transform: translate(calc(-50% + var(--avatar-target-x, 0rem)), -50%)
-            scale(1);
-    }
+.team-band-counter {
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
 }
 
-@media (max-width: 420px) {
-    .team-modal-avatar {
-        width: 6rem;
-        height: 6rem;
-        margin-left: -3rem;
-        margin-top: -3rem;
-    }
-
-    @keyframes team-modal-avatar-enter {
-        from {
-            transform: translate(-50%, -50%) scale(0.25);
-        }
-        to {
-            transform: translate(
-                    calc(-50% + var(--avatar-target-x, 0rem)),
-                    -50%
-                )
-                scale(1);
-        }
-    }
+/*
+ * The group's own 4px `base-100` border is what separates overlapping avatars,
+ * so it replaces rather than stacks on the per-avatar outline.
+ */
+.sheet-band-team .avatar-group > .avatar {
+    border-width: 0;
 }
 
 .blueprint-footer {
@@ -605,15 +613,31 @@ body::before {
     animation: fade-in 350ms ease-out 700ms both;
 }
 
-.blueprint-footer a {
+.blueprint-footer a,
+.blueprint-footer-action {
     color: inherit;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
     text-decoration: underline;
     text-underline-offset: 3px;
     transition: color 0.12s ease;
     user-select: none;
 }
 
-.blueprint-footer a:hover {
+/*
+ * The band toggle matches the links' typography while staying a button, so it
+ * keeps its own hit area and focus ring without DaisyUI button chrome.
+ */
+.blueprint-footer-action {
+    cursor: pointer;
+    background: none;
+    border: 0;
+    padding: 0;
+}
+
+.blueprint-footer a:hover,
+.blueprint-footer-action:hover {
     color: var(--color-primary);
 }
 
@@ -685,7 +709,8 @@ body::before {
         transform: none;
     }
 
-    .sheet-band {
+    .sheet-band-enter,
+    .sheet-band-swap {
         animation: none;
     }
 }

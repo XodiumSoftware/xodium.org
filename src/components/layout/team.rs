@@ -1,56 +1,107 @@
 //! Team member section.
 //!
-//! Shows the Xodium GitHub members as large round avatars, each linking to
-//! the member's GitHub profile. Not currently mounted by the page; it is kept
-//! decoupled from [`Main`](crate::components::layout::main::Main) so the
-//! layout redesign can place it where it belongs.
+//! Shows the Xodium GitHub members as a `DaisyUI` avatar group with a counter,
+//! each visible avatar linking to the member's GitHub profile. Mounted in the
+//! band below the hero, replacing the subprojects cards while it is selected.
 
-use crate::github::Member;
+use crate::components::layout::main::SheetEntrance;
+use crate::github::{Member, fetch_members};
 use leptos::prelude::*;
 use leptos::wasm_bindgen::JsCast as _;
 use leptos::wasm_bindgen::closure::Closure;
 use std::rc::Rc;
 
+/// How many member avatars the band shows before collapsing the rest into a
+/// `+N` counter. Keeps the group a single line inside the band height.
+const VISIBLE_AVATARS: usize = 3;
+
 /// Props for the [`Team`] section.
 #[derive(Clone)]
 #[must_use]
 pub struct TeamProperties {
-    /// Members to display.
-    pub members: Vec<Member>,
-    /// Callback invoked when the section should be dismissed (backdrop click
-    /// or Escape).
+    /// Callback invoked when the section should be dismissed, so the band can
+    /// switch back to the subprojects cards.
     pub on_close: Rc<dyn Fn() + 'static>,
 }
 
-/// Centered card showing the Xodium team as large round avatars.
+/// A single member avatar, linking to that member's GitHub profile.
+fn member_avatar(member: Member) -> impl IntoView {
+    let Member {
+        login,
+        html_url,
+        avatar_url,
+        role,
+    } = member;
+    let label = format!(
+        "{login} — {role}",
+        role = role.as_deref().unwrap_or("Member"),
+    );
+
+    view! {
+        <div class="avatar" role="listitem">
+            <a
+                class="team-band-avatar"
+                href=html_url
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label=label
+            >
+                <img src=avatar_url alt=login loading="lazy" />
+            </a>
+        </div>
+    }
+}
+
+/// The trailing `+N` chip standing in for the members that are not shown.
+fn overflow_counter(overflow: usize) -> impl IntoView {
+    view! {
+        <div
+            class="avatar avatar-placeholder"
+            role="listitem"
+            aria-label=format!("{overflow} more team members")
+        >
+            <div class="team-band-avatar team-band-counter bg-neutral text-neutral-content">
+                <span aria-hidden="true">{format!("+{overflow}")}</span>
+            </div>
+        </div>
+    }
+}
+
+/// Team band: a `DaisyUI` avatar group with a counter.
 ///
-/// Pressing Escape or clicking the backdrop invokes `on_close`. Each avatar
-/// links to the member's GitHub profile in a new tab.
+/// Members are fetched when the band mounts, so the request is made only once
+/// the band is actually opened and cached responses are reused on later
+/// visits. Escape dismisses the band through `on_close`, matching the footer
+/// entry that opened it.
 ///
-/// The avatars animate from the center of the card to their final horizontal
-/// positions, scaling up from a small size to the full display size.
+/// Only the first [`VISIBLE_AVATARS`] members get an avatar; the remainder are
+/// counted in the trailing `+N` chip, which is inert because it has no single
+/// destination. The counter is omitted when every member is already shown.
+/// The whole group is labelled so the collapsed count is available to
+/// assistive tech without reading each avatar individually.
 ///
-/// Focus moves to the card on mount, Escape is handled by a document-level
-/// listener so it works wherever focus sits, and focus returns to whatever was
-/// focused before the card appeared when it is removed.
-///
-/// The caller owns the member fetch and supplies it through [`TeamProperties`].
+/// The band crossfades in through [`SheetEntrance`](crate::components::layout::main::SheetEntrance)'s
+/// swap class. It never takes the load-in entrance: it can only be reached
+/// through the lower-band swap.
 #[component]
 #[must_use]
 pub fn Team(
-    /// Configuration: member list and close callback.
+    /// Configuration: close callback.
     props: TeamProperties,
 ) -> impl IntoView {
-    let TeamProperties { members, on_close } = props;
-    let close = on_close.clone();
-    let count = members.len().max(1);
-    let spacing = 9.0;
-    let half_span = f64::from(u32::try_from(count.saturating_sub(1)).unwrap_or(0)) * spacing / 2.0;
+    let TeamProperties { on_close } = props;
+    let entrance = SheetEntrance::use_context();
+    let members = LocalResource::new(|| async {
+        fetch_members().await.unwrap_or_else(|error| {
+            web_sys::console::warn_1(&format!("Failed to fetch team members: {error}").into());
+            Vec::new()
+        })
+    });
 
-    let dialog = NodeRef::<leptos::html::Div>::new();
+    let section = NodeRef::<leptos::html::Section>::new();
 
     Effect::new(move |_| {
-        let Some(dialog) = dialog.get() else {
+        let Some(section) = section.get() else {
             return;
         };
 
@@ -58,17 +109,12 @@ pub fn Team(
             return;
         };
 
-        let previous_focus = document
-            .active_element()
-            .and_then(|element| element.dyn_into::<web_sys::HtmlElement>().ok());
-        let _ = dialog.focus();
-
         let close_on_escape = {
-            let close = close.clone();
+            let on_close = Rc::clone(&on_close);
             move |event: web_sys::KeyboardEvent| {
                 if event.key() == "Escape" {
                     event.prevent_default();
-                    close();
+                    on_close();
                 }
             }
         };
@@ -79,11 +125,15 @@ pub fn Team(
 
         if let Err(error) = document.add_event_listener_with_callback("keydown", &listener) {
             web_sys::console::warn_1(
-                &format!("Failed to register Escape listener on team modal: {error:?}").into(),
+                &format!("Failed to register Escape listener on team band: {error:?}").into(),
             );
         }
 
         let cleanup_listener = listener.clone();
+        let previous_focus = document
+            .active_element()
+            .and_then(|element| element.dyn_into::<web_sys::HtmlElement>().ok());
+        let _ = section.focus();
         on_cleanup(move || {
             if let Some(document) = web_sys::window().and_then(|window| window.document()) {
                 let _ = document.remove_event_listener_with_callback("keydown", &cleanup_listener);
@@ -96,51 +146,41 @@ pub fn Team(
     });
 
     view! {
-        <div
-            class="team-modal-backdrop"
-            role="presentation"
-            on:click=move |_| on_close()
+        <section
+            node_ref=section
+            id="team"
+            class=move || {
+                format!(
+                    "sheet-band sheet-band-team {} flex items-center justify-center px-6 py-(--lower-band-padding-y) border-b border-base-content/40",
+                    entrance.swap_class(),
+                )
+            }
+            tabindex="-1"
+            aria-label="Team members"
         >
             <div
-                node_ref=dialog
-                class="team-modal"
-                role="dialog"
-                aria-modal="true"
-                aria-label="Team members"
-                tabindex="-1"
-                on:click=move |ev| ev.stop_propagation()
+                class="avatar-group -space-x-4"
+                role="list"
+                aria-label="Xodium team members"
             >
-                {members
-                    .into_iter()
-                    .enumerate()
-                    .map(|(index, member)| {
-                        let Member {
-                            login,
-                            html_url,
-                            avatar_url,
-                            role,
-                        } = member;
-                        let label = format!(
-                            "{login} — {role}",
-                            role = role.as_deref().unwrap_or("Member"),
-                        );
-                        let index_f64 = f64::from(u32::try_from(index).unwrap_or(0));
-                        let offset = (index_f64 * spacing) - half_span;
-                        view! {
-                            <a
-                                class="team-modal-avatar"
-                                href=html_url
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                aria-label=label
-                                style=format!("--avatar-target-x: {offset:.2}rem;")
-                            >
-                                <img src=avatar_url alt=login loading="lazy" />
-                            </a>
-                        }
-                    })
-                    .collect_view()}
+                {move || {
+                    let loaded = members.get().unwrap_or_default();
+                    let overflow = loaded.len().saturating_sub(VISIBLE_AVATARS);
+                    let shown = loaded
+                        .into_iter()
+                        .take(VISIBLE_AVATARS)
+                        .map(member_avatar)
+                        .collect_view();
+                    let counter = (overflow > 0).then(|| overflow_counter(overflow));
+
+                    view! {
+                        <>
+                            {shown}
+                            {counter}
+                        </>
+                    }
+                }}
             </div>
-        </div>
+        </section>
     }
 }

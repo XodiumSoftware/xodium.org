@@ -1,3 +1,4 @@
+use crate::components::layout::main::SheetEntrance;
 use crate::components::ui::ascii_art::AsciiArt;
 use leptos::prelude::*;
 
@@ -6,12 +7,23 @@ use leptos::prelude::*;
 /// Holds the XODIUM glyph mark with a short prompt-style tagline. The keyboard
 /// legend, link badges and title block are unmounted while the band is settled,
 /// but they remain built and exported from the crate.
+///
+/// It takes the load-in entrance from [`SheetEntrance`], so the rule under it
+/// draws in with the stack rather than appearing fully formed before the bands
+/// below it arrive.
 #[component]
 #[must_use]
 pub fn Header() -> impl IntoView {
+    let entrance = SheetEntrance::use_context();
+
     view! {
         <header
-            class="flex items-center gap-4 pb-6 border-b border-base-content/40"
+            class=move || {
+                format!(
+                    "sheet-band sheet-band-header {} flex items-center gap-4 pb-6 border-b border-base-content/40",
+                    entrance.band_class(),
+                )
+            }
             aria-label="Site header"
         >
             <AsciiArt />
