@@ -5,6 +5,7 @@
 //! pushed to the bottom of the sheet. Its content follows the project selected
 //! through the main projects marks.
 
+use crate::components::effects::blob::{BlobBackground, BlobBackgroundProperties};
 use crate::components::layout::main::SheetEntrance;
 use crate::components::layout::mainprojects::{SelectedProject, project_at};
 use leptos::prelude::*;
@@ -45,6 +46,9 @@ pub fn Hero() -> impl IntoView {
             aria-label="Featured project"
             aria-live="polite"
         >
+            <BlobBackground props=BlobBackgroundProperties {
+                class: "hero-wash",
+            } />
             {move || {
                 let project = project_at(selected.0.get());
                 view! {

@@ -14,6 +14,12 @@ mod app;
 pub mod components {
     //! Page sections and reusable UI primitives.
 
+    pub mod effects {
+        //! Decorative background effects.
+        /// Animated SVG blob background.
+        pub mod blob;
+    }
+
     pub mod layout {
         //! Sheet bands that form the blueprint page layout.
         /// Bottom-left site footer.
@@ -49,6 +55,8 @@ pub mod components {
         pub use icons::buy_me_a_coffee::BuyMeACoffeeIcon;
         pub use icons::github::GitHubIcon;
     }
+
+    pub use effects::blob::{BlobBackground, BlobBackgroundProperties};
 
     pub use layout::footer::Footer;
     pub use layout::header::Header;
