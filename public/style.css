@@ -87,19 +87,6 @@ body::before {
     }
 }
 
-@keyframes legend-in {
-    from {
-        opacity: 0;
-        max-height: 0;
-        overflow: hidden;
-    }
-    to {
-        opacity: 1;
-        max-height: 20rem;
-        overflow: hidden;
-    }
-}
-
 .blueprint-frame {
     position: relative;
     min-height: 100dvh;
@@ -277,54 +264,6 @@ body::before {
 }
 
 /*
- * Constrained drafting grid. Currently unmounted: the sheet renders without a
- * `.blueprint-grid` child while the grid is settled separately from `main`.
- * Add <div class="blueprint-grid"></div> inside `.blueprint-sheet` to restore it.
- */
-.blueprint-grid {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    animation: grid-in 500ms ease-out 200ms both;
-    background-image:
-        linear-gradient(
-            to right,
-            oklch(from var(--color-base-content) l c h / 0.12) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            to bottom,
-            oklch(from var(--color-base-content) l c h / 0.12) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            to right,
-            oklch(from var(--color-base-content) l c h / 0.06) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            to bottom,
-            oklch(from var(--color-base-content) l c h / 0.06) 1px,
-            transparent 1px
-        );
-    background-size:
-        60px 60px,
-        60px 60px,
-        12px 12px,
-        12px 12px;
-}
-
-.btn-lift {
-    border-radius: 0;
-    border-width: 2px;
-    box-shadow: 4px 4px 0 0 var(--shadow-drop);
-    transition:
-        transform 0.1s ease,
-        box-shadow 0.1s ease;
-}
-
-/*
  * Ghost button: no fill, a light outline, and text in the page colour. Hover
  * turns the outline and label primary without adding a background, so it reads
  * as a secondary action beside a filled primary.
@@ -343,66 +282,6 @@ body::before {
     background-color: transparent;
     border-color: var(--color-primary);
     color: var(--color-primary);
-}
-
-.btn-lift:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 0 var(--shadow-drop);
-}
-
-.btn-lift:active {
-    transform: translate(2px, 2px);
-    box-shadow: 2px 2px 0 0 var(--shadow-drop);
-}
-
-/*
- * Keycap button: reuses DaisyUI's `kbd` look but keeps real button semantics,
- * so a `<button>` or `<a>` styled this way stays focusable and activatable.
- * `kbd` itself sets a fixed height and the bottom lip `kbd` uses for its 3D
- * press; both are reset here so the cap sizes to its label instead.
- */
-.keycap-btn {
-    display: inline-flex;
-    flex-shrink: 1;
-    height: auto;
-    min-width: 0;
-    padding-inline: 0.5rem;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5em;
-    cursor: pointer;
-    white-space: nowrap;
-    text-align: center;
-    transform: translateY(0);
-    transition:
-        transform 0.1s ease,
-        box-shadow 0.1s ease,
-        background-color 0.1s ease;
-}
-
-.keycap-btn:hover {
-    background-color: var(--color-base-300);
-}
-
-.keycap-btn:active {
-    transform: translateY(2px);
-    box-shadow: none;
-    border-bottom-width: var(--border);
-}
-
-/*
- * Inert keycap: reads as unpressable while staying in the layout. `pointer-events:
- * none` stops the hover lift and any click on an anchor, and the opacity drop
- * marks it as unavailable without hiding the label.
- */
-.keycap-btn-disabled,
-.keycap-btn-disabled:hover,
-.keycap-btn-disabled:active {
-    pointer-events: none;
-    cursor: not-allowed;
-    opacity: 0.4;
-    transform: translateY(0);
-    background-color: var(--color-base-200);
 }
 
 .ascii-art {
@@ -427,138 +306,6 @@ body::before {
  */
 .header-tagline {
     animation: slide-up 400ms ease-out 500ms both;
-}
-
-.legend-block {
-    align-self: flex-start;
-    display: flex;
-    flex-direction: column;
-    gap: 0.125rem;
-    margin: 0;
-    padding-inline: 0.875rem;
-    font-size: 0.65rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-base-content);
-    user-select: none;
-    animation: legend-in 400ms ease-out 900ms both;
-}
-
-.legend-row {
-    display: grid;
-    grid-template-columns: 5.5rem 1fr;
-    align-items: center;
-    gap: 0.5rem;
-    margin: 0;
-    line-height: 1;
-}
-
-.legend-label {
-    line-height: 1;
-    white-space: nowrap;
-}
-
-.legend-row .legend-label {
-    opacity: 0.85;
-}
-
-.legend-row .kbd {
-    justify-self: start;
-}
-
-.title-block-anchor {
-    display: flex;
-    align-items: stretch;
-    gap: 1rem;
-}
-
-.title-block-anchor table {
-    border-collapse: collapse;
-    background-color: var(--color-base-100);
-}
-
-.title-block-anchor > :is(table, nav) {
-    outline: 2px solid var(--color-base-content);
-    outline-offset: 3px;
-}
-
-.title-block-anchor {
-    display: flex;
-    align-items: stretch;
-    gap: 1rem;
-}
-
-.title-block-anchor > table {
-    border: 1px solid var(--color-base-content);
-}
-
-.title-block-cell {
-    border: 1px solid var(--color-base-content);
-    padding: 0.5rem 0.875rem;
-    vertical-align: top;
-    min-width: 4rem;
-    user-select: none;
-}
-
-.title-block-cell-wide {
-    text-align: left;
-    min-width: 11rem;
-}
-
-.title-block-label {
-    display: block;
-    font-size: 0.65rem;
-    letter-spacing: 0.08em;
-    opacity: 0.55;
-    text-transform: uppercase;
-    margin-bottom: 0.125rem;
-}
-
-.title-block-value {
-    display: block;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-}
-
-.link-badges {
-    display: flex;
-    flex-direction: column;
-    background-color: var(--color-base-100);
-}
-
-.link-badge-cell {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem;
-    width: 3.25rem;
-    color: var(--color-base-content);
-    background-color: var(--color-base-100);
-    border: 1px solid var(--color-base-content);
-    margin-bottom: -1px;
-    transition:
-        color 0.12s ease,
-        transform 0.1s ease,
-        box-shadow 0.1s ease;
-}
-
-.link-badge-cell:last-child {
-    margin-bottom: 0;
-}
-
-.link-badge-cell:hover {
-    color: var(--color-primary);
-    transform: translate(-2px, -2px);
-    box-shadow: 3px 3px 0 0 var(--shadow-drop);
-    position: relative;
-    z-index: 1;
-}
-
-.link-badge-cell:active {
-    transform: translate(2px, 2px);
-    box-shadow: 1px 1px 0 0 var(--shadow-drop);
 }
 
 .link-badge-icon {
@@ -674,6 +421,28 @@ body::before {
     user-select: none;
 }
 
+/*
+ * Icon links closing the footer. The badge icons are sized for the corner stack
+ * at a fixed 1.25rem, so they are overridden here to sit on the footer's much
+ * smaller type baseline.
+ */
+.blueprint-footer-icon {
+    display: inline-flex;
+    align-items: center;
+    align-self: center;
+    text-decoration: none;
+}
+
+.blueprint-footer-icon .link-badge-icon {
+    width: 0.8rem;
+    height: 0.8rem;
+}
+
+.blueprint-footer-icon .link-badge-icon-bmc {
+    width: auto;
+    height: 0.8rem;
+}
+
 .tooltip::before {
     background-color: var(--color-base-100);
     color: var(--color-base-content);
@@ -691,24 +460,6 @@ body::before {
 }
 
 @media (max-width: 640px) {
-    .title-block-anchor > :is(table, nav) {
-        outline-offset: 2px;
-    }
-
-    .title-block-cell {
-        padding: 0.375rem 0.625rem;
-        min-width: 3rem;
-    }
-
-    .title-block-cell-wide {
-        min-width: 8rem;
-    }
-
-    .link-badge-cell {
-        width: 2.75rem;
-        padding: 0.375rem;
-    }
-
     .blueprint-footer {
         font-size: 0.55rem;
     }
@@ -727,14 +478,8 @@ body::before {
     body::before,
     .ascii-art,
     .header-tagline,
-    .blueprint-footer,
-    .legend-block {
+    .blueprint-footer {
         animation: none;
-    }
-
-    .btn-lift {
-        transition: none;
-        transform: none;
     }
 
     .sheet-band-enter,

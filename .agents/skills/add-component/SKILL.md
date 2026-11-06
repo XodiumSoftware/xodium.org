@@ -14,7 +14,7 @@ All modules are declared in `src/lib.rs` — there are no `mod.rs` files anywher
 - **Standalone UI primitive** (a reusable widget) — `src/components/ui/{name}.rs`
 - **Page-level section** (a full region of the single-page layout) — `src/components/layout/{name}.rs`
 
-File names are lowercase with snake_case (e.g. `feature_card.rs`, `legend_block.rs`). Component names are PascalCase matching the file (`FeatureCard`, `LegendBlock`).
+File names are lowercase with snake_case (e.g. `feature_card.rs`, `subprojects.rs`). Component names are PascalCase matching the file (`FeatureCard`, `Subprojects`).
 
 ## Steps
 
@@ -32,11 +32,11 @@ File names are lowercase with snake_case (e.g. `feature_card.rs`, `legend_block.
 
 The site is styled as an engineering blueprint sheet. When scaffolding new components, match the existing drawing conventions rather than inventing new ones:
 
-- **Outlines are 1px `var(--color-base-content)` on a `var(--color-base-100)` surface.** A 2px outline with `-3px` offset layered around a 1px border is the standard "framed drawing block" look (see `TitleBlock`, `LinkBadges`).
-- **Typography** is monospace, uppercase, small caps via `letter-spacing: 0.08em` — see `.title-block-label` for the pattern.
-- **Interactive elements** use the blueprint `lift` pop: `transform: translate(-2px, -2px)` + `box-shadow: 3px 3px 0 0 var(--shadow-drop)` on hover, reversed on active. `--shadow-drop` is a local variable in `public/style.css` since DaisyUI exposes no shadow color.
+- **Outlines are 1px `var(--color-base-content)` on a `var(--color-base-100)` surface.** A 2px outline with `-3px` offset layered around a 1px border is the standard "framed drawing block" look (see `.blueprint-sheet::after` in `public/style.css`).
+- **Typography** is monospace, uppercase, small caps via `letter-spacing: 0.08em` — see `.blueprint-footer` for the pattern.
+- **Interactive elements** pop on hover: `transform: translate(-2px, -2px)` + `box-shadow: 3px 3px 0 0 var(--shadow-drop)` on hover, reversed on active. `--shadow-drop` is a local variable in `public/style.css` since DaisyUI exposes no shadow color.
 - **External links** require `target="_blank" rel="noopener noreferrer"`.
-- **Static data** (link lists, legend entries, anything known at build time) goes in `const` slices at the top of the file.
+- **Static data** (link lists, band entries, anything known at build time) goes in `const` slices at the top of the file.
 - New CSS rules belong in `public/style.css` near related rules. Use `oklch(from var(--color-*) l c h / α)` when you need to derive a shade from the active theme; don't hardcode hex values that the DaisyUI `halloween` theme would need to override.
 
 ## Async data

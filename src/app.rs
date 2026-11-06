@@ -8,8 +8,9 @@ use leptos::prelude::*;
 
 /// The full single-page blueprint drawing.
 ///
-/// The header and footer are deliberately unmounted while the main column is
-/// being settled; both are still built and exported from the crate.
+/// `Main` owns the whole sheet: the header, the project and hero bands, the
+/// subprojects/team slot and the footer all render inside it, so this only
+/// supplies the frame, the drawing sheet and the skip link.
 #[component]
 #[must_use]
 pub fn App() -> impl IntoView {

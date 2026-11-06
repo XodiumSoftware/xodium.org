@@ -45,12 +45,6 @@ pub mod components {
 
         /// XODIUM ASCII art header.
         pub mod ascii_art;
-        /// Keyboard shortcut legend.
-        pub mod legend_block;
-        /// External link badges with keyboard shortcuts.
-        pub mod link_badges;
-        /// Blueprint title-block metadata table.
-        pub mod title_block;
 
         pub use icons::buy_me_a_coffee::BuyMeACoffeeIcon;
         pub use icons::github::GitHubIcon;
@@ -65,18 +59,10 @@ pub mod components {
     pub use layout::team::{Team, TeamProperties};
 
     pub use ui::ascii_art::{AsciiArt, XODIUM_ASCII_ART};
-
-    pub use ui::legend_block::LegendBlock;
-    pub use ui::link_badges::LinkBadges;
-    pub use ui::title_block::TitleBlock;
 }
 
 pub mod github;
 
-/// Shared utilities and constants used across the site.
-pub mod utils;
-
 pub use app::*;
 pub use components::*;
 pub use github::*;
-pub use utils::*;

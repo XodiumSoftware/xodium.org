@@ -93,15 +93,11 @@ All of this is wrapped in a single `<div class="blueprint-frame">` in
 
 1. **Skip Link** — accessibility anchor to `#main-content`
 2. **`Main`** (`<main id="main-content">`) — accessible page heading and the
-   container the redesigned content will mount into. It currently renders no
-   sections.
-3. **Corner stack** (`<aside class="corner-stack">`, assembled by `Header`) —
-   fixed bottom-right metadata panel:
-    - `AsciiArt` — XODIUM glyph mark
-    - separator line (`<hr class="corner-stack-sep">`)
-    - `LegendBlock` — keyboard shortcut legend
-    - `LinkBadges` + `TitleBlock` — external links and sheet metadata
-4. **`Footer`** — fixed bottom-left copyright, band toggle and navigation links
+   band stack, in reading order: `Header`, `MainProjects`, `Hero`, the
+   subprojects/team slot, then `Footer`.
+3. **`Footer`** — in-flow centred band at the bottom of the sheet, carrying the
+   copyright, the subprojects/team toggle and the site links. It is not pinned
+   to the viewport.
 
 ### Component Organization
 
@@ -112,7 +108,7 @@ Components are grouped by function in `src/components/`:
 | Component      | File              | Purpose                                                      |
 | -------------- | ----------------- | ------------------------------------------------------------ |
 | `Main`         | `main.rs`         | Heading and the band stack, in reading order                 |
-| `Header`       | `header.rs`       | Opening band; currently only the ASCII mark is mounted       |
+| `Header`       | `header.rs`       | Opening band with the ASCII mark and tagline                 |
 | `MainProjects` | `mainprojects.rs` | Equal-width left/right main project panels                   |
 | `Hero`         | `hero.rs`         | Focal band that grows to fill leftover height                |
 | `Subprojects`  | `subprojects.rs`  | Equal-width three-card subproject links                      |
@@ -121,12 +117,9 @@ Components are grouped by function in `src/components/`:
 
 #### UI Primitives (`src/components/ui/`)
 
-| Component     | File              | Purpose                                          |
-| ------------- | ----------------- | ------------------------------------------------ |
-| `AsciiArt`    | `ascii_art.rs`    | XODIUM ASCII glyph mark                          |
-| `LegendBlock` | `legend_block.rs` | Keyboard shortcut legend                         |
-| `LinkBadges`  | `link_badges.rs`  | External link icons (GitHub, Buy Me a Coffee)    |
-| `TitleBlock`  | `title_block.rs`  | Blueprint metadata table (sheet, DPR, rev, date) |
+| Component  | File           | Purpose                 |
+| ---------- | -------------- | ----------------------- |
+| `AsciiArt` | `ascii_art.rs` | XODIUM ASCII glyph mark |
 
 #### UI Icons (`src/components/ui/icons/`)
 
@@ -164,7 +157,6 @@ src/
 ├── lib.rs                     # Crate root, module declarations and re-exports
 ├── app.rs                     # Root App component
 ├── github.rs                  # GitHub API client
-├── utils.rs                   # Shared utilities
 ├── components/
 │   ├── layout/                # Sheet bands, stacked top to bottom
 │   │   ├── main.rs
@@ -176,12 +168,9 @@ src/
 │   │   └── team.rs
 │   └── ui/                    # UI primitives and icons
 │       ├── ascii_art.rs
-│       ├── icons/
-│       │   ├── buy_me_a_coffee.rs
-│       │   └── github.rs
-│       ├── legend_block.rs
-│       ├── link_badges.rs
-│       └── title_block.rs
+│       └── icons/
+│           ├── buy_me_a_coffee.rs
+│           └── github.rs
 
 public/
 ├── style.css                  # Tailwind + DaisyUI (halloween theme)
@@ -280,16 +269,6 @@ row of round avatars, each linking to a member's GitHub profile in a new tab.
 - `.team-band-avatar` in `public/style.css` holds the avatar styles; there is
   no backdrop or dialog styling any more.
 
-### Keyboard Shortcuts
-
-Global shortcuts handled in `LinkBadges`:
-
-| Shortcut  | Action               |
-| --------- | -------------------- |
-| `Alt + 1` | Open Cadiotheka      |
-| `Alt + G` | Open GitHub org page |
-| `Alt + C` | Open Buy Me a Coffee |
-
 ### Caching Strategy
 
 GitHub API responses cached in `localStorage`:
@@ -322,8 +301,7 @@ GitHub API responses cached in `localStorage`:
 - **WASM size** optimized heavily for fast page loads
 - **`prefers-reduced-motion`** — handled entirely in `public/style.css` via
   the `@media (prefers-reduced-motion: reduce)` block, which zeroes out the
-  page and corner-stack entry animations. No Rust code toggles a class for
-  this.
+  page and band entry animations. No Rust code toggles a class for this.
 
 ## Claude Code Workflow
 
