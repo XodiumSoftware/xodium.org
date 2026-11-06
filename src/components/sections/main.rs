@@ -7,19 +7,13 @@ use leptos::prelude::*;
 
 /// The central content area of the page.
 ///
-/// The column is capped at `max-w-7xl` with `mx-auto`, which is what leaves
-/// empty space on both sides once the viewport exceeds that width. The `px-6`
-/// gutters are owned here rather than on the frame so narrow viewports shrink
-/// the content instead of pressing it against the blueprint border.
+/// The drawing sheet owns the page width and centring, so this only supplies
+/// the inner gutter and fills the remaining height.
 #[component]
 #[must_use]
 pub fn Main() -> impl IntoView {
     view! {
-        <main
-            id="main-content"
-            tabindex="-1"
-            class="flex flex-1 flex-col mx-auto w-full max-w-7xl px-6"
-        >
+        <main id="main-content" tabindex="-1" class="flex flex-1 flex-col px-6 py-16">
             <h1 class="sr-only">"Xodium Software — open-source CAD software"</h1>
         </main>
     }

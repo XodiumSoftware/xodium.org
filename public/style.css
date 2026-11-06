@@ -31,36 +31,11 @@ html {
 body::before {
     content: "";
     position: fixed;
-    inset: 18px;
+    inset: 0;
     z-index: 0;
     pointer-events: none;
     animation: grid-in 500ms ease-out 200ms both;
-    background-image:
-        linear-gradient(
-            to right,
-            oklch(from var(--color-base-content) l c h / 0.06) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            to bottom,
-            oklch(from var(--color-base-content) l c h / 0.06) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            to right,
-            oklch(from var(--color-base-content) l c h / 0.12) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            to bottom,
-            oklch(from var(--color-base-content) l c h / 0.12) 1px,
-            transparent 1px
-        );
-    background-size:
-        12px 12px,
-        12px 12px,
-        60px 60px,
-        60px 60px;
+    background-color: var(--color-base-100);
 }
 
 :focus-visible {
@@ -132,28 +107,79 @@ body::before {
     flex-direction: column;
 }
 
-.blueprint-frame > main {
+.blueprint-sheet {
+    position: relative;
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: calc(100% - 36px);
+    max-width: 80rem;
+    margin: 18px auto;
 }
 
-.blueprint-frame::before,
-.blueprint-frame::after {
+.blueprint-sheet::before,
+.blueprint-sheet::after {
     content: "";
-    position: fixed;
+    position: absolute;
     pointer-events: none;
     z-index: 40;
     border-color: var(--color-base-content);
     animation: frame-in 400ms ease-out both;
 }
 
-.blueprint-frame::before {
-    inset: 8px;
+.blueprint-sheet::before {
+    inset: -8px;
     border: 1px solid var(--color-base-content);
 }
 
-.blueprint-frame::after {
-    inset: 16px;
+.blueprint-sheet::after {
+    inset: -16px;
     border: 2px solid var(--color-base-content);
+}
+
+.blueprint-sheet > main {
+    flex: 1;
+    position: relative;
+    z-index: 1;
+}
+
+/*
+ * Constrained drafting grid. Currently unmounted: the sheet renders without a
+ * `.blueprint-grid` child while the grid is settled separately from `main`.
+ * Add <div class="blueprint-grid"></div> inside `.blueprint-sheet` to restore it.
+ */
+.blueprint-grid {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    animation: grid-in 500ms ease-out 200ms both;
+    background-image:
+        linear-gradient(
+            to right,
+            oklch(from var(--color-base-content) l c h / 0.12) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            to bottom,
+            oklch(from var(--color-base-content) l c h / 0.12) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            to right,
+            oklch(from var(--color-base-content) l c h / 0.06) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            to bottom,
+            oklch(from var(--color-base-content) l c h / 0.06) 1px,
+            transparent 1px
+        );
+    background-size:
+        60px 60px,
+        60px 60px,
+        12px 12px,
+        12px 12px;
 }
 
 .corner-stack {

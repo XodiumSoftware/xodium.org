@@ -22,7 +22,9 @@ pub fn App() -> impl IntoView {
                 "Skip to main content"
             </a>
 
-            <Main />
+            <div class="blueprint-sheet">
+                <Main />
+            </div>
         </div>
     }
 }
