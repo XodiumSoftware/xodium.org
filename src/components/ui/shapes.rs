@@ -161,9 +161,10 @@ pub struct FaceColors {
 /// Configuration for a single [`ThreeDObject`] instance.
 ///
 /// Most callers only need to set `id`, `name`, `shape`, and optional
-/// `attached_to`, `colors`, `url`, or `on_click`. The `resolved_position`
-/// `resolved_position` and `depth_index` fields are populated automatically by [`ThreeDScene`]
-/// and should not be set manually.
+/// `attached_to`, `colors`, `url`, or `on_click`. The `resolved_position` and
+/// `depth_index` fields are populated automatically by
+/// [`ThreeDScene`](crate::components::sections::three_d::ThreeDScene) and should
+/// not be set manually.
 #[derive(Clone)]
 #[must_use]
 pub struct ThreeDProperties {

@@ -1,7 +1,8 @@
 //! Main drawing viewport section.
 //!
-//! Hosts the isometric [`ThreeDScene`] and the interactive objects that make up
-//! the blueprint drawing. Clicking the "Team" cube opens the [`Team`] modal.
+//! Hosts the isometric [`ThreeDScene`](crate::components::sections::three_d::ThreeDScene) and the
+//! interactive objects that make up the blueprint drawing. Clicking the "Team" cube opens the
+//! [`Team`](crate::components::sections::team::Team) modal.
 
 use crate::components::sections::team::{Team, TeamProperties};
 use crate::components::sections::three_d::ThreeDScene;
