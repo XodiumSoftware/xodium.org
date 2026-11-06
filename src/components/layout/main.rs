@@ -13,33 +13,47 @@ use leptos::prelude::*;
 use std::rc::Rc;
 use std::time::Duration;
 
-/// Whether the sheet's load-in entrance should still play.
+/// Tracks whether the sheet's load-in entrance should still play, and whether
+/// the lower-band swap has actually happened yet.
 ///
 /// A plain CSS class cannot express "animate once on page load": a class on the
 /// band replays whenever that band mounts, and a band mounted by the lower-band
-/// swap is the same component as the one on first paint. This signal starts
-/// `true`, so the initial view animates, and flips to `false` after the entrance
-/// duration so any band mounted later is drawn fully formed. The swap therefore
-/// never animates, whichever direction it goes.
+/// swap is the same component as the one on first paint.
+///
+/// Two flags are needed rather than one because the entrance and the swap
+/// animate *different elements*: the entrance runs `slide-up` on the band, while
+/// the swap runs its crossfade on the band's children. Because they do not
+/// override each other, handing `sheet-band-swap` to the band that is already on
+/// screen would start a second animation on its cards the moment the entrance
+/// finished, which reads as a flicker. The swap class is therefore withheld
+/// until a swap has actually been requested.
 #[derive(Clone, Copy)]
 #[must_use]
-pub struct SheetEntrance(RwSignal<bool>);
+pub struct SheetEntrance {
+    /// True while the load-in entrance is still playing.
+    loading: RwSignal<bool>,
+    /// True once the lower band has changed at least once.
+    swapped: RwSignal<bool>,
+}
 
 impl SheetEntrance {
-    /// Start the entrance timer and provide the flag to the page.
+    /// Start the entrance timer and provide the flags to the page.
     pub fn provide() -> Self {
-        let entrance = Self(RwSignal::new(true));
+        let entrance = Self {
+            loading: RwSignal::new(true),
+            swapped: RwSignal::new(false),
+        };
         provide_context(entrance);
 
-        let finished = entrance.0;
+        let loading = entrance.loading;
         let _ = set_timeout(
-            move || finished.set(false),
+            move || loading.set(false),
             Duration::from_millis(SheetEntrance::DURATION_MS),
         );
         entrance
     }
 
-    /// Read the signal out of context.
+    /// Read the signals out of context.
     ///
     /// # Panics
     ///
@@ -52,18 +66,33 @@ impl SheetEntrance {
     /// The class that plays the band entrance, or an empty string once the
     /// load-in entrance is over.
     pub fn band_class(self) -> &'static str {
-        if self.0.get() { "sheet-band-enter" } else { "" }
+        if self.loading.get() {
+            "sheet-band-enter"
+        } else {
+            ""
+        }
     }
 
     /// The class that plays the lower-band swap animation.
     ///
-    /// The two bands below the hero trade places instead of sliding in with the
-    /// rest of the stack, so they get their own quieter crossfade. It is only
-    /// applied once the load-in entrance is over: during first paint the band is
-    /// already animating, and a second animation on the same element would
-    /// override the `slide-up` reveal.
+    /// Empty until a swap has been requested, so the band on screen during the
+    /// load-in keeps its `slide-up` reveal and is never re-animated by the swap
+    /// class appearing under it.
     pub fn swap_class(self) -> &'static str {
-        if self.0.get() { "" } else { "sheet-band-swap" }
+        if self.loading.get() || !self.swapped.get() {
+            ""
+        } else {
+            "sheet-band-swap"
+        }
+    }
+
+    /// Record that the lower band is being swapped, arming [`Self::swap_class`].
+    ///
+    /// # Panics
+    ///
+    /// Panics when [`SheetEntrance::provide`] has not run.
+    pub fn mark_swapped(self) {
+        self.swapped.set(true);
     }
 
     /// Longest band delay (`subprojects`) plus the band animation length, so the
@@ -110,7 +139,15 @@ impl LowerBandState {
     }
 
     /// Replace the band in the lower slot.
+    ///
+    /// Arms the swap animation, so the incoming band crossfades. A `set` to the
+    /// band already shown is a no-op and leaves the flag alone.
     pub fn set(self, band: LowerBand) {
+        if self.get() == band {
+            return;
+        }
+
+        SheetEntrance::use_context().mark_swapped();
         self.0.set(band);
     }
 
