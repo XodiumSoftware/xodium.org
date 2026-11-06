@@ -194,7 +194,9 @@ pub struct ThreeDProperties {
     /// Optional content rendered inside the object's bounding box.
     /// Currently supports bouncing team avatars that link to GitHub profiles.
     pub content: Option<Container>,
-    /// URL to open when the object is clicked. `None` means no action.
+    /// URL to open when the object is clicked. `None` means no action, and an
+    /// object with neither `url` nor `on_click` is rendered as an inert
+    /// drawing rather than a control.
     pub url: Option<&'static str>,
     /// Optional callback invoked when the object is activated by click or
     /// keyboard. If present this overrides `url` and keeps the user inside the
@@ -331,6 +333,15 @@ fn build_view_box(hw: f64, hd: f64, hh: f64) -> (String, f64) {
     (view_box, max_extent * 2.0)
 }
 
+/// Whether an object offers an activation behaviour for click and keyboard.
+///
+/// An object with neither a `url` nor an `on_click` callback is purely a
+/// drawing: exposing it as a button would put an inert control in the tab
+/// order and announce it to assistive technology as actionable.
+fn is_interactive(url: Option<&'static str>, on_click: Option<&Rc<dyn Fn() + 'static>>) -> bool {
+    on_click.is_some() || url.is_some()
+}
+
 fn make_handler(
     url: Option<&'static str>,
     on_click: Option<Rc<dyn Fn() + 'static>>,
@@ -454,6 +465,18 @@ mod tests {
     }
 
     #[wasm_bindgen_test]
+    fn test_is_interactive() {
+        let callback: Option<Rc<dyn Fn()>> = Some(Rc::new(|| {}));
+
+        assert!(
+            !is_interactive(None, None),
+            "an inert drawing is not a control"
+        );
+        assert!(is_interactive(Some("https://example.com"), None));
+        assert!(is_interactive(None, callback.as_ref()));
+    }
+
+    #[wasm_bindgen_test]
     fn test_fmt_pt_and_quad_helpers() {
         let mut out = String::new();
         fmt_pt(&mut out, Point2d { x: 1.0, y: 2.0 });
@@ -492,6 +515,12 @@ fn render_edge_lines(edges: &[(Point2d, Point2d)], class: &'static str) -> impl 
 ///
 /// Clicking the object opens its `url` if one is configured; otherwise the
 /// click is a no-op. Keyboard-accessible via Enter or Space.
+///
+/// Only objects with a `url` or an `on_click` callback are exposed as
+/// buttons: they get the button role and enter the tab order, and their
+/// target shows a pointer cursor and lifts on hover. An object with neither
+/// is a plain drawing — it is skipped by assistive technology and keyboard
+/// navigation, keeps the default cursor, and stays still on hover.
 ///
 /// With [`ThreeDProperties::is_draft`] set the object is rendered in the
 /// draft style used for uncommitted geometry: no face fills, every edge
@@ -540,6 +569,9 @@ pub fn ThreeDObject(
     let (view_box, svg_pixel_size) = build_view_box(hw, hd, hh);
     let face_overrides = build_face_overrides(colors);
     let style_str = build_style(screen_x, screen_y, depth_index, &face_overrides);
+    let interactive = is_interactive(url, on_click.as_ref());
+    let role = interactive.then_some("button");
+    let tabindex = interactive.then_some("0");
     let navigate = make_handler(url, on_click);
     let key_navigate = navigate.clone();
     let tooltip = name.to_string();
@@ -548,14 +580,19 @@ pub fn ThreeDObject(
         <div
             class="object-3d-target tooltip tooltip-top"
             class:object-3d-draft=is_draft
-            role="button"
+            class:object-3d-inert=!interactive
+            role=role
             aria-label=name
-            tabindex="0"
+            tabindex=tabindex
             data-tip=tooltip
             style=style_str
-            on:click=move |_| navigate()
+            on:click=move |_| {
+                if interactive {
+                    navigate();
+                }
+            }
             on:keydown=move |ev| {
-                if ev.key() == "Enter" || ev.key() == " " {
+                if interactive && (ev.key() == "Enter" || ev.key() == " ") {
                     ev.prevent_default();
                     key_navigate();
                 }

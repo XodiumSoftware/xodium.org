@@ -398,6 +398,15 @@ body::before {
     transform: translateY(-4px);
 }
 
+.object-3d-inert,
+.object-3d-inert.tooltip-open {
+    cursor: default;
+}
+
+.object-3d-inert:hover {
+    transform: none;
+}
+
 .iso-face polygon {
     stroke: var(--color-base-content);
     stroke-width: 1.5;
