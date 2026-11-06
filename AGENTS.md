@@ -197,6 +197,10 @@ Trunk.toml                     # Trunk configuration
 - All Clippy warnings enabled; run with `-W clippy::pedantic -D warnings` to catch pedantic lints as errors.
 - `missing_docs` is enabled in `Cargo.toml` under `[lints.rust]` as `"deny"`, so a public item without a rustdoc comment fails `cargo build`, `trunk build`, and `just lint` alike. Every public module, type, function, and field must have a rustdoc comment.
 - No `unsafe` code (`unsafe_code = "deny"`).
+- `on_cleanup` requires a `Send + Sync` closure, so it cannot capture raw
+  `Closure<dyn FnMut(..)>` handles. Call `.into_js_value()` and keep the
+  resulting `js_sys::Function` instead — that type is `Send + Sync`, so no
+  extra dependency is needed for listener cleanup.
 - **Props:** `#[derive(Clone)]` structs named `{Component}Properties` (e.g. `ThreeDProperties`)
 - **Async data:** Use `LocalResource` (not `Resource`) for WASM thread execution
 - **External links:** Always use `target="_blank" rel="noopener noreferrer"`
@@ -267,6 +271,9 @@ runs a custom in-app action.
 - Team member data is fetched once in `Main` and passed to the `team_hub`
   object as `Container::Avatars`; it is also handed to the `Team` modal, which
   opens on click and is toggled by the `team-modal-open` class on `<html>`
+- The `Team` modal manages its own focus: it focuses the dialog on mount,
+  closes on Escape via a document-level listener (so focus position does not
+  matter), and restores focus to the previously active element on cleanup
 
 ### Keyboard Shortcuts
 
