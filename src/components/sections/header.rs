@@ -1,24 +1,20 @@
 use crate::components::ui::ascii_art::AsciiArt;
-use crate::components::ui::legend_block::LegendBlock;
-use crate::components::ui::link_badges::LinkBadges;
-use crate::components::ui::title_block::TitleBlock;
 use leptos::prelude::*;
 
-/// The bottom-right corner assembly. Despite the file name, this is NOT a
-/// top-of-page header — it's the sheet metadata block that lives at the
-/// bottom-right of the drawing.
+/// The sheet's opening band.
+///
+/// Currently holds only the XODIUM glyph mark. The keyboard legend, link
+/// badges and title block are unmounted while the band is settled, but they
+/// remain built and exported from the crate.
 #[component]
 #[must_use]
 pub fn Header() -> impl IntoView {
     view! {
-        <aside class="corner-stack" aria-label="Sheet metadata and external links">
+        <header
+            class="flex items-center py-6 border-b border-base-content/40"
+            aria-label="Site header"
+        >
             <AsciiArt />
-            <hr class="corner-stack-sep" />
-            <LegendBlock />
-            <div class="title-block-anchor">
-                <LinkBadges />
-                <TitleBlock />
-            </div>
-        </aside>
+        </header>
     }
 }

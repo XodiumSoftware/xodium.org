@@ -3,13 +3,11 @@
 //! Each module is one band of the page: a wrapper that owns its own internal
 //! arrangement (single column, two columns, three columns) while the sheet
 //! owns the overall width and centring. They are intentionally presentation
-//! only until real content is poured into them.
+//! only until real content is poured into them. The opener band is
+//! [`Header`](crate::components::sections::header::Header) rather than a
+//! module here.
 
-/// Page banner band, spanning the sheet.
-pub mod banner;
-/// Large focal band below the two-column row.
-pub mod hero;
 /// Three-column band below the hero.
 pub mod tri_column;
-/// Two-column band below the banner.
+/// Two-column band below the header.
 pub mod two_column;

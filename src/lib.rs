@@ -18,8 +18,10 @@ pub mod components {
         //! Page sections that form the blueprint page layout.
         /// Bottom-left site footer.
         pub mod footer;
-        /// Bottom-right corner metadata stack.
+        /// Sheet opening band.
         pub mod header;
+        /// Large focal band of the sheet.
+        pub mod hero;
         /// Layout regions stacked inside the drawing sheet.
         pub mod layout;
         /// Main content section.
@@ -54,8 +56,7 @@ pub mod components {
 
     pub use sections::footer::Footer;
     pub use sections::header::Header;
-    pub use sections::layout::banner::Banner;
-    pub use sections::layout::hero::Hero;
+    pub use sections::hero::Hero;
     pub use sections::layout::tri_column::TriColumn;
     pub use sections::layout::two_column::TwoColumn;
     pub use sections::main::Main;

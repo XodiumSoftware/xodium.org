@@ -4,8 +4,8 @@
 //! up the sheet, in reading order.
 
 use crate::components::sections::footer::Footer;
-use crate::components::sections::layout::banner::Banner;
-use crate::components::sections::layout::hero::Hero;
+use crate::components::sections::header::Header;
+use crate::components::sections::hero::Hero;
 use crate::components::sections::layout::tri_column::TriColumn;
 use crate::components::sections::layout::two_column::TwoColumn;
 use leptos::prelude::*;
@@ -22,7 +22,7 @@ pub fn Main() -> impl IntoView {
         <main id="main-content" tabindex="-1" class="flex flex-1 flex-col px-6">
             <h1 class="sr-only">"Xodium Software — open-source CAD software"</h1>
 
-            <Banner />
+            <Header />
             <TwoColumn />
             <Hero />
             <TriColumn />
