@@ -179,6 +179,20 @@ body::before {
 }
 
 /*
+ * Drafting grid overlaid on a filled project tile. Same minor/major line
+ * rhythm as the sheet grid, drawn in black so it reads against the colour
+ * rather than as a lighter wash of it.
+ */
+.tile-grid {
+    background-image:
+        linear-gradient(to right, oklch(0% 0 0 / 0.35) 1px, transparent 1px),
+        linear-gradient(to bottom, oklch(0% 0 0 / 0.35) 1px, transparent 1px);
+    background-size:
+        10px 10px,
+        10px 10px;
+}
+
+/*
  * Constrained drafting grid. Currently unmounted: the sheet renders without a
  * `.blueprint-grid` child while the grid is settled separately from `main`.
  * Add <div class="blueprint-grid"></div> inside `.blueprint-sheet` to restore it.
