@@ -173,6 +173,8 @@ pub fn MainProjects() -> impl IntoView {
                                             if project.disabled { "btn-disabled" } else { "" },
                                         )
                                         href=project.right_href
+                                        target="_blank"
+                                        rel="noopener noreferrer"
                                         aria-disabled=project.disabled
                                         tabindex=if project.disabled { Some("-1") } else { None }
                                     >
