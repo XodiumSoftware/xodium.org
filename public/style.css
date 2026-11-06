@@ -383,12 +383,6 @@ body::before {
     }
 }
 
-@media (prefers-reduced-motion: reduce) {
-    .object-3d-avatar {
-        animation: none;
-    }
-}
-
 .object-3d-target {
     position: absolute;
     display: inline-grid;
@@ -774,7 +768,8 @@ body::before {
     .corner-stack > .title-block-anchor,
     .blueprint-footer,
     .legend-block,
-    .object-3d-scene {
+    .object-3d-scene,
+    .object-3d-avatar {
         animation: none;
     }
 
