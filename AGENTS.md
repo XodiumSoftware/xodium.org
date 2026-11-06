@@ -151,7 +151,7 @@ call.
 - `fetch<T>(endpoint)` — cache-then-network with retry logic (`MAX_RETRIES + 1` attempts, exponential backoff from 1 s)
 - `fetch_all<T>(endpoint)` — paginates `fetch` with `?page=N&per_page=100` until a short page is returned
 - `LocalResource` used for async (runs on WASM thread)
-- `xodium:{endpoint}` cache key format; timestamps live in a sibling `{key}:ts` entry
+- `xodium:v{CACHE_SCHEMA_VERSION}:{endpoint}` cache key format; timestamps live in a sibling `{key}:ts` entry. Bump `CACHE_SCHEMA_VERSION` when a cached payload type changes shape.
 
 ### Project Structure
 
@@ -282,10 +282,14 @@ Global shortcuts handled in `LinkBadges`:
 
 GitHub API responses cached in `localStorage`:
 
-- Key: `xodium:{endpoint}`
+- Key: `xodium:v1:{endpoint}`
 - Timestamp: `{key}:ts`
 - TTL: 5 minutes
 - Cache is invalidated after TTL; the next successful fetch refreshes it
+- Schema version: bump `CACHE_SCHEMA_VERSION` in `github.rs` when a cached
+  payload type changes shape, so old entries are ignored by construction
+- Poisoned entries: a payload that fails to deserialize is deleted along with
+  its timestamp, so one bad entry costs a single fetch
 - Stale-if-error: if all refresh attempts fail, an expired entry is still served (with a console warning) instead of showing an error
 
 ## Testing

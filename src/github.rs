@@ -18,6 +18,12 @@ const MAX_RETRIES: u32 = 3;
 const RETRY_BASE_MS: u64 = 1000;
 const PER_PAGE: usize = 100;
 
+/// Schema version folded into every cache key.
+///
+/// Bump this whenever a cached payload type changes shape, so entries written
+/// by an older build are ignored rather than failing to deserialize.
+const CACHE_SCHEMA_VERSION: u32 = 1;
+
 /// A public member of the `XodiumSoftware` GitHub organization.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Member {
@@ -32,15 +38,36 @@ pub struct Member {
     pub role: Option<String>,
 }
 
+/// Build the versioned storage key for a GitHub endpoint.
+fn cache_key(endpoint: &str) -> String {
+    format!("xodium:v{CACHE_SCHEMA_VERSION}:{endpoint}")
+}
+
+/// Remove a cache entry and its timestamp.
+fn cache_remove(key: &str) {
+    LocalStorage::delete(key);
+    LocalStorage::delete(format!("{key}:ts"));
+}
+
 /// Read and deserialize a cache entry together with its timestamp.
 ///
-/// Returns `None` when storage is unavailable, the entry is missing, or the
-/// payload cannot be deserialized into `T`. Expired entries are retained for
-/// use as a stale-if-error fallback.
+/// Returns `None` when storage is unavailable or the entry is missing.
+/// A payload that is present but cannot be deserialized is evicted, so a stale
+/// schema does not cost every subsequent request. Expired entries are
+/// otherwise retained for use as a stale-if-error fallback.
 fn cache_read<T: for<'de> Deserialize<'de>>(key: &str) -> Option<(T, f64)> {
     let ts: f64 = LocalStorage::get(format!("{key}:ts")).ok()?;
-    let data: T = LocalStorage::get(key).ok()?;
-    Some((data, ts))
+    match LocalStorage::get::<T>(key) {
+        Ok(data) => Some((data, ts)),
+        Err(gloo_storage::errors::StorageError::SerdeError(_)) => {
+            web_sys::console::warn_1(
+                &format!("Discarding undeserializable cache entry {key}.").into(),
+            );
+            cache_remove(key);
+            None
+        }
+        Err(_) => None,
+    }
 }
 
 /// Serialize data and its timestamp into local storage.
@@ -85,7 +112,7 @@ fn format_network_error() -> String {
 ///
 /// Returns an error when all attempts fail and no stale cached data is available.
 async fn fetch<T: for<'de> Deserialize<'de> + Serialize>(endpoint: &str) -> Result<T, String> {
-    let cache_key = format!("xodium:{endpoint}");
+    let cache_key = cache_key(endpoint);
 
     let stale: Option<T> = match cache_read::<T>(&cache_key) {
         Some((data, ts)) if js_sys::Date::now() - ts <= CACHE_TTL_MS => return Ok(data),
@@ -267,6 +294,35 @@ mod tests {
         assert_eq!(MAX_RETRIES, 3);
         assert_eq!(RETRY_BASE_MS, 1000);
         assert_eq!(PER_PAGE, 100);
+        assert_eq!(CACHE_SCHEMA_VERSION, 1);
+    }
+
+    #[wasm_bindgen_test]
+    fn test_cache_key_is_versioned() {
+        assert_eq!(
+            cache_key("/orgs/XodiumSoftware/members"),
+            "xodium:v1:/orgs/XodiumSoftware/members"
+        );
+    }
+
+    #[wasm_bindgen_test]
+    fn test_cache_read_evicts_undeserializable_entry() {
+        let key = test_cache_key();
+        clear_cache(key);
+
+        LocalStorage::set(key, "not a list of members").expect("raw entry should be written");
+        LocalStorage::set(format!("{key}:ts"), js_sys::Date::now())
+            .expect("timestamp should be written");
+
+        assert!(cache_read::<Vec<Member>>(key).is_none());
+        assert!(
+            LocalStorage::get::<String>(key).is_err(),
+            "the poisoned payload should have been removed"
+        );
+        assert!(
+            LocalStorage::get::<f64>(format!("{key}:ts")).is_err(),
+            "the timestamp should have been removed with the payload"
+        );
     }
 
     #[wasm_bindgen_test]
