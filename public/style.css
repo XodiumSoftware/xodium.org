@@ -104,24 +104,23 @@ body::before {
     margin: 18px auto;
 }
 
-.blueprint-sheet::before,
-.blueprint-sheet::after {
+/*
+ * Sheet frame. A rule down each side of the drawing sheet, inset by 8px, so
+ * the page reads as a drafting plate cropped at the top and bottom. Only the
+ * left and right edges are drawn: the band rules already close the sheet
+ * horizontally, and a full frame would double them. The rule is the band
+ * colour at 40%, matching the `border-base-content/40` band dividers rather
+ * than the full-strength content colour.
+ */
+.blueprint-sheet::before {
     content: "";
     position: absolute;
     pointer-events: none;
     z-index: 40;
-    border-color: var(--color-base-content);
-    animation: frame-in 400ms ease-out both;
-}
-
-.blueprint-sheet::before {
     inset: -8px;
-    border: 1px solid var(--color-base-content);
-}
-
-.blueprint-sheet::after {
-    inset: -16px;
-    border: 2px solid var(--color-base-content);
+    border-left: 1px solid oklch(from var(--color-base-content) l c h / 0.4);
+    border-right: 1px solid oklch(from var(--color-base-content) l c h / 0.4);
+    animation: frame-in 400ms ease-out both;
 }
 
 .blueprint-sheet > main {
@@ -611,8 +610,7 @@ body::before {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .blueprint-frame::before,
-    .blueprint-frame::after,
+    .blueprint-sheet::before,
     body::before,
     .ascii-art,
     .header-tagline,

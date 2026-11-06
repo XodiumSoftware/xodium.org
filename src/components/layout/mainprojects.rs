@@ -151,7 +151,7 @@ pub fn MainProjects() -> impl IntoView {
                                 on:click=move |_| selected.0.set(index)
                             >
                                 <span
-                                    class="absolute inset-0 flex items-center justify-center"
+                                    class="absolute inset-0 flex items-center justify-center p-5"
                                     aria-hidden="true"
                                 >
                                     {(project.icon)()}

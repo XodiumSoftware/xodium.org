@@ -199,7 +199,7 @@ pub fn Main() -> impl IntoView {
     });
 
     view! {
-        <main id="main-content" tabindex="-1" class="flex flex-1 flex-col px-6">
+        <main id="main-content" tabindex="-1" class="flex flex-1 flex-col">
             <h1 class="sr-only">"Xodium Software — open-source CAD software"</h1>
 
             <Header />
