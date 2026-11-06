@@ -195,7 +195,7 @@ Trunk.toml                     # Trunk configuration
 
 - **Register modules and re-exports in `src/lib.rs` explicitly.** Do not use `mod.rs` files. The crate root declares the module tree inside inline `pub mod components { pub mod sections { .. } pub mod ui { .. } }` blocks; nested `pub mod` declarations are allowed inside module root files (e.g. `shapes.rs` declares `pub mod cuboid;`). Use `#[path = "..."]` attributes when a module file lives in a subdirectory and cannot be reached by the conventional module path.
 - All Clippy warnings enabled; run with `-W clippy::pedantic -D warnings` to catch pedantic lints as errors.
-- `missing_docs` is enabled in `Cargo.toml` under `[lints.rust]` as `"warn"`. It is only a hard failure through `just lint` / `just validate`, which pass `-D warnings`; `trunk build` and plain `cargo build` will not reject missing docs. Every public module, type, function, and field should still have a rustdoc comment.
+- `missing_docs` is enabled in `Cargo.toml` under `[lints.rust]` as `"deny"`, so a public item without a rustdoc comment fails `cargo build`, `trunk build`, and `just lint` alike. Every public module, type, function, and field must have a rustdoc comment.
 - No `unsafe` code (`unsafe_code = "deny"`).
 - **Props:** `#[derive(Clone)]` structs named `{Component}Properties` (e.g. `ThreeDProperties`)
 - **Async data:** Use `LocalResource` (not `Resource`) for WASM thread execution
