@@ -5,6 +5,7 @@
 //! and the team, so the sheet never stacks a fourth band.
 
 use crate::components::layout::main::{LowerBand, LowerBandState};
+use crate::ui::{BuyMeACoffeeIcon, GitHubIcon};
 use leptos::prelude::*;
 
 /// A single link rendered in the blueprint footer.
@@ -13,6 +14,16 @@ struct FooterLink {
     href: &'static str,
     /// Uppercase label displayed in the footer.
     label: &'static str,
+}
+
+/// A footer entry rendered as an icon instead of a text label.
+struct FooterIconLink {
+    /// Destination URL opened in a new tab.
+    href: &'static str,
+    /// Accessible name, since the icon itself is decorative.
+    aria_label: &'static str,
+    /// Renders the link's icon.
+    icon: fn() -> AnyView,
 }
 
 /// Footer links shown after the band toggle, in reading order.
@@ -31,6 +42,20 @@ const FOOTER_LINKS: &[FooterLink] = &[
     },
 ];
 
+/// Icon-only links closing the footer, after [`FOOTER_LINKS`].
+const FOOTER_ICON_LINKS: &[FooterIconLink] = &[
+    FooterIconLink {
+        href: "https://github.com/XodiumSoftware",
+        aria_label: "Xodium Software on GitHub",
+        icon: || view! { <GitHubIcon /> }.into_any(),
+    },
+    FooterIconLink {
+        href: "https://buymeacoffee.com/illyrius",
+        aria_label: "Buy me a coffee",
+        icon: || view! { <BuyMeACoffeeIcon /> }.into_any(),
+    },
+];
+
 /// Blueprint footer — a single line of monospace uppercase text closing the
 /// drawing sheet, reading like a handwritten note in the margin rather than a
 /// framed cell. It flows with the sheet's content instead of being pinned to
@@ -40,6 +65,9 @@ const FOOTER_LINKS: &[FooterLink] = &[
 /// currently in the lower slot, and pressing it swaps the two. It carries
 /// `aria-pressed` so assistive tech treats it as a state toggle rather than a
 /// navigation link that goes nowhere.
+///
+/// The closing entries are icon-only GitHub and Buy Me a Coffee links. Their
+/// icons are `aria-hidden`, so each anchor carries the accessible name itself.
 #[component]
 #[must_use]
 pub fn Footer() -> impl IntoView {
@@ -72,6 +100,23 @@ pub fn Footer() -> impl IntoView {
                             rel="noopener noreferrer"
                         >
                             {link.label}
+                        </a>
+                    }
+                })
+                .collect::<Vec<_>>()}
+            {FOOTER_ICON_LINKS
+                .iter()
+                .map(|link| {
+                    view! {
+                        <span class="blueprint-footer-sep" aria-hidden="true">"·"</span>
+                        <a
+                            class="blueprint-footer-icon"
+                            href=link.href
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label=link.aria_label
+                        >
+                            {(link.icon)()}
                         </a>
                     }
                 })
