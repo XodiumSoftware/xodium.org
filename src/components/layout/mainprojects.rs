@@ -10,7 +10,7 @@ use leptos::prelude::*;
 #[derive(Clone, Debug, PartialEq)]
 #[must_use]
 pub struct MainProject {
-    /// Tailwind background utility used for the project mark.
+    /// Tailwind utility painting the project mark.
     pub mark: &'static str,
     /// `DaisyUI` button colour for the primary action.
     pub button: &'static str,
@@ -47,7 +47,7 @@ const MAIN_PROJECTS: &[MainProject] = &[
         disabled: false,
     },
     MainProject {
-        mark: "bg-secondary",
+        mark: "hatch",
         button: "btn-secondary",
         title: "Coming Soon",
         established: "Est XXXX",
@@ -120,16 +120,21 @@ pub fn MainProjects() -> impl IntoView {
                             <button
                                 type="button"
                                 class=format!(
-                                    "w-[9.0625rem] h-[9.0625rem] cursor-pointer transition-opacity {}",
+                                    "relative overflow-hidden w-[9.0625rem] h-[9.0625rem] cursor-pointer border border-base-content/30 {}",
                                     project.mark,
                                 )
-                                class:opacity-40=move || !is_selected()
                                 role="tab"
                                 aria-selected=move || is_selected().to_string()
                                 aria-controls=panel_id.clone()
                                 aria-label=project.title
                                 on:click=move |_| selected.0.set(index)
-                            ></button>
+                            >
+                                <span
+                                    class="absolute inset-x-6 bottom-0 h-1 rounded-t-full bg-white opacity-0"
+                                    class:opacity-100=move || is_selected()
+                                    aria-hidden="true"
+                                ></span>
+                            </button>
                             <div
                                 id=panel_id
                                 role="tabpanel"

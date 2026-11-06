@@ -165,6 +165,20 @@ body::before {
 }
 
 /*
+ * Hatch fill for a project mark with no colour of its own. Repeating diagonal
+ * lines over the page surface, so an unannounced project reads as a reserved,
+ * unfilled cell rather than a coloured tile.
+ */
+.hatch {
+    background-color: transparent;
+    background-image: repeating-linear-gradient(
+        45deg,
+        oklch(from var(--color-base-content) l c h / 0.25) 0 1px,
+        transparent 1px 8px
+    );
+}
+
+/*
  * Constrained drafting grid. Currently unmounted: the sheet renders without a
  * `.blueprint-grid` child while the grid is settled separately from `main`.
  * Add <div class="blueprint-grid"></div> inside `.blueprint-sheet` to restore it.
