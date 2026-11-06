@@ -1,66 +1,76 @@
-#![allow(clippy::must_use_candidate, clippy::too_many_lines)]
+//! xodiumweb — a blueprint-styled static website for Xodium Software.
+//!
+//! Built with Leptos (client-side rendering) and compiled to WebAssembly via
+//! Trunk. The crate exposes the root [`App`] component plus the public
+//! modules that make up the page layout, UI primitives, GitHub API client,
+//! and shared utilities.
+
+// The Leptos `#[component]` macro rewrites function signatures and strips
+// `#[must_use]`, so we allow this lint crate-wide rather than fighting the macro.
+#![allow(clippy::must_use_candidate)]
 
 mod app;
 
 pub mod components {
-    pub mod sections {
-        pub mod footer;
-        pub mod header;
-        pub mod landing;
-        pub mod projects;
-        pub mod team_deck;
+    //! Page sections and reusable UI primitives.
+
+    pub mod effects {
+        //! Decorative background effects.
+        /// Animated SVG blob background.
+        pub mod blob;
     }
 
-    pub mod cards {
-        pub mod project;
+    pub mod layout {
+        //! Sheet bands that form the blueprint page layout.
+        /// Bottom-left site footer.
+        pub mod footer;
+        /// Sheet opening band.
+        pub mod header;
+        /// Large focal band of the sheet.
+        pub mod hero;
+        /// Main content section.
+        pub mod main;
+        /// Main projects band of the sheet.
+        pub mod mainprojects;
+        /// Subprojects band of the sheet.
+        pub mod subprojects;
+        /// Team member overview.
         pub mod team;
     }
 
-    pub mod animations {
-        pub mod line_draw;
-    }
-
     pub mod ui {
-        pub mod code_block;
-        pub mod corner_frame;
-        pub mod data_grid;
+        //! Reusable UI primitives and icons.
 
-        pub mod effects {
-            pub mod blueprint_grid;
-            pub mod hex_grid;
-            pub mod parallax;
-            pub mod section_fade;
-            pub mod wire_frames;
+        pub mod icons {
+            //! Inline SVG icons used by link badges and controls.
+            /// Buy Me a Coffee cup icon.
+            pub mod buy_me_a_coffee;
+            /// GitHub Octocat icon.
+            pub mod github;
         }
+
+        /// XODIUM ASCII art header.
+        pub mod ascii_art;
+
+        pub use icons::buy_me_a_coffee::BuyMeACoffeeIcon;
+        pub use icons::github::GitHubIcon;
     }
 
-    pub use sections::footer::Footer;
-    pub use sections::header::Header;
-    pub use sections::landing::LandingSection;
-    pub use sections::projects::ProjectsSection;
-    pub use sections::team_deck::TeamDeckSection;
+    pub use effects::blob::{BlobBackground, BlobBackgroundProperties};
 
-    pub use cards::project::{ProjectCard, ProjectCardProperties};
-    pub use cards::team::{TeamCard, TeamCardProperties};
+    pub use layout::footer::Footer;
+    pub use layout::header::Header;
+    pub use layout::hero::Hero;
+    pub use layout::main::{LowerBand, LowerBandState, Main};
+    pub use layout::mainprojects::{MainProject, MainProjects, SelectedProject};
+    pub use layout::subprojects::Subprojects;
+    pub use layout::team::{Team, TeamProperties};
 
-    pub use animations::line_draw::{LineDraw, LineDrawHero};
-
-    pub use ui::code_block::CodeBlock;
-    pub use ui::corner_frame::CornerFrame;
-    pub use ui::data_grid::data_grid;
-    pub use ui::effects::blueprint_grid::BlueprintGrid;
-    pub use ui::effects::hex_grid::HexPattern;
-    pub use ui::effects::parallax::ParallaxLanding;
-    pub use ui::effects::section_fade::FadeOverlay;
-    pub use ui::effects::wire_frames::WireframeShapes;
+    pub use ui::ascii_art::{AsciiArt, XODIUM_ASCII_ART};
 }
 
 pub mod github;
-pub mod mcp;
-pub mod utils;
 
 pub use app::*;
 pub use components::*;
 pub use github::*;
-pub use mcp::*;
-pub use utils::*;

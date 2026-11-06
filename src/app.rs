@@ -1,46 +1,31 @@
-use crate::components::{
-    Footer, Header, LandingSection, LineDraw, ProjectsSection, TeamDeckSection,
-};
+//! Root application component and the single-page layout.
+//!
+//! `App` assembles the skip link and main content section into one
+//! blueprint-styled page.
+
+use crate::components::layout::main::Main;
 use leptos::prelude::*;
 
+/// The full single-page blueprint drawing.
+///
+/// `Main` owns the whole sheet: the header, the project and hero bands, the
+/// subprojects/team slot and the footer all render inside it, so this only
+/// supplies the frame, the drawing sheet and the skip link.
 #[component]
 #[must_use]
 pub fn App() -> impl IntoView {
     view! {
-        <div>
+        <div class="blueprint-frame">
             <a
                 href="#main-content"
                 class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-content focus:rounded"
             >
                 "Skip to main content"
             </a>
-            <div class="relative">
-                {/* Sentinel used by Header to detect when the page has scrolled. */}
-                <div id="header-scroll-sentinel" class="absolute top-0 left-0 h-px w-full -z-20" />
 
-                <Header />
-
-                <div class="absolute inset-x-0 top-0 h-128 bg-gradient-to-b from-base-100 to-transparent pointer-events-none z-10" />
-
-                <LandingSection />
+            <div class="blueprint-sheet">
+                <Main />
             </div>
-
-        <main id="main-content" tabindex="-1">
-
-        // Line divider between hero and projects
-        <LineDraw />
-
-        // Projects section
-        <ProjectsSection />
-
-        // Line draw divider
-        <LineDraw />
-
-        // Team section
-        <TeamDeckSection />
-        </main>
-
-        <Footer />
-    </div>
+        </div>
     }
 }

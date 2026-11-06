@@ -14,7 +14,7 @@
 
 | Category          | Technology                    | Purpose                         |
 | ----------------- | ----------------------------- | ------------------------------- |
-| **Framework**     | Leptos 0.8.17 (CSR)           | Reactive web framework          |
+| **Framework**     | Leptos (CSR)                  | Reactive web framework          |
 | **Build Tool**    | Trunk                         | WASM bundler + dev server       |
 | **Styling**       | Tailwind CSS + DaisyUI        | Utility-first CSS               |
 | **HTTP Client**   | gloo-net                      | Fetch API wrapper for WASM      |
@@ -47,156 +47,164 @@ trunk build --release
 # Generate Rust documentation
 cargo doc --no-deps
 
+# Generate docs and fail on broken intra-doc links / doc warnings
+RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --target wasm32-unknown-unknown
+
 # Clean build artifacts
 trunk clean
 
-# Run browser-based WASM tests (requires wasm-pack + Chrome/Chromium)
-wasm-pack test --headless --chrome
+# Run browser-based WASM tests (requires wasm-pack + Firefox)
+wasm-pack test --headless --firefox
+
+# Check for unused crate dependencies
+cargo machete
+
+# Verify repository paths named in Markdown files exist
+sh scripts/check-md-paths.sh
 
 # Lint with pedantic lints enabled; every warning is treated as an error.
 cargo clippy --all-targets --all-features --target wasm32-unknown-unknown -- -W clippy::pedantic -D warnings
 ```
 
-These also exist as `just` recipes (`just lint`, `just test`, `just build`, `just serve`, `just validate`); see `just --list`.
+These also exist as `just` recipes (`just lint`, `just fmt-check`, `just deps-check`, `just docs-check`, `just test`, `just doc`, `just build`, `just serve`, `just size`, `just validate`); see `just --list`.
+
+The `justfile` works on Windows and Unix: it defaults to `sh` and switches to
+PowerShell via `[windows]`. Recipes whose shell syntax differs (e.g. `size`) are
+defined twice under `[unix]` and `[windows]`; shared paths live in
+platform-neutral variables at the top of the file.
 
 ## Architecture Overview
 
 ### Entry Points
 
-| File      | Purpose                                          |
-| --------- | ------------------------------------------------ |
-| `main.rs` | WASM entry point, mounts `App` to `&lt;body&gt;` |
-| `lib.rs`  | Crate root; declares every module and re-export  |
-| `app.rs`  | Root `App` component with full page layout       |
+| File      | Purpose                                         |
+| --------- | ----------------------------------------------- |
+| `main.rs` | WASM entry point, mounts `App` to `<body>`      |
+| `lib.rs`  | Crate root; declares every module and re-export |
+| `app.rs`  | Root `App` component with full page layout      |
 
 ### Page Layout (`App` component)
 
-The single-page application follows this structure:
+The single-page application is a blueprint-style drawing with a fixed corner
+stack of metadata and controls:
+
+All of this is wrapped in a single `<div class="blueprint-frame">` in
+`app.rs`:
 
 1. **Skip Link** — accessibility anchor to `#main-content`
-2. **`Header`** — sticky navbar with logo and navigation
-3. **`#landing`** — hero section with `LandingSection`
-4. **Divider** — `LineDraw` animation
-5. **`#projects`** — sidebar layout with `ProjectsSection`
-6. **Divider** — `LineDraw` animation
-7. **`#team`** — `TeamDeckSection`
-8. **`Footer`** — site footer
+2. **`Main`** (`<main id="main-content">`) — accessible page heading and the
+   band stack, in reading order: `Header`, `MainProjects`, `Hero`, the
+   subprojects/team slot, then `Footer`.
+3. **`Footer`** — in-flow centred band at the bottom of the sheet, carrying the
+   copyright, the subprojects/team toggle and the site links. It is not pinned
+   to the viewport.
 
 ### Component Organization
 
 Components are grouped by function in `src/components/`:
 
-#### Sections (`src/components/sections/`)
+#### Layout Bands (`src/components/layout/`)
 
-| Component         | File           | Purpose                                         |
-| ----------------- | -------------- | ----------------------------------------------- |
-| `Header`          | `header.rs`    | Sticky navbar                                   |
-| `LandingSection`  | `landing.rs`   | Hero section with visual effects and code block |
-| `ProjectsSection` | `projects.rs`  | Fetches GitHub repos, renders `ProjectCard`s    |
-| `TeamDeckSection` | `team_deck.rs` | Fetches org members, renders `TeamCard`s        |
-| `Footer`          | `footer.rs`    | Site footer                                     |
-
-#### Cards (`src/components/cards/`)
-
-| Component     | File         | Purpose                                           |
-| ------------- | ------------ | ------------------------------------------------- |
-| `ProjectCard` | `project.rs` | Repo card with name, description, stars, language |
-| `TeamCard`    | `team.rs`    | Member avatar, login, role badge                  |
-
-#### Visual Effects (`src/components/ui/effects/`)
-
-| Component         | File                | Purpose                     |
-| ----------------- | ------------------- | --------------------------- |
-| `BlueprintGrid`   | `blueprint_grid.rs` | Animated SVG blueprint grid |
-| `WireframeShapes` | `wire_frames.rs`    | Floating 3D wireframes      |
-| `ParallaxLanding` | `parallax.rs`       | Parallax scroll effect      |
-| `HexPattern`      | `hex_grid.rs`       | Hexagonal grid overlay      |
-| `FadeOverlay`     | `section_fade.rs`   | Gradient fade transitions   |
-
-#### Animations (`src/components/animations/`)
-
-| Component      | File           | Purpose                   |
-| -------------- | -------------- | ------------------------- |
-| `LineDraw`     | `line_draw.rs` | Section divider animation |
-| `LineDrawHero` | `line_draw.rs` | Hero variant              |
+| Component      | File              | Purpose                                                      |
+| -------------- | ----------------- | ------------------------------------------------------------ |
+| `Main`         | `main.rs`         | Heading and the band stack, in reading order                 |
+| `Header`       | `header.rs`       | Opening band with the ASCII mark and tagline                 |
+| `MainProjects` | `mainprojects.rs` | Equal-width left/right main project panels                   |
+| `Hero`         | `hero.rs`         | Focal band: window mockup on a colour wash                   |
+| `Subprojects`  | `subprojects.rs`  | Equal-width three-card subproject links                      |
+| `Footer`       | `footer.rs`       | Closing band: copyright, band toggle, site links             |
+| `Team`         | `team.rs`         | Team band with large round avatars; swaps with `Subprojects` |
 
 #### UI Primitives (`src/components/ui/`)
 
-| Component     | File              | Purpose                           |
-| ------------- | ----------------- | --------------------------------- |
-| `CodeBlock`   | `code_block.rs`   | Animated typewriter code display  |
-| `CornerFrame` | `corner_frame.rs` | Decorative corner frame           |
-| `data_grid`   | `data_grid.rs`    | `Suspense` wrapper for async data |
+| Component  | File           | Purpose                 |
+| ---------- | -------------- | ----------------------- |
+| `AsciiArt` | `ascii_art.rs` | XODIUM ASCII glyph mark |
+
+#### UI Icons (`src/components/ui/icons/`)
+
+| Component          | File                 | Purpose             |
+| ------------------ | -------------------- | ------------------- |
+| `BuyMeACoffeeIcon` | `buy_me_a_coffee.rs` | Buy Me a Coffee cup |
+| `GitHubIcon`       | `github.rs`          | GitHub Octocat      |
+
+#### Effects (`src/components/effects/`)
+
+| Component        | File      | Purpose                                       |
+| ---------------- | --------- | --------------------------------------------- |
+| `BlobBackground` | `blob.rs` | Animated SVG blob wash; caller sets placement |
 
 ### GitHub API (`src/github.rs`)
 
-Centralized data fetching with `localStorage` caching:
+Centralized data fetching with `localStorage` caching. The only public
+entry point is `fetch_members()`:
 
-| Function          | Endpoint                                 | Cache TTL |
-| ----------------- | ---------------------------------------- | --------- |
-| `fetch_members()` | `/orgs/XodiumSoftware/members`           | 5 minutes |
-| `fetch_repos()`   | `/orgs/XodiumSoftware/repos?type=public` | 5 minutes |
+| Function          | Endpoints                                                                    | Cache TTL |
+| ----------------- | ---------------------------------------------------------------------------- | --------- |
+| `fetch_members()` | `/orgs/XodiumSoftware/members` and `/orgs/XodiumSoftware/members?role=admin` | 5 minutes |
+
+`fetch_members` labels each member `Owner` when their login appears in the
+admin-member response, and `Member` otherwise. If the admin request fails it
+logs a warning and labels everyone `Member` rather than failing the whole
+call.
 
 **Internal helpers:**
 
-- `fetch&lt;T&gt;(endpoint)` — cache-then-network with retry logic (4 attempts, exponential backoff)
-- `fetch_all&lt;T&gt;(endpoint)` — paginates `fetch` with `?page=N&per_page=100` until a short page is returned
+- `fetch<T>(endpoint)` — cache-then-network with retry logic (`MAX_RETRIES + 1` attempts, exponential backoff from 1 s)
+- `fetch_all<T>(endpoint)` — paginates `fetch` with `?page=N&per_page=100` until a short page is returned
 - `LocalResource` used for async (runs on WASM thread)
-- `xodium:{endpoint}` cache key format
+- `xodium:v{CACHE_SCHEMA_VERSION}:{endpoint}` cache key format; timestamps live in a sibling `{key}:ts` entry. Bump `CACHE_SCHEMA_VERSION` when a cached payload type changes shape.
 
 ### Project Structure
 
 ```
 src/
 ├── main.rs                    # WASM entry point
-├── lib.rs                     # Crate root, module declarations
+├── lib.rs                     # Crate root, module declarations and re-exports
 ├── app.rs                     # Root App component
 ├── github.rs                  # GitHub API client
-├── mcp.rs                     # WebMCP tools exposed to browser agents (window.xodiumwebMcp)
-├── utils.rs                   # Shared utilities
 ├── components/
-│   ├── sections/              # Page sections
+│   ├── layout/                # Sheet bands, stacked top to bottom
+│   │   ├── main.rs
 │   │   ├── header.rs
-│   │   ├── landing.rs
-│   │   ├── projects.rs
-│   │   ├── team_deck.rs
-│   │   └── footer.rs
-│   ├── cards/                 # Card components
-│   │   ├── project.rs
+│   │   ├── mainprojects.rs
+│   │   ├── hero.rs
+│   │   ├── subprojects.rs
+│   │   ├── footer.rs
 │   │   └── team.rs
-│   ├── animations/            # Animation components
-│   │   └── line_draw.rs
-│   └── ui/                    # UI primitives, effects, utilities
-│       ├── code_block.rs
-│       ├── corner_frame.rs
-│       ├── data_grid.rs
-│       └── effects/           # Visual effects
-│           ├── blueprint_grid.rs
-│           ├── hex_grid.rs
-│           ├── parallax.rs
-│           ├── section_fade.rs
-│           └── wire_frames.rs
+│   ├── effects/               # Decorative background effects
+│   │   └── blob.rs
+│   └── ui/                    # UI primitives and icons
+│       ├── ascii_art.rs
+│       └── icons/
+│           ├── buy_me_a_coffee.rs
+│           └── github.rs
 
 public/
-├── style.css                  # Tailwind + custom theme
-└── icons/                     # SVG icons
+├── style.css                  # Tailwind + DaisyUI (halloween theme)
+├── favicon.svg                # Site icon
+└── _headers                   # Cloudflare Pages response headers
 
 index.html                     # Trunk entry template
 Trunk.toml                     # Trunk configuration
-build.rs                       # Build script
 ```
 
 ### Key Conventions
 
-- **Register modules and re-exports in `src/lib.rs` explicitly.** Do not use `mod.rs` files, and do not nest `mod` declarations inside other module files. Every module in the crate must be declared directly in the crate root (`src/lib.rs`). Use `#[path = "..."]` attributes when a module file lives in a subdirectory.
+- **Register modules and re-exports in `src/lib.rs` explicitly.** Do not use `mod.rs` files. The crate root declares the module tree inside inline `pub mod components { pub mod layout { .. } pub mod ui { .. } }` blocks. Use `#[path = "..."]` attributes when a module file lives in a subdirectory and cannot be reached by the conventional module path.
 - All Clippy warnings enabled; run with `-W clippy::pedantic -D warnings` to catch pedantic lints as errors.
-- No `unsafe` code — where JS handles must satisfy `Send + Sync` (e.g. for `on_cleanup`), use `send_wrapper::SendWrapper`
-- **Props:** `#[derive(Clone)]` structs named `{Component}Properties`
+- `missing_docs` is enabled in `Cargo.toml` under `[lints.rust]` as `"deny"`, so a public item without a rustdoc comment fails `cargo build`, `trunk build`, and `just lint` alike. Every public module, type, function, and field must have a rustdoc comment.
+- No `unsafe` code (`unsafe_code = "deny"`).
+- `on_cleanup` requires a `Send + Sync` closure, so it cannot capture raw
+  `Closure<dyn FnMut(..)>` handles. Call `.into_js_value()` and keep the
+  resulting `js_sys::Function` instead — that type is `Send + Sync`, so no
+  extra dependency is needed for listener cleanup.
+- **Props:** `#[derive(Clone)]` structs named `{Component}Properties` (e.g. `TeamProperties`)
 - **Async data:** Use `LocalResource` (not `Resource`) for WASM thread execution
-- **Suspense:** Use `data_grid` helper, don't inline ad-hoc boundaries
 - **External links:** Always use `target="_blank" rel="noopener noreferrer"`
 - **Static data:** Define `const` slices at top of component files
-- **CSS:** Tailwind utility classes via `style.css`
+- **CSS:** Tailwind utility classes via `style.css`; custom component styles live in `public/style.css`
+- **Do not add `//` line comments.** Use `///` doc comments (or `//!` module docs) to explain intent; keep the code itself self-documenting. This applies to `view!` macro blocks too — meaningful intent in a template should live on the component's or helper's doc comment, not as a structural label inside the view.
 
 ### Component Patterns
 
@@ -204,74 +212,30 @@ build.rs                       # Build script
 
 ```rust
 #[derive(Clone)]
-pub struct ProjectCardProperties {
-    pub title: String,
-    pub description: String,
-    pub link: Option<String>,
-    pub language: Option<String>,
-    pub stargazers_count: u32,
-    pub topics: Vec<String>,
-}
-```
-
-**Props with `From` conversion:**
-
-```rust
-impl From<Repo> for ProjectCardProperties {
-    fn from(repo: Repo) -> Self {
-        let description = repo
-            .description
-            .filter(|d| !d.trim().is_empty())
-            .unwrap_or_else(|| "(No description)".to_string());
-        Self {
-            title: repo.name,
-            description,
-            link: Some(repo.html_url),
-            language: repo.language,
-            stargazers_count: repo.stargazers_count,
-            topics: repo.topics,
-        }
-    }
+pub struct TeamProperties {
+    pub on_close: Rc<dyn Fn() + 'static>,
 }
 ```
 
 **Async data with LocalResource:**
 
+`Team` fetches its own members when it mounts, so a band that mounts later still
+has data without its parent passing a prop down:
+
 ```rust
-let repos = LocalResource::new( move | | async move {
-fetch_repos().await.unwrap_or_default()
+let members = LocalResource::new(|| async {
+    fetch_members().await.unwrap_or_default()
 });
 ```
 
-**Suspense wrapper:**
-
-```rust
-view! {
-    {data_grid(
-        resource,
-        move || "No projects found.",
-        |projects: Vec<Repo>| {
-            view! {
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {projects
-                        .into_iter()
-                        .map(|project| view! { <ProjectCard props=project.into() /> })
-                        .collect_view()}
-                </div>
-            }
-        },
-        Some(retry),
-        "Retry",
-    )}
-}
-```
+That call is usually a cache hit because `Main` prefetches the same endpoint
+shortly after load (see [Team Section](#team-section)).
 
 ### Build Pipeline
 
 1. **Trunk** bundles WASM, processes Tailwind CSS, copies the `public/` assets declared via `data-trunk` links in `index.html` → `dist/`
     - `Trunk.toml` pins the `tailwindcss` tool version. This is the version of Trunk’s bundled Tailwind distribution (`dobicinaitis/tailwind-cli-extra`), not the upstream Tailwind CSS version. The bundle includes the latest Tailwind CSS + DaisyUI; the actual Tailwind CSS version resolved at build time is shown in the build log (e.g. `tailwindcss v4.2.2`).
     - Renovate manages this version via a custom regex manager in `.github/renovate.json`; the TOML line is annotated with `# renovate: datasource=github-releases depName=dobicinaitis/tailwind-cli-extra`.
-    - `build.rs` generates the Agent Skills Discovery files into `public/.well-known/agent-skills/` (git-ignored) while cargo compiles; a Trunk `post_build` hook then syncs them into the staging dir — Trunk copies assets concurrently with the cargo build, so without the hook the files are missed on clean checkouts (e.g. CI).
 2. **Cargo release profile** optimizations:
     - `opt-level = "z"` (size)
     - `lto = true` (link-time optimization)
@@ -279,21 +243,111 @@ view! {
     - `panic = "abort"` (no unwinding)
     - `strip = true` (remove symbols)
 
+### Lower Band Swap
+
+The band below the hero is a single slot that shows either `Subprojects` or
+`Team`. `Main` provides the shared state as context, following the
+`SelectedProject` pattern:
+
+```rust
+let lower_band = LowerBandState::provide();
+```
+
+- `LowerBand` is the enum of bands (`Subprojects` is the default).
+- `LowerBandState` wraps the `RwSignal` and exposes `get`, `set` and `toggle`.
+  `Footer` reads it via `LowerBandState::use_context()` and renders a button
+  that toggles the slot.
+- The footer entry is a `<button>`, not a link: a link cannot change state,
+  and `aria-pressed` is what communicates the toggle to assistive tech. It
+  labels the band that is _not_ currently shown, so it reads `TEAM` on the
+  default view and `SUBPROJECTS` once the team is open.
+- `Main::view` picks the band with `match lower_band.get()`, rendering each arm
+  through `.into_any()` because the two branches are different view types.
+- `Team` keeps the `id="team"` anchor so `#team` still resolves, and pressing
+  Escape calls `on_close`, which switches the slot back to `Subprojects`.
+
+### Load Entrance and Swap Animations
+
+`SheetEntrance` (in `main.rs`) owns both animations, and the two are mutually
+exclusive per element:
+
+- `band_class()` returns `sheet-band-enter` while the page is loading in, which
+  plays `slide-up` on the band itself. `Header`, `MainProjects`, `Hero` and
+  `Subprojects` use it.
+- `swap_class()` returns `sheet-band-swap` only once a swap has been requested
+  (see `mark_swapped`), which fades the band's **children**. `Subprojects` and
+  `Team` use it.
+- These animate _different elements_, so they do not override each other. A
+  single flag would therefore have re-animated the subprojects cards the moment
+  the load entrance ended, which read as a flicker. Keep the two flags separate.
+- `band_class` is never applied to `Team`: it is only reachable through the
+  swap, so animating its bottom rule would look like a redraw.
+- `LowerBandState::set` arms the swap, so any caller that changes the band gets
+  the crossfade without extra bookkeeping.
+
+### Hero Band
+
+`Hero` is the focal band: a `DaisyUI` `mockup-window` filling the band's padded
+box, showing whichever project the main projects marks select.
+
+- The window uses the **background** variant (`bg-base-100`), so it stays opaque
+  and the colour wash behind it reads only in the padding ring around it.
+- Its border is `border-base-content/40`, the same rule colour as the band
+  borders. It is `rounded-lg` rather than `rounded-box` because the theme sets
+  `--radius-box: 0rem`, which would make the latter a no-op.
+- The window's three traffic lights come from one `::before` stamped with a
+  `box-shadow`; `public/style.css` recolours them through the shadow stops and
+  forces `opacity: 1`, since DaisyUI fades them to 30%.
+- The colour wash is `BlobBackground` (`components/effects/blob.rs`): one `<svg>`
+  of `<circle>`s sharing a single `feTurbulence` + `feDisplacementMap` filter,
+  so the roughening costs one turbulence evaluation rather than one per blob.
+  Its placement comes from the caller's `class`, so it is not tied to the hero.
+  The band sets `isolation: isolate` so `z-index: -1` keeps the wash inside the
+  band rather than dropping it behind the sheet.
+
+### Team Section
+
+`Team` is mounted in the lower band slot (see [Lower Band Swap](#lower-band-swap)),
+not as a modal. It is a ruled band matching `Subprojects`: a centred row of round
+avatars, each linking to a member's GitHub profile in a new tab.
+
+- The component fetches its own members via `fetch_members` when it mounts.
+- `Main` also prefetches the same endpoint 1.5 s after load, so the first open is
+  usually a cache hit rather than a live request. Without it the first open paid
+  the full GitHub round trip before any avatar could render.
+- While the request is pending the band draws `VISIBLE_AVATARS` placeholder
+  circles in the same avatar box, so it does not swap in empty and then reflow.
+- The band never takes the load-in entrance: it can only be reached through the
+  swap, and its crossfade is gated by `SheetEntrance` (see the swap docs in
+  `main.rs`).
+- It manages its own focus: it focuses the band on mount, closes on Escape via
+  a document-level listener (so focus position does not matter), and restores
+  focus to the previously active element on cleanup.
+- `.team-band-avatar` in `public/style.css` holds the avatar styles; there is
+  no backdrop or dialog styling any more.
+
 ### Caching Strategy
 
 GitHub API responses cached in `localStorage`:
 
-- Key: `xodium:{endpoint}`
+- Key: `xodium:v1:{endpoint}`
 - Timestamp: `{key}:ts`
 - TTL: 5 minutes
 - Cache is invalidated after TTL; the next successful fetch refreshes it
+- Schema version: bump `CACHE_SCHEMA_VERSION` in `github.rs` when a cached
+  payload type changes shape, so old entries are ignored by construction
+- Poisoned entries: a payload that fails to deserialize is deleted along with
+  its timestamp, so one bad entry costs a single fetch
 - Stale-if-error: if all refresh attempts fail, an expired entry is still served (with a console warning) instead of showing an error
 
 ## Testing
 
-- **Browser-based WASM tests** (`wasm-bindgen-test`, `run_in_browser`) live alongside the code in `src/github.rs` and `src/components/cards/project.rs`
-- Run them with `wasm-pack test --headless --chrome` (or `just test`); the CI `test` job runs the same
-- Also verify manually with `trunk serve`; check the console for WASM panics (in debug builds)
+- **Browser-based WASM tests** (`wasm-bindgen-test`, `run_in_browser`) live
+  alongside the code in `src/github.rs`
+- Run them with `wasm-pack test --headless --firefox` (or `just test`); the
+  `justfile` and CI `test` job use Firefox
+- Also verify manually with `trunk serve`; check the console for WASM panics
+  (in debug builds)
 
 ## Important Notes
 
@@ -302,7 +356,9 @@ GitHub API responses cached in `localStorage`:
 - **GitHub API** has rate limits (60 req/hour unauthenticated)
 - **Cache invalidation** — manual refresh or wait for 5-min TTL
 - **WASM size** optimized heavily for fast page loads
-- **`prefers-reduced-motion`** — CSS animations and transitions are suppressed via a global media query, and JS-driven effects (`CodeBlock`, `ParallaxLanding`) read `utils::prefers_reduced_motion()`; `main.rs` also applies a `reduced-motion` class to `<html>` so future CSS/JS can share the same signal
+- **`prefers-reduced-motion`** — handled entirely in `public/style.css` via
+  the `@media (prefers-reduced-motion: reduce)` block, which zeroes out the
+  page and band entry animations. No Rust code toggles a class for this.
 
 ## Claude Code Workflow
 
@@ -310,7 +366,7 @@ GitHub API responses cached in `localStorage`:
 
 **When creating tasks:**
 
-- Number tasks in the name (e.g., "1. Add new section", "2. Update TeamCard styling")
+- Number tasks in the name (e.g., "1. Add new shortcut", "2. Update TeamAvatars styling")
 
 **After completing each task:**
 
@@ -329,6 +385,7 @@ GitHub API responses cached in `localStorage`:
     - Change component interfaces
     - Add complex logic
     - **Run `trunk build`** to verify compilation
+    - **Update `AGENTS.md`** if architecture, layout, or conventions change
 
 **Rule of thumb:** If a code change would confuse someone reading the docs, update the docs.
 
@@ -336,28 +393,44 @@ GitHub API responses cached in `localStorage`:
 
 GitHub Actions workflows in `.github/workflows/`:
 
-- **rust.yml** — Lint (clippy + fmt + cargo-machete), browser WASM tests, Trunk build with a 500 KB WASM size budget, deploy to Cloudflare Pages (pushes to `main`/`dev` and manual dispatches only)
+- **rust.yml** — Lint (clippy + fmt + rustdoc + Markdown path check + cargo-machete), browser WASM tests, Trunk build with a 500 KB WASM size budget, deploy to Cloudflare Pages (pushes to `main`/`dev` and manual dispatches only)
 - **enforce_pr_title.yml** — Validates PR titles follow conventional commits
+
+## Documentation Checks
+
+`scripts/check-md-paths.sh` (run by `just docs-check`, `just validate`, and
+CI) verifies that every repository path cited in a `.md` file still exists. It
+only checks inline-code tokens that contain a path separator and start with a
+known top-level directory (`src/`, `public/`, `scripts/`, `.github/`,
+`.agents/`). Bare filenames, fenced code blocks, and template paths containing
+`{`, `*`, or `<` are skipped: AGENTS.md lists bare filenames in tables headed by
+directory, skill files contain `{name}.rs` placeholders, and a `mod.rs` may be
+cited precisely because it does not exist.
+
+This catches renamed or deleted files, not stale prose: no linter can tell
+that a sentence describes behaviour that no longer exists.
 
 ## Adding a New Section
 
 To add a new page section:
 
-1. Create file in `src/components/sections/{section}.rs`
-2. Define `{Section}` component with `#[component]` macro
-3. Add the module declaration in `src/lib.rs` under the `sections` block with `#[path = "components/sections/{section}.rs"]`
-4. Add a `pub use sections::{section}::{Section};` re-export in `src/lib.rs`
-5. Import in `src/app.rs` and add to `App` view
-6. Add `LineDraw` divider before/after if needed
+1. Create file in `src/components/layout/{section}.rs`
+2. Define `{Section}` component with the `#[component]` macro
+3. Add the `pub mod {section};` declaration inside `pub mod components { pub mod layout { .. } }` in `src/lib.rs`
+4. Add a `pub use layout::{section}::{Section};` re-export next to the other
+   `pub use layout::..` lines in `src/lib.rs`
+5. Import it (`crate::components::layout::..` or the re-exported path) in
+   `src/app.rs` and add it to the `App` view
 
 ### Adding a New Component
 
-1. Determine category (cards, effects, animations, ui)
-2. Create file in appropriate subdirectory
-3. Define component with props struct named `{Component}Properties`
-4. Add the module declaration in `src/lib.rs` under the appropriate block with `#[path = "..."]`
+1. Determine category (`layout`, `ui`, or `effects`; plus `ui/icons` for icons)
+2. Create file in the appropriate subdirectory
+3. Define component with props struct named `{Component}Properties` where applicable
+4. Add the module declaration in `src/lib.rs` under the appropriate block
 5. Add a re-export in `src/lib.rs`
 6. Add rustdoc comments explaining purpose
+7. Update `AGENTS.md` architecture tables if the component is part of the page layout
 
 ## Memory System
 
