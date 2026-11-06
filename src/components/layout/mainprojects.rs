@@ -33,20 +33,20 @@ pub struct MainProject {
 const MAIN_PROJECTS: &[MainProject] = &[
     MainProject {
         mark: "bg-primary",
-        title: "Project 1",
+        title: "Cadiotheka",
         established: "Est 2026",
-        description: "Placeholder description for the first main project.",
-        left_button: "Button",
-        left_href: "#",
+        description: "The open hub for CAD creators.",
+        left_button: "Visit",
+        left_href: "https://cadiotheka.com/",
         right_button: "Learn More",
-        right_href: "#",
+        right_href: "https://github.com/XodiumSoftware/cadiotheka",
     },
     MainProject {
         mark: "bg-secondary",
         title: "Project 2",
         established: "Est 2026",
         description: "Placeholder description for the second main project.",
-        left_button: "Button",
+        left_button: "Visit",
         left_href: "#",
         right_button: "Learn More",
         right_href: "#",
@@ -64,16 +64,16 @@ const MAIN_PROJECTS: &[MainProject] = &[
 pub fn MainProjects() -> impl IntoView {
     view! {
         <section
-            class="sheet-band sheet-band-mainprojects grid grid-cols-1 md:grid-cols-2 gap-6 md:divide-x md:divide-base-content/40 border-b border-base-content/40"
+            class="sheet-band sheet-band-mainprojects grid grid-cols-1 md:grid-cols-2 md:divide-x md:divide-base-content/40 border-b border-base-content/40"
             aria-label="Main projects"
         >
             {MAIN_PROJECTS
                 .iter()
                 .map(|project| {
                     view! {
-                        <article class="grid grid-cols-[9.0625rem_minmax(0,1fr)] gap-x-4">
+                        <article class="grid grid-cols-[9.0625rem_minmax(0,1fr)]">
                             <span class=format!("w-[9.0625rem] h-[9.0625rem] {}", project.mark)></span>
-                            <div class="col-start-2 row-start-1 flex min-w-0 flex-col justify-center gap-2 p-1">
+                            <div class="col-start-2 row-start-1 flex min-w-0 flex-col justify-center gap-2 p-4">
                                 <div class="flex min-w-0 items-center gap-3">
                                     <h2 class="text-sm font-semibold uppercase tracking-[0.08em]">
                                         {project.title}
@@ -85,8 +85,14 @@ pub fn MainProjects() -> impl IntoView {
                                 <p class="text-xs leading-relaxed text-base-content/70">
                                     {project.description}
                                 </p>
-                                <div class="flex min-w-0 items-center gap-3">
-                                    <a class="kbd kbd-lg keycap-btn flex-1" href=project.left_href>
+                                <div class="flex min-w-0 items-center gap-3 mt-3">
+                                    <a
+                                        class=format!(
+                                            "kbd kbd-lg keycap-btn flex-1 {}",
+                                            project.mark,
+                                        )
+                                        href=project.left_href
+                                    >
                                         {project.left_button}
                                     </a>
                                     <a class="kbd kbd-lg keycap-btn flex-1" href=project.right_href>
