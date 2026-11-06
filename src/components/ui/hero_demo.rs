@@ -14,8 +14,6 @@ pub struct LiveFrame {
     pub src: &'static str,
     /// Accessible name of the frame.
     pub title: &'static str,
-    /// `allow` permissions granted to the framed page.
-    pub allow: &'static str,
 }
 
 /// Props for [`HeroDemo`].
@@ -39,6 +37,11 @@ const FRAME_CLASS: &str = "absolute top-0 left-0 origin-top-left border-0 opacit
 
 /// A live cross-origin page, cropped into whatever box the caller gives it.
 ///
+/// The frame grants no extra permissions. `clipboard-write` was tried and
+/// dropped: the Permissions Policy parser rejects it as an unsupported feature
+/// name and logs a console warning, and the framed site only reads the clipboard
+/// from an event handler, which does not need the delegation.
+///
 /// The frame is `tabindex="0"` so keyboard users can move into the framed app
 /// and use it without leaving the hero. It is invisible until the framed page
 /// reports that it loaded, so the window never flashes the framed site's own
@@ -46,7 +49,9 @@ const FRAME_CLASS: &str = "absolute top-0 left-0 origin-top-left border-0 opacit
 ///
 /// The framed origin must allow this site in its `frame-ancestors` policy, and
 /// this site must allow the framed origin in its `frame-src` policy, or the
-/// browser refuses to render it.
+/// browser refuses to render it. Sign-in inside the frame is also expected to
+/// fail: the framed app starts OAuth against its own top-level origin, so the
+/// visitor leaves the demo for the real site.
 #[component]
 #[must_use]
 pub fn HeroDemo(
@@ -64,7 +69,6 @@ pub fn HeroDemo(
                 style=format!("scale: {FRAME_SCALE};")
                 src=frame.src
                 title=frame.title
-                allow=frame.allow
                 sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
                 tabindex="0"
                 on:load=move |_| loaded.set(true)

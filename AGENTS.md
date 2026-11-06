@@ -297,7 +297,7 @@ The window body is a live frame of the selected project's site, so the hero
 shows the running app instead of restating the title and description already
 shown one band above.
 
-- `MainProject::demo` holds an `Option<LiveFrame>` (`src`, `title`, `allow`).
+- `MainProject::demo` holds an `Option<LiveFrame>` (`src`, `title`).
   `MainProjects` therefore owns both what a panel says and what the hero frames;
   `Hero` only reads `project_at(..)` and passes the frame down.
 - A project with `demo: None` (the unreleased one) renders `HeroPlaceholder`,
@@ -317,14 +317,29 @@ shown one band above.
 - The frame is sandboxed with `allow-scripts allow-same-origin allow-forms`
   (Trunk's WASM boot, its API calls, and its forms all break without them).
   Never add `allow-top-navigation`.
+- Do not set the iframe's `allow` attribute. `clipboard-write` was tried and
+  removed: the Permissions Policy parser rejects it as an unsupported feature
+  name and logs a console warning on every load.
+- Sign-in from inside the frame leaves the demo. Cadiotheka builds its OAuth
+  URLs against its own absolute origin when it detects it is framed, so the
+  visitor ends up signing in on cadiotheka.com rather than in the hero. That is
+  deliberate: the provider page and the callback's redirect neither one can run
+  inside a frame.
 - **Two headers gate this, and both must change together.** Cadiotheka serves
   `frame-ancestors 'self' https://xodium.org https://www.xodium.org` from
   `frontend/_headers`, and this site allows the framed origin with
   `frame-src https://cadiotheka.com` in `public/_headers`. A miss on either
-  side renders a blank window with a console error. Local work needs the same
-  pair: run Cadiotheka's `trunk serve` behind a proxy that rewrites the header,
-  or temporarily relax it — `wasm-bindgen`'s own dev server cannot be framed
-  from another origin as-is.
+  side renders a blank window with a console error. The observed failure is
+  `X-Frame-Options: SAMEORIGIN` in the frame's own error page, so check what
+  Cadiotheka actually serves with `curl -sI https://cadiotheka.com/` rather than
+  trusting the file: an older deploy can still be live.
+- Do **not** add `X-Frame-Options` to Cadiotheka's `_headers`. Only
+  `SAMEORIGIN` and `DENY` are valid Chrome-era values; the obsolete
+  `ALLOW-FROM` is ignored, and a value without a valid ancestor list blocks the
+  frame outright. `frame-ancestors` alone is what allows the embed.
+- Local work needs the same pair: run Cadiotheka's `trunk serve` behind a proxy
+  that rewrites the header, or temporarily relax it — `wasm-bindgen`'s own dev
+  server cannot be framed from another origin as-is.
 
 - The window uses the **background** variant (`bg-base-100`), so it stays opaque
   and the colour wash behind it reads only in the padding ring around it.

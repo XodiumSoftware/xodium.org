@@ -66,7 +66,6 @@ const MAIN_PROJECTS: &[MainProject] = &[
         demo: Some(LiveFrame {
             src: "https://cadiotheka.com/",
             title: "Cadiotheka, live",
-            allow: "clipboard-write",
         }),
     },
     MainProject {
