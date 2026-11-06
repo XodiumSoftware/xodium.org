@@ -43,9 +43,9 @@ const MAIN_PROJECTS: &[MainProject] = &[
     },
     MainProject {
         mark: "bg-secondary",
-        title: "Project 2",
-        established: "Est 2026",
-        description: "Placeholder description for the second main project.",
+        title: "Coming Soon",
+        established: "Est XXXX",
+        description: "Secret project in the making.",
         left_button: "Visit",
         left_href: "#",
         right_button: "Learn More",
