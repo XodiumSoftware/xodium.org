@@ -183,6 +183,23 @@ fn paginated_endpoint(endpoint: &str, page: u32, per_page: usize) -> String {
     format!("{endpoint}{separator}page={page}&per_page={per_page}")
 }
 
+/// Label each member as `Owner` or `Member` from the organization's admin set.
+///
+/// Shared by [`fetch_members`] and its tests so the ownership rule has exactly
+/// one implementation and the test cannot drift from production behaviour.
+fn assign_roles(members: &mut [Member], owner_logins: &HashSet<String>) {
+    for member in members {
+        member.role = Some(
+            if owner_logins.contains(&member.login) {
+                "Owner"
+            } else {
+                "Member"
+            }
+            .to_string(),
+        );
+    }
+}
+
 /// Fetch public members of the `XodiumSoftware` GitHub organization.
 ///
 /// Members are labeled as `Owner` when their login appears in the
@@ -211,17 +228,7 @@ pub async fn fetch_members() -> Result<Vec<Member>, String> {
     };
 
     let owner_logins: HashSet<String> = owners.into_iter().map(|member| member.login).collect();
-
-    for member in &mut members {
-        member.role = Some(
-            if owner_logins.contains(&member.login) {
-                "Owner"
-            } else {
-                "Member"
-            }
-            .to_string(),
-        );
-    }
+    assign_roles(&mut members, &owner_logins);
 
     Ok(members)
 }
@@ -401,18 +408,18 @@ mod tests {
         let mut members = vec![sample_member("owner-user"), sample_member("regular-user")];
         let owner_logins: HashSet<String> = ["owner-user".to_string()].into();
 
-        for member in &mut members {
-            member.role = Some(
-                if owner_logins.contains(&member.login) {
-                    "Owner"
-                } else {
-                    "Member"
-                }
-                .to_string(),
-            );
-        }
+        assign_roles(&mut members, &owner_logins);
 
         assert_eq!(members[0].role.as_deref(), Some("Owner"));
         assert_eq!(members[1].role.as_deref(), Some("Member"));
+    }
+
+    #[wasm_bindgen_test]
+    fn test_assign_roles_without_admins_marks_everyone_member() {
+        let mut members = vec![sample_member("solo-user")];
+
+        assign_roles(&mut members, &HashSet::new());
+
+        assert_eq!(members[0].role.as_deref(), Some("Member"));
     }
 }
