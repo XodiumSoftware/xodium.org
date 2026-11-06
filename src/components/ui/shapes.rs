@@ -103,7 +103,7 @@ impl Dimensions for Shape {
 }
 
 /// Lattice position of an object's centre after scene layout.
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 #[must_use]
 pub struct Position {
     /// Lattice X coordinate of the object's centre, in drawing units.

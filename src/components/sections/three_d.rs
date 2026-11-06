@@ -5,21 +5,37 @@ use leptos::prelude::*;
 use std::collections::HashMap;
 
 /// Resolve an attachment against the blocks already registered, in order.
+///
+/// An attachment naming a target that was never registered (or was registered
+/// later in the list) falls back to the origin and logs a console error. The
+/// scene is built from static data, so this only fires on a programming error;
+/// degrading to a misplaced block is preferable to blanking the page.
 fn resolve(
     attachment: Option<Attachment>,
     shape: Shape,
     registry: &HashMap<&'static str, (Position, Shape)>,
 ) -> Position {
+    let origin = Position {
+        x: 0.0,
+        y: 0.0,
+        z: 0.0,
+    };
+
     match attachment {
-        None => Position {
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
-        },
+        None => origin,
         Some(Attachment::Face { target, face }) => {
-            let (target_pos, target_shape) = registry.get(target).copied().unwrap_or_else(|| {
-                panic!("Attachment target '{target}' not registered before use")
-            });
+            let Some((target_pos, target_shape)) = registry.get(target).copied() else {
+                web_sys::console::error_1(
+                    &format!(
+                        "Attachment target '{target}' is not registered before use; \
+                        placing the block at the scene origin instead."
+                    )
+                    .into(),
+                );
+
+                return origin;
+            };
+
             let (axis_target_ext, axis_self_ext) = match face {
                 Face::Top | Face::Bottom => (target_shape.height(), shape.height()),
                 Face::Left | Face::Right => (target_shape.width(), shape.width()),
@@ -149,5 +165,95 @@ pub fn ThreeDScene(
                 }}
             </div>
         </section>
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use wasm_bindgen_test::*;
+
+    wasm_bindgen_test_configure!(run_in_browser);
+
+    fn cube(size: f64) -> Shape {
+        Shape::Cube(size)
+    }
+
+    fn registry_with(
+        target: &'static str,
+        position: Position,
+        shape: Shape,
+    ) -> HashMap<&'static str, (Position, Shape)> {
+        HashMap::from([(target, (position, shape))])
+    }
+
+    const ORIGIN: Position = Position {
+        x: 0.0,
+        y: 0.0,
+        z: 0.0,
+    };
+
+    #[wasm_bindgen_test]
+    fn test_unattached_object_sits_at_origin() {
+        let position = resolve(None, cube(10.0), &HashMap::new());
+
+        assert_eq!(position, ORIGIN);
+    }
+
+    #[wasm_bindgen_test]
+    fn test_unresolved_attachment_falls_back_to_origin_instead_of_panicking() {
+        let attachment = Some(Attachment::Face {
+            target: "missing",
+            face: Face::Top,
+        });
+
+        let position = resolve(attachment, cube(10.0), &HashMap::new());
+
+        assert_eq!(position, ORIGIN);
+    }
+
+    #[wasm_bindgen_test]
+    fn test_attached_to_top_offsets_by_half_sum_of_heights() {
+        let registry = registry_with("base", ORIGIN, cube(10.0));
+        let attachment = Some(Attachment::Face {
+            target: "base",
+            face: Face::Top,
+        });
+
+        let position = resolve(attachment, cube(10.0), &registry);
+
+        assert_eq!(
+            position,
+            Position {
+                x: 0.0,
+                y: 0.0,
+                z: 10.0,
+            }
+        );
+    }
+
+    #[wasm_bindgen_test]
+    fn test_attachment_offsets_use_the_axis_extent_of_both_shapes() {
+        let wide = Shape::Cuboid(crate::components::ui::shapes::cuboid::Cuboid {
+            width: 40.0,
+            depth: 10.0,
+            height: 10.0,
+        });
+        let registry = registry_with("base", ORIGIN, wide);
+        let attachment = Some(Attachment::Face {
+            target: "base",
+            face: Face::Right,
+        });
+
+        let position = resolve(attachment, cube(10.0), &registry);
+
+        assert_eq!(
+            position,
+            Position {
+                x: 25.0,
+                y: 0.0,
+                z: 0.0,
+            }
+        );
     }
 }
