@@ -1,10 +1,10 @@
-//! Two-column band that sits directly below the banner.
+//! Two-column band that sits directly below the header.
 //!
 //! Both columns share equal width, separated by a vertical rule.
 
 use leptos::prelude::*;
 
-/// Two-column region below the banner.
+/// Two-column region below the header.
 ///
 /// Renders an equal-width left panel and right panel separated by a vertical
 /// rule. The columns stack on narrow viewports, with the left panel on top.
