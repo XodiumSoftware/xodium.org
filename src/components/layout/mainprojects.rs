@@ -1,16 +1,19 @@
 //! Main projects band, directly below the header.
 //!
-//! Two equal-width panels separated by a vertical rule, each showing a main
-//! project as a title row, a description row, and a pair of action buttons.
+//! Two panels separated by a vertical rule, each showing a main project as a
+//! title row, a description row, and a pair of action buttons. The coloured
+//! mark doubles as the tab that selects which project the hero shows.
 
 use leptos::prelude::*;
 
 /// A single main project panel in the [`MainProjects`] band.
-#[derive(Clone)]
+#[derive(Clone, Debug, PartialEq)]
 #[must_use]
 pub struct MainProject {
-    /// Tailwind background utility standing in for the project mark.
+    /// Tailwind background utility used for the project mark.
     pub mark: &'static str,
+    /// `DaisyUI` button colour for the primary action.
+    pub button: &'static str,
     /// Project name, rendered as an `h2`.
     pub title: &'static str,
     /// Year the project was established.
@@ -30,11 +33,10 @@ pub struct MainProject {
 }
 
 /// Panels rendered by [`MainProjects`], in reading order.
-///
-/// Placeholder copy, marks and links until the real projects exist.
 const MAIN_PROJECTS: &[MainProject] = &[
     MainProject {
         mark: "bg-primary",
+        button: "btn-primary",
         title: "Cadiotheka",
         established: "Est 2026",
         description: "The open hub for CAD creators.",
@@ -46,6 +48,7 @@ const MAIN_PROJECTS: &[MainProject] = &[
     },
     MainProject {
         mark: "bg-secondary",
+        button: "btn-secondary",
         title: "Coming Soon",
         established: "Est XXXX",
         description: "Secret project in the making.",
@@ -57,15 +60,50 @@ const MAIN_PROJECTS: &[MainProject] = &[
     },
 ];
 
+/// The project shown in another band, selected by this band's mark tabs.
+///
+/// Shared so the hero can react to the same index without either band owning
+/// the other's state.
+#[derive(Clone, Copy)]
+#[must_use]
+pub struct SelectedProject(pub RwSignal<usize>);
+
+impl SelectedProject {
+    /// Provide the selection signal to the page and return it.
+    pub fn provide() -> Self {
+        let selected = Self(RwSignal::new(0));
+        provide_context(selected);
+        selected
+    }
+
+    /// Read the signal out of context.
+    ///
+    /// # Panics
+    ///
+    /// Panics when [`SelectedProject::provide`] has not run, which means the
+    /// page was assembled without the shared selection.
+    pub fn use_context() -> Self {
+        expect_context::<Self>()
+    }
+}
+
+/// Returns the project at `index`, or the first project when the index is out
+/// of range so a stale selection can never blank the consuming band.
+#[must_use]
+pub fn project_at(index: usize) -> &'static MainProject {
+    MAIN_PROJECTS.get(index).unwrap_or(&MAIN_PROJECTS[0])
+}
+
 /// Main projects region below the header.
 ///
-/// Each panel is a 2x2 grid: a full-height icon in the left column spanning
-/// both rows, and the text stacked in the right column — title with
-/// establishment year, then description, then the two action buttons. The
+/// Each panel is a two-column grid: the mark, which behaves as a tab, beside
+/// the text column carrying the title, description and two action buttons. The
 /// panels stack on narrow viewports, with the first on top.
 #[component]
 #[must_use]
 pub fn MainProjects() -> impl IntoView {
+    let selected = SelectedProject::use_context();
+
     view! {
         <section
             class="sheet-band sheet-band-mainprojects grid grid-cols-1 md:grid-cols-2 md:divide-x md:divide-base-content/40 border-b border-base-content/40"
@@ -73,11 +111,30 @@ pub fn MainProjects() -> impl IntoView {
         >
             {MAIN_PROJECTS
                 .iter()
-                .map(|project| {
+                .enumerate()
+                .map(|(index, project)| {
+                    let is_selected = move || selected.0.get() == index;
+                    let panel_id = format!("project-panel-{index}");
                     view! {
                         <article class="grid grid-cols-[9.0625rem_minmax(0,1fr)]">
-                            <span class=format!("w-[9.0625rem] h-[9.0625rem] {}", project.mark)></span>
-                            <div class="col-start-2 row-start-1 flex min-w-0 flex-col justify-center gap-2 p-4">
+                            <button
+                                type="button"
+                                class=format!(
+                                    "w-[9.0625rem] h-[9.0625rem] cursor-pointer transition-opacity {}",
+                                    project.mark,
+                                )
+                                class:opacity-40=move || !is_selected()
+                                role="tab"
+                                aria-selected=move || is_selected().to_string()
+                                aria-controls=panel_id.clone()
+                                aria-label=project.title
+                                on:click=move |_| selected.0.set(index)
+                            ></button>
+                            <div
+                                id=panel_id
+                                role="tabpanel"
+                                class="col-start-2 row-start-1 flex min-w-0 flex-col justify-center gap-2 p-4"
+                            >
                                 <div class="flex min-w-0 items-center gap-3">
                                     <h2 class="text-sm font-semibold uppercase tracking-[0.08em]">
                                         {project.title}
@@ -92,9 +149,12 @@ pub fn MainProjects() -> impl IntoView {
                                 <div class="flex min-w-0 items-center gap-3 mt-3">
                                     <a
                                         class=format!(
-                                            "kbd kbd-lg keycap-btn flex-1 {} {}",
-                                            project.mark,
-                                            if project.disabled { "keycap-btn-disabled" } else { "" },
+                                            "btn btn-sm flex-1 {}",
+                                            if project.disabled {
+                                                "btn-disabled"
+                                            } else {
+                                                project.button
+                                            },
                                         )
                                         href=project.left_href
                                         aria-disabled=project.disabled
@@ -104,8 +164,8 @@ pub fn MainProjects() -> impl IntoView {
                                     </a>
                                     <a
                                         class=format!(
-                                            "kbd kbd-lg keycap-btn flex-1 {}",
-                                            if project.disabled { "keycap-btn-disabled" } else { "" },
+                                            "btn btn-sm flex-1 btn-outline-ghost {}",
+                                            if project.disabled { "btn-disabled" } else { "" },
                                         )
                                         href=project.right_href
                                         aria-disabled=project.disabled

@@ -60,7 +60,7 @@ pub mod components {
     pub use layout::header::Header;
     pub use layout::hero::Hero;
     pub use layout::main::Main;
-    pub use layout::mainprojects::MainProjects;
+    pub use layout::mainprojects::{MainProject, MainProjects, SelectedProject};
     pub use layout::subprojects::Subprojects;
     pub use layout::team::{Team, TeamProperties};
 

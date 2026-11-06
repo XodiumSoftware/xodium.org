@@ -160,6 +160,10 @@ body::before {
     --band-delay: 700ms;
 }
 
+.sheet-band-hero {
+    --band-delay: 600ms;
+}
+
 /*
  * Constrained drafting grid. Currently unmounted: the sheet renders without a
  * `.blueprint-grid` child while the grid is settled separately from `main`.
@@ -209,15 +213,24 @@ body::before {
 }
 
 /*
- * Ghost treatment for a lift button that should recede into the sheet: the
- * page surface as background with a `base-content` outline, so it reads as
- * drawn on the sheet rather than filled.
+ * Ghost button: no fill, a light outline, and text in the page colour. Hover
+ * turns the outline and label primary without adding a background, so it reads
+ * as a secondary action beside a filled primary.
+ *
+ * The disabled selector is repeated so a ghost button keeps DaisyUI's inert
+ * fill and faint label; without it the unlayered `transparent` below would
+ * out-rank the theme's disabled rule and the button would look enabled.
  */
-.btn-lift-ghost,
-.btn-lift-ghost:hover {
-    background-color: var(--color-base-100);
+.btn-outline-ghost:not(.btn-disabled, [aria-disabled="true"]) {
+    background-color: transparent;
     border-color: var(--color-base-content);
     color: var(--color-base-content);
+}
+
+.btn-outline-ghost:not(.btn-disabled, [aria-disabled="true"]):hover {
+    background-color: transparent;
+    border-color: var(--color-primary);
+    color: var(--color-primary);
 }
 
 .btn-lift:hover {
