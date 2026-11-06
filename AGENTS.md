@@ -110,7 +110,7 @@ Components are grouped by function in `src/components/`:
 | `Main`         | `main.rs`         | Heading and the band stack, in reading order                 |
 | `Header`       | `header.rs`       | Opening band with the ASCII mark and tagline                 |
 | `MainProjects` | `mainprojects.rs` | Equal-width left/right main project panels                   |
-| `Hero`         | `hero.rs`         | Focal band that grows to fill leftover height                |
+| `Hero`         | `hero.rs`         | Focal band: window mockup on a colour wash                   |
 | `Subprojects`  | `subprojects.rs`  | Equal-width three-card subproject links                      |
 | `Footer`       | `footer.rs`       | Closing band: copyright, band toggle, site links             |
 | `Team`         | `team.rs`         | Team band with large round avatars; swaps with `Subprojects` |
@@ -211,14 +211,17 @@ pub struct TeamProperties {
 
 **Async data with LocalResource:**
 
-`Team` fetches its own members when it mounts, so the request is only made
-once the band is opened:
+`Team` fetches its own members when it mounts, so a band that mounts later still
+has data without its parent passing a prop down:
 
 ```rust
 let members = LocalResource::new(|| async {
     fetch_members().await.unwrap_or_default()
 });
 ```
+
+That call is usually a cache hit because `Main` prefetches the same endpoint
+shortly after load (see [Team Section](#team-section)).
 
 ### Build Pipeline
 
@@ -255,14 +258,58 @@ let lower_band = LowerBandState::provide();
 - `Team` keeps the `id="team"` anchor so `#team` still resolves, and pressing
   Escape calls `on_close`, which switches the slot back to `Subprojects`.
 
+### Load Entrance and Swap Animations
+
+`SheetEntrance` (in `main.rs`) owns both animations, and the two are mutually
+exclusive per element:
+
+- `band_class()` returns `sheet-band-enter` while the page is loading in, which
+  plays `slide-up` on the band itself. `Header`, `MainProjects`, `Hero` and
+  `Subprojects` use it.
+- `swap_class()` returns `sheet-band-swap` only once a swap has been requested
+  (see `mark_swapped`), which fades the band's **children**. `Subprojects` and
+  `Team` use it.
+- These animate _different elements_, so they do not override each other. A
+  single flag would therefore have re-animated the subprojects cards the moment
+  the load entrance ended, which read as a flicker. Keep the two flags separate.
+- `band_class` is never applied to `Team`: it is only reachable through the
+  swap, so animating its bottom rule would look like a redraw.
+- `LowerBandState::set` arms the swap, so any caller that changes the band gets
+  the crossfade without extra bookkeeping.
+
+### Hero Band
+
+`Hero` is the focal band: a `DaisyUI` `mockup-window` filling the band's padded
+box, showing whichever project the main projects marks select.
+
+- The window uses the **background** variant (`bg-base-100`), so it stays opaque
+  and the colour wash behind it reads only in the padding ring around it.
+- Its border is `border-base-content/40`, the same rule colour as the band
+  borders. It is `rounded-lg` rather than `rounded-box` because the theme sets
+  `--radius-box: 0rem`, which would make the latter a no-op.
+- The window's three traffic lights come from one `::before` stamped with a
+  `box-shadow`; `public/style.css` recolours them through the shadow stops and
+  forces `opacity: 1`, since DaisyUI fades them to 30%.
+- The colour wash is `.sheet-band-hero::before`: several low-alpha
+  `radial-gradient` layers built from palette tokens. The band sets
+  `isolation: isolate` so `z-index: -1` keeps the wash inside the band rather
+  than dropping it behind the sheet.
+
 ### Team Section
 
 `Team` is mounted in the lower band slot (see [Lower Band Swap](#lower-band-swap)),
-not as a modal. It is a ruled band matching `Subprojects`: a wrapping centred
-row of round avatars, each linking to a member's GitHub profile in a new tab.
+not as a modal. It is a ruled band matching `Subprojects`: a centred row of round
+avatars, each linking to a member's GitHub profile in a new tab.
 
-- The component fetches its own members via `fetch_members` on mount, so
-  opening the band is the only thing that costs an API call.
+- The component fetches its own members via `fetch_members` when it mounts.
+- `Main` also prefetches the same endpoint 1.5 s after load, so the first open is
+  usually a cache hit rather than a live request. Without it the first open paid
+  the full GitHub round trip before any avatar could render.
+- While the request is pending the band draws `VISIBLE_AVATARS` placeholder
+  circles in the same avatar box, so it does not swap in empty and then reflow.
+- The band never takes the load-in entrance: it can only be reached through the
+  swap, and its crossfade is gated by `SheetEntrance` (see the swap docs in
+  `main.rs`).
 - It manages its own focus: it focuses the band on mount, closes on Escape via
   a document-level listener (so focus position does not matter), and restores
   focus to the previously active element on cleanup.
