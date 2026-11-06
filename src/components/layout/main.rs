@@ -6,14 +6,14 @@
 use crate::components::layout::footer::Footer;
 use crate::components::layout::header::Header;
 use crate::components::layout::hero::Hero;
-use crate::components::layout::tri_column::TriColumn;
-use crate::components::layout::two_column::TwoColumn;
+use crate::components::layout::mainprojects::MainProjects;
+use crate::components::layout::subprojects::Subprojects;
 use leptos::prelude::*;
 
 /// The central content area of the page.
 ///
 /// The drawing sheet owns the page width and centring, so this only supplies
-/// the inner gutter and stacks the bands from banner to footer. The bands are
+/// the inner gutter and stacks the bands from header to footer. The bands are
 /// presentation-only placeholders until real content is designed for each.
 #[component]
 #[must_use]
@@ -23,9 +23,9 @@ pub fn Main() -> impl IntoView {
             <h1 class="sr-only">"Xodium Software — open-source CAD software"</h1>
 
             <Header />
-            <TwoColumn />
+            <MainProjects />
             <Hero />
-            <TriColumn />
+            <Subprojects />
             <Footer />
         </main>
     }

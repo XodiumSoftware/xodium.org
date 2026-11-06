@@ -24,12 +24,12 @@ pub mod components {
         pub mod hero;
         /// Main content section.
         pub mod main;
+        /// Main projects band of the sheet.
+        pub mod mainprojects;
+        /// Subprojects band of the sheet.
+        pub mod subprojects;
         /// Team member overview.
         pub mod team;
-        /// Three-column band of the sheet.
-        pub mod tri_column;
-        /// Two-column band of the sheet.
-        pub mod two_column;
     }
 
     pub mod ui {
@@ -60,9 +60,9 @@ pub mod components {
     pub use layout::header::Header;
     pub use layout::hero::Hero;
     pub use layout::main::Main;
+    pub use layout::mainprojects::MainProjects;
+    pub use layout::subprojects::Subprojects;
     pub use layout::team::{Team, TeamProperties};
-    pub use layout::tri_column::TriColumn;
-    pub use layout::two_column::TwoColumn;
 
     pub use ui::ascii_art::{AsciiArt, XODIUM_ASCII_ART};
 

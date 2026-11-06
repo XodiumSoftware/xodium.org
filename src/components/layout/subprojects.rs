@@ -1,14 +1,14 @@
-//! Three-button band below the hero.
+//! Subprojects band below the hero.
 //!
-//! The buttons share equal width and are separated by vertical rules so the row
+//! The cards share equal width and are separated by vertical rules so the row
 //! reads as three drafted cells rather than flowing text.
 
 use leptos::prelude::*;
 
-/// A single card in the [`TriColumn`] band.
+/// A single card in the [`Subprojects`] band.
 #[derive(Clone)]
 #[must_use]
-pub struct TriColumnItem {
+pub struct SubprojectItem {
     /// Card heading, rendered as an `h2`.
     pub title: &'static str,
     /// Short description shown beneath the heading.
@@ -17,45 +17,45 @@ pub struct TriColumnItem {
     pub href: &'static str,
 }
 
-/// Cards rendered by [`TriColumn`], in reading order.
+/// Cards rendered by [`Subprojects`], in reading order.
 ///
 /// Placeholder copy and links until the real destinations are decided.
-const TRI_COLUMN_ITEMS: &[TriColumnItem] = &[
-    TriColumnItem {
+const SUBPROJECT_ITEMS: &[SubprojectItem] = &[
+    SubprojectItem {
         title: "Placeholder 1",
         desc: "Placeholder description 1.",
         href: "#",
     },
-    TriColumnItem {
+    SubprojectItem {
         title: "Placeholder 2",
         desc: "Placeholder description 2.",
         href: "#",
     },
-    TriColumnItem {
+    SubprojectItem {
         title: "Placeholder 3",
         desc: "Placeholder description 3.",
         href: "#",
     },
 ];
 
-/// Equal-width three-button region below the hero.
+/// Equal-width three-card subprojects region below the hero.
 ///
 /// Each card is a single anchor so the whole cell is clickable, and stacks to a
 /// single column on narrow viewports.
 #[component]
 #[must_use]
-pub fn TriColumn() -> impl IntoView {
+pub fn Subprojects() -> impl IntoView {
     view! {
         <section
-            class="grid grid-cols-1 md:grid-cols-3 md:divide-x md:divide-base-content/40 py-8 border-b border-base-content/40"
-            aria-label="Featured links"
+            class="grid grid-cols-1 md:grid-cols-3 md:divide-x md:divide-base-content/40 border-b border-base-content/40"
+            aria-label="Subprojects"
         >
-            {TRI_COLUMN_ITEMS
+            {SUBPROJECT_ITEMS
                 .iter()
                 .map(|item| {
                     view! {
                         <a
-                            class="group flex flex-col gap-2 px-6 py-4 md:first:pl-0 md:last:pr-0 transition-colors hover:bg-base-content/5"
+                            class="group flex flex-col gap-2 px-6 py-4 transition-colors hover:bg-base-content/5"
                             href=item.href
                             target="_blank"
                             rel="noopener noreferrer"

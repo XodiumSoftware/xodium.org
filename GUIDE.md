@@ -118,7 +118,7 @@ xodium.org/
 │   ├── github.rs         # GitHub API client
 │   ├── utils.rs          # Shared constants and helpers
 │   └── components/
-│   ├── layout/     # Main, Header, Hero, TwoColumn, TriColumn, Footer, Team
+│   ├── layout/     # Main, Header, Hero, MainProjects, Subprojects, Footer, Team
 │   └── ui/         # AsciiArt, LegendBlock, LinkBadges, TitleBlock, icons/
 ├── public/
 │   ├── style.css         # Tailwind + DaisyUI styles

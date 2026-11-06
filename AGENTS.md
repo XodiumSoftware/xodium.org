@@ -109,15 +109,15 @@ Components are grouped by function in `src/components/`:
 
 #### Layout Bands (`src/components/layout/`)
 
-| Component   | File            | Purpose                                                 |
-| ----------- | --------------- | ------------------------------------------------------- |
-| `Main`      | `main.rs`       | Heading and the band stack, in reading order            |
-| `Header`    | `header.rs`     | Opening band; currently only the ASCII mark is mounted  |
-| `TwoColumn` | `two_column.rs` | Equal-width left/right panels                           |
-| `Hero`      | `hero.rs`       | Focal band that grows to fill leftover height           |
-| `TriColumn` | `tri_column.rs` | Equal-width left/center/right panels                    |
-| `Footer`    | `footer.rs`     | Closing band with copyright and site links              |
-| `Team`      | `team.rs`       | Team section with large round avatars (not mounted yet) |
+| Component      | File              | Purpose                                                 |
+| -------------- | ----------------- | ------------------------------------------------------- |
+| `Main`         | `main.rs`         | Heading and the band stack, in reading order            |
+| `Header`       | `header.rs`       | Opening band; currently only the ASCII mark is mounted  |
+| `MainProjects` | `mainprojects.rs` | Equal-width left/right main project panels              |
+| `Hero`         | `hero.rs`         | Focal band that grows to fill leftover height           |
+| `Subprojects`  | `subprojects.rs`  | Equal-width three-card subproject links                 |
+| `Footer`       | `footer.rs`       | Closing band with copyright and site links              |
+| `Team`         | `team.rs`         | Team section with large round avatars (not mounted yet) |
 
 #### UI Primitives (`src/components/ui/`)
 
@@ -169,9 +169,9 @@ src/
 │   ├── layout/                # Sheet bands, stacked top to bottom
 │   │   ├── main.rs
 │   │   ├── header.rs
-│   │   ├── two_column.rs
+│   │   ├── mainprojects.rs
 │   │   ├── hero.rs
-│   │   ├── tri_column.rs
+│   │   ├── subprojects.rs
 │   │   ├── footer.rs
 │   │   └── team.rs
 │   └── ui/                    # UI primitives and icons

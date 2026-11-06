@@ -1,26 +1,26 @@
-//! Two-column band that sits directly below the header.
+//! Main projects band, directly below the header.
 //!
-//! Both columns share equal width, separated by a vertical rule.
+//! Two equal-width panels separated by a vertical rule.
 
 use leptos::prelude::*;
 
-/// Two-column region below the header.
+/// Main projects region below the header.
 ///
 /// Renders an equal-width left panel and right panel separated by a vertical
-/// rule. The columns stack on narrow viewports, with the left panel on top.
+/// rule. The panels stack on narrow viewports, with the left panel on top.
 #[component]
 #[must_use]
-pub fn TwoColumn() -> impl IntoView {
+pub fn MainProjects() -> impl IntoView {
     view! {
         <section
-            class="grid grid-cols-1 md:grid-cols-2 gap-6 py-8 border-b border-base-content/40"
-            aria-label="Left and right panels"
+            class="grid grid-cols-1 md:grid-cols-2 gap-6 border-b border-base-content/40"
+            aria-label="Main projects"
         >
             <div class="min-h-24 grid place-items-center text-xs uppercase tracking-widest opacity-50">
-                "Left"
+                "Main project 1"
             </div>
             <div class="min-h-24 grid place-items-center text-xs uppercase tracking-widest opacity-50 md:border-l md:border-base-content/40 md:pl-6">
-                "Right"
+                "Main project 2"
             </div>
         </section>
     }
