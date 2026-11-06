@@ -269,6 +269,38 @@ body::before {
 }
 
 /*
+ * Cadiotheka project mark. A glassy primary-coloured gradient replaces the flat
+ * fill so the brand tile reads as a polished highlight, overlaid with a concrete
+ * grid hatch.
+ */
+.mark-cadiotheka {
+    --tile-size: 8.875rem;
+    --tile-cell: 10px;
+    background-image:
+        linear-gradient(
+            to right,
+            oklch(95% 0 0 / 0.35) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            to bottom,
+            oklch(95% 0 0 / 0.35) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            145deg,
+            #ff7a18 0%,
+            #ff5500 35%,
+            #ff2a00 55%,
+            #ff7a18 100%
+        );
+    background-size:
+        var(--tile-cell) var(--tile-cell),
+        var(--tile-cell) var(--tile-cell),
+        100% 100%;
+}
+
+/*
  * Hatch fill for a project mark with no colour of its own. Repeating diagonal
  * lines over the page surface, so an unannounced project reads as a reserved,
  * unfilled cell rather than a coloured tile.
@@ -302,6 +334,46 @@ body::before {
     background-size:
         var(--tile-cell) var(--tile-cell),
         var(--tile-cell) var(--tile-cell);
+}
+
+.sheet-band-mainprojects .btn-primary:not(.btn-disabled, [aria-disabled="true"]) {
+    background-image: linear-gradient(
+        145deg,
+        #ff7a18 0%,
+        #ff5500 50%,
+        #ff2a00 100%
+    );
+    background-size: 200% 100%;
+    background-position: 0% 0%;
+    border-color: transparent;
+    transition:
+        background-position 0.25s ease,
+        box-shadow 0.12s ease,
+        filter 0.12s ease;
+}
+
+.sheet-band-mainprojects .btn-primary:not(.btn-disabled, [aria-disabled="true"]):hover {
+    background-position: 100% 0%;
+    filter: brightness(1.1);
+}
+
+.sheet-band-mainprojects .btn-outline-ghost:not(.btn-disabled, [aria-disabled="true"]) {
+    background-color: transparent;
+    border-color: var(--color-base-content);
+    color: var(--color-base-content);
+    transition:
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        color 0.25s ease,
+        filter 0.12s ease;
+}
+
+.sheet-band-mainprojects .btn-outline-ghost:not(.btn-disabled, [aria-disabled="true"]):hover {
+    background-color: transparent;
+    background-image: none;
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    filter: brightness(1.1);
 }
 
 /*

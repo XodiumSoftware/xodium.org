@@ -39,7 +39,7 @@ pub struct MainProject {
 /// Panels rendered by [`MainProjects`], in reading order.
 const MAIN_PROJECTS: &[MainProject] = &[
     MainProject {
-        mark: "bg-primary tile-grid",
+        mark: "mark-cadiotheka",
         button: "btn-primary",
         title: "Cadiotheka",
         established: "Est 2026",
