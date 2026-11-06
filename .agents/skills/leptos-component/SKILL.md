@@ -55,5 +55,5 @@ Use this skill when writing or reviewing Leptos components in the xodium.org CSR
 ## Verification
 
 - `just lint` runs `cargo clippy --all-targets --all-features --target wasm32-unknown-unknown -- -W clippy::pedantic -D warnings` and must pass clean.
-- `just test` runs the WASM browser tests (`wasm-pack test --headless --chrome`); the tests live next to the code under `#[cfg(test)] mod tests { ... }`.
+- `just test` runs the WASM browser tests (`wasm-pack test --headless --firefox`); the tests live next to the code under `#[cfg(test)] mod tests { ... }`.
 - `trunk build` verifies the bundle compiles; the CI release profile has a 500 KB size budget on the resulting `*_bg.wasm`.

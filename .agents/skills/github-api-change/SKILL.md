@@ -13,21 +13,23 @@ All GitHub data fetching is centralized in **`src/github.rs`**. There are curren
 
 ## Public API surface
 
-- `fetch_members() -> Result<Vec<Member>, String>` — org members, with `Owner`/`Member` role labels resolved via a second `role=admin` query for owners.
-- `fetch_repos() -> Result<Vec<Repo>, String>` — public org repos, filtered to exclude forks and sorted by star count descending.
-- `Member` and `Repo` — the response shapes consumed by callers.
+There is a single public entry point:
 
-Both wrap the internal helpers:
+- `fetch_members() -> Result<Vec<Member>, String>` — org members, labelled `Owner` or `Member` by a second `role=admin` query. If that second query fails it logs a warning and labels everyone `Member` rather than failing the whole call.
+- `Member` — the response shape consumed by callers.
+
+It wraps the internal helpers:
 
 - `fetch<T>(endpoint)` — cache-then-network with exponential-backoff retry and stale-if-error fallback.
 - `fetch_all<T>(endpoint)` — paginates `fetch` with `?page=N&per_page=100` until a short page is returned.
 
 ## Cache contract
 
-- Cache key: `xodium:{endpoint}`.
+- Cache key: `xodium:v{CACHE_SCHEMA_VERSION}:{endpoint}`. Bump `CACHE_SCHEMA_VERSION` when a cached payload type changes shape.
 - Timestamp: `{key}:ts` (ms since epoch).
 - TTL: 5 minutes.
 - Storage: `localStorage` via `gloo-storage`.
+- A payload that fails to deserialize is deleted together with its timestamp, so one bad entry costs a single fetch.
 - On all refresh attempts failing, the cached entry is still served if present — a console warning notes the staleness instead of showing a user-facing error.
 
 ## Steps
@@ -40,7 +42,7 @@ Both wrap the internal helpers:
     - Error handling around 403/429/5xx
 3. Edit `src/github.rs`.
 4. Update rustdoc on the public function if the cache TTL, retry behaviour, or return shape changed.
-5. If a response type changes, follow the field forward to whichever UI currently consumes it and rewire there. There are no UI consumers wired up yet — the call sites are the components that will be (re)built next, so the public API changes propagate cleanly.
+5. If a response type changes, follow the field forward to whichever UI currently consumes it and rewire there. The main consumer is `Main` in `src/components/sections/main.rs`, which feeds members to the `team_hub` scene object and the `Team` modal.
 6. `just lint` must stay clean.
 7. `trunk build` to verify.
 
@@ -52,5 +54,5 @@ Both wrap the internal helpers:
 
 ## Testing
 
-- WASM browser tests exist under `#[wasm_bindgen_test]` in `src/github.rs` — run them with `wasm-pack test --headless --chrome`, or `just test`.
+- WASM browser tests exist under `#[wasm_bindgen_test]` in `src/github.rs` — run them with `wasm-pack test --headless --firefox`, or `just test`.
 - `trunk serve` + browser devtools Network/Application tabs are the manual verification loop.

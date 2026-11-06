@@ -9,11 +9,12 @@ Use this skill when the user wants to add a new component or page region to the 
 
 ## File placement
 
-All modules are declared in `src/lib.rs` — there are no `mod.rs` files anywhere. Components live in one of three buckets:
+All modules are declared in `src/lib.rs` — there are no `mod.rs` files anywhere. Components live in one of two buckets:
 
 - **Standalone UI primitive** (a reusable widget) — `src/components/ui/{name}.rs`
-- **Scene element** (something rendered inside the 3D viewport) — `src/components/scenes/{name}.rs`
 - **Page-level section** (a full region of the single-page layout) — `src/components/sections/{name}.rs`
+
+Shapes rendered inside the 3D viewport are not a separate bucket: they implement the `Dimensions` trait and live under `src/components/ui/shapes/`.
 
 File names are lowercase with snake_case (e.g. `feature_card.rs`, `iso_viewport.rs`). Component names are PascalCase matching the file (`FeatureCard`, `IsoViewport`).
 

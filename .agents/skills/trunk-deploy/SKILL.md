@@ -45,7 +45,7 @@ trunk build --release
 Before considering the site ready to deploy:
 
 1. `just lint` — `cargo clippy --all-targets --all-features --target wasm32-unknown-unknown -- -W clippy::pedantic -D warnings` — passes clean.
-2. `just test` — `wasm-pack test --headless --chrome` — passes (the suite under `src/github.rs`).
+2. `just test` — `wasm-pack test --headless --firefox` — passes (the suite under `src/github.rs` and `src/components/ui/shapes.rs`).
 3. `trunk build --release` completes with no errors or warnings.
 4. The resulting `dist/*_bg.wasm` stays under the CI's 500 KB size budget.
 5. Browser console has no WASM panics when running `trunk serve`.
