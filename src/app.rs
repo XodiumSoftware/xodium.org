@@ -1,17 +1,15 @@
 //! Root application component and the single-page layout.
 //!
-//! `App` assembles the skip link, main content section, footer, and the
-//! bottom-right corner metadata stack into one blueprint-styled page.
+//! `App` assembles the skip link and main content section into one
+//! blueprint-styled page.
 
-use crate::components::sections::footer::Footer;
-use crate::components::sections::header::Header;
 use crate::components::sections::main::Main;
 use leptos::prelude::*;
 
 /// The full single-page blueprint drawing.
 ///
-/// Renders a fixed-layout page: the main content section fills the viewport,
-/// the corner stack sits bottom-right, and the footer sits bottom-left.
+/// The header and footer are deliberately unmounted while the main column is
+/// being settled; both are still built and exported from the crate.
 #[component]
 #[must_use]
 pub fn App() -> impl IntoView {
@@ -25,10 +23,6 @@ pub fn App() -> impl IntoView {
             </a>
 
             <Main />
-
-            <Footer />
-
-            <Header />
         </div>
     }
 }

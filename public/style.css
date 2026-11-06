@@ -7,6 +7,19 @@
     themes: halloween --default;
 }
 
+/*
+ * Square edges, matching the drafting-sheet look. DaisyUI's halloween theme
+ * ships rounded radius tokens; overriding them unlayered rather than through a
+ * second `daisyui/theme` block keeps the built-in palette untouched and wins
+ * over the theme's `@layer base` declarations.
+ */
+[data-theme="halloween"] {
+    --radius-selector: 0rem;
+    --radius-field: 0rem;
+    --radius-box: 0rem;
+    --depth: 0;
+}
+
 :root {
     --shadow-drop: oklch(0% 0 0);
 }
@@ -115,14 +128,12 @@ body::before {
 .blueprint-frame {
     position: relative;
     min-height: 100dvh;
-    display: grid;
-    place-items: center;
+    display: flex;
+    flex-direction: column;
 }
 
 .blueprint-frame > main {
-    grid-area: 1 / 1;
-    width: 100%;
-    height: 100%;
+    flex: 1;
 }
 
 .blueprint-frame::before,
