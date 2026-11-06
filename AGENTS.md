@@ -47,6 +47,9 @@ trunk build --release
 # Generate Rust documentation
 cargo doc --no-deps
 
+# Generate docs and fail on broken intra-doc links / doc warnings
+RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --target wasm32-unknown-unknown
+
 # Clean build artifacts
 trunk clean
 
@@ -60,7 +63,7 @@ cargo machete
 cargo clippy --all-targets --all-features --target wasm32-unknown-unknown -- -W clippy::pedantic -D warnings
 ```
 
-These also exist as `just` recipes (`just lint`, `just fmt-check`, `just deps-check`, `just test`, `just build`, `just serve`, `just size`, `just validate`); see `just --list`.
+These also exist as `just` recipes (`just lint`, `just fmt-check`, `just deps-check`, `just test`, `just doc`, `just build`, `just serve`, `just size`, `just validate`); see `just --list`.
 
 The `justfile` works on Windows and Unix: it defaults to `sh` and switches to
 PowerShell via `[windows]`. Recipes whose shell syntax differs (e.g. `size`) are
@@ -353,7 +356,7 @@ GitHub API responses cached in `localStorage`:
 
 GitHub Actions workflows in `.github/workflows/`:
 
-- **rust.yml** — Lint (clippy + fmt + cargo-machete), browser WASM tests, Trunk build with a 500 KB WASM size budget, deploy to Cloudflare Pages (pushes to `main`/`dev` and manual dispatches only)
+- **rust.yml** — Lint (clippy + fmt + rustdoc + cargo-machete), browser WASM tests, Trunk build with a 500 KB WASM size budget, deploy to Cloudflare Pages (pushes to `main`/`dev` and manual dispatches only)
 - **enforce_pr_title.yml** — Validates PR titles follow conventional commits
 
 ## Adding a New Section

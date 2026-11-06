@@ -54,5 +54,14 @@ size: build
 size: build
     Get-Item "{{ _wasm }}" | Select-Object Name, Length
 
+# Build rustdoc and fail on broken links or other warnings
+[unix]
+doc:
+    RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --target wasm32-unknown-unknown
+
+[windows]
+doc:
+    $env:RUSTDOCFLAGS = "-D warnings"; cargo doc --no-deps --target wasm32-unknown-unknown
+
 # Run the full validation suite used in CI
-validate: lint fmt-check deps-check test build
+validate: lint fmt-check deps-check test doc build

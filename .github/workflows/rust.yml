@@ -70,6 +70,12 @@ jobs:
           cargo fmt --all -- --check
         shell: bash
 
+      - id: run_doc
+        name: Build Rustdoc
+        run: |
+          RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --target wasm32-unknown-unknown
+        shell: bash
+
       - id: install_cargo_binstall
         name: Install cargo-binstall
         uses: cargo-bins/cargo-binstall@v1.26.1
