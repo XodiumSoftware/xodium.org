@@ -4,51 +4,11 @@
 @import "tailwindcss";
 
 @plugin "daisyui" {
-    themes: blueprint --default;
-}
-
-@plugin "daisyui/theme" {
-    name: "blueprint";
-    default: true;
-    prefersdark: true;
-    color-scheme: "dark";
-
-    --color-base-100: #0a2540;
-    --color-base-200: #0d2f52;
-    --color-base-300: #113a66;
-    --color-base-content: #d9e8f5;
-
-    --color-primary: #4da6ff;
-    --color-primary-content: #041020;
-
-    --color-secondary: #7ba7d9;
-    --color-secondary-content: #041020;
-
-    --color-accent: #ff6b6b;
-    --color-accent-content: #1a0404;
-
-    --color-neutral: #1a3a5c;
-    --color-neutral-content: #c8dcec;
-
-    --color-info: #4da6ff;
-    --color-info-content: #041020;
-    --color-success: #5ec97a;
-    --color-success-content: #041404;
-    --color-warning: #f0b429;
-    --color-warning-content: #1a0f00;
-    --color-error: #ff6b6b;
-    --color-error-content: #1a0404;
-
-    --radius-selector: 0rem;
-    --radius-field: 0rem;
-    --radius-box: 0rem;
-    --border: 1px;
-    --depth: 0;
-    --noise: 0;
+    themes: halloween --default;
 }
 
 :root {
-    --shadow-drop: #041020;
+    --shadow-drop: oklch(0% 0 0);
 }
 
 html {

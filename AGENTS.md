@@ -178,7 +178,7 @@ src/
 │       └── title_block.rs
 
 public/
-├── style.css                  # Tailwind + custom blueprint theme
+├── style.css                  # Tailwind + DaisyUI (halloween theme)
 ├── favicon.svg                # Site icon
 └── _headers                   # Cloudflare Pages response headers
 
