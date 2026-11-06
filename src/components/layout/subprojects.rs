@@ -66,7 +66,7 @@ pub fn Subprojects() -> impl IntoView {
                 .map(|item| {
                     view! {
                         <a
-                            class="group flex flex-col gap-2 px-6 py-(--lower-band-padding-y) transition-colors hover:bg-base-content/5"
+                            class="group flex flex-col justify-center gap-2 px-6 py-(--lower-band-padding-y) transition-colors hover:bg-base-content/5"
                             href=item.href
                             target="_blank"
                             rel="noopener noreferrer"

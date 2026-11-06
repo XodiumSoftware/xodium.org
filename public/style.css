@@ -176,10 +176,37 @@ body::before {
 }
 
 /*
+ * The lower slot's two bands share one pinned height so swapping them never
+ * resizes the sheet, whatever their content happens to be. `border-box` keeps
+ * the 1px band rule inside that figure rather than adding to it, and the card
+ * padding is included in the height too, so the inner rows only ever centre.
+ *
+ * Subprojects draws its separators with `divide-x`, which puts a border on the
+ * card boxes themselves. Those boxes are grid items that stretch to the row, so
+ * their dividers ran into the bottom rule. Clipping the band keeps every
+ * separator inside the content box and lets the bottom rule read as the only
+ * full-width line.
+ */
+.sheet-band-subprojects,
+.sheet-band-team {
+    box-sizing: border-box;
+    height: var(--lower-band-height);
+}
+
+.sheet-band-subprojects {
+    overflow: hidden;
+}
+
+/*
  * Swap animation for the two bands that trade places below the hero. It is
  * deliberately a plain opacity crossfade: the load-in entrance slides and
- * fades, but a swap should not move the band's bottom rule or the sheet would
- * look like it re-drew itself under the reader.
+ * fades, but a swap should not move the sheet's band rules.
+ *
+ * The fade is applied to the band's children rather than the band itself, so
+ * the band's box — and with it the bottom border — keeps its full opacity for
+ * the whole swap. Both the rule under the band and the hero's rule above it
+ * therefore stay put while only the contents crossfade. Only the load-in
+ * entrance moves the rules.
  *
  * `SheetEntrance::swap_class` only applies this once the load-in entrance is
  * over, so a band is never running both animations at once and first paint
@@ -194,15 +221,19 @@ body::before {
     }
 }
 
-.sheet-band-swap {
+.sheet-band-swap > * {
     animation: band-swap-in 220ms ease-out both;
 }
 
 /*
- * Height shared by the two bands that take turns below the hero. It is set to
- * the subprojects row's natural height (a title line, a description line and
- * the card padding) so the team band matches it instead of forcing the row
- * taller. Retune it if the card type scale changes.
+ * Height shared by the two bands that take turns below the hero.
+ *
+ * The bands are sized by different things — subprojects is a grid of text
+ * cards, team is a flex row of avatars — so letting either stay content-sized
+ * lets them drift apart whenever copy or type scale changes. Both are pinned to
+ * this value instead, with their inner rows centred in it. 6rem covers the
+ * tallest content either carries: a card title row, a description line and the
+ * band padding, with the 1px border inside the box.
  */
 :root {
     --lower-band-height: 6rem;
@@ -554,9 +585,6 @@ body::before {
     --team-avatar-size: calc(
         var(--lower-band-height) - (2 * var(--lower-band-padding-y)) - 2px
     );
-
-    box-sizing: border-box;
-    height: var(--lower-band-height);
 }
 
 .team-band-avatar {
@@ -710,7 +738,7 @@ body::before {
     }
 
     .sheet-band-enter,
-    .sheet-band-swap {
+    .sheet-band-swap > * {
         animation: none;
     }
 }
