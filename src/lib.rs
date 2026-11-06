@@ -20,16 +20,14 @@ pub mod components {
         pub mod footer;
         /// Bottom-right corner metadata stack.
         pub mod header;
-        /// Main isometric drawing viewport.
+        /// Main content section.
         pub mod main;
-        /// Team modal opened from the isometric scene.
+        /// Team member overview.
         pub mod team;
-        /// Isometric 3D object viewport used by `Main`.
-        pub mod three_d;
     }
 
     pub mod ui {
-        //! Reusable UI primitives, icons, and 3D drawing helpers.
+        //! Reusable UI primitives and icons.
 
         pub mod icons {
             //! Inline SVG icons used by link badges and controls.
@@ -41,14 +39,10 @@ pub mod components {
 
         /// XODIUM ASCII art header.
         pub mod ascii_art;
-        /// GitHub member avatar item.
-        pub mod avatar;
         /// Keyboard shortcut legend.
         pub mod legend_block;
         /// External link badges with keyboard shortcuts.
         pub mod link_badges;
-        /// Isometric wireframe objects and shape primitives.
-        pub mod shapes;
         /// Blueprint title-block metadata table.
         pub mod title_block;
 
@@ -60,16 +54,11 @@ pub mod components {
     pub use sections::header::Header;
     pub use sections::main::Main;
     pub use sections::team::{Team, TeamProperties};
-    pub use sections::three_d::ThreeDScene;
 
     pub use ui::ascii_art::{AsciiArt, XODIUM_ASCII_ART};
 
-    pub use ui::avatar::Avatar;
     pub use ui::legend_block::LegendBlock;
     pub use ui::link_badges::LinkBadges;
-    pub use ui::shapes::{
-        Attachment, Container, Face, FaceColors, Position, Shape, ThreeDObject, ThreeDProperties,
-    };
     pub use ui::title_block::TitleBlock;
 }
 

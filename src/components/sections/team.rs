@@ -1,7 +1,9 @@
-//! Team modal section.
+//! Team member section.
 //!
-//! Opens when the user activates the "Team" cube in the isometric scene and
-//! shows the Xodium GitHub members as large round avatars.
+//! Shows the Xodium GitHub members as large round avatars, each linking to
+//! the member's GitHub profile. Not currently mounted by the page; it is kept
+//! decoupled from [`Main`](crate::components::sections::main::Main) so the
+//! layout redesign can place it where it belongs.
 
 use crate::github::Member;
 use leptos::prelude::*;
@@ -9,29 +11,30 @@ use leptos::wasm_bindgen::JsCast as _;
 use leptos::wasm_bindgen::closure::Closure;
 use std::rc::Rc;
 
-/// Props for the [`Team`] modal.
+/// Props for the [`Team`] section.
 #[derive(Clone)]
 #[must_use]
 pub struct TeamProperties {
-    /// Members to display inside the modal.
+    /// Members to display.
     pub members: Vec<Member>,
-    /// Callback invoked when the modal should close (backdrop click or Escape).
+    /// Callback invoked when the section should be dismissed (backdrop click
+    /// or Escape).
     pub on_close: Rc<dyn Fn() + 'static>,
 }
 
-/// Modal overlay showing the Xodium team as large round avatars.
+/// Centered card showing the Xodium team as large round avatars.
 ///
-/// The modal is a barebones centered card over a translucent backdrop.
-/// Pressing Escape or clicking the backdrop closes it. Each avatar links to
-/// the member's GitHub profile in a new tab.
+/// Pressing Escape or clicking the backdrop invokes `on_close`. Each avatar
+/// links to the member's GitHub profile in a new tab.
 ///
-/// When opened the avatars animate from the center of the modal (as if they
-/// flew out of the "Team" cube) to their final horizontal positions,
-/// scaling up from a small size to the full display size.
+/// The avatars animate from the center of the card to their final horizontal
+/// positions, scaling up from a small size to the full display size.
 ///
-/// Focus moves to the dialog on open, Escape is handled by a document-level
+/// Focus moves to the card on mount, Escape is handled by a document-level
 /// listener so it works wherever focus sits, and focus returns to whatever was
-/// focused before the modal opened when it closes.
+/// focused before the card appeared when it is removed.
+///
+/// The caller owns the member fetch and supplies it through [`TeamProperties`].
 #[component]
 #[must_use]
 pub fn Team(

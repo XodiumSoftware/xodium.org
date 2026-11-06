@@ -152,17 +152,6 @@ body::before {
     }
 }
 
-@keyframes block-in {
-    from {
-        opacity: 0;
-        transform: translateY(0.25rem);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
 .blueprint-frame {
     position: relative;
     min-height: 100dvh;
@@ -287,175 +276,6 @@ body::before {
     background-color: var(--color-base-100);
 }
 
-.object-3d-scene {
-    grid-area: 1 / 1;
-    width: calc(100% - 16px * 2);
-    height: calc(100% - 16px * 2);
-    margin: auto;
-    position: relative;
-    color: var(--color-base-content);
-    font-family: var(--font-mono, ui-monospace, monospace);
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    user-select: none;
-    clip-path: inset(0);
-    animation: block-in 400ms ease-out 1100ms both;
-}
-
-.object-3d-layer {
-    position: absolute;
-    inset: 0;
-    transition: transform 300ms ease;
-    transform: translate(var(--pan-x, 0), var(--pan-y, 0)) scale(var(--zoom, 1));
-}
-
-.object-3d-iso {
-    color: var(--color-base-content);
-    user-select: none;
-    display: block;
-}
-
-.object-3d-avatars {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    pointer-events: none;
-    overflow: hidden;
-}
-
-.object-3d-avatar {
-    position: absolute;
-    width: 1.5rem;
-    height: 1.5rem;
-    border: 1px solid var(--color-base-content);
-    border-radius: 50%;
-    overflow: hidden;
-    background-color: var(--color-base-100);
-    animation: avatar-bounce var(--avatar-duration, 3.5s) ease-in-out
-        var(--avatar-delay, 0s) infinite alternate;
-    transform: rotate(var(--avatar-angle, 0deg)) translate(0, 0);
-}
-
-.object-3d-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.object-3d-avatar:hover {
-    border-color: var(--color-primary);
-    z-index: 1;
-}
-
-@keyframes avatar-bounce {
-    0% {
-        transform: rotate(var(--avatar-angle, 0deg)) translate(0, 0);
-    }
-    25% {
-        transform: rotate(calc(var(--avatar-angle, 0deg) + 45deg))
-            translate(
-                calc(var(--avatar-box-size, 40px) * 0.35),
-                calc(var(--avatar-box-size, 40px) * -0.25)
-            );
-    }
-    50% {
-        transform: rotate(calc(var(--avatar-angle, 0deg) + 90deg))
-            translate(
-                calc(var(--avatar-box-size, 40px) * 0.2),
-                calc(var(--avatar-box-size, 40px) * 0.35)
-            );
-    }
-    75% {
-        transform: rotate(calc(var(--avatar-angle, 0deg) + 135deg))
-            translate(
-                calc(var(--avatar-box-size, 40px) * -0.35),
-                calc(var(--avatar-box-size, 40px) * 0.1)
-            );
-    }
-    100% {
-        transform: rotate(calc(var(--avatar-angle, 0deg) + 180deg))
-            translate(
-                calc(var(--avatar-box-size, 40px) * -0.2),
-                calc(var(--avatar-box-size, 40px) * -0.3)
-            );
-    }
-}
-
-.object-3d-target {
-    position: absolute;
-    display: inline-grid;
-    place-items: center;
-    cursor: pointer;
-    user-select: none;
-    translate: -50% -50%;
-    transition: transform 300ms ease;
-}
-
-.object-3d-target:hover,
-.object-3d-target.tooltip-open {
-    transform: translateY(-4px);
-}
-
-.object-3d-inert,
-.object-3d-inert.tooltip-open {
-    cursor: default;
-}
-
-.object-3d-inert:hover {
-    transform: none;
-}
-
-.iso-face polygon {
-    stroke: var(--color-base-content);
-    stroke-width: 1.5;
-    stroke-linejoin: miter;
-}
-
-.object-3d-draft .iso-face polygon {
-    stroke-width: 1;
-}
-
-.iso-top polygon {
-    fill: var(--face-top, oklch(from var(--color-primary) l c h / 0.35));
-}
-
-.iso-left polygon {
-    fill: var(--face-left, oklch(0.65 0.15 155 / 0.35));
-}
-
-.iso-right polygon {
-    fill: var(--face-right, oklch(from var(--color-accent) l c h / 0.35));
-}
-
-.iso-edges line {
-    stroke: var(--color-base-content);
-    stroke-width: 1;
-    opacity: 0.55;
-}
-
-.iso-hidden line {
-    stroke: var(--color-base-content);
-    stroke-width: 1;
-    opacity: 0.45;
-    stroke-dasharray: 3 3;
-    stroke-linecap: butt;
-}
-
-.object-3d-draft .iso-face polygon {
-    fill: none;
-    stroke-dasharray: 8 6;
-    stroke-linejoin: miter;
-    stroke-linecap: butt;
-    stroke-width: 1;
-}
-
-.object-3d-draft .iso-edges line,
-.object-3d-draft .iso-hidden line {
-    stroke-dasharray: 6 4;
-}
-
 .title-block-anchor > :is(table, nav) {
     outline: 2px solid var(--color-base-content);
     outline-offset: 3px;
@@ -548,29 +368,6 @@ body::before {
 .link-badge-icon-bmc {
     width: auto;
     height: 1.25rem;
-}
-
-.team-modal-open .object-3d-avatars {
-    opacity: 1;
-}
-
-.team-modal-open .object-3d-avatar {
-    animation: team-avatar-escape 600ms cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
-}
-
-@keyframes team-avatar-escape {
-    0% {
-        transform: rotate(var(--avatar-angle, 0deg)) translate(0, 0) scale(1);
-        opacity: 1;
-    }
-    70% {
-        opacity: 1;
-    }
-    100% {
-        transform: rotate(var(--avatar-angle, 0deg))
-            translate(var(--escape-x, 0rem), var(--escape-y, -3rem)) scale(5);
-        opacity: 0;
-    }
 }
 
 .team-modal-backdrop {
@@ -776,18 +573,7 @@ body::before {
     .corner-stack > .corner-stack-sep,
     .corner-stack > .title-block-anchor,
     .blueprint-footer,
-    .legend-block,
-    .object-3d-scene,
-    .object-3d-avatar {
+    .legend-block {
         animation: none;
-    }
-
-    .object-3d-target,
-    .object-3d-layer {
-        transition: none;
-    }
-
-    .object-3d-target:hover {
-        transform: none;
     }
 }

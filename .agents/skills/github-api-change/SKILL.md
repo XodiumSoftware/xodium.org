@@ -42,7 +42,7 @@ It wraps the internal helpers:
     - Error handling around 403/429/5xx
 3. Edit `src/github.rs`.
 4. Update rustdoc on the public function if the cache TTL, retry behaviour, or return shape changed.
-5. If a response type changes, follow the field forward to whichever UI currently consumes it and rewire there. The main consumer is `Main` in `src/components/sections/main.rs`, which feeds members to the `team_hub` scene object and the `Team` modal.
+5. If a response type changes, follow the field forward to whichever UI currently consumes it and rewire there. Nothing consumes `fetch_members` right now: `Main` in `src/components/sections/main.rs` is decoupled from the `Team` section, so the caller that mounts `Team` will own that fetch.
 6. `just lint` must stay clean.
 7. `trunk build` to verify.
 

@@ -1,9 +1,7 @@
 //! Root application component and the single-page layout.
 //!
-//! `App` assembles the skip link, main drawing viewport, footer, and the
-//! bottom-right corner metadata stack into one blueprint-styled page. The
-//! Xodium GitHub team is rendered as bouncing avatars inside the "Team" block
-//! of the isometric scene.
+//! `App` assembles the skip link, main content section, footer, and the
+//! bottom-right corner metadata stack into one blueprint-styled page.
 
 use crate::components::sections::footer::Footer;
 use crate::components::sections::header::Header;
@@ -12,9 +10,8 @@ use leptos::prelude::*;
 
 /// The full single-page blueprint drawing.
 ///
-/// Renders a fixed-layout page: the isometric drawing viewport fills the
-/// viewport, the corner stack sits bottom-right, and the footer sits
-/// bottom-left. The interactive 3D scene lives in [`Main`].
+/// Renders a fixed-layout page: the main content section fills the viewport,
+/// the corner stack sits bottom-right, and the footer sits bottom-left.
 #[component]
 #[must_use]
 pub fn App() -> impl IntoView {

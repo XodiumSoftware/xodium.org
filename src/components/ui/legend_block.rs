@@ -1,6 +1,6 @@
 use leptos::prelude::*;
 
-/// An entry in the drawing viewport's interaction legend.
+/// An entry in the page interaction legend.
 struct LegendEntry {
     /// The mouse action or keyboard input displayed to the user.
     kbd: &'static str,
@@ -23,11 +23,10 @@ const LEGEND_ENTRIES: &[LegendEntry] = &[
     },
 ];
 
-/// Interaction legend for the drawing viewport.
+/// Interaction legend for keyboard shortcuts.
 ///
-/// Each row pairs a small input cell (mouse action or key cap) with the
-/// action it performs on the 3D block. Styled like the title block cells to
-/// read as drafting annotations.
+/// Each row pairs a small key cap with the action it performs. Styled like
+/// the title block cells to read as drafting annotations.
 #[component]
 #[must_use]
 pub fn LegendBlock() -> impl IntoView {

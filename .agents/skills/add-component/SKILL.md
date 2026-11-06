@@ -14,9 +14,7 @@ All modules are declared in `src/lib.rs` — there are no `mod.rs` files anywher
 - **Standalone UI primitive** (a reusable widget) — `src/components/ui/{name}.rs`
 - **Page-level section** (a full region of the single-page layout) — `src/components/sections/{name}.rs`
 
-Shapes rendered inside the 3D viewport are not a separate bucket: they implement the `Dimensions` trait and live under `src/components/ui/shapes/`.
-
-File names are lowercase with snake_case (e.g. `feature_card.rs`, `iso_viewport.rs`). Component names are PascalCase matching the file (`FeatureCard`, `IsoViewport`).
+File names are lowercase with snake_case (e.g. `feature_card.rs`, `legend_block.rs`). Component names are PascalCase matching the file (`FeatureCard`, `LegendBlock`).
 
 ## Steps
 
@@ -38,7 +36,7 @@ The site is styled as an engineering blueprint sheet. When scaffolding new compo
 - **Typography** is monospace, uppercase, small caps via `letter-spacing: 0.08em` — see `.title-block-label` for the pattern.
 - **Interactive elements** use the blueprint `lift` pop: `transform: translate(-2px, -2px)` + `box-shadow: 3px 3px 0 0 var(--shadow-drop)` on hover, reversed on active.
 - **External links** require `target="_blank" rel="noopener noreferrer"`.
-- **Static data** (link lists, marker positions, anything known at build time) goes in `const` slices at the top of the file.
+- **Static data** (link lists, legend entries, anything known at build time) goes in `const` slices at the top of the file.
 - New CSS rules belong in `public/style.css` near related rules. Use `oklch(from var(--color-*) l c h / α)` when you need to derive a shade from the active theme; don't hardcode hex values that DaisyUI's `blueprint` theme would need to override.
 
 ## Async data
