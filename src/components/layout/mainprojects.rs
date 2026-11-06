@@ -25,6 +25,8 @@ pub struct MainProject {
     pub right_button: &'static str,
     /// Destination of the right action button.
     pub right_href: &'static str,
+    /// When true, the action buttons are rendered inert.
+    pub disabled: bool,
 }
 
 /// Panels rendered by [`MainProjects`], in reading order.
@@ -40,6 +42,7 @@ const MAIN_PROJECTS: &[MainProject] = &[
         left_href: "https://cadiotheka.com/",
         right_button: "Learn More",
         right_href: "https://github.com/XodiumSoftware/cadiotheka",
+        disabled: false,
     },
     MainProject {
         mark: "bg-secondary",
@@ -50,6 +53,7 @@ const MAIN_PROJECTS: &[MainProject] = &[
         left_href: "#",
         right_button: "Learn More",
         right_href: "#",
+        disabled: true,
     },
 ];
 
@@ -88,14 +92,25 @@ pub fn MainProjects() -> impl IntoView {
                                 <div class="flex min-w-0 items-center gap-3 mt-3">
                                     <a
                                         class=format!(
-                                            "kbd kbd-lg keycap-btn flex-1 {}",
+                                            "kbd kbd-lg keycap-btn flex-1 {} {}",
                                             project.mark,
+                                            if project.disabled { "keycap-btn-disabled" } else { "" },
                                         )
                                         href=project.left_href
+                                        aria-disabled=project.disabled
+                                        tabindex=if project.disabled { Some("-1") } else { None }
                                     >
                                         {project.left_button}
                                     </a>
-                                    <a class="kbd kbd-lg keycap-btn flex-1" href=project.right_href>
+                                    <a
+                                        class=format!(
+                                            "kbd kbd-lg keycap-btn flex-1 {}",
+                                            if project.disabled { "keycap-btn-disabled" } else { "" },
+                                        )
+                                        href=project.right_href
+                                        aria-disabled=project.disabled
+                                        tabindex=if project.disabled { Some("-1") } else { None }
+                                    >
                                         {project.right_button}
                                     </a>
                                 </div>

@@ -265,6 +265,21 @@ body::before {
     border-bottom-width: var(--border);
 }
 
+/*
+ * Inert keycap: reads as unpressable while staying in the layout. `pointer-events:
+ * none` stops the hover lift and any click on an anchor, and the opacity drop
+ * marks it as unavailable without hiding the label.
+ */
+.keycap-btn-disabled,
+.keycap-btn-disabled:hover,
+.keycap-btn-disabled:active {
+    pointer-events: none;
+    cursor: not-allowed;
+    opacity: 0.4;
+    transform: translateY(0);
+    background-color: var(--color-base-200);
+}
+
 .ascii-art {
     align-self: stretch;
     font-family: var(--font-mono, ui-monospace, monospace);
