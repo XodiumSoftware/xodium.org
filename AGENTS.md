@@ -120,12 +120,14 @@ Components are grouped by function in `src/components/`:
 | Component  | File           | Purpose                 |
 | ---------- | -------------- | ----------------------- |
 | `AsciiArt` | `ascii_art.rs` | XODIUM ASCII glyph mark |
+| `HeroDemo` | `hero_demo.rs` | Live cross-origin demo frame for the hero window |
 
 #### UI Icons (`src/components/ui/icons/`)
 
 | Component          | File                 | Purpose             |
 | ------------------ | -------------------- | ------------------- |
 | `BuyMeACoffeeIcon` | `buy_me_a_coffee.rs` | Buy Me a Coffee cup |
+| `CadioThekaIcon`   | `cadiotheka.rs`      | Cadiotheka brand glyph |
 | `GitHubIcon`       | `github.rs`          | GitHub Octocat      |
 
 #### Effects (`src/components/effects/`)
@@ -176,6 +178,7 @@ src/
 │   │   └── blob.rs
 │   └── ui/                    # UI primitives and icons
 │       ├── ascii_art.rs
+│       ├── hero_demo.rs
 │       └── icons/
 │           ├── buy_me_a_coffee.rs
 │           └── github.rs
@@ -289,6 +292,39 @@ exclusive per element:
 
 `Hero` is the focal band: a `DaisyUI` `mockup-window` filling the band's padded
 box, showing whichever project the main projects marks select.
+
+The window body is a live frame of the selected project's site, so the hero
+shows the running app instead of restating the title and description already
+shown one band above.
+
+- `MainProject::demo` holds an `Option<LiveFrame>` (`src`, `title`, `allow`).
+  `MainProjects` therefore owns both what a panel says and what the hero frames;
+  `Hero` only reads `project_at(..)` and passes the frame down.
+- A project with `demo: None` (the unreleased one) renders `HeroPlaceholder`,
+  which keeps the window's box and centres the project name, so switching marks
+  never collapses the band.
+- `HeroDemo` (`components/ui/hero_demo.rs`) does the framing. It has no
+  `aria-live`, since it only ever holds static chrome plus one iframe.
+- The frame is scaled to `FRAME_SCALE` (50%) and pinned to the top-left with
+  `origin-top-left`, over a doubled `w-[calc(100%*2)] h-[calc(100%*2)]` box that
+  the wrapper crops. The framed app therefore lays out at its natural desktop
+  width and overflows out of view instead of reflowing into a narrow column.
+  Do not express that size through Tailwind's spacing scale: those utilities
+  resolve to `calc(var(--spacing) * n)`, which is invalid inside the `scale`
+  longhand, so the multiplier is written out literally.
+- The iframe is `opacity-0` until its `load` event, then fades in; without that
+  the window flashed the framed site's background before its content painted.
+- The frame is sandboxed with `allow-scripts allow-same-origin allow-forms`
+  (Trunk's WASM boot, its API calls, and its forms all break without them).
+  Never add `allow-top-navigation`.
+- **Two headers gate this, and both must change together.** Cadiotheka serves
+  `frame-ancestors 'self' https://xodium.org https://www.xodium.org` from
+  `frontend/_headers`, and this site allows the framed origin with
+  `frame-src https://cadiotheka.com` in `public/_headers`. A miss on either
+  side renders a blank window with a console error. Local work needs the same
+  pair: run Cadiotheka's `trunk serve` behind a proxy that rewrites the header,
+  or temporarily relax it — `wasm-bindgen`'s own dev server cannot be framed
+  from another origin as-is.
 
 - The window uses the **background** variant (`bg-base-100`), so it stays opaque
   and the colour wash behind it reads only in the padding ring around it.

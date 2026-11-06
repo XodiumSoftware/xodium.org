@@ -8,6 +8,7 @@
 use crate::components::effects::blob::{BlobBackground, BlobBackgroundProperties};
 use crate::components::layout::main::SheetEntrance;
 use crate::components::layout::mainprojects::{SelectedProject, project_at};
+use crate::components::ui::hero_demo::{HeroDemo, HeroDemoProperties};
 use leptos::prelude::*;
 
 /// Large focal region in the middle of the sheet.
@@ -16,14 +17,19 @@ use leptos::prelude::*;
 /// rows below it downwards. Once the content is taller than the sheet, the hero
 /// keeps its natural height and the page scrolls normally.
 ///
-/// The heading and copy swap when a different project is selected above, and the
-/// `aria-live` region announces the change for assistive technology.
-///
 /// The featured project sits inside a `DaisyUI` mockup window using its
 /// background variant, tinted with `base-100` so the panel reads as a window
 /// cut into the sheet rather than a raised surface. Its border is the same
 /// `base-content/40` rule as the band borders, so the window frames the hero in
 /// the sheet's own line colour.
+///
+/// The window body is a live [`HeroDemo`] frame of the selected project's site,
+/// so the hero shows the running app rather than a description of it. The
+/// project title and description now live only in the main projects band, which
+/// avoids restating them in two places on one sheet.
+///
+/// A project without a live site gets a placeholder instead, which keeps the
+/// window's box so the sheet does not jump when the selection changes.
 ///
 /// The band's `p-6` is the only inset: the window stretches to the remaining
 /// box on both axes, so it frames the hero instead of floating in the middle
@@ -44,28 +50,45 @@ pub fn Hero() -> impl IntoView {
                 )
             }
             aria-label="Featured project"
-            aria-live="polite"
         >
             <BlobBackground props=BlobBackgroundProperties {
                 class: "hero-wash",
             } />
             {move || {
                 let project = project_at(selected.0.get());
+                let body = match project.demo {
+                    Some(frame) => {
+                        view! {
+                            <HeroDemo props=HeroDemoProperties { frame } />
+                        }
+                            .into_any()
+                    }
+                    None => view! { <HeroPlaceholder title=project.title /> }.into_any(),
+                };
                 view! {
                     <div class="mockup-window bg-base-100 border border-base-content/40 rounded-lg h-full w-full overflow-hidden">
-                        <div class="grid flex-1 place-content-center overflow-auto p-6">
-                            <div class="flex flex-col items-center gap-2 text-center">
-                                <h2 class="text-lg font-semibold uppercase tracking-[0.08em]">
-                                    {project.title}
-                                </h2>
-                                <p class="text-xs leading-relaxed text-base-content/70">
-                                    {project.description}
-                                </p>
-                            </div>
-                        </div>
+                        {body}
                     </div>
                 }
             }}
         </section>
+    }
+}
+
+/// Window body for a project that has no live site to show yet.
+///
+/// It keeps the window's box and centres the project name, so a project that is
+/// still under wraps fills the hero without pretending to be a running app.
+#[component]
+fn HeroPlaceholder(
+    /// Name of the project awaiting a demo.
+    title: &'static str,
+) -> impl IntoView {
+    view! {
+        <div class="grid h-full w-full place-content-center p-6 text-center">
+            <h2 class="text-lg font-semibold uppercase tracking-[0.08em] opacity-60">
+                {title}
+            </h2>
+        </div>
     }
 }
