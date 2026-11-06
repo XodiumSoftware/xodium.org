@@ -63,5 +63,9 @@ doc:
 doc:
     $env:RUSTDOCFLAGS = "-D warnings"; cargo doc --no-deps --target wasm32-unknown-unknown
 
+# Verify repository paths named in Markdown files exist
+docs-check:
+    sh scripts/check-md-paths.sh
+
 # Run the full validation suite used in CI
-validate: lint fmt-check deps-check test doc build
+validate: lint fmt-check deps-check docs-check test doc build

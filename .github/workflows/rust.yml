@@ -76,6 +76,12 @@ jobs:
           RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --target wasm32-unknown-unknown
         shell: bash
 
+      - id: run_docs_check
+        name: Check Markdown Paths
+        run: |
+          sh scripts/check-md-paths.sh
+        shell: bash
+
       - id: install_cargo_binstall
         name: Install cargo-binstall
         uses: cargo-bins/cargo-binstall@v1.26.1
