@@ -381,6 +381,15 @@ body::before {
 }
 
 /*
+ * Placeholder avatar shown while the member request is in flight. It reuses the
+ * avatar box so the row keeps its size and position when the real images
+ * arrive, rather than the band appearing empty and then reflowing.
+ */
+.team-band-skeleton {
+    border-color: transparent;
+}
+
+/*
  * The group's own 4px `base-100` border is what separates overlapping avatars,
  * so it replaces rather than stacks on the per-avatar outline.
  */

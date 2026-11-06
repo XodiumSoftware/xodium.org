@@ -67,6 +67,27 @@ fn overflow_counter(overflow: usize) -> impl IntoView {
     }
 }
 
+/// Placeholder avatars shown while the member request is still in flight.
+///
+/// They reserve the row's shape so the band does not look empty after the swap,
+/// and are hidden from assistive tech because the live region announces the
+/// arrival of the real members.
+fn loading_avatars(count: usize) -> impl IntoView {
+    view! {
+        <div class="avatar-group -space-x-4" aria-hidden="true">
+            {(0..count)
+                .map(|_| {
+                    view! {
+                        <div class="avatar">
+                            <div class="team-band-avatar team-band-skeleton skeleton"></div>
+                        </div>
+                    }
+                })
+                .collect_view()}
+        </div>
+    }
+}
+
 /// Team band: a `DaisyUI` avatar group with a counter.
 ///
 /// Members are fetched when the band mounts, so the request is made only once
@@ -158,13 +179,9 @@ pub fn Team(
             tabindex="-1"
             aria-label="Team members"
         >
-            <div
-                class="avatar-group -space-x-4"
-                role="list"
-                aria-label="Xodium team members"
-            >
-                {move || {
-                    let loaded = members.get().unwrap_or_default();
+            {move || match members.get() {
+                None => loading_avatars(VISIBLE_AVATARS).into_any(),
+                Some(loaded) => {
                     let overflow = loaded.len().saturating_sub(VISIBLE_AVATARS);
                     let shown = loaded
                         .into_iter()
@@ -174,13 +191,18 @@ pub fn Team(
                     let counter = (overflow > 0).then(|| overflow_counter(overflow));
 
                     view! {
-                        <>
+                        <div
+                            class="avatar-group -space-x-4"
+                            role="list"
+                            aria-label="Xodium team members"
+                        >
                             {shown}
                             {counter}
-                        </>
+                        </div>
                     }
-                }}
-            </div>
+                        .into_any()
+                }
+            }}
         </section>
     }
 }
