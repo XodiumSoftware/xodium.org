@@ -5,6 +5,7 @@
 //! mark doubles as the tab that selects which project the hero shows.
 
 use crate::components::layout::main::SheetEntrance;
+use crate::components::ui::icons::cadiotheka::CadioThekaIcon;
 use leptos::prelude::*;
 
 /// A single main project panel in the [`MainProjects`] band.
@@ -31,6 +32,8 @@ pub struct MainProject {
     pub right_href: &'static str,
     /// When true, the action buttons are rendered inert.
     pub disabled: bool,
+    /// Name of the icon variant to render in the mark square.
+    pub icon: &'static str,
 }
 
 /// Panels rendered by [`MainProjects`], in reading order.
@@ -46,6 +49,7 @@ const MAIN_PROJECTS: &[MainProject] = &[
         right_button: "Learn More",
         right_href: "https://github.com/XodiumSoftware/cadiotheka",
         disabled: false,
+        icon: "none",
     },
     MainProject {
         mark: "hatch",
@@ -58,6 +62,7 @@ const MAIN_PROJECTS: &[MainProject] = &[
         right_button: "Learn More",
         right_href: "#",
         disabled: true,
+        icon: "none",
     },
 ];
 
@@ -93,6 +98,15 @@ impl SelectedProject {
 #[must_use]
 pub fn project_at(index: usize) -> &'static MainProject {
     MAIN_PROJECTS.get(index).unwrap_or(&MAIN_PROJECTS[0])
+}
+
+/// Renders the icon for a project mark based on its [`MainProject::icon`] name.
+#[must_use]
+pub fn render_project_icon(icon: &str) -> impl IntoView + use<'_> {
+    match icon {
+        "cadiotheka" => view! { <CadioThekaIcon /> }.into_any(),
+        _ => view! { <span></span> }.into_any(),
+    }
 }
 
 /// Main projects region below the header.
@@ -136,6 +150,12 @@ pub fn MainProjects() -> impl IntoView {
                                 aria-label=project.title
                                 on:click=move |_| selected.0.set(index)
                             >
+                                <span
+                                    class="absolute inset-0 flex items-center justify-center"
+                                    aria-hidden="true"
+                                >
+                                    {render_project_icon(project.icon)}
+                                </span>
                                 <span
                                     class="absolute inset-x-6 bottom-0 h-1 rounded-t-full bg-white opacity-0"
                                     class:opacity-100=move || is_selected()

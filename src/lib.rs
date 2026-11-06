@@ -45,6 +45,8 @@ pub mod components {
             //! Inline SVG icons used by link badges and controls.
             /// Buy Me a Coffee cup icon.
             pub mod buy_me_a_coffee;
+            /// Cadiotheka Sigma icon.
+            pub mod cadiotheka;
             /// GitHub Octocat icon.
             pub mod github;
         }
@@ -53,6 +55,7 @@ pub mod components {
         pub mod ascii_art;
 
         pub use icons::buy_me_a_coffee::BuyMeACoffeeIcon;
+        pub use icons::cadiotheka::CadioThekaIcon;
         pub use icons::github::GitHubIcon;
     }
 
