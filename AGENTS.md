@@ -82,18 +82,20 @@ platform-neutral variables at the top of the file.
 The single-page application is a blueprint-style drawing with a fixed corner
 stack of metadata and controls:
 
+All of this is wrapped in a single `<div class="blueprint-frame">` in
+`app.rs`:
+
 1. **Skip Link** — accessibility anchor to `#main-content`
-2. **`main#content`** — full-viewport drawing viewport containing the
-   isometric [`ThreeDScene`], rendered by the [`Main`] section component
-3. **Corner stack** (`<aside class="corner-stack">`) — fixed bottom-right
-   metadata panel:
+2. **`Main`** (`<main id="main-content">`) — full-viewport drawing viewport
+   containing the isometric `ThreeDScene`, plus the `Team` modal rendered on
+   demand
+3. **Corner stack** (`<aside class="corner-stack">`, assembled by `Header`) —
+   fixed bottom-right metadata panel:
     - `AsciiArt` — XODIUM glyph mark
-    - separator line
+    - separator line (`<hr class="corner-stack-sep">`)
     - `LegendBlock` — keyboard shortcut legend
     - `LinkBadges` + `TitleBlock` — external links and sheet metadata
-4. _(removed)_ ~~`Team`~~ — team members are now rendered as bouncing
-   avatars inside the "Team" object in the isometric scene
-5. **`Footer`** — fixed bottom-left copyright / revision link
+4. **`Footer`** — fixed bottom-left copyright / navigation links
 
 ### Component Organization
 
@@ -101,23 +103,27 @@ Components are grouped by function in `src/components/`:
 
 #### Sections (`src/components/sections/`)
 
-| Component     | File         | Purpose                                               |
-| ------------- | ------------ | ----------------------------------------------------- |
-| `Main`        | `main.rs`    | Central isometric drawing viewport                    |
-| `ThreeDScene` | `three_d.rs` | Isometric scene that hosts `ThreeDObject` item blocks |
-| `Header`      | `header.rs`  | Bottom-right corner stack assembly                    |
-| `Footer`      | `footer.rs`  | Bottom-left site footer                               |
+| Component     | File         | Purpose                                                       |
+| ------------- | ------------ | ------------------------------------------------------------- |
+| `Main`        | `main.rs`    | Central isometric drawing viewport + team modal orchestration |
+| `ThreeDScene` | `three_d.rs` | Isometric scene that hosts `ThreeDObject` item blocks         |
+| `Team`        | `team.rs`    | Team member modal opened from the "Team" cube                 |
+| `Header`      | `header.rs`  | Bottom-right corner stack assembly                            |
+| `Footer`      | `footer.rs`  | Bottom-left site footer                                       |
 
 #### UI Primitives (`src/components/ui/`)
 
-| Component      | File              | Purpose                                          |
-| -------------- | ----------------- | ------------------------------------------------ |
-| `AsciiArt`     | `ascii_art.rs`    | XODIUM ASCII glyph mark                          |
-| `LegendBlock`  | `legend_block.rs` | Keyboard shortcut legend                         |
-| `LinkBadges`   | `link_badges.rs`  | External link icons (GitHub, Buy Me a Coffee)    |
-| `ThreeDObject` | `shapes.rs`       | Isometric wireframe block and shape registry     |
-| `Avatar`       | `avatar.rs`       | Single GitHub member avatar item                 |
-| `TitleBlock`   | `title_block.rs`  | Blueprint metadata table (sheet, DPR, rev, date) |
+| Component      | File              | Purpose                                                               |
+| -------------- | ----------------- | --------------------------------------------------------------------- |
+| `AsciiArt`     | `ascii_art.rs`    | XODIUM ASCII glyph mark                                               |
+| `LegendBlock`  | `legend_block.rs` | Keyboard shortcut legend                                              |
+| `LinkBadges`   | `link_badges.rs`  | External link icons (GitHub, Buy Me a Coffee)                         |
+| `ThreeDObject` | `shapes.rs`       | Isometric wireframe block and shape registry                          |
+| `Avatar`       | `avatar.rs`       | Single GitHub member avatar item (currently unreferenced by the page) |
+| `TitleBlock`   | `title_block.rs`  | Blueprint metadata table (sheet, DPR, rev, date)                      |
+
+`shapes.rs` also owns the nested `shapes/cuboid.rs` (the `Cuboid` shape) and
+`shapes/dimensions.rs` (the shared `Dimensions` trait).
 
 #### UI Icons (`src/components/ui/icons/`)
 
@@ -128,19 +134,24 @@ Components are grouped by function in `src/components/`:
 
 ### GitHub API (`src/github.rs`)
 
-Centralized data fetching with `localStorage` caching:
+Centralized data fetching with `localStorage` caching. The only public
+entry point is `fetch_members()`:
 
-| Function          | Endpoint                                 | Cache TTL |
-| ----------------- | ---------------------------------------- | --------- |
-| `fetch_members()` | `/orgs/XodiumSoftware/members`           | 5 minutes |
-| `fetch_repos()`   | `/orgs/XodiumSoftware/repos?type=public` | 5 minutes |
+| Function          | Endpoints                                                                    | Cache TTL |
+| ----------------- | ---------------------------------------------------------------------------- | --------- |
+| `fetch_members()` | `/orgs/XodiumSoftware/members` and `/orgs/XodiumSoftware/members?role=admin` | 5 minutes |
+
+`fetch_members` labels each member `Owner` when their login appears in the
+admin-member response, and `Member` otherwise. If the admin request fails it
+logs a warning and labels everyone `Member` rather than failing the whole
+call.
 
 **Internal helpers:**
 
-- `fetch<T>(endpoint)` — cache-then-network with retry logic (4 attempts, exponential backoff)
+- `fetch<T>(endpoint)` — cache-then-network with retry logic (`MAX_RETRIES + 1` attempts, exponential backoff from 1 s)
 - `fetch_all<T>(endpoint)` — paginates `fetch` with `?page=N&per_page=100` until a short page is returned
 - `LocalResource` used for async (runs on WASM thread)
-- `xodium:{endpoint}` cache key format
+- `xodium:{endpoint}` cache key format; timestamps live in a sibling `{key}:ts` entry
 
 ### Project Structure
 
@@ -155,6 +166,7 @@ src/
 │   ├── sections/              # Page sections
 │   │   ├── main.rs
 │   │   ├── three_d.rs
+│   │   ├── team.rs
 │   │   ├── header.rs
 │   │   └── footer.rs
 │   └── ui/                    # UI primitives and icons
@@ -172,7 +184,8 @@ src/
 
 public/
 ├── style.css                  # Tailwind + custom blueprint theme
-└── icons/                     # SVG icons
+├── favicon.svg                # Site icon
+└── _headers                   # Cloudflare Pages response headers
 
 index.html                     # Trunk entry template
 Trunk.toml                     # Trunk configuration
@@ -180,10 +193,10 @@ Trunk.toml                     # Trunk configuration
 
 ### Key Conventions
 
-- **Register modules and re-exports in `src/lib.rs` explicitly.** Do not use `mod.rs` files. The crate root declares the top-level module tree; nested `pub mod` declarations are allowed inside module root files (e.g. `object_3d.rs` declares `pub mod cuboid;`). Use `#[path = "..."]` attributes when a module file lives in a subdirectory and cannot be reached by the conventional module path.
+- **Register modules and re-exports in `src/lib.rs` explicitly.** Do not use `mod.rs` files. The crate root declares the module tree inside inline `pub mod components { pub mod sections { .. } pub mod ui { .. } }` blocks; nested `pub mod` declarations are allowed inside module root files (e.g. `shapes.rs` declares `pub mod cuboid;`). Use `#[path = "..."]` attributes when a module file lives in a subdirectory and cannot be reached by the conventional module path.
 - All Clippy warnings enabled; run with `-W clippy::pedantic -D warnings` to catch pedantic lints as errors.
-- `missing_docs` is enabled in `Cargo.toml` under `[lints.rust]`. Every public module, type, function, and field must have a rustdoc comment.
-- No `unsafe` code — where JS handles must satisfy `Send + Sync` (e.g. for `on_cleanup`), use `send_wrapper::SendWrapper`
+- `missing_docs` is enabled in `Cargo.toml` under `[lints.rust]` as `"warn"`. It is only a hard failure through `just lint` / `just validate`, which pass `-D warnings`; `trunk build` and plain `cargo build` will not reject missing docs. Every public module, type, function, and field should still have a rustdoc comment.
+- No `unsafe` code (`unsafe_code = "deny"`).
 - **Props:** `#[derive(Clone)]` structs named `{Component}Properties` (e.g. `ThreeDProperties`)
 - **Async data:** Use `LocalResource` (not `Resource`) for WASM thread execution
 - **External links:** Always use `target="_blank" rel="noopener noreferrer"`
@@ -206,17 +219,20 @@ pub struct ThreeDProperties {
     pub depth_index: Option<i32>,
     pub colors: Option<FaceColors>,
     pub is_draft: bool,
+    pub content: Option<Container>,
     pub url: Option<&'static str>,
     pub on_click: Option<Rc<dyn Fn() + 'static>>,
 }
 ```
 
+`resolved_position` and `depth_index` are `#[doc(hidden)]` and populated by
+`ThreeDScene`; callers should leave them alone and use `..Default::default()`.
+
 **Async data with LocalResource:**
 
 ```rust
-let repos = LocalResource::new(move || async move {
-    fetch_repos().await.unwrap_or_default()
-});
+let members =
+    LocalResource::new(move || async move { fetch_members().await.unwrap_or_default() });
 ```
 
 ### Build Pipeline
@@ -240,11 +256,17 @@ with a clickable target that opens its `url` or, if `on_click` is provided,
 runs a custom in-app action.
 
 - `ThreeDProperties` defines id, name, shape, attachment, colors, draft mode,
-  optional URL, optional `on_click` callback, and optional `avatars` that are
-  rendered as bouncing particles inside the object's bounding box
-- Shapes implement the shared `Dimensions` trait (`src/components/ui/object_3d/dimensions.rs`) and expose a `render()` method; currently only `Cuboid` and `Cube` are implemented
-- Team member data is fetched once in [`Main`] and passed to the `team_hub`
-  object as `avatars`; the standalone `Team` modal has been removed
+  `url`, `on_click`, and an optional `content` container (`Container::Avatars`)
+  that is rendered as bouncing particles inside the object's bounding box
+- When `on_click` is set it takes precedence over `url`, keeping the user in
+  the app instead of navigating away
+- Shapes implement the shared `Dimensions` trait
+  (`src/components/ui/shapes/dimensions.rs`) and expose a `render()` method;
+  the `Shape` enum currently offers `Cuboid(Cuboid)` and the `Cube(f64)`
+  convenience constructor
+- Team member data is fetched once in `Main` and passed to the `team_hub`
+  object as `Container::Avatars`; it is also handed to the `Team` modal, which
+  opens on click and is toggled by the `team-modal-open` class on `<html>`
 
 ### Keyboard Shortcuts
 
@@ -268,9 +290,12 @@ GitHub API responses cached in `localStorage`:
 
 ## Testing
 
-- **Browser-based WASM tests** (`wasm-bindgen-test`, `run_in_browser`) live alongside the code in `src/github.rs`
-- Run them with `wasm-pack test --headless --firefox` (or `just test`); the `justfile` and CI `test` job use Firefox
-- Also verify manually with `trunk serve`; check the console for WASM panics (in debug builds)
+- **Browser-based WASM tests** (`wasm-bindgen-test`, `run_in_browser`) live
+  alongside the code in `src/github.rs` and `src/components/ui/shapes.rs`
+- Run them with `wasm-pack test --headless --firefox` (or `just test`); the
+  `justfile` and CI `test` job use Firefox
+- Also verify manually with `trunk serve`; check the console for WASM panics
+  (in debug builds)
 
 ## Important Notes
 
@@ -279,7 +304,10 @@ GitHub API responses cached in `localStorage`:
 - **GitHub API** has rate limits (60 req/hour unauthenticated)
 - **Cache invalidation** — manual refresh or wait for 5-min TTL
 - **WASM size** optimized heavily for fast page loads
-- **`prefers-reduced-motion`** — CSS animations and transitions are suppressed via a global media query; `main.rs` applies a `reduced-motion` class to `<html>` so future CSS/JS can share the same signal
+- **`prefers-reduced-motion`** — handled entirely in `public/style.css` via
+  two `@media (prefers-reduced-motion: reduce)` blocks, which zero out the
+  avatar escape and the page/corner-stack entry animations. No Rust code
+  toggles a class for this.
 
 ## Claude Code Workflow
 
@@ -322,14 +350,16 @@ GitHub Actions workflows in `.github/workflows/`:
 To add a new page section:
 
 1. Create file in `src/components/sections/{section}.rs`
-2. Define `{Section}` component with `#[component]` macro
-3. Add the module declaration in `src/lib.rs` under the `sections` block
-4. Add a `pub use sections::{section}::{Section};` re-export in `src/lib.rs`
-5. Import in `src/app.rs` and add to `App` view
+2. Define `{Section}` component with the `#[component]` macro
+3. Add the `pub mod {section};` declaration inside `pub mod components { pub mod sections { .. } }` in `src/lib.rs`
+4. Add a `pub use sections::{section}::{Section};` re-export next to the other
+   `pub use sections::..` lines in `src/lib.rs`
+5. Import it (`crate::components::sections::..` or the re-exported path) in
+   `src/app.rs` and add it to the `App` view
 
 ### Adding a New Component
 
-1. Determine category (`sections`, `scenes`, or `ui`)
+1. Determine category (`sections` or `ui`, plus `ui/icons` for icons)
 2. Create file in the appropriate subdirectory
 3. Define component with props struct named `{Component}Properties` where applicable
 4. Add the module declaration in `src/lib.rs` under the appropriate block
