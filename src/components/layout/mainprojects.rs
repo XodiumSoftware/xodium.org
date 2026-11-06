@@ -8,8 +8,11 @@ use crate::components::layout::main::SheetEntrance;
 use crate::components::ui::icons::cadiotheka::CadioThekaIcon;
 use leptos::prelude::*;
 
+/// A function that renders an icon in a project mark square.
+pub type IconRenderer = fn() -> AnyView;
+
 /// A single main project panel in the [`MainProjects`] band.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug)]
 #[must_use]
 pub struct MainProject {
     /// Tailwind utility painting the project mark.
@@ -32,8 +35,14 @@ pub struct MainProject {
     pub right_href: &'static str,
     /// When true, the action buttons are rendered inert.
     pub disabled: bool,
-    /// Name of the icon variant to render in the mark square.
-    pub icon: &'static str,
+    /// Icon rendered in the project mark square, or [`no_icon`] when empty.
+    pub icon: IconRenderer,
+}
+
+/// Renders nothing; used as the default project mark icon.
+#[must_use]
+pub fn no_icon() -> AnyView {
+    view! { <span></span> }.into_any()
 }
 
 /// Panels rendered by [`MainProjects`], in reading order.
@@ -49,7 +58,7 @@ const MAIN_PROJECTS: &[MainProject] = &[
         right_button: "Learn More",
         right_href: "https://github.com/XodiumSoftware/cadiotheka",
         disabled: false,
-        icon: "none",
+        icon: CadioThekaIcon,
     },
     MainProject {
         mark: "hatch",
@@ -62,7 +71,7 @@ const MAIN_PROJECTS: &[MainProject] = &[
         right_button: "Learn More",
         right_href: "#",
         disabled: true,
-        icon: "none",
+        icon: no_icon,
     },
 ];
 
@@ -98,15 +107,6 @@ impl SelectedProject {
 #[must_use]
 pub fn project_at(index: usize) -> &'static MainProject {
     MAIN_PROJECTS.get(index).unwrap_or(&MAIN_PROJECTS[0])
-}
-
-/// Renders the icon for a project mark based on its [`MainProject::icon`] name.
-#[must_use]
-pub fn render_project_icon(icon: &str) -> impl IntoView + use<'_> {
-    match icon {
-        "cadiotheka" => view! { <CadioThekaIcon /> }.into_any(),
-        _ => view! { <span></span> }.into_any(),
-    }
 }
 
 /// Main projects region below the header.
@@ -154,7 +154,7 @@ pub fn MainProjects() -> impl IntoView {
                                     class="absolute inset-0 flex items-center justify-center"
                                     aria-hidden="true"
                                 >
-                                    {render_project_icon(project.icon)}
+                                    {(project.icon)()}
                                 </span>
                                 <span
                                     class="absolute inset-x-6 bottom-0 h-1 rounded-t-full bg-white opacity-0"
