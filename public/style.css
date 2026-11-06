@@ -113,7 +113,7 @@ body::before {
     display: flex;
     flex-direction: column;
     width: calc(100% - 36px);
-    max-width: 80rem;
+    max-width: 64rem;
     margin: 18px auto;
 }
 
@@ -462,13 +462,12 @@ body::before {
 }
 
 .blueprint-footer {
-    position: fixed;
-    left: 29px;
-    bottom: 29px;
-    z-index: 40;
-    display: inline-flex;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     align-items: baseline;
     gap: 0.5rem;
+    padding: 1.5rem 0;
     color: var(--color-base-content);
     font-family: var(--font-mono, ui-monospace, monospace);
     font-size: 0.65rem;
@@ -536,8 +535,6 @@ body::before {
     }
 
     .blueprint-footer {
-        left: 20px;
-        bottom: 20px;
         font-size: 0.55rem;
     }
 }

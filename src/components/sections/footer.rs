@@ -10,7 +10,7 @@ struct FooterLink {
     is_external: bool,
 }
 
-/// Fixed footer links shown bottom-left of every sheet.
+/// Footer links shown at the bottom of the sheet.
 const FOOTER_LINKS: &[FooterLink] = &[
     FooterLink {
         href: "https://github.com/XodiumSoftware",
@@ -29,9 +29,10 @@ const FOOTER_LINKS: &[FooterLink] = &[
     },
 ];
 
-/// Blueprint footer — a single line of monospace uppercase text anchored
-/// bottom-left inside the page border, reading like a handwritten note in
-/// the drawing margin rather than a framed cell.
+/// Blueprint footer — a single line of monospace uppercase text closing the
+/// drawing sheet, reading like a handwritten note in the margin rather than a
+/// framed cell. It flows with the sheet's content instead of being pinned to
+/// the viewport.
 #[component]
 #[must_use]
 pub fn Footer() -> impl IntoView {
@@ -39,7 +40,7 @@ pub fn Footer() -> impl IntoView {
 
     view! {
         <footer class="blueprint-footer" aria-label="Site footer">
-            <a href="/">{format!("© {current_year} XODIUM™")}</a>
+            <span>{format!("© {current_year} XODIUM™")}</span>
             <span class="blueprint-footer-sep" aria-hidden="true">"·"</span>
             {FOOTER_LINKS
                 .iter()
