@@ -363,6 +363,11 @@ body::before {
  * The cap is the original size, which it still takes from `sm` up, where the
  * note sits beside it rather than under it.
  *
+ * `cqi` needs a size container above this element; the header wrapper in
+ * `header.rs` is the one that declares it. Without such an ancestor the unit
+ * measures nothing useful, so the mark kept its full width and overflowed the
+ * sheet rule.
+ *
  * The reveal and its reduced-motion opt-out live in the markup as utilities.
  */
 .ascii-art {

@@ -18,6 +18,12 @@ use leptos::prelude::*;
 ///
 /// The tagline's reveal is delayed past the mark's, so the opener reads as one
 /// line being drawn left to right: mark, then note.
+///
+/// The mark sits in its own wrapper, and that wrapper is the size container its
+/// fitted `font-size` measures against. Putting the containment on the band
+/// instead would measure the whole band: from `sm` up the band is a flex row, so
+/// the mark would size itself against the row including the tagline's share and
+/// could overlap the note.
 #[component]
 #[must_use]
 pub fn Header() -> impl IntoView {
@@ -33,7 +39,9 @@ pub fn Header() -> impl IntoView {
             }
             aria-label="Site header"
         >
-            <AsciiArt />
+            <div class="min-w-0 max-w-full flex-1 [container-type:inline-size]">
+                <AsciiArt />
+            </div>
             <span class="text-xs uppercase tracking-[0.08em] animate-[slide-up_400ms_ease-out_500ms_both] motion-reduce:animate-none">
                 <span class="opacity-50" aria-hidden="true">"> "</span>
                 "Because we can."
