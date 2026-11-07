@@ -158,6 +158,15 @@ body::before {
 }
 
 /*
+ * The footer closes the sheet, so it enters after every band above it has
+ * arrived. It takes `sheet-band-enter` from `SheetEntrance` in `footer.rs` like
+ * the other bands; it is never swapped, so it ignores the swap class.
+ */
+.sheet-band-footer {
+    --band-delay: 900ms;
+}
+
+/*
  * Colour wash behind the hero window.
  *
  * The blobs are drawn in `components/effects/blob.rs` as `<circle>`s sharing one
@@ -225,6 +234,34 @@ body::before {
 }
 
 /*
+ * Stacked cards on phones. Below `md` the three cards share a single grid
+ * column, so the shared band height would clip all but the first and the
+ * vertical dividers have nothing to separate. The band is released to its
+ * content instead — never pinned, so a card whose description wraps can never
+ * be cut off — and the separators turn horizontal. The stack still reads 1, 2,
+ * 3 down the sheet.
+ *
+ * The one trade here is the fixed height: below `md` the sheet grows to fit
+ * three cards, so `Team` swapping into this slot changes the document height.
+ * That is only true on phones; the row keeps the pinned height from `md` up.
+ */
+@media (max-width: 767px) {
+    .sheet-band-subprojects {
+        height: auto;
+        overflow: visible;
+    }
+
+    .sheet-band-subprojects > a {
+        border-block-end: 1px solid
+            oklch(from var(--color-base-content) l c h / 0.4);
+    }
+
+    .sheet-band-subprojects > a:last-child {
+        border-block-end: 0;
+    }
+}
+
+/*
  * Swap animation for the two bands that trade places below the hero. It is
  * deliberately a plain opacity crossfade: the load-in entrance slides and
  * fades, but a swap should not move the sheet's band rules.
@@ -273,7 +310,6 @@ body::before {
  * grid hatch.
  */
 .mark-cadiotheka {
-    --tile-size: 8.875rem;
     --tile-cell: 10px;
     background-image:
         linear-gradient(
@@ -314,120 +350,41 @@ body::before {
 }
 
 /*
- * Drafting grid overlaid on a filled project tile. Same minor/major line
- * rhythm as the sheet grid, drawn in black so it reads against the colour
- * rather than as a lighter wash of it.
- *
- * The mark is border-box, so its 1px border shrinks the painted area by 2px
- * on each axis. The declared size is therefore a multiple of the cell size
- * plus that border (142px = 14 x 10px + 2px), leaving a 140px square canvas
- * that closes on a full cell at both far edges instead of clipping mid-cell.
- * Keep the declared extent at `n * 10px + 2px` when resizing the mark.
+ * Primary action gradient on an inert button. The stops, ramp, size and sweep
+ * are utilities in `mainprojects.rs`; DaisyUI's disabled state only resets
+ * `background-image`, so the gradient is restated here to keep the colour on a
+ * disabled panel's button rather than letting it fall back to a flat fill.
  */
-.tile-grid {
-    --tile-size: 8.875rem;
-    --tile-cell: 10px;
-    background-image:
-        linear-gradient(to right, oklch(0% 0 0 / 0.35) 1px, transparent 1px),
-        linear-gradient(to bottom, oklch(0% 0 0 / 0.35) 1px, transparent 1px);
-    background-size:
-        var(--tile-cell) var(--tile-cell),
-        var(--tile-cell) var(--tile-cell);
-}
-
-.sheet-band-mainprojects .btn-primary:not(.btn-disabled, [aria-disabled="true"]) {
+.sheet-band-mainprojects
+    .btn-primary:is(.btn-disabled, [aria-disabled="true"]) {
     background-image: linear-gradient(
         145deg,
         #ff7a18 0%,
         #ff5500 50%,
         #ff2a00 100%
     );
-    background-size: 200% 100%;
-    background-position: 0% 0%;
-    border-color: transparent;
-    transition:
-        background-position 0.25s ease,
-        box-shadow 0.12s ease,
-        filter 0.12s ease;
-}
-
-.sheet-band-mainprojects .btn-primary:not(.btn-disabled, [aria-disabled="true"]):hover {
-    background-position: 100% 0%;
-    filter: brightness(1.1);
-}
-
-.sheet-band-mainprojects .btn-outline-ghost:not(.btn-disabled, [aria-disabled="true"]) {
-    background-color: transparent;
-    border-color: var(--color-base-content);
-    color: var(--color-base-content);
-    transition:
-        background-color 0.25s ease,
-        border-color 0.25s ease,
-        color 0.25s ease,
-        filter 0.12s ease;
-}
-
-.sheet-band-mainprojects .btn-outline-ghost:not(.btn-disabled, [aria-disabled="true"]):hover {
-    background-color: transparent;
-    background-image: none;
-    border-color: var(--color-primary);
-    color: var(--color-primary);
-    filter: brightness(1.1);
 }
 
 /*
- * Ghost button: no fill, a light outline, and text in the page colour. Hover
- * turns the outline and label primary without adding a background, so it reads
- * as a secondary action beside a filled primary.
+ * The glyph mark's type scale. This is the one part of the mark that cannot be
+ * a utility: the fitted size must divide by the element's own `em`, so the
+ * expression lives here and the rest of the block's styling is in the markup.
  *
- * The disabled selector is repeated so a ghost button keeps DaisyUI's inert
- * fill and faint label; without it the unlayered `transparent` below would
- * out-rank the theme's disabled rule and the button would look enabled.
+ * `--ascii-font-size` is set here rather than on the element so the value stays
+ * a plain length the formula below can divide by.
+ *
+ * The block is 72 monospace columns wide and each glyph is 0.6em, so the full
+ * mark spans 43.2em. Sizing it in `em` makes the whole block scale with this
+ * one value, so on a phone the mark narrows instead of pushing past the sheet.
+ * The cap is the original size, which it still takes from `sm` up, where the
+ * note sits beside it rather than under it.
+ *
+ * The reveal and its reduced-motion opt-out live in the markup as utilities.
  */
-.btn-outline-ghost:not(.btn-disabled, [aria-disabled="true"]) {
-    background-color: transparent;
-    border-color: var(--color-base-content);
-    color: var(--color-base-content);
-}
-
-.btn-outline-ghost:not(.btn-disabled, [aria-disabled="true"]):hover {
-    background-color: transparent;
-    border-color: var(--color-primary);
-    color: var(--color-primary);
-}
-
 .ascii-art {
-    align-self: stretch;
+    --ascii-font-size: 0.585rem;
     font-family: var(--font-mono, ui-monospace, monospace);
-    font-size: 0.585rem;
-    line-height: 1.15;
-    letter-spacing: 0;
-    color: var(--color-base-content);
-    text-align: center;
-    margin: 0;
-    padding: 0;
-    user-select: none;
-    pointer-events: none;
-    white-space: pre;
-    animation: fade-in 400ms ease-out 400ms both;
-}
-
-/*
- * The tagline follows the glyph mark, so the opener reads as one line being
- * drawn left to right: mark, then note.
- */
-.header-tagline {
-    animation: slide-up 400ms ease-out 500ms both;
-}
-
-.link-badge-icon {
-    width: 1.25rem;
-    height: 1.25rem;
-}
-
-.link-badge-icon-bmc {
-    width: auto;
-    height: 1.25rem;
+    font-size: min(var(--ascii-font-size), 100cqi / 43.2);
 }
 
 /*
@@ -462,43 +419,15 @@ body::before {
     );
 }
 
+/*
+ * Avatar box. `DaisyUI`'s `avatar` supplies the circle, the overflow clip and
+ * the cover-fitting image, so this only sizes the ring and sets the outline
+ * that the hover state in the markup recolours.
+ */
 .team-band-avatar {
     width: var(--team-avatar-size);
     height: var(--team-avatar-size);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 9999px;
-    overflow: hidden;
-    background-color: var(--color-base-100);
     border: 2px solid var(--color-base-content);
-    transition: border-color 0.12s ease;
-}
-
-.team-band-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    background-color: var(--color-base-100);
-}
-
-.team-band-avatar:hover {
-    border-color: var(--color-primary);
-    filter: brightness(1.1);
-}
-
-.team-band-counter {
-    font-size: 0.7rem;
-    letter-spacing: 0.04em;
-}
-
-/*
- * Placeholder avatar shown while the member request is in flight. It reuses the
- * avatar box so the row keeps its size and position when the real images
- * arrive, rather than the band appearing empty and then reflowing.
- */
-.team-band-skeleton {
-    border-color: transparent;
 }
 
 /*
@@ -509,112 +438,9 @@ body::before {
     border-width: 0;
 }
 
-.blueprint-footer {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: baseline;
-    gap: 0.5rem;
-    padding: 1.5rem 0;
-    color: var(--color-base-content);
-    font-family: var(--font-mono, ui-monospace, monospace);
-    font-size: 0.65rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    opacity: 0.75;
-    animation: fade-in 350ms ease-out 700ms both;
-}
-
-.blueprint-footer a,
-.blueprint-footer-action {
-    color: inherit;
-    font: inherit;
-    letter-spacing: inherit;
-    text-transform: inherit;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    transition: color 0.12s ease;
-    user-select: none;
-}
-
-/*
- * The band toggle matches the links' typography while staying a button, so it
- * keeps its own hit area and focus ring without DaisyUI button chrome.
- */
-.blueprint-footer-action {
-    cursor: pointer;
-    background: none;
-    border: 0;
-    padding: 0;
-}
-
-.blueprint-footer a:hover,
-.blueprint-footer-action:hover {
-    color: var(--color-primary);
-}
-
-.blueprint-footer-sep {
-    opacity: 0.5;
-    user-select: none;
-}
-
-/*
- * Icon links closing the footer. The badge icons are sized for the corner stack
- * at a fixed 1.25rem, so they are overridden here to sit on the footer's much
- * smaller type baseline.
- */
-.blueprint-footer-icon {
-    display: inline-flex;
-    align-items: center;
-    align-self: center;
-    text-decoration: none;
-}
-
-.blueprint-footer-icon .link-badge-icon {
-    width: 0.8rem;
-    height: 0.8rem;
-}
-
-.blueprint-footer-icon .link-badge-icon-bmc {
-    width: auto;
-    height: 0.8rem;
-}
-
-.tooltip::before {
-    background-color: var(--color-base-100);
-    color: var(--color-base-content);
-    border: 1px solid var(--color-base-content);
-    border-radius: 0;
-    font-family: var(--font-mono, ui-monospace, monospace);
-    font-size: 0.65rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 0.375rem 0.625rem;
-}
-
-.tooltip::after {
-    display: none;
-}
-
-@media (max-width: 640px) {
-    .blueprint-footer {
-        font-size: 0.55rem;
-    }
-}
-
-@media (max-width: 700px), (max-height: 450px) {
-    .blueprint-footer {
-        font-size: 0.5rem;
-        gap: 0.375rem;
-    }
-}
-
 @media (prefers-reduced-motion: reduce) {
     .blueprint-sheet::before,
-    body::before,
-    .ascii-art,
-    .header-tagline,
-    .blueprint-footer {
+    body::before {
         animation: none;
     }
 

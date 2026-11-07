@@ -3,6 +3,8 @@ use leptos::prelude::*;
 /// Renders the Buy Me a Coffee cup icon.
 ///
 /// The outline uses `currentColor` while the cup body retains its brand yellow.
+/// The cup is taller than it is wide, so it is bounded by height alone and takes
+/// its width from the `viewBox` aspect ratio.
 #[component]
 #[must_use]
 pub fn BuyMeACoffeeIcon() -> impl IntoView {
@@ -11,7 +13,7 @@ pub fn BuyMeACoffeeIcon() -> impl IntoView {
             viewBox="0 0 884 1279"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            class="link-badge-icon link-badge-icon-bmc"
+            class="h-5 w-auto"
             aria-hidden="true"
         >
             <path

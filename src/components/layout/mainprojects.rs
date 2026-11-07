@@ -123,6 +123,17 @@ pub fn project_at(index: usize) -> &'static MainProject {
 /// Each panel is a two-column grid: the mark, which behaves as a tab, beside
 /// the text column carrying the title, description and two action buttons. The
 /// panels stack on narrow viewports, with the first on top.
+///
+/// The action pair is styled with utilities. The primary button sweeps its
+/// gradient from left to right on hover, which is the one part Tailwind cannot
+/// express: the size stays at `bg-size-[200%_100%]` and only its position moves.
+/// Hover states carry `not-disabled`, so a button with `aria-disabled` keeps the
+/// inert look DaisyUI gives it instead of lighting up on pointer over.
+///
+/// The outline button's label drops below `btn-sm`'s 0.75rem on phones
+/// (`max-sm:[--fontsize:0.5rem]`): the two sit side by side in the panel's text
+/// column, which on the narrowest screens is too tight for "Learn More" to keep
+/// that size. Only the outline button shrinks, so Visit stays dominant.
 #[component]
 #[must_use]
 pub fn MainProjects() -> impl IntoView {
@@ -190,7 +201,7 @@ pub fn MainProjects() -> impl IntoView {
                                 <div class="flex min-w-0 items-center gap-3 mt-3">
                                     <a
                                         class=format!(
-                                            "btn btn-sm flex-1 {}",
+                                            "btn btn-sm flex-1 border-transparent bg-linear-145 from-[#ff7a18] via-[#ff5500] to-[#ff2a00] bg-size-[200%_100%] bg-position-[0%_0%] transition-[background-position,filter] duration-250 not-disabled:hover:bg-position-[100%_0%] not-disabled:hover:brightness-110 {}",
                                             if project.disabled {
                                                 "btn-disabled"
                                             } else {
@@ -205,7 +216,7 @@ pub fn MainProjects() -> impl IntoView {
                                     </a>
                                     <a
                                         class=format!(
-                                            "btn btn-sm flex-1 btn-outline-ghost {}",
+                                            "btn btn-sm flex-1 border-base-content bg-transparent text-base-content transition-colors duration-250 not-disabled:hover:border-primary not-disabled:hover:bg-transparent not-disabled:hover:text-primary not-disabled:hover:brightness-110 max-sm:[--fontsize:0.5rem] {}",
                                             if project.disabled { "btn-disabled" } else { "" },
                                         )
                                         href=project.right_href

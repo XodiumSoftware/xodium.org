@@ -39,8 +39,10 @@ const SUBPROJECT_ITEMS: &[SubprojectItem] = &[
 
 /// Equal-width three-card subprojects region below the hero.
 ///
-/// Each card is a single anchor so the whole cell is clickable, and stacks to a
-/// single column on narrow viewports.
+/// Each card is a single anchor so the whole cell is clickable. From `md` up the
+/// cards sit in one ruled row, numbered left to right; below that they stack in
+/// the same reading order under a taller fixed band height, separated by
+/// horizontal rules (see `.sheet-band-subprojects` in `public/style.css`).
 ///
 /// This band shares the lower slot with [`Team`](crate::components::layout::team::Team), so it takes its entrance from
 /// [`SheetEntrance`] rather than a static class: it animates on first paint and

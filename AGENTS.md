@@ -206,7 +206,7 @@ Trunk.toml                     # Trunk configuration
 - **Async data:** Use `LocalResource` (not `Resource`) for WASM thread execution
 - **External links:** Always use `target="_blank" rel="noopener noreferrer"`
 - **Static data:** Define `const` slices at top of component files
-- **CSS:** Tailwind utility classes via `style.css`; custom component styles live in `public/style.css`
+- **CSS:** Tailwind and DaisyUI utility classes first. `public/style.css` is for what utilities cannot express: page-frame rules, `@keyframes` plus their `--band-delay` timings, `::before` overrides of DaisyUI internals, and expressions that need the element's own `em` (the ASCII mark's fitted `font-size`). When a rule only sets layout, colour, spacing or a plain transition, use a utility instead.
 - **Do not add `//` line comments.** Use `///` doc comments (or `//!` module docs) to explain intent; keep the code itself self-documenting. This applies to `view!` macro blocks too — meaningful intent in a template should live on the component's or helper's doc comment, not as a structural label inside the view.
 
 ### Component Patterns
@@ -269,14 +269,30 @@ let lower_band = LowerBandState::provide();
 - `Team` keeps the `id="team"` anchor so `#team` still resolves, and pressing
   Escape calls `on_close`, which switches the slot back to `Subprojects`.
 
+### Header Band
+
+`Header` draws the XODIUM ASCII mark with the `> Because we can.` tagline. The
+band is a column on phones and a row from `sm` up, so the tagline moves under
+the mark rather than beside it on narrow screens.
+
+- The mark is 72 monospace columns wide. `.ascii-art` in `public/style.css`
+sets `font-size: min(var(--ascii-font-size), 100cqi / 43.2)`, where 43.2em is
+the block's width at one glyph per 0.6em. The whole mark therefore scales down
+to the band's inline width instead of overflowing the sheet, and stops at the
+original `0.585rem` cap on wider screens. Change one without the other and the
+mark either overflows or shrinks needlessly: the divisor is the glyph block's
+column count times 0.6.
+
 ### Load Entrance and Swap Animations
 
 `SheetEntrance` (in `main.rs`) owns both animations, and the two are mutually
 exclusive per element:
 
 - `band_class()` returns `sheet-band-enter` while the page is loading in, which
-  plays `slide-up` on the band itself. `Header`, `MainProjects`, `Hero` and
-  `Subprojects` use it.
+  plays `slide-up` on the band itself. `Header`, `MainProjects`, `Hero`,
+  `Subprojects` and `Footer` use it. The footer is last in reading order, so it
+  carries its own `--band-delay` in `public/style.css` (900ms) and enters after
+  the bands above it.
 - `swap_class()` returns `sheet-band-swap` only once a swap has been requested
   (see `mark_swapped`), which fades the band's **children**. `Subprojects` and
   `Team` use it.
@@ -287,6 +303,24 @@ exclusive per element:
   swap, so animating its bottom rule would look like a redraw.
 - `LowerBandState::set` arms the swap, so any caller that changes the band gets
   the crossfade without extra bookkeeping.
+
+### Subprojects Band
+
+`Subprojects` renders three cards that share equal width and are separated by
+rules, so the row reads as three drafted cells rather than flowing text.
+
+- From `md` up the cards sit in one row, numbered left to right, divided by
+  `md:divide-x` and pinned to `--lower-band-height` so swapping it for `Team`
+  never resizes the sheet.
+- Below `md` they stack in the same reading order. The mobile block in
+  `public/style.css` releases the band's height (`height: auto`, `overflow:
+  visible`) and turns the dividers horizontal. The release is load-bearing: a
+  pinned height clips the stacked cards, and one whose description wraps can
+  need more room than the desktop band holds. Do not reintroduce a fixed
+  mobile height without checking every description at the narrowest width.
+- The trade for that release is that the sheet is content-sized on phones, so
+  `Team` swapping into the slot changes the document height there. That does
+  not apply from `md` up, where both bands share the pinned height.
 
 ### Hero Band
 
@@ -374,8 +408,10 @@ avatars, each linking to a member's GitHub profile in a new tab.
 - It manages its own focus: it focuses the band on mount, closes on Escape via
   a document-level listener (so focus position does not matter), and restores
   focus to the previously active element on cleanup.
-- `.team-band-avatar` in `public/style.css` holds the avatar styles; there is
-  no backdrop or dialog styling any more.
+- `.team-band-avatar` in `public/style.css` now only sets the avatar box size and
+  its 2px ring; the circle, image clipping and cover fitting come from
+  DaisyUI's `avatar`, and the counter type and skeleton ring are utilities in
+  `team.rs`.
 
 ### Caching Strategy
 

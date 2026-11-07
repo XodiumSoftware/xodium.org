@@ -40,13 +40,18 @@ fn member_avatar(member: Member) -> impl IntoView {
     view! {
         <div class="avatar" role="listitem">
             <a
-                class="team-band-avatar"
+                class="team-band-avatar rounded-full bg-base-100 transition-colors hover:border-primary hover:brightness-110"
                 href=html_url
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label=label
             >
-                <img src=avatar_url alt=login loading="lazy" />
+                <img
+                    class="h-full w-full object-cover"
+                    src=avatar_url
+                    alt=login
+                    loading="lazy"
+                />
             </a>
         </div>
     }
@@ -60,7 +65,7 @@ fn overflow_counter(overflow: usize) -> impl IntoView {
             role="listitem"
             aria-label=format!("{overflow} more team members")
         >
-            <div class="team-band-avatar team-band-counter bg-neutral text-neutral-content">
+            <div class="team-band-avatar rounded-full bg-neutral text-neutral-content text-[0.7rem] tracking-[0.04em]">
                 <span aria-hidden="true">{format!("+{overflow}")}</span>
             </div>
         </div>
@@ -71,7 +76,8 @@ fn overflow_counter(overflow: usize) -> impl IntoView {
 ///
 /// They reserve the row's shape so the band does not look empty after the swap,
 /// and are hidden from assistive tech because the live region announces the
-/// arrival of the real members.
+/// arrival of the real members. The skeleton border is transparent so the
+/// shimmer reads as a reserved circle rather than an outlined one.
 fn loading_avatars(count: usize) -> impl IntoView {
     view! {
         <div class="avatar-group -space-x-4" aria-hidden="true">
@@ -79,7 +85,7 @@ fn loading_avatars(count: usize) -> impl IntoView {
                 .map(|_| {
                     view! {
                         <div class="avatar">
-                            <div class="team-band-avatar team-band-skeleton skeleton"></div>
+                            <div class="team-band-avatar rounded-full border-transparent skeleton"></div>
                         </div>
                     }
                 })

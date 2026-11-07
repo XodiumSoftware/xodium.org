@@ -4,7 +4,7 @@
 //! first entry toggles the band below the hero between the subprojects cards
 //! and the team, so the sheet never stacks a fourth band.
 
-use crate::components::layout::main::{LowerBand, LowerBandState};
+use crate::components::layout::main::{LowerBand, LowerBandState, SheetEntrance};
 use crate::ui::{BuyMeACoffeeIcon, GitHubIcon};
 use leptos::prelude::*;
 
@@ -68,19 +68,38 @@ const FOOTER_ICON_LINKS: &[FooterIconLink] = &[
 ///
 /// The closing entries are icon-only GitHub and Buy Me a Coffee links. Their
 /// icons are `aria-hidden`, so each anchor carries the accessible name itself.
+///
+/// Styling is utilities only. The links inherit the footer's type and colour
+/// (`font: inherit` and `text-current`) so the row reads as one line of notes,
+/// and the band toggle resets the browser's button chrome to match.
+///
+/// It takes the load-in entrance from [`SheetEntrance`] so the note closes the
+/// sheet as the last thing drawn, after the bands above it have arrived. It is
+/// never swapped, so it does not take the swap class.
 #[component]
 #[must_use]
 pub fn Footer() -> impl IntoView {
     let current_year = js_sys::Date::new_0().get_full_year();
     let lower_band = LowerBandState::use_context();
+    let entrance = SheetEntrance::use_context();
 
     view! {
-        <footer class="blueprint-footer" aria-label="Site footer">
+        <footer
+            class=move || {
+                format!(
+                    "sheet-band-footer {} flex flex-wrap items-baseline justify-center gap-2 py-6 font-mono text-[0.65rem] uppercase tracking-[0.08em] text-base-content opacity-75 max-sm:text-[0.55rem] max-[700px]:gap-1.5 max-[700px]:text-[0.5rem]",
+                    entrance.band_class(),
+                )
+            }
+            aria-label="Site footer"
+        >
             <span>{format!("© {current_year} XODIUM™")}</span>
-            <span class="blueprint-footer-sep" aria-hidden="true">"·"</span>
+            <span class="opacity-50 select-none" aria-hidden="true">
+                "·"
+            </span>
             <button
                 type="button"
-                class="blueprint-footer-action"
+                class="cursor-pointer border-0 bg-none p-0 font-[inherit] tracking-[inherit] text-current uppercase underline underline-offset-[3px] transition-colors select-none hover:text-primary"
                 aria-pressed=move || (lower_band.get() == LowerBand::Team).to_string()
                 on:click=move |_| lower_band.toggle()
             >
@@ -93,8 +112,11 @@ pub fn Footer() -> impl IntoView {
                 .iter()
                 .map(|link| {
                     view! {
-                        <span class="blueprint-footer-sep" aria-hidden="true">"·"</span>
+                        <span class="opacity-50 select-none" aria-hidden="true">
+                            "·"
+                        </span>
                         <a
+                            class="font-[inherit] tracking-[inherit] text-current uppercase underline underline-offset-[3px] transition-colors select-none hover:text-primary"
                             href=link.href
                             target="_blank"
                             rel="noopener noreferrer"
@@ -108,9 +130,11 @@ pub fn Footer() -> impl IntoView {
                 .iter()
                 .map(|link| {
                     view! {
-                        <span class="blueprint-footer-sep" aria-hidden="true">"·"</span>
+                        <span class="opacity-50 select-none" aria-hidden="true">
+                            "·"
+                        </span>
                         <a
-                            class="blueprint-footer-icon"
+                            class="inline-flex items-center self-center text-current no-underline [&>svg]:h-[0.8rem] [&>svg]:w-auto"
                             href=link.href
                             target="_blank"
                             rel="noopener noreferrer"
