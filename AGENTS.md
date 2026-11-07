@@ -334,6 +334,10 @@ shown one band above.
 - `MainProject::demo` holds an `Option<LiveFrame>` (`src`, `title`).
   `MainProjects` therefore owns both what a panel says and what the hero frames;
   `Hero` only reads `project_at(..)` and passes the frame down.
+- The whole band is `max-sm:hidden`: a phone-sized window would show a crop of
+  the desktop-width frame rather than a readable preview. Hiding it costs only
+  the band's `border-b`; the sheet's side rules come from
+  `.blueprint-sheet::before`, so the frame still closes.
 - A project with `demo: None` (the unreleased one) renders `HeroPlaceholder`,
   which keeps the window's box and centres the project name, so switching marks
   never collapses the band.

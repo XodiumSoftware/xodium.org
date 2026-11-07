@@ -134,7 +134,7 @@ pub fn Footer() -> impl IntoView {
                             "·"
                         </span>
                         <a
-                            class="inline-flex items-center self-center text-current no-underline [&>svg]:h-[0.8rem] [&>svg]:w-auto"
+                            class="inline-flex items-center self-center text-current no-underline transition-colors select-none hover:text-primary [&>svg]:h-[0.8rem] [&>svg]:w-auto"
                             href=link.href
                             target="_blank"
                             rel="noopener noreferrer"

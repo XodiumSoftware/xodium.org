@@ -1,10 +1,15 @@
-//! Hero band — the largest focal region of the sheet.
-//!
-//! Sits between the main projects and subprojects bands and grows to fill
-//! whatever vertical room the bands above leave, so the sections below are
-//! pushed to the bottom of the sheet. Its content follows the project selected
-//! through the main projects marks.
-
+/// Hero band — the largest focal region of the sheet.
+///
+/// Sits between the main projects and subprojects bands and grows to fill
+/// whatever vertical room the bands above leave, so the sections below are
+/// pushed to the bottom of the sheet. Its content follows the project selected
+/// through the main projects marks.
+///
+/// The band is hidden below `sm`: the framed page lays out at its natural
+/// desktop width, so a phone-sized window would show a crop of it rather than a
+/// readable preview, and the sheet reads better as a straight stack there. Only
+/// the hero's own `border-b` goes with it — the side rules are drawn by
+/// `.blueprint-sheet::before`, so the frame stays closed.
 use crate::components::effects::blob::{BlobBackground, BlobBackgroundProperties};
 use crate::components::layout::main::SheetEntrance;
 use crate::components::layout::mainprojects::{SelectedProject, project_at};
@@ -45,7 +50,7 @@ pub fn Hero() -> impl IntoView {
         <section
             class=move || {
                 format!(
-                    "sheet-band sheet-band-hero {} p-6 grow basis-80 min-h-0 border-x border-b border-base-content/40",
+                    "sheet-band sheet-band-hero {} p-6 grow basis-80 min-h-0 border-x border-b border-base-content/40 max-sm:hidden",
                     entrance.band_class(),
                 )
             }
