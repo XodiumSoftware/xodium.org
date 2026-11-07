@@ -350,22 +350,6 @@ body::before {
 }
 
 /*
- * Primary action gradient on an inert button. The stops, ramp, size and sweep
- * are utilities in `mainprojects.rs`; DaisyUI's disabled state only resets
- * `background-image`, so the gradient is restated here to keep the colour on a
- * disabled panel's button rather than letting it fall back to a flat fill.
- */
-.sheet-band-mainprojects
-    .btn-primary:is(.btn-disabled, [aria-disabled="true"]) {
-    background-image: linear-gradient(
-        145deg,
-        #ff7a18 0%,
-        #ff5500 50%,
-        #ff2a00 100%
-    );
-}
-
-/*
  * The glyph mark's type scale. This is the one part of the mark that cannot be
  * a utility: the fitted size must divide by the element's own `em`, so the
  * expression lives here and the rest of the block's styling is in the markup.

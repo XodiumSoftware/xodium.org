@@ -127,8 +127,21 @@ pub fn project_at(index: usize) -> &'static MainProject {
 /// The action pair is styled with utilities. The primary button sweeps its
 /// gradient from left to right on hover, which is the one part Tailwind cannot
 /// express: the size stays at `bg-size-[200%_100%]` and only its position moves.
-/// Hover states carry `not-disabled`, so a button with `aria-disabled` keeps the
-/// inert look DaisyUI gives it instead of lighting up on pointer over.
+///
+/// Every colour utility on these buttons is gated on `not-aria-disabled`, which
+/// compiles to `:not([aria-disabled="true"])`. Two details make that work, and
+/// both are easy to break:
+///
+/// - The attribute is bound as a string (`aria_disabled()`), not a `bool`.
+///   Tachys writes a `bool` attribute as presence-only, so `true` produced
+///   `aria-disabled=""` and every `:not([aria-disabled="true"])` still matched:
+///   the inert buttons stayed coloured.
+/// - The gate is `not-aria-disabled`, not `not-disabled`. These are anchors, so
+///   `:not(:disabled)` never matches and would gate nothing either way.
+///
+/// Gating matters because a utility writes a concrete property, unlayered, so it
+/// outranks DaisyUI's own `@layer` disabled rules. With the utilities withheld,
+/// DaisyUI's greyed fill and faint label are what an inert button shows.
 ///
 /// The outline button's label drops below `btn-sm`'s 0.75rem on phones
 /// (`max-sm:[--fontsize:0.5rem]`): the two sit side by side in the panel's text
@@ -201,7 +214,7 @@ pub fn MainProjects() -> impl IntoView {
                                 <div class="flex min-w-0 items-center gap-3 mt-3">
                                     <a
                                         class=format!(
-                                            "btn btn-sm flex-1 border-transparent bg-linear-145 from-[#ff7a18] via-[#ff5500] to-[#ff2a00] bg-size-[200%_100%] bg-position-[0%_0%] transition-[background-position,filter] duration-250 not-disabled:hover:bg-position-[100%_0%] not-disabled:hover:brightness-110 {}",
+                                            "btn btn-sm flex-1 not-aria-disabled:border-transparent not-aria-disabled:bg-linear-145 not-aria-disabled:from-[#ff7a18] not-aria-disabled:via-[#ff5500] not-aria-disabled:to-[#ff2a00] not-aria-disabled:bg-size-[200%_100%] not-aria-disabled:bg-position-[0%_0%] transition-[background-position,filter] duration-250 not-aria-disabled:hover:bg-position-[100%_0%] not-aria-disabled:hover:brightness-110 {}",
                                             if project.disabled {
                                                 "btn-disabled"
                                             } else {
@@ -209,20 +222,20 @@ pub fn MainProjects() -> impl IntoView {
                                             },
                                         )
                                         href=project.left_href
-                                        aria-disabled=project.disabled
+                                        aria-disabled=if project.disabled { "true" } else { "false" }
                                         tabindex=if project.disabled { Some("-1") } else { None }
                                     >
                                         {project.left_button}
                                     </a>
                                     <a
                                         class=format!(
-                                            "btn btn-sm flex-1 border-base-content bg-transparent text-base-content transition-colors duration-250 not-disabled:hover:border-primary not-disabled:hover:bg-transparent not-disabled:hover:text-primary not-disabled:hover:brightness-110 max-sm:[--fontsize:0.5rem] {}",
+                                            "btn btn-sm flex-1 not-aria-disabled:border-base-content not-aria-disabled:bg-transparent not-aria-disabled:text-base-content transition-colors duration-250 not-aria-disabled:hover:border-primary not-aria-disabled:hover:bg-transparent not-aria-disabled:hover:text-primary not-aria-disabled:hover:brightness-110 max-sm:[--fontsize:0.5rem] {}",
                                             if project.disabled { "btn-disabled" } else { "" },
                                         )
                                         href=project.right_href
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        aria-disabled=project.disabled
+                                        aria-disabled=if project.disabled { "true" } else { "false" }
                                         tabindex=if project.disabled { Some("-1") } else { None }
                                     >
                                         {project.right_button}
