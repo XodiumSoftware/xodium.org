@@ -398,33 +398,26 @@ body::before {
  *
  * The band is pinned to `--lower-band-height`, which is measured from the
  * subprojects row, so swapping the slot does not resize the sheet. The avatar
- * size is the band height less the vertical padding and border, and `DaisyUI`'s
- * `avatar-group` overlaps them within that single line.
+ * size is the band height less the vertical padding and less the 2px ring's
+ * 4px of border (the ring sits on the `.avatar` wrapper, which is `border-box`),
+ * and `DaisyUI`'s `avatar-group` overlaps them within that single line.
  */
 .sheet-band-team {
     --band-delay: 700ms;
     --team-avatar-size: calc(
-        var(--lower-band-height) - (2 * var(--lower-band-padding-y)) - 2px
+        var(--lower-band-height) - (2 * var(--lower-band-padding-y)) - 4px
     );
 }
 
 /*
  * Avatar box. `DaisyUI`'s `avatar` supplies the circle, the overflow clip and
- * the cover-fitting image, so this only sizes the ring and sets the outline
- * that the hover state in the markup recolours.
+ * the cover-fitting image, so this only sizes the box. The ring is a utility on
+ * the `.avatar` wrapper rather than here: the wrapper is what `avatar-group`
+ * clips, so a border on this inner element would be cut away.
  */
 .team-band-avatar {
     width: var(--team-avatar-size);
     height: var(--team-avatar-size);
-    border: 2px solid var(--color-base-content);
-}
-
-/*
- * The group's own 4px `base-100` border is what separates overlapping avatars,
- * so it replaces rather than stacks on the per-avatar outline.
- */
-.sheet-band-team .avatar-group > .avatar {
-    border-width: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -428,10 +428,16 @@ avatars, each linking to a member's GitHub profile in a new tab.
 - It manages its own focus: it focuses the band on mount, closes on Escape via
   a document-level listener (so focus position does not matter), and restores
   focus to the previously active element on cleanup.
-- `.team-band-avatar` in `public/style.css` now only sets the avatar box size and
-  its 2px ring; the circle, image clipping and cover fitting come from
-  DaisyUI's `avatar`, and the counter type and skeleton ring are utilities in
-  `team.rs`.
+- `.team-band-avatar` in `public/style.css` only sets the avatar box size. The
+  2px ring is `border-2 border-base-content` on the `.avatar` wrapper in
+  `team.rs`, not on that inner element: `avatar-group` clips the wrapper, so a
+  border drawn on the inside would be cut away. The wrapper's border is
+  `border-box`, which is why `--team-avatar-size` subtracts 4px rather than 2.
+- DaisyUI's `.avatar-group .avatar` draws its own 4px `base-100` border as the
+  overlap gap. Our `border-2 border-base-content` utilities are unlayered, so
+  they win over that layered rule and the ring reads in the content colour;
+  do not reintroduce a `border-width: 0` override for the group, which is what
+  previously left the avatars looking borderless.
 
 ### Caching Strategy
 

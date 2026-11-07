@@ -38,9 +38,12 @@ fn member_avatar(member: Member) -> impl IntoView {
     );
 
     view! {
-        <div class="avatar" role="listitem">
+        <div
+            class="avatar rounded-full border-2 border-base-content transition-colors has-[a:hover]:border-primary"
+            role="listitem"
+        >
             <a
-                class="team-band-avatar rounded-full bg-base-100 transition-colors hover:border-primary hover:brightness-110"
+                class="team-band-avatar rounded-full bg-base-100 hover:brightness-110"
                 href=html_url
                 target="_blank"
                 rel="noopener noreferrer"
@@ -61,7 +64,7 @@ fn member_avatar(member: Member) -> impl IntoView {
 fn overflow_counter(overflow: usize) -> impl IntoView {
     view! {
         <div
-            class="avatar avatar-placeholder"
+            class="avatar avatar-placeholder rounded-full border-2 border-base-content"
             role="listitem"
             aria-label=format!("{overflow} more team members")
         >
@@ -84,8 +87,8 @@ fn loading_avatars(count: usize) -> impl IntoView {
             {(0..count)
                 .map(|_| {
                     view! {
-                        <div class="avatar">
-                            <div class="team-band-avatar rounded-full border-transparent skeleton"></div>
+                        <div class="avatar rounded-full border-2 border-transparent">
+                            <div class="team-band-avatar rounded-full skeleton"></div>
                         </div>
                     }
                 })
