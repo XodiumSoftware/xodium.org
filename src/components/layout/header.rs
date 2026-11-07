@@ -24,6 +24,17 @@ use leptos::prelude::*;
 /// instead would measure the whole band: from `sm` up the band is a flex row, so
 /// the mark would size itself against the row including the tagline's share and
 /// could overlap the note.
+///
+/// The wrapper takes the row's free space (`flex-1`) and is capped at the mark's
+/// maximum width (`max-w-[calc(43.2*0.585rem)]`, the block's 43.2em at its
+/// 0.585rem cap). Capping matters: with plain `flex-1` the wrapper stretched to
+/// the whole band on a wide screen and pushed the tagline out to the far edge,
+/// instead of sitting a `gap-4` after the mark. The `cqi` the mark measures is
+/// then that resolved width, never the tagline's share.
+///
+/// Sizing the wrapper to its content instead would not work either: a container
+/// query unit resolves against the container, and a width taken from the
+/// contained mark's own overflow never converges.
 #[component]
 #[must_use]
 pub fn Header() -> impl IntoView {
@@ -39,10 +50,10 @@ pub fn Header() -> impl IntoView {
             }
             aria-label="Site header"
         >
-            <div class="min-w-0 max-w-full flex-1 [container-type:inline-size]">
+            <div class="min-w-0 flex-1 max-w-[calc(43.2*0.585rem)] [container-type:inline-size]">
                 <AsciiArt />
             </div>
-            <span class="text-xs uppercase tracking-[0.08em] animate-[slide-up_400ms_ease-out_500ms_both] motion-reduce:animate-none">
+            <span class="shrink-0 text-xs uppercase tracking-[0.08em] animate-[slide-up_400ms_ease-out_500ms_both] motion-reduce:animate-none">
                 <span class="opacity-50" aria-hidden="true">"> "</span>
                 "Because we can."
             </span>
