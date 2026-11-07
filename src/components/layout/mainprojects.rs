@@ -2,8 +2,10 @@
 //!
 //! Two panels separated by a vertical rule, each showing a main project as a
 //! title row, a description row, and a pair of action buttons. The coloured
-//! mark doubles as the tab that selects which project the hero shows.
+//! mark doubles as the tab that selects which project the hero shows, from `sm`
+//! up; on phones the hero is hidden and the mark is a plain tile.
 
+use crate::breakpoint::is_at_least_sm;
 use crate::components::layout::main::SheetEntrance;
 use crate::components::ui::hero_demo::LiveFrame;
 use crate::components::ui::icons::cadiotheka::CadioThekaIcon;
@@ -120,9 +122,18 @@ pub fn project_at(index: usize) -> &'static MainProject {
 
 /// Main projects region below the header.
 ///
-/// Each panel is a two-column grid: the mark, which behaves as a tab, beside
-/// the text column carrying the title, description and two action buttons. The
-/// panels stack on narrow viewports, with the first on top.
+/// Each panel is a two-column grid: the mark beside the text column carrying the
+/// title, description and two action buttons. The panels stack on narrow
+/// viewports, with the first on top.
+///
+/// The marks are tabs only where the hero exists. On phones the hero is hidden,
+/// so there is nothing to select and both panels are fully visible anyway; a tab
+/// there would announce a `tabpanel` relationship that leads nowhere and would
+/// leave the unselected panel `aria-selected="false"` while still on screen. The
+/// mark is therefore rendered as a plain `<div>` below `sm`, with the tab roles
+/// and the selection indicator dropped, and becomes a `<button>` from `sm` up.
+/// [`is_at_least_sm`] reports the breakpoint so the markup and the hero's
+/// `max-sm:hidden` agree on where that is.
 ///
 /// The action pair is styled with utilities. The primary button sweeps its
 /// gradient from left to right on hover, which is the one part Tailwind cannot
@@ -132,10 +143,10 @@ pub fn project_at(index: usize) -> &'static MainProject {
 /// compiles to `:not([aria-disabled="true"])`. Two details make that work, and
 /// both are easy to break:
 ///
-/// - The attribute is bound as a string (`aria_disabled()`), not a `bool`.
-///   Tachys writes a `bool` attribute as presence-only, so `true` produced
-///   `aria-disabled=""` and every `:not([aria-disabled="true"])` still matched:
-///   the inert buttons stayed coloured.
+/// - The attribute is bound as a string, not a `bool`. Tachys writes a `bool`
+///   attribute as presence-only, so `true` produced `aria-disabled=""` and every
+///   `:not([aria-disabled="true"])` still matched: the inert buttons stayed
+///   coloured.
 /// - The gate is `not-aria-disabled`, not `not-disabled`. These are anchors, so
 ///   `:not(:disabled)` never matches and would gate nothing either way.
 ///
@@ -152,6 +163,7 @@ pub fn project_at(index: usize) -> &'static MainProject {
 pub fn MainProjects() -> impl IntoView {
     let selected = SelectedProject::use_context();
     let entrance = SheetEntrance::use_context();
+    let at_least_sm = is_at_least_sm();
 
     view! {
         <section
@@ -169,35 +181,54 @@ pub fn MainProjects() -> impl IntoView {
                 .map(|(index, project)| {
                     let is_selected = move || selected.0.get() == index;
                     let panel_id = format!("project-panel-{index}");
+                    let mark_id = format!("project-mark-{index}");
+                    let mark_class = format!(
+                        "relative overflow-hidden w-[8.875rem] h-[8.875rem] border border-base-content/30 {}",
+                        project.mark,
+                    );
+                    let mark_face = view! {
+                        <span
+                            class="absolute inset-0 flex items-center justify-center p-5"
+                            aria-hidden="true"
+                        >
+                            {(project.icon)()}
+                        </span>
+                    };
+
                     view! {
                         <article class="grid grid-cols-[8.875rem_minmax(0,1fr)]">
-                            <button
-                                type="button"
-                                class=format!(
-                                    "relative overflow-hidden w-[8.875rem] h-[8.875rem] cursor-pointer border border-base-content/30 {}",
-                                    project.mark,
-                                )
-                                role="tab"
-                                aria-selected=move || is_selected().to_string()
-                                aria-controls=panel_id.clone()
-                                aria-label=project.title
-                                on:click=move |_| selected.0.set(index)
-                            >
-                                <span
-                                    class="absolute inset-0 flex items-center justify-center p-5"
-                                    aria-hidden="true"
-                                >
-                                    {(project.icon)()}
-                                </span>
-                                <span
-                                    class="absolute inset-x-6 bottom-0 h-1 rounded-t-full bg-white opacity-0"
-                                    class:opacity-100=move || is_selected()
-                                    aria-hidden="true"
-                                ></span>
-                            </button>
+                            {if at_least_sm.get() {
+                                view! {
+                                    <button
+                                        type="button"
+                                        id=mark_id.clone()
+                                        class=format!("{mark_class} cursor-pointer")
+                                        role="tab"
+                                        aria-selected=move || is_selected().to_string()
+                                        aria-controls=panel_id.clone()
+                                        aria-label=project.title
+                                        on:click=move |_| selected.0.set(index)
+                                    >
+                                        {mark_face}
+                                        <span
+                                            class="absolute inset-x-6 bottom-0 h-1 rounded-t-full bg-white opacity-0"
+                                            class:opacity-100=move || is_selected()
+                                            aria-hidden="true"
+                                        ></span>
+                                    </button>
+                                }
+                                    .into_any()
+                            } else {
+                                view! { <div class=mark_class>{mark_face}</div> }.into_any()
+                            }}
                             <div
                                 id=panel_id
-                                role="tabpanel"
+                                role=move || {
+                                    if at_least_sm.get() { Some("tabpanel") } else { None }
+                                }
+                                aria-labelledby=move || {
+                                    if at_least_sm.get() { Some(mark_id.clone()) } else { None }
+                                }
                                 class="col-start-2 row-start-1 flex min-w-0 flex-col justify-center gap-2 p-4"
                             >
                                 <div class="flex min-w-0 items-center gap-3">
@@ -211,41 +242,52 @@ pub fn MainProjects() -> impl IntoView {
                                 <p class="text-xs leading-relaxed text-base-content/70">
                                     {project.description}
                                 </p>
-                                <div class="flex min-w-0 items-center gap-3 mt-3">
-                                    <a
-                                        class=format!(
-                                            "btn btn-sm flex-1 not-aria-disabled:border-transparent not-aria-disabled:bg-linear-145 not-aria-disabled:from-[#ff7a18] not-aria-disabled:via-[#ff5500] not-aria-disabled:to-[#ff2a00] not-aria-disabled:bg-size-[200%_100%] not-aria-disabled:bg-position-[0%_0%] transition-[background-position,filter] duration-250 not-aria-disabled:hover:bg-position-[100%_0%] not-aria-disabled:hover:brightness-110 {}",
-                                            if project.disabled {
-                                                "btn-disabled"
-                                            } else {
-                                                project.button
-                                            },
-                                        )
-                                        href=project.left_href
-                                        aria-disabled=if project.disabled { "true" } else { "false" }
-                                        tabindex=if project.disabled { Some("-1") } else { None }
-                                    >
-                                        {project.left_button}
-                                    </a>
-                                    <a
-                                        class=format!(
-                                            "btn btn-sm flex-1 not-aria-disabled:border-base-content not-aria-disabled:bg-transparent not-aria-disabled:text-base-content transition-colors duration-250 not-aria-disabled:hover:border-primary not-aria-disabled:hover:bg-transparent not-aria-disabled:hover:text-primary not-aria-disabled:hover:brightness-110 max-sm:[--fontsize:0.5rem] {}",
-                                            if project.disabled { "btn-disabled" } else { "" },
-                                        )
-                                        href=project.right_href
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        aria-disabled=if project.disabled { "true" } else { "false" }
-                                        tabindex=if project.disabled { Some("-1") } else { None }
-                                    >
-                                        {project.right_button}
-                                    </a>
-                                </div>
+                                {action_pair(project)}
                             </div>
                         </article>
                     }
                 })
                 .collect_view()}
         </section>
+    }
+}
+
+/// The Visit / Learn More pair beneath a panel's description.
+///
+/// Both buttons carry the same colour-utility gate; only the primary one paints
+/// a gradient and the outline one stays transparent. See [`MainProjects`] for
+/// why the gate is `not-aria-disabled` and why the attribute is a string.
+fn action_pair(project: &MainProject) -> impl IntoView {
+    view! {
+        <div class="flex min-w-0 items-center gap-3 mt-3">
+            <a
+                class=format!(
+                    "btn btn-sm flex-1 not-aria-disabled:border-transparent not-aria-disabled:bg-linear-145 not-aria-disabled:from-[#ff7a18] not-aria-disabled:via-[#ff5500] not-aria-disabled:to-[#ff2a00] not-aria-disabled:bg-size-[200%_100%] not-aria-disabled:bg-position-[0%_0%] transition-[background-position,filter] duration-250 not-aria-disabled:hover:bg-position-[100%_0%] not-aria-disabled:hover:brightness-110 {}",
+                    if project.disabled {
+                        "btn-disabled"
+                    } else {
+                        project.button
+                    },
+                )
+                href=project.left_href
+                aria-disabled=if project.disabled { "true" } else { "false" }
+                tabindex=if project.disabled { Some("-1") } else { None }
+            >
+                {project.left_button}
+            </a>
+            <a
+                class=format!(
+                    "btn btn-sm flex-1 not-aria-disabled:border-base-content not-aria-disabled:bg-transparent not-aria-disabled:text-base-content transition-colors duration-250 not-aria-disabled:hover:border-primary not-aria-disabled:hover:bg-transparent not-aria-disabled:hover:text-primary not-aria-disabled:hover:brightness-110 max-sm:[--fontsize:0.5rem] {}",
+                    if project.disabled { "btn-disabled" } else { "" },
+                )
+                href=project.right_href
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-disabled=if project.disabled { "true" } else { "false" }
+                tabindex=if project.disabled { Some("-1") } else { None }
+            >
+                {project.right_button}
+            </a>
+        </div>
     }
 }

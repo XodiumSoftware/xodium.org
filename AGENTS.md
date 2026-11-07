@@ -164,6 +164,7 @@ src/
 ├── main.rs                    # WASM entry point
 ├── lib.rs                     # Crate root, module declarations and re-exports
 ├── app.rs                     # Root App component
+├── breakpoint.rs              # Viewport breakpoint signals
 ├── github.rs                  # GitHub API client
 ├── components/
 │   ├── layout/                # Sheet bands, stacked top to bottom
@@ -321,6 +322,21 @@ rules, so the row reads as three drafted cells rather than flowing text.
 - The trade for that release is that the sheet is content-sized on phones, so
   `Team` swapping into the slot changes the document height there. That does
   not apply from `md` up, where both bands share the pinned height.
+
+### Main Projects Tabs
+
+The main project marks are tabs that select which project the hero frames, but
+only where the hero exists:
+
+- From `sm` up each mark is a `<button role="tab">` with a `tabpanel` beside it.
+- Below `sm` the hero is hidden, so there is nothing to select and both panels
+  are fully visible. The mark renders as a plain `<div>` instead, and the panel
+  drops its `role="tabpanel"` and `aria-labelledby`. Leaving the tab semantics in
+  place would describe a relationship to a region that is not on the page, and
+  would mark the unselected panel `aria-selected="false"` while it is on screen.
+- `is_at_least_sm()` in `src/breakpoint.rs` reports the breakpoint as a signal,
+  so the markup and the hero's `max-sm:hidden` agree on where the boundary is.
+  It reads `matchMedia` synchronously, so the first render is already correct.
 
 ### Hero Band
 

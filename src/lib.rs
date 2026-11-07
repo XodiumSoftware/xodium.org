@@ -77,8 +77,10 @@ pub mod components {
     pub use ui::hero_demo::{HeroDemo, HeroDemoProperties, LiveFrame};
 }
 
+pub mod breakpoint;
 pub mod github;
 
 pub use app::*;
+pub use breakpoint::is_at_least_sm;
 pub use components::*;
 pub use github::*;
