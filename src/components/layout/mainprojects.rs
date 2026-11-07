@@ -182,44 +182,49 @@ pub fn MainProjects() -> impl IntoView {
                     let is_selected = move || selected.0.get() == index;
                     let panel_id = format!("project-panel-{index}");
                     let mark_id = format!("project-mark-{index}");
-                    let mark_class = format!(
+                    let tab_mark_id = mark_id.clone();
+                    let tab_panel_id = panel_id.clone();
+                    let tab_mark_class = format!(
                         "relative overflow-hidden w-[8.875rem] h-[8.875rem] border border-base-content/30 {}",
                         project.mark,
                     );
-                    let mark_face = view! {
-                        <span
-                            class="absolute inset-0 flex items-center justify-center p-5"
-                            aria-hidden="true"
-                        >
-                            {(project.icon)()}
-                        </span>
-                    };
 
                     view! {
                         <article class="grid grid-cols-[8.875rem_minmax(0,1fr)]">
-                            {if at_least_sm.get() {
-                                view! {
-                                    <button
-                                        type="button"
-                                        id=mark_id.clone()
-                                        class=format!("{mark_class} cursor-pointer")
-                                        role="tab"
-                                        aria-selected=move || is_selected().to_string()
-                                        aria-controls=panel_id.clone()
-                                        aria-label=project.title
-                                        on:click=move |_| selected.0.set(index)
+                            {move || {
+                                let mark_face = view! {
+                                    <span
+                                        class="absolute inset-0 flex items-center justify-center p-5"
+                                        aria-hidden="true"
                                     >
-                                        {mark_face}
-                                        <span
-                                            class="absolute inset-x-6 bottom-0 h-1 rounded-t-full bg-white opacity-0"
-                                            class:opacity-100=move || is_selected()
-                                            aria-hidden="true"
-                                        ></span>
-                                    </button>
+                                        {(project.icon)()}
+                                    </span>
+                                };
+                                if at_least_sm.get() {
+                                    view! {
+                                        <button
+                                            type="button"
+                                            id=tab_mark_id.clone()
+                                            class=format!("{tab_mark_class} cursor-pointer")
+                                            role="tab"
+                                            aria-selected=move || is_selected().to_string()
+                                            aria-controls=tab_panel_id.clone()
+                                            aria-label=project.title
+                                            on:click=move |_| selected.0.set(index)
+                                        >
+                                            {mark_face}
+                                            <span
+                                                class="absolute inset-x-6 bottom-0 h-1 rounded-t-full bg-white opacity-0"
+                                                class:opacity-100=move || is_selected()
+                                                aria-hidden="true"
+                                            ></span>
+                                        </button>
+                                    }
+                                        .into_any()
+                                } else {
+                                    let mark_class = tab_mark_class.clone();
+                                    view! { <div class=mark_class>{mark_face}</div> }.into_any()
                                 }
-                                    .into_any()
-                            } else {
-                                view! { <div class=mark_class>{mark_face}</div> }.into_any()
                             }}
                             <div
                                 id=panel_id

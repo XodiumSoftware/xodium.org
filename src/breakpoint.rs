@@ -13,43 +13,49 @@ use leptos::wasm_bindgen::closure::Closure;
 /// Tailwind's `sm` breakpoint, the width at which the sheet stops stacking.
 const SM_QUERY: &str = "(width >= 40rem)";
 
+/// Asks the browser once whether `query` currently matches.
+fn matches(query: &str) -> bool {
+    web_sys::window()
+        .and_then(|window| window.match_media(query).ok())
+        .flatten()
+        .is_some_and(|list| list.matches())
+}
+
 /// Reactive signal tracking whether the viewport is at or above `sm`.
 ///
-/// The initial value is read synchronously from `matchMedia`, so the first
-/// render is already correct rather than flipping once an effect runs. The
-/// listener is removed on cleanup.
+/// The signal starts at the value `matchMedia` reports *right now*, so the first
+/// render is already correct. It is created already holding that value rather
+/// than being updated after creation: a signal mutated immediately after it is
+/// created can be read once before the update lands, which rendered the narrow
+/// layout on a wide screen.
 ///
-/// Outside a browser (`matchMedia` unavailable) the signal reports `true`, which
-/// is the layout that shows the hero and the tab behaviour: the wider layout is
-/// the safer default, since the narrow one omits content.
+/// Outside a browser (`matchMedia` unavailable) the signal reports `true`, the
+/// layout that shows the hero and the tab behaviour, since the narrow layout
+/// omits content. The change listener is removed on cleanup.
 #[must_use]
 pub fn is_at_least_sm() -> ReadSignal<bool> {
-    let (narrow, set_narrow) = signal(false);
+    let (wide, set_wide) = signal(matches(SM_QUERY));
 
-    let matches = web_sys::window()
+    let listener = web_sys::window()
         .and_then(|window| window.match_media(SM_QUERY).ok())
-        .flatten();
+        .flatten()
+        .map(|query| {
+            let listener = Closure::<dyn FnMut(web_sys::MediaQueryListEvent)>::new(
+                move |event: web_sys::MediaQueryListEvent| set_wide.set(event.matches()),
+            );
+            let _ = query.add_event_listener_with_callback(
+                "change",
+                listener.as_ref().unchecked_ref::<js_sys::Function>(),
+            );
+            (query, listener.into_js_value())
+        });
 
-    let Some(query) = matches else {
-        return narrow;
-    };
+    if let Some((query, listener)) = listener {
+        on_cleanup(move || {
+            let callback: &js_sys::Function = listener.unchecked_ref();
+            let _ = query.remove_event_listener_with_callback("change", callback);
+        });
+    }
 
-    set_narrow.set(query.matches());
-
-    let listener = Closure::<dyn FnMut(web_sys::MediaQueryListEvent)>::new(
-        move |event: web_sys::MediaQueryListEvent| set_narrow.set(event.matches()),
-    );
-    let _ = query.add_event_listener_with_callback(
-        "change",
-        listener.as_ref().unchecked_ref::<js_sys::Function>(),
-    );
-
-    let cleanup_query = query.clone();
-    let cleanup_listener = listener.into_js_value();
-    on_cleanup(move || {
-        let callback: &js_sys::Function = cleanup_listener.unchecked_ref();
-        let _ = cleanup_query.remove_event_listener_with_callback("change", callback);
-    });
-
-    narrow
+    wide
 }
