@@ -7,7 +7,6 @@
 
 use crate::breakpoint::is_at_least_sm;
 use crate::components::layout::main::SheetEntrance;
-use crate::components::ui::hero_demo::LiveFrame;
 use crate::components::ui::icons::cadiotheka::CadioThekaIcon;
 use leptos::prelude::*;
 
@@ -39,10 +38,8 @@ pub struct MainProject {
     /// When true, the action buttons are rendered inert.
     pub disabled: bool,
     /// Icon rendered in the project mark square, or [`no_icon`] when empty.
+    /// The hero plate reuses it as the project's face.
     pub icon: IconRenderer,
-    /// Live page shown in the hero window, or [`None`] while the project has no
-    /// public site to frame.
-    pub demo: Option<LiveFrame>,
 }
 
 /// Renders nothing; used as the default project mark icon.
@@ -65,10 +62,6 @@ const MAIN_PROJECTS: &[MainProject] = &[
         right_href: "https://github.com/XodiumSoftware/cadiotheka",
         disabled: false,
         icon: CadioThekaIcon,
-        demo: Some(LiveFrame {
-            src: "https://cadiotheka.com/",
-            title: "Cadiotheka, live",
-        }),
     },
     MainProject {
         mark: "hatch",
@@ -82,7 +75,6 @@ const MAIN_PROJECTS: &[MainProject] = &[
         right_href: "#",
         disabled: true,
         icon: no_icon,
-        demo: None,
     },
 ];
 

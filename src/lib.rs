@@ -53,10 +53,6 @@ pub mod components {
 
         /// XODIUM ASCII art header.
         pub mod ascii_art;
-        /// Live cross-origin demo frame for the hero window.
-        pub mod hero_demo;
-
-        pub use hero_demo::HeroDemo;
 
         pub use icons::buy_me_a_coffee::BuyMeACoffeeIcon;
         pub use icons::cadiotheka::CadioThekaIcon;
@@ -74,7 +70,6 @@ pub mod components {
     pub use layout::team::{Team, TeamProperties};
 
     pub use ui::ascii_art::{AsciiArt, XODIUM_ASCII_ART};
-    pub use ui::hero_demo::{HeroDemo, HeroDemoProperties, LiveFrame};
 }
 
 pub mod breakpoint;

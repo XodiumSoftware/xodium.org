@@ -1,4 +1,3 @@
-# xodium.org task runner
 # Install `just` once: https://github.com/casey/just
 
 [windows]
@@ -7,45 +6,33 @@ set shell := ["powershell.exe", "-NoProfile", "-Command"]
 _default:
     @just --list
 
-# ── Cross-platform paths (pure `just` functions) ──
-
 _dist := "dist"
 _wasm := "target/wasm32-unknown-unknown/release/xodiumweb.wasm"
 
-# Lint with pedantic lints enabled and warnings as errors
 lint:
-    cargo clippy --all-targets --all-features --target wasm32-unknown-unknown -- -W clippy::pedantic -D warnings
+    cargo clippy --all-targets --all-features -- -W clippy::pedantic -D warnings
 
-# Check formatting
 fmt-check:
     cargo fmt --all -- --check
 
-# Format the project
 fmt:
     cargo fmt --all
 
-# Run browser-based WASM tests
-# Note: requires wasm-pack and a headless browser (Firefox)
 test:
     wasm-pack test --headless --firefox
 
-# Build the release WASM bundle with Trunk
 build:
     trunk build --release
 
-# Serve locally with hot-reload
 serve:
     trunk serve
 
-# Clean build artifacts
 clean:
     trunk clean
 
-# Check for unused crate dependencies
 deps-check:
     cargo machete
 
-# Verify the release WASM bundle exists and report its size
 [unix]
 size: build
     ls -l {{ _wasm }}
@@ -54,16 +41,14 @@ size: build
 size: build
     Get-Item "{{ _wasm }}" | Select-Object Name, Length
 
-# Build rustdoc and fail on broken links or other warnings
 [unix]
 doc:
-    RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --target wasm32-unknown-unknown
+    RUSTDOCFLAGS="-D warnings" cargo doc --no-deps
 
 [windows]
 doc:
-    $env:RUSTDOCFLAGS = "-D warnings"; cargo doc --no-deps --target wasm32-unknown-unknown
+    $env:RUSTDOCFLAGS = "-D warnings"; cargo doc --no-deps
 
-# Verify repository paths named in Markdown files exist
 [unix]
 docs-check:
     sh scripts/check-md-paths.sh
@@ -72,5 +57,4 @@ docs-check:
 docs-check:
     $sh = Get-Command sh -ErrorAction SilentlyContinue; if ($sh) { $sh = "$sh" } else { $sh = Join-Path (Split-Path -Parent (Get-Command git).Path) "sh.exe" }; & $sh scripts/check-md-paths.sh; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-# Run the full validation suite used in CI
 validate: lint fmt-check deps-check docs-check test doc build

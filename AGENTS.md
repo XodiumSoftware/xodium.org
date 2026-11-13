@@ -117,10 +117,9 @@ Components are grouped by function in `src/components/`:
 
 #### UI Primitives (`src/components/ui/`)
 
-| Component  | File           | Purpose                                          |
-| ---------- | -------------- | ------------------------------------------------ |
-| `AsciiArt` | `ascii_art.rs` | XODIUM ASCII glyph mark                          |
-| `HeroDemo` | `hero_demo.rs` | Live cross-origin demo frame for the hero window |
+| Component  | File           | Purpose                 |
+| ---------- | -------------- | ----------------------- |
+| `AsciiArt` | `ascii_art.rs` | XODIUM ASCII glyph mark |
 
 #### UI Icons (`src/components/ui/icons/`)
 
@@ -179,7 +178,6 @@ src/
 │   │   └── blob.rs
 │   └── ui/                    # UI primitives and icons
 │       ├── ascii_art.rs
-│       ├── hero_demo.rs
 │       └── icons/
 │           ├── buy_me_a_coffee.rs
 │           └── github.rs
@@ -343,57 +341,23 @@ only where the hero exists:
 `Hero` is the focal band: a `DaisyUI` `mockup-window` filling the band's padded
 box, showing whichever project the main projects marks select.
 
-The window body is a live frame of the selected project's site, so the hero
-shows the running app instead of restating the title and description already
-shown one band above.
+The window body is a plate of the selected project: its mark, name and
+release note, centred in the frame. Nothing is embedded from another origin, so
+the hero has no cross-origin dependency and needs no `frame-src` allowance.
 
-- `MainProject::demo` holds an `Option<LiveFrame>` (`src`, `title`).
-  `MainProjects` therefore owns both what a panel says and what the hero frames;
-  `Hero` only reads `project_at(..)` and passes the frame down.
-- The whole band is `max-sm:hidden`: a phone-sized window would show a crop of
-  the desktop-width frame rather than a readable preview. Hiding it costs only
-  the band's `border-b`; the sheet's side rules come from
-  `.blueprint-sheet::before`, so the frame still closes.
-- A project with `demo: None` (the unreleased one) renders `HeroPlaceholder`,
-  which keeps the window's box and centres the project name, so switching marks
-  never collapses the band.
-- `HeroDemo` (`components/ui/hero_demo.rs`) does the framing. It has no
-  `aria-live`, since it only ever holds static chrome plus one iframe.
-- The frame is scaled to `FRAME_SCALE` (50%) and pinned to the top-left with
-  `origin-top-left`, over a doubled `w-[calc(100%*2)] h-[calc(100%*2)]` box that
-  the wrapper crops. The framed app therefore lays out at its natural desktop
-  width and overflows out of view instead of reflowing into a narrow column.
-  Do not express that size through Tailwind's spacing scale: those utilities
-  resolve to `calc(var(--spacing) * n)`, which is invalid inside the `scale`
-  longhand, so the multiplier is written out literally.
-- The iframe is `opacity-0` until its `load` event, then fades in; without that
-  the window flashed the framed site's background before its content painted.
-- The frame is sandboxed with `allow-scripts allow-same-origin allow-forms`
-  (Trunk's WASM boot, its API calls, and its forms all break without them).
-  Never add `allow-top-navigation`.
-- Do not set the iframe's `allow` attribute. `clipboard-write` was tried and
-  removed: the Permissions Policy parser rejects it as an unsupported feature
-  name and logs a console warning on every load.
-- Sign-in from inside the frame leaves the demo. Cadiotheka builds its OAuth
-  URLs against its own absolute origin when it detects it is framed, so the
-  visitor ends up signing in on cadiotheka.com rather than in the hero. That is
-  deliberate: the provider page and the callback's redirect neither one can run
-  inside a frame.
-- **Two headers gate this, and both must change together.** Cadiotheka serves
-  `frame-ancestors 'self' https://xodium.org https://www.xodium.org` from
-  `frontend/_headers`, and this site allows the framed origin with
-  `frame-src https://cadiotheka.com` in `public/_headers`. A miss on either
-  side renders a blank window with a console error. The observed failure is
-  `X-Frame-Options: SAMEORIGIN` in the frame's own error page, so check what
-  Cadiotheka actually serves with `curl -sI https://cadiotheka.com/` rather than
-  trusting the file: an older deploy can still be live.
-- Do **not** add `X-Frame-Options` to Cadiotheka's `_headers`. Only
-  `SAMEORIGIN` and `DENY` are valid Chrome-era values; the obsolete
-  `ALLOW-FROM` is ignored, and a value without a valid ancestor list blocks the
-  frame outright. `frame-ancestors` alone is what allows the embed.
-- Local work needs the same pair: run Cadiotheka's `trunk serve` behind a proxy
-  that rewrites the header, or temporarily relax it — `wasm-bindgen`'s own dev
-  server cannot be framed from another origin as-is.
+- `HeroPlate` renders the body from the selected `MainProject`; `Hero` only
+  reads `project_at(..)` and passes the project down. There is no `demo` field:
+  the plate is drawn from the same data the panel already carries.
+- The plate reuses `MainProject::icon`, the same renderer as the mark square, so
+  a project's face is defined once. A project with no icon ([`no_icon`]) keeps
+  an empty mark box rather than shifting the text when selection changes.
+- The whole band is `max-sm:hidden`: a phone-sized window would crop the plate's
+  content rather than show a readable preview. Hiding it costs only the band's
+  `border-b`; the sheet's side rules come from `.blueprint-sheet::before`, so the
+  frame still closes.
+- Every project fills the same box, disabled or not, so switching marks never
+  changes the band's height. The unreleased project shows its `established`
+  placeholder text where a released one shows its description.
 
 - The window uses the **background** variant (`bg-base-100`), so it stays opaque
   and the colour wash behind it reads only in the padding ring around it.

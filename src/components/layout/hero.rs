@@ -12,8 +12,7 @@
 /// `.blueprint-sheet::before`, so the frame stays closed.
 use crate::components::effects::blob::{BlobBackground, BlobBackgroundProperties};
 use crate::components::layout::main::SheetEntrance;
-use crate::components::layout::mainprojects::{SelectedProject, project_at};
-use crate::components::ui::hero_demo::{HeroDemo, HeroDemoProperties};
+use crate::components::layout::mainprojects::{MainProject, SelectedProject, project_at};
 use leptos::prelude::*;
 
 /// Large focal region in the middle of the sheet.
@@ -28,13 +27,16 @@ use leptos::prelude::*;
 /// `base-content/40` rule as the band borders, so the window frames the hero in
 /// the sheet's own line colour.
 ///
-/// The window body is a live [`HeroDemo`] frame of the selected project's site,
-/// so the hero shows the running app rather than a description of it. The
-/// project title and description now live only in the main projects band, which
-/// avoids restating them in two places on one sheet.
+/// The window body carries the selected project's name and description, centred
+/// in the frame. It shows what the project is rather than embedding a page from
+/// another site: the hero has no cross-origin dependency, so it needs no
+/// `frame-src` or `frame-ancestors` allowance and costs nothing beyond the sheet
+/// itself. The title and description are repeated from the main projects band by
+/// design — the hero restates the selection as the sheet's focal plate, since
+/// the selecting marks sit in a band above and are no longer in view.
 ///
-/// A project without a live site gets a placeholder instead, which keeps the
-/// window's box so the sheet does not jump when the selection changes.
+/// A project with no public site uses the same body with its release note, so
+/// the window's box never changes between selections.
 ///
 /// The band's `p-6` is the only inset: the window stretches to the remaining
 /// box on both axes, so it frames the hero instead of floating in the middle
@@ -61,39 +63,36 @@ pub fn Hero() -> impl IntoView {
             } />
             {move || {
                 let project = project_at(selected.0.get());
-                let body = match project.demo {
-                    Some(frame) => {
-                        view! {
-                            <HeroDemo props=HeroDemoProperties { frame } />
-                        }
-                            .into_any()
-                    }
-                    None => view! { <HeroPlaceholder title=project.title /> }.into_any(),
-                };
-                view! {
-                    <div class="mockup-window bg-base-100 border border-base-content/40 rounded-lg h-full w-full overflow-hidden">
-                        {body}
-                    </div>
-                }
+                view! { <HeroPlate project=project /> }
             }}
         </section>
     }
 }
 
-/// Window body for a project that has no live site to show yet.
+/// Window body for the selected project.
 ///
-/// It keeps the window's box and centres the project name, so a project that is
-/// still under wraps fills the hero without pretending to be a running app.
+/// The window chrome belongs to the band, so this fills the body below the
+/// `DaisyUI` title bar. It centres the project's mark, name and description in
+/// the frame, which keeps the hero a plate of the selection rather than a second
+/// copy of the panel's action buttons.
 #[component]
-fn HeroPlaceholder(
-    /// Name of the project awaiting a demo.
-    title: &'static str,
+fn HeroPlate(
+    /// Project whose plate the hero shows.
+    project: &'static MainProject,
 ) -> impl IntoView {
+    let status = if project.disabled {
+        project.established
+    } else {
+        project.description
+    };
+
     view! {
-        <div class="grid h-full w-full place-content-center p-6 text-center">
-            <h2 class="text-lg font-semibold uppercase tracking-[0.08em] opacity-60">
-                {title}
-            </h2>
+        <div class="grid h-full w-full place-content-center gap-3 p-6 text-center">
+            <div class="flex justify-center size-20 opacity-70" aria-hidden="true">
+                {(project.icon)()}
+            </div>
+            <h2 class="text-lg font-semibold uppercase tracking-[0.08em]">{project.title}</h2>
+            <p class="text-xs leading-relaxed opacity-60">{status}</p>
         </div>
     }
 }
