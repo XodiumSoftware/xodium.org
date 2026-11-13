@@ -11,6 +11,21 @@ use leptos::prelude::*;
 /// A function that renders an icon in a project mark square.
 pub type IconRenderer = fn() -> AnyView;
 
+/// A single tile in the hero plate's feature mosaic.
+#[derive(Clone, Copy, Debug)]
+#[must_use]
+pub struct HeroCard {
+    /// Tailwind utilities sizing the tile inside the plate grid.
+    ///
+    /// Spans only apply from `md` up: below that the grid is one column (below
+    /// `sm`) or a plain two-up, where a spanning tile would leave a hole.
+    pub span: &'static str,
+    /// Card heading, rendered as an `h3`.
+    pub title: &'static str,
+    /// One or two short lines of supporting text.
+    pub body: &'static str,
+}
+
 /// A single main project panel in the [`MainProjects`] band.
 #[derive(Clone, Debug)]
 #[must_use]
@@ -37,7 +52,64 @@ pub struct MainProject {
     pub disabled: bool,
     /// Icon rendered in the project mark square, or [`no_icon`] when empty.
     pub icon: IconRenderer,
+    /// Tiles shown in the hero plate while this project is selected.
+    ///
+    /// Every project owns its own set, so the plate always describes the
+    /// selection. A project still under wraps sets empty copy, and the hero
+    /// replaces it with blurred placeholder cards.
+    pub cards: &'static [HeroCard],
 }
+
+/// Feature tiles for Cadiotheka, in reading order.
+///
+/// The spans are authored rather than generated: a large tile has to sit where
+/// the grid can fill the space beside it, so the mix is tuned by hand the same
+/// way `BLOBS` is.
+const CADIOTHEKA_CARDS: &[HeroCard] = &[
+    HeroCard {
+        span: "md:col-span-2 md:row-span-2",
+        title: "One hub, every tool",
+        body: "Browse, publish and track CAD models without leaving the browser.",
+    },
+    HeroCard {
+        span: "",
+        title: "Open source",
+        body: "Read every line, or run your own instance.",
+    },
+    HeroCard {
+        span: "",
+        title: "Versioned parts",
+        body: "Every revision kept.",
+    },
+    HeroCard {
+        span: "md:col-span-2",
+        title: "Built for creators",
+        body: "Licensing, attribution and download counts come with the upload.",
+    },
+    HeroCard {
+        span: "",
+        title: "Fast by design",
+        body: "Compiled to WASM, no install.",
+    },
+    HeroCard {
+        span: "",
+        title: "Yours to extend",
+        body: "A documented API from day one.",
+    },
+];
+
+/// Tiles for a project that is still under wraps.
+///
+/// One plain cell, occupying the middle two of the four `md` columns so it sits
+/// centred in the row instead of flush with the plate's left edge, and centred
+/// vertically by the plate's `content-center`. It states that the project is being
+/// built rather than imitating a feature list: a single honest card is less noise
+/// than a grid of placeholders, and the copy is written to stand alone.
+const CLASSIFIED_CARDS: &[HeroCard] = &[HeroCard {
+    span: "md:col-start-2 md:col-span-2",
+    title: "Under construction",
+    body: "This project is still being drafted. Check back later for the reveal.",
+}];
 
 /// Renders nothing; used as the default project mark icon.
 #[must_use]
@@ -59,6 +131,7 @@ const MAIN_PROJECTS: &[MainProject] = &[
         right_href: "https://github.com/XodiumSoftware/cadiotheka",
         disabled: false,
         icon: CadioThekaIcon,
+        cards: CADIOTHEKA_CARDS,
     },
     MainProject {
         mark: "hatch",
@@ -72,6 +145,7 @@ const MAIN_PROJECTS: &[MainProject] = &[
         right_href: "#",
         disabled: true,
         icon: no_icon,
+        cards: CLASSIFIED_CARDS,
     },
 ];
 

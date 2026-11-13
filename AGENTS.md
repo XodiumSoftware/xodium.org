@@ -179,6 +179,7 @@ src/
 │       ├── ascii_art.rs
 │       └── icons/
 │           ├── buy_me_a_coffee.rs
+│           ├── cadiotheka.rs
 │           └── github.rs
 
 public/
@@ -254,32 +255,26 @@ The band below the hero is a single slot that shows either `Subprojects` or
 let lower_band = LowerBandState::provide();
 ```
 
-- `LowerBand` is the enum of bands (`Subprojects` is the default).
-- `LowerBandState` wraps the `RwSignal` and exposes `get`, `set` and `toggle`.
-  `Footer` reads it via `LowerBandState::use_context()` and renders a button
-  that toggles the slot.
-- The footer entry is a `<button>`, not a link: a link cannot change state,
-  and `aria-pressed` is what communicates the toggle to assistive tech. It
-  labels the band that is _not_ currently shown, so it reads `TEAM` on the
-  default view and `SUBPROJECTS` once the team is open.
-- `Main::view` picks the band with `match lower_band.get()`, rendering each arm
-  through `.into_any()` because the two branches are different view types.
-- `Team` keeps the `id="team"` anchor so `#team` still resolves, and pressing
-  Escape calls `on_close`, which switches the slot back to `Subprojects`.
+- `LowerBandState` wraps the shared `RwSignal` and exposes `get`, `set` and
+  `toggle`. Consumers read it via `LowerBandState::use_context()`.
+- The control that changes the slot is a `<button>` with `aria-pressed`, never a
+  link: a link cannot change state. Label it with the band that is _not_
+  currently shown, so it names the destination.
+- `Main::view` picks the band with a `match`, rendering each arm through
+  `.into_any()` because the branches are different view types.
+- The slot's bands share a pinned height from `md` up, so swapping never resizes
+  the sheet. Keep any new band mounted in that slot to the same contract.
 
 ### Header Band
 
-`Header` draws the XODIUM ASCII mark with the `> Because we can.` tagline. The
-band is a column on phones and a row from `sm` up, so the tagline moves under
-the mark rather than beside it on narrow screens.
+`Header` draws the XODIUM ASCII mark with the tagline. It is a column on narrow
+screens and a row from `sm` up, so the tagline moves under the mark rather than
+beside it.
 
-- The mark is 72 monospace columns wide. `.ascii-art` in `public/style.css`
-  sets `font-size: min(var(--ascii-font-size), 100cqi / 43.2)`, where 43.2em is
-  the block's width at one glyph per 0.6em. The whole mark therefore scales down
-  to the band's inline width instead of overflowing the sheet, and stops at the
-  original `0.585rem` cap on wider screens. Change one without the other and the
-  mark either overflows or shrinks needlessly: the divisor is the glyph block's
-  column count times 0.6.
+The mark is scaled by a container-relative `font-size` in `public/style.css`.
+The divisor there is the glyph block's column count times 0.6 (the advance of one
+monospace glyph), so the mark shrinks to the band's inline width instead of
+overflowing. If the art's column count changes, the divisor must change with it.
 
 ### Load Entrance and Swap Animations
 
@@ -287,91 +282,84 @@ the mark rather than beside it on narrow screens.
 exclusive per element:
 
 - `band_class()` returns `sheet-band-enter` while the page is loading in, which
-  plays `slide-up` on the band itself. `Header`, `MainProjects`, `Hero`,
-  `Subprojects` and `Footer` use it. The footer is last in reading order, so it
-  carries its own `--band-delay` in `public/style.css` (900ms) and enters after
-  the bands above it.
-- `swap_class()` returns `sheet-band-swap` only once a swap has been requested
-  (see `mark_swapped`), which fades the band's **children**. `Subprojects` and
-  `Team` use it.
-- These animate _different elements_, so they do not override each other. A
-  single flag would therefore have re-animated the subprojects cards the moment
-  the load entrance ended, which read as a flicker. Keep the two flags separate.
-- `band_class` is never applied to `Team`: it is only reachable through the
-  swap, so animating its bottom rule would look like a redraw.
-- `LowerBandState::set` arms the swap, so any caller that changes the band gets
-  the crossfade without extra bookkeeping.
+  plays `slide-up` on the band itself.
+- `swap_class()` returns `sheet-band-swap` only once a swap has been requested,
+  which fades the band's **children**.
+- These animate _different elements_, so they do not override each other. Do not
+  collapse them into one flag: the swap class would then re-animate a band's
+  children the moment the entrance ended, which reads as a flicker.
+- A band that is only reachable through the swap does not take `band_class`:
+  animating its bottom rule on mount would look like a redraw.
+- Entering bands stagger top to bottom through per-band `--band-delay` values in
+  `public/style.css`. A newly added band needs its own delay if it should arrive
+  in sequence.
 
-### Subprojects Band
+### Bands in General
 
-`Subprojects` renders three cards that share equal width and are separated by
-rules, so the row reads as three drafted cells rather than flowing text.
+Every band is a `<section class="sheet-band ...">` stacked inside `Main`, and
+the conventions below apply to all of them:
 
-- From `md` up the cards sit in one row, numbered left to right, divided by
-  `md:divide-x` and pinned to `--lower-band-height` so swapping it for `Team`
-  never resizes the sheet.
-- Below `md` they stack in the same reading order. The mobile block in
-  `public/style.css` releases the band's height (`height: auto`, `overflow:
-visible`) and turns the dividers horizontal. The release is load-bearing: a
-  pinned height clips the stacked cards, and one whose description wraps can
-  need more room than the desktop band holds. Do not reintroduce a fixed
-  mobile height without checking every description at the narrowest width.
-- The trade for that release is that the sheet is content-sized on phones, so
-  `Team` swapping into the slot changes the document height there. That does
-  not apply from `md` up, where both bands share the pinned height.
+- Separated by `border-b border-base-content/40`, the same rule colour as the
+  sheet frame. The side rules come from `.blueprint-sheet::before`, so bands do
+  not draw their own left and right borders.
+- Row-based content sits in `const` slices at the top of the component file, so
+  the order and copy are edited in one place.
+- Cards and cells that read as drafted cells are separated by `divide-*` rules
+  rather than by gaps, and share equal width.
+- Anything that must keep two bands the same size is pinned to a shared CSS
+  variable in `public/style.css` rather than expressed per band.
+- Where a layout only works because a band is allowed to grow with its content
+  (or is stopped from doing so), note that in the component's doc comment. These
+  pairs are the easiest thing to "simplify" into a clipping bug.
 
 ### Main Projects Tabs
 
-The main project marks are tabs that select which project the hero shows. The
-relationship holds at every breakpoint, with no branch on viewport width:
+The main project marks are tabs that select which project the hero shows, and
+the relationship holds at every breakpoint. There is deliberately no branch on
+viewport width:
 
-- Each mark is a `<button role="tab">` with a `tabpanel` beside it, at every
-  width. Since the hero is on the page at every width, the tab always controls
-  something visible and the unselected panel may be announced
-  `aria-selected="false"` honestly.
-- This was previously split at `sm`, when the hero was `max-sm:hidden` and a tab
-  would have named a `tabpanel` that was not on the page. Removing the hero's
-  breakpoint removed the reason for the split, so the `<div>` fallback, the
-  conditional `role`/`aria-labelledby`, and the `breakpoint` module that reported
-  the width all went with it. Do not reintroduce a width branch here unless the
-  hero is hidden again.
+- Each mark is a `<button role="tab">` with a `tabpanel` beside it. Since the
+  hero is on the page at every width, the tab always controls something visible
+  and the unselected panel may be announced `aria-selected="false"` honestly.
+- Do not reintroduce a width branch unless the hero is hidden at some width
+  again. That is what justified the old split, and it went with the hero's
+  breakpoint.
+- Inert action buttons on these panels are anchors gated on
+  `not-aria-disabled`, with the attribute bound as a **string**. A `bool`
+  attribute is written presence-only, so `true` produced `aria-disabled=""` and
+  the gates stopped matching.
 
 ### Hero Band
 
 `Hero` is the focal band: a `DaisyUI` `mockup-window` filling the band's padded
-box, showing whichever project the main projects marks select.
+box, showing the project the marks select. The window body is a mosaic of that
+project's feature cards.
 
-The window body is a plate of the selected project: its name and release note,
-centred in the frame. Nothing is embedded from another origin, so the hero has
-no cross-origin dependency and needs no `frame-src` allowance.
-
-- `HeroPlate` renders the body from the selected `MainProject`; `Hero` only
-  reads `project_at(..)` and passes the project down. There is no `demo` field:
-  the plate is drawn from the same data the panel already carries.
-- The plate does not render `MainProject::icon`. The same glyph is already
-  painted large on the selecting mark one band above, so repeating it competed
-  with the title for the plate's small face.
-- The band is visible at every breakpoint. The plate is a title and a line of
-  text, so it reflows into a narrow column on a phone instead of overflowing,
-  and the selecting marks and the plate are always on the same page.
-- Every project fills the same box, disabled or not, so switching marks never
-  changes the band's height. The unreleased project shows its `established`
-  placeholder text where a released one shows its description.
-
-- The window uses the **background** variant (`bg-base-100`), so it stays opaque
-  and the colour wash behind it reads only in the padding ring around it.
-- Its border is `border-base-content/40`, the same rule colour as the band
-  borders. It is `rounded-lg` rather than `rounded-box` because the theme sets
-  `--radius-box: 0rem`, which would make the latter a no-op.
-- The window's three traffic lights come from one `::before` stamped with a
-  `box-shadow`; `public/style.css` recolours them through the shadow stops and
-  forces `opacity: 1`, since DaisyUI fades them to 30%.
-- The colour wash is `BlobBackground` (`components/effects/blob.rs`): one `<svg>`
-  of `<circle>`s sharing a single `feTurbulence` + `feDisplacementMap` filter,
-  so the roughening costs one turbulence evaluation rather than one per blob.
-  Its placement comes from the caller's `class`, so it is not tied to the hero.
-  The band sets `isolation: isolate` so `z-index: -1` keeps the wash inside the
-  band rather than dropping it behind the sheet.
+- Each `MainProject` owns its `cards: &'static [HeroCard]` slice, so the plate
+  always describes the selection. `Hero` only reads `project_at(..)`.
+- A card's `span` holds authored Tailwind utilities. Spans are hand-tuned, not
+  generated, and are `md:`-only: the grid is one column below `sm` and two up at
+  `sm`, where a span would leave a hole. A lone card is the exception and may
+  carry an `md:col-start-*` to sit centred.
+- The mosaic is `grid-flow-dense` with `auto-rows-min`, so later tiles backfill
+  the gap a span leaves and the grid never forces the band taller than its share.
+- Cards are inert: plain `<div>`s, no links and no focus targets, so the plate
+  stays the marks' `tabpanel` without adding tab stops inside it. If a card ever
+  links out, revisit whether the hero should still be a `tabpanel`.
+- Card copy must stand alone. Below `sm` the tiles stack, so no card may borrow
+  meaning from a neighbour.
+- The band grows into the sheet's leftover height from `sm` up and sizes to its
+  tiles below `sm`. Keep the two halves of that pair together: a grown band on a
+  phone hands the hero a share of the sheet rather than the height its tiles need,
+  and the window then clips them. Nothing in `public/style.css` pins this band's
+  height, so the utilities are the only place it is set.
+- Tiles are filled with `base-100`, the token the page itself is painted with,
+  and never left transparent. If a tile needs its edge read, use the border, not
+  a different surface colour.
+- The unreleased project still supplies real cards with real copy rather than
+  placeholder filler. Prefer an honest "under construction" card to hidden or
+  blurred content: the plate stays readable, so nothing has to be kept from
+  assistive tech.
 
 ### Team Section
 
@@ -379,28 +367,17 @@ no cross-origin dependency and needs no `frame-src` allowance.
 not as a modal. It is a ruled band matching `Subprojects`: a centred row of round
 avatars, each linking to a member's GitHub profile in a new tab.
 
-- The component fetches its own members via `fetch_members` when it mounts.
-- `Main` also prefetches the same endpoint 1.5 s after load, so the first open is
-  usually a cache hit rather than a live request. Without it the first open paid
-  the full GitHub round trip before any avatar could render.
-- While the request is pending the band draws `VISIBLE_AVATARS` placeholder
-  circles in the same avatar box, so it does not swap in empty and then reflow.
-- The band never takes the load-in entrance: it can only be reached through the
-  swap, and its crossfade is gated by `SheetEntrance` (see the swap docs in
-  `main.rs`).
-- It manages its own focus: it focuses the band on mount, closes on Escape via
-  a document-level listener (so focus position does not matter), and restores
-  focus to the previously active element on cleanup.
-- `.team-band-avatar` in `public/style.css` only sets the avatar box size. The
-  2px ring is `border-2 border-base-content` on the `.avatar` wrapper in
-  `team.rs`, not on that inner element: `avatar-group` clips the wrapper, so a
-  border drawn on the inside would be cut away. The wrapper's border is
-  `border-box`, which is why `--team-avatar-size` subtracts 4px rather than 2.
-- DaisyUI's `.avatar-group .avatar` draws its own 4px `base-100` border as the
-  overlap gap. Our `border-2 border-base-content` utilities are unlayered, so
-  they win over that layered rule and the ring reads in the content colour;
-  do not reintroduce a `border-width: 0` override for the group, which is what
-  previously left the avatars looking borderless.
+- The component fetches its own members via `fetch_members` when it mounts, and
+  `Main` prefetches the same endpoint shortly after load so the first open is
+  usually a cache hit. Keep that pairing if either side changes.
+- While the request is pending the band draws placeholder circles in the same
+  avatar box, so it does not swap in empty and then reflow.
+- It manages its own focus: focus on mount, close on Escape through a
+  document-level listener, and restore the previously active element on cleanup.
+- Avatar rings are drawn with `border-*` utilities on the `.avatar` wrapper, not
+  on the inner element: `avatar-group` clips the wrapper, so an inner border is
+  cut away. Our unlayered utilities beat DaisyUI's layered group border, which is
+  what keeps the ring visible.
 
 ### Caching Strategy
 
@@ -454,16 +431,26 @@ GitHub API responses cached in `localStorage`:
 
 ### After Making Edits
 
-**Always update documentation when code changes:**
+**rustdoc is the primary documentation.** Intent belongs on the item it
+describes: component doc comments explain why a layout is pinned, why a
+breakpoint exists, and what breaks if it is removed. Update them whenever you add
+public API, change a component's interface, or make a non-obvious choice.
 
-1. **rustdoc comments** — Add/update if you:
-    - Add new public APIs
-    - Change component interfaces
-    - Add complex logic
-    - **Run `trunk build`** to verify compilation
-    - **Update `AGENTS.md`** if architecture, layout, or conventions change
+**`AGENTS.md` is for what outlives individual edits.** Update it only when one of
+these genuinely changes:
 
-**Rule of thumb:** If a code change would confuse someone reading the docs, update the docs.
+- the module tree, or which bands make up the page
+- a cross-cutting convention (props naming, static data, CSS split, lint rules)
+- a rule whose removal would cause a bug that a reader could not spot locally
+  (a pinned height, a two-flag animation split, an authored span scheme)
+
+Do **not** update it for: copy changes, card contents, colours, spacing, tile
+spans, component-internal structure, or a fixed bug. Those belong in the code and
+in the commit message. If a sentence would need editing the next time someone
+tweaks a value, it is in the wrong file.
+
+**Verification:** run `trunk build` (or `just validate`) after edits, and keep
+the lint gates passing — see [Quick Commands](#quick-commands).
 
 ## CI/CD
 
@@ -508,10 +495,11 @@ To add a new page section:
 1. Determine category (`layout`, `ui`, or `effects`; plus `ui/icons` for icons)
 2. Create file in the appropriate subdirectory
 3. Define component with props struct named `{Component}Properties` where applicable
-4. Add the module declaration in `src/lib.rs` under the appropriate block
-5. Add a re-export in `src/lib.rs`
-6. Add rustdoc comments explaining purpose
-7. Update `AGENTS.md` architecture tables if the component is part of the page layout
+4. Add the module declaration and re-export in `src/lib.rs`
+5. Add rustdoc explaining its purpose
+
+No `AGENTS.md` edit is needed unless the component joins the page layout (then add
+it to the band table and the page-layout reading order).
 
 ## Memory System
 
