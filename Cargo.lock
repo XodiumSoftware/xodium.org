@@ -1663,7 +1663,6 @@ dependencies = [
  "console_error_panic_hook",
  "leptos",
  "wasm-bindgen",
- "web-sys",
 ]
 
 [[package]]

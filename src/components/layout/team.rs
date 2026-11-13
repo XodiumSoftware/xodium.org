@@ -12,7 +12,6 @@
 
 use crate::components::layout::main::SheetEntrance;
 use leptos::prelude::*;
-use leptos::wasm_bindgen::JsCast as _;
 
 /// A single member of the Xodium organization shown in the team band.
 #[derive(Clone, Copy, Debug)]
@@ -79,6 +78,13 @@ fn member_avatar(member: &'static Member) -> impl IntoView {
 /// the only way back to the subprojects cards; the band has no dismiss control
 /// of its own.
 ///
+/// Focus follows the swap without any DOM access: `autofocus` on the section
+/// moves focus in as the band is inserted, so a keyboard user lands on the
+/// labelled region rather than being dropped at the top of the page, and focus
+/// returns to the footer toggle when the band goes away. `tabindex="-1"` makes
+/// the section focusable without adding it to the Tab order. This is why the
+/// crate needs no `web-sys`: there is no `NodeRef`, no `active_element` capture
+/// and no `on_cleanup` restore to run against the DOM.
 /// The band crossfades in through [`SheetEntrance`]'s swap class. It never
 /// takes the load-in entrance: it can only be reached through the lower-band
 /// swap, so `.sheet-band-team` carries no `--band-delay`.
@@ -106,31 +112,8 @@ fn member_avatar(member: &'static Member) -> impl IntoView {
 pub fn Team() -> impl IntoView {
     let entrance = SheetEntrance::use_context();
 
-    let section = NodeRef::<leptos::html::Section>::new();
-
-    Effect::new(move |_| {
-        let Some(section) = section.get() else {
-            return;
-        };
-
-        let Some(document) = web_sys::window().and_then(|window| window.document()) else {
-            return;
-        };
-
-        let previous_focus = document
-            .active_element()
-            .and_then(|element| element.dyn_into::<web_sys::HtmlElement>().ok());
-        let _ = section.focus();
-        on_cleanup(move || {
-            if let Some(element) = previous_focus.clone() {
-                let _ = element.focus();
-            }
-        });
-    });
-
     view! {
         <section
-            node_ref=section
             id="team"
             class=move || {
                 format!(
@@ -138,6 +121,7 @@ pub fn Team() -> impl IntoView {
                     entrance.swap_class(),
                 )
             }
+            autofocus
             tabindex="-1"
             aria-label="Team members"
         >

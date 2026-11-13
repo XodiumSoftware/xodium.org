@@ -17,7 +17,7 @@
 | **Framework**     | Leptos (CSR)              | Reactive web framework          |
 | **Build Tool**    | Trunk                     | WASM bundler + dev server       |
 | **Styling**       | Tailwind CSS + DaisyUI    | Utility-first CSS               |
-| **JS Interop**    | wasm-bindgen, web-sys     | Browser API bindings            |
+| **JS Interop**    | wasm-bindgen              | WASM glue                       |
 | **Panic Handler** | console_error_panic_hook  | Debug panic messages in console |
 | **Docs**          | rustdoc (via `cargo doc`) | API documentation               |
 
@@ -352,9 +352,11 @@ avatars, each linking to a member's GitHub profile in a new tab.
 
 - The band reads `MEMBERS` directly, so it renders fully formed on its first
   frame: there is no request to wait on and no skeleton state.
-- It manages its own focus: focus on mount, and restore the previously active
-  element on cleanup. It has no dismiss control: the footer's band toggle is the
-  only way back to the subprojects cards.
+- It takes focus through markup, not the DOM: `autofocus` on the section moves
+  focus in as the band is inserted, and focus returns to the footer toggle when
+  it unmounts. That keeps the crate free of `web-sys`. Do not replace it with a
+  `NodeRef` + `on_cleanup` pair unless something needs to restore a _specific_
+  element.
 - Avatar rings are drawn with `border-*` utilities on the `.avatar` wrapper, not
   on the inner element: `avatar-group` clips the wrapper, so an inner border is
   cut away. Our unlayered utilities beat DaisyUI's layered group border, which is
@@ -380,7 +382,8 @@ fetch on every mount.
 ## Important Notes
 
 - **CSR only** — no SSR, all rendering happens client-side
-- **Browser APIs** accessed via `web-sys`
+- **Browser APIs** — no component touches the DOM directly any more; focus is
+  handled by `autofocus` in the markup, so there is no `web-sys` dependency
 - **WASM size** optimized heavily for fast page loads
 - **`prefers-reduced-motion`** — handled entirely in `public/style.css` via
   the `@media (prefers-reduced-motion: reduce)` block, which zeroes out the
