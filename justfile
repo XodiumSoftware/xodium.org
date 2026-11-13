@@ -64,8 +64,13 @@ doc:
     $env:RUSTDOCFLAGS = "-D warnings"; cargo doc --no-deps --target wasm32-unknown-unknown
 
 # Verify repository paths named in Markdown files exist
+[unix]
 docs-check:
     sh scripts/check-md-paths.sh
+
+[windows]
+docs-check:
+    $sh = Get-Command sh -ErrorAction SilentlyContinue; if ($sh) { $sh = "$sh" } else { $sh = Join-Path (Split-Path -Parent (Get-Command git).Path) "sh.exe" }; & $sh scripts/check-md-paths.sh; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 # Run the full validation suite used in CI
 validate: lint fmt-check deps-check docs-check test doc build

@@ -117,18 +117,18 @@ Components are grouped by function in `src/components/`:
 
 #### UI Primitives (`src/components/ui/`)
 
-| Component  | File           | Purpose                 |
-| ---------- | -------------- | ----------------------- |
-| `AsciiArt` | `ascii_art.rs` | XODIUM ASCII glyph mark |
+| Component  | File           | Purpose                                          |
+| ---------- | -------------- | ------------------------------------------------ |
+| `AsciiArt` | `ascii_art.rs` | XODIUM ASCII glyph mark                          |
 | `HeroDemo` | `hero_demo.rs` | Live cross-origin demo frame for the hero window |
 
 #### UI Icons (`src/components/ui/icons/`)
 
-| Component          | File                 | Purpose             |
-| ------------------ | -------------------- | ------------------- |
-| `BuyMeACoffeeIcon` | `buy_me_a_coffee.rs` | Buy Me a Coffee cup |
+| Component          | File                 | Purpose                |
+| ------------------ | -------------------- | ---------------------- |
+| `BuyMeACoffeeIcon` | `buy_me_a_coffee.rs` | Buy Me a Coffee cup    |
 | `CadioThekaIcon`   | `cadiotheka.rs`      | Cadiotheka brand glyph |
-| `GitHubIcon`       | `github.rs`          | GitHub Octocat      |
+| `GitHubIcon`       | `github.rs`          | GitHub Octocat         |
 
 #### Effects (`src/components/effects/`)
 
@@ -277,12 +277,12 @@ band is a column on phones and a row from `sm` up, so the tagline moves under
 the mark rather than beside it on narrow screens.
 
 - The mark is 72 monospace columns wide. `.ascii-art` in `public/style.css`
-sets `font-size: min(var(--ascii-font-size), 100cqi / 43.2)`, where 43.2em is
-the block's width at one glyph per 0.6em. The whole mark therefore scales down
-to the band's inline width instead of overflowing the sheet, and stops at the
-original `0.585rem` cap on wider screens. Change one without the other and the
-mark either overflows or shrinks needlessly: the divisor is the glyph block's
-column count times 0.6.
+  sets `font-size: min(var(--ascii-font-size), 100cqi / 43.2)`, where 43.2em is
+  the block's width at one glyph per 0.6em. The whole mark therefore scales down
+  to the band's inline width instead of overflowing the sheet, and stops at the
+  original `0.585rem` cap on wider screens. Change one without the other and the
+  mark either overflows or shrinks needlessly: the divisor is the glyph block's
+  column count times 0.6.
 
 ### Load Entrance and Swap Animations
 
@@ -315,7 +315,7 @@ rules, so the row reads as three drafted cells rather than flowing text.
   never resizes the sheet.
 - Below `md` they stack in the same reading order. The mobile block in
   `public/style.css` releases the band's height (`height: auto`, `overflow:
-  visible`) and turns the dividers horizontal. The release is load-bearing: a
+visible`) and turns the dividers horizontal. The release is load-bearing: a
   pinned height clips the stacked cards, and one whose description wraps can
   need more room than the desktop band holds. Do not reintroduce a fixed
   mobile height without checking every description at the narrowest width.
@@ -519,6 +519,11 @@ known top-level directory (`src/`, `public/`, `scripts/`, `.github/`,
 `{`, `*`, or `<` are skipped: AGENTS.md lists bare filenames in tables headed by
 directory, skill files contain `{name}.rs` placeholders, and a `mod.rs` may be
 cited precisely because it does not exist.
+
+The script is POSIX shell, so the recipe is split by platform like `size` and
+`doc`: Unix runs `sh`, Windows runs the `sh.exe` from whichever `sh` is on
+PATH, falling back to the one beside `git`. Without that split the default
+`sh` shell cannot find a `sh` executable to invoke on Windows at all.
 
 This catches renamed or deleted files, not stale prose: no linter can tell
 that a sentence describes behaviour that no longer exists.
