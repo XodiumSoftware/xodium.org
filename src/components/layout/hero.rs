@@ -5,9 +5,9 @@
 /// pushed to the bottom of the sheet. Its content follows the project selected
 /// through the main projects marks.
 ///
-/// The band shows at every breakpoint. The plate is text and an icon, so it
-/// reflows into a narrow column rather than being cropped, and the selecting
-/// marks are always on the same page — which is why they keep their tab
+/// The band shows at every breakpoint. The plate is a title and a line of text,
+/// so it reflows into a narrow column rather than being cropped, and the
+/// selecting marks are always on the same page — which is why they keep their tab
 /// semantics on phones too.
 ///
 use crate::components::effects::blob::{BlobBackground, BlobBackgroundProperties};
@@ -72,9 +72,13 @@ pub fn Hero() -> impl IntoView {
 /// Window body for the selected project.
 ///
 /// The window chrome belongs to the band, so this fills the body below the
-/// `DaisyUI` title bar. It centres the project's mark, name and description in
-/// the frame, which keeps the hero a plate of the selection rather than a second
+/// `DaisyUI` title bar. It centres the project's name and description in the
+/// frame, which keeps the hero a plate of the selection rather than a second
 /// copy of the panel's action buttons.
+///
+/// The mark is deliberately omitted: the same glyph is already painted large on
+/// the selecting mark one band above, so repeating it here only competed with
+/// the title for the plate's small face.
 #[component]
 fn HeroPlate(
     /// Project whose plate the hero shows.
@@ -88,9 +92,6 @@ fn HeroPlate(
 
     view! {
         <div class="grid h-full w-full place-content-center gap-3 p-6 text-center">
-            <div class="flex justify-center size-20 opacity-70" aria-hidden="true">
-                {(project.icon)()}
-            </div>
             <h2 class="text-lg font-semibold uppercase tracking-[0.08em]">{project.title}</h2>
             <p class="text-xs leading-relaxed opacity-60">{status}</p>
         </div>

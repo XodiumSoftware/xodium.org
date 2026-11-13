@@ -36,7 +36,6 @@ pub struct MainProject {
     /// When true, the action buttons are rendered inert.
     pub disabled: bool,
     /// Icon rendered in the project mark square, or [`no_icon`] when empty.
-    /// The hero plate reuses it as the project's face.
     pub icon: IconRenderer,
 }
 

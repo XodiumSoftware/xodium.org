@@ -341,19 +341,19 @@ relationship holds at every breakpoint, with no branch on viewport width:
 `Hero` is the focal band: a `DaisyUI` `mockup-window` filling the band's padded
 box, showing whichever project the main projects marks select.
 
-The window body is a plate of the selected project: its mark, name and
-release note, centred in the frame. Nothing is embedded from another origin, so
-the hero has no cross-origin dependency and needs no `frame-src` allowance.
+The window body is a plate of the selected project: its name and release note,
+centred in the frame. Nothing is embedded from another origin, so the hero has
+no cross-origin dependency and needs no `frame-src` allowance.
 
 - `HeroPlate` renders the body from the selected `MainProject`; `Hero` only
   reads `project_at(..)` and passes the project down. There is no `demo` field:
   the plate is drawn from the same data the panel already carries.
-- The plate reuses `MainProject::icon`, the same renderer as the mark square, so
-  a project's face is defined once. A project with no icon ([`no_icon`]) keeps
-  an empty mark box rather than shifting the text when selection changes.
-- The band is visible at every breakpoint. The plate is an icon and text, so it
-  reflows into a narrow column on a phone instead of overflowing, and the
-  selecting marks and the plate are always on the same page.
+- The plate does not render `MainProject::icon`. The same glyph is already
+  painted large on the selecting mark one band above, so repeating it competed
+  with the title for the plate's small face.
+- The band is visible at every breakpoint. The plate is a title and a line of
+  text, so it reflows into a narrow column on a phone instead of overflowing,
+  and the selecting marks and the plate are always on the same page.
 - Every project fills the same box, disabled or not, so switching marks never
   changes the band's height. The unreleased project shows its `established`
   placeholder text where a released one shows its description.
