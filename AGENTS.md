@@ -50,8 +50,8 @@ RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --target wasm32-unknown-unknown
 # Clean build artifacts
 trunk clean
 
-# Run browser-based WASM tests (requires wasm-pack + Firefox)
-wasm-pack test --headless --firefox
+# Compile test targets for the WASM target (no test targets exist today)
+cargo test --target wasm32-unknown-unknown --no-run
 
 # Check for unused crate dependencies
 cargo machete
@@ -374,8 +374,13 @@ fetch on every mount.
 - Browser WASM tests (`wasm-bindgen-test`, `run_in_browser`) ran against the
   GitHub client that used to live in `src/github.rs`; they went with it. Add
   them back alongside any future client.
-- `just test` expects `wasm-pack test --headless --firefox`; with no test targets
-  left it compiles nothing, so the lint/build gates carry the verification.
+- No test targets exist. `just test` compiles them with
+  `cargo test --target wasm32-unknown-unknown --no-run`; `--no-run` matters
+  because a wasm binary cannot be executed natively (it fails with
+  "not a valid Win32 application" on Windows). The lint/build gates carry the
+  verification. Do not gate CI on a test job that has nothing to run:
+  `wasm-pack test` fails outright without a `wasm-bindgen-test` dev-dependency.
+  Add the dev-dependency, the tests and the job together when they come back.
 - Also verify manually with `trunk serve`; check the console for WASM panics
   (in debug builds)
 
@@ -432,7 +437,7 @@ the lint gates passing — see [Quick Commands](#quick-commands).
 
 GitHub Actions workflows in `.github/workflows/`:
 
-- **rust.yml** — Lint (clippy + fmt + rustdoc + cargo-machete), browser WASM tests, Trunk build with a 500 KB WASM size budget, deploy to Cloudflare Pages (pushes to `main`/`dev` and manual dispatches only)
+- **rust.yml** — Lint (clippy + fmt + rustdoc + cargo-machete), Trunk build with a 500 KB WASM size budget, deploy to Cloudflare Pages (pushes to `main`/`dev` and manual dispatches only)
 - **enforce_pr_title.yml** — Validates PR titles follow conventional commits
 
 ## Adding a New Section

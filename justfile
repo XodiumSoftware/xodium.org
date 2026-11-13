@@ -19,7 +19,7 @@ fmt:
     cargo fmt --all
 
 test:
-    wasm-pack test --headless --firefox
+    cargo test --target wasm32-unknown-unknown --no-run
 
 build:
     trunk build --release
@@ -50,4 +50,4 @@ doc:
     $env:RUSTDOCFLAGS = "-D warnings"; cargo doc --no-deps
 
 [windows]
-validate: lint fmt-check deps-check test doc build
+validate: lint fmt-check deps-check doc build
