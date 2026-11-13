@@ -59,14 +59,11 @@ wasm-pack test --headless --firefox
 # Check for unused crate dependencies
 cargo machete
 
-# Verify repository paths named in Markdown files exist
-sh scripts/check-md-paths.sh
-
 # Lint with pedantic lints enabled; every warning is treated as an error.
 cargo clippy --all-targets --all-features --target wasm32-unknown-unknown -- -W clippy::pedantic -D warnings
 ```
 
-These also exist as `just` recipes (`just lint`, `just fmt-check`, `just deps-check`, `just docs-check`, `just test`, `just doc`, `just build`, `just serve`, `just size`, `just validate`); see `just --list`.
+These also exist as `just` recipes (`just lint`, `just fmt-check`, `just deps-check`, `just test`, `just doc`, `just build`, `just serve`, `just size`, `just validate`); see `just --list`.
 
 The `justfile` works on Windows and Unix: it defaults to `sh` and switches to
 PowerShell via `[windows]`. Recipes whose shell syntax differs (e.g. `size`) are
@@ -456,27 +453,8 @@ the lint gates passing — see [Quick Commands](#quick-commands).
 
 GitHub Actions workflows in `.github/workflows/`:
 
-- **rust.yml** — Lint (clippy + fmt + rustdoc + Markdown path check + cargo-machete), browser WASM tests, Trunk build with a 500 KB WASM size budget, deploy to Cloudflare Pages (pushes to `main`/`dev` and manual dispatches only)
+- **rust.yml** — Lint (clippy + fmt + rustdoc + cargo-machete), browser WASM tests, Trunk build with a 500 KB WASM size budget, deploy to Cloudflare Pages (pushes to `main`/`dev` and manual dispatches only)
 - **enforce_pr_title.yml** — Validates PR titles follow conventional commits
-
-## Documentation Checks
-
-`scripts/check-md-paths.sh` (run by `just docs-check`, `just validate`, and
-CI) verifies that every repository path cited in a `.md` file still exists. It
-only checks inline-code tokens that contain a path separator and start with a
-known top-level directory (`src/`, `public/`, `scripts/`, `.github/`,
-`.agents/`). Bare filenames, fenced code blocks, and template paths containing
-`{`, `*`, or `<` are skipped: AGENTS.md lists bare filenames in tables headed by
-directory, skill files contain `{name}.rs` placeholders, and a `mod.rs` may be
-cited precisely because it does not exist.
-
-The script is POSIX shell, so the recipe is split by platform like `size` and
-`doc`: Unix runs `sh`, Windows runs the `sh.exe` from whichever `sh` is on
-PATH, falling back to the one beside `git`. Without that split the default
-`sh` shell cannot find a `sh` executable to invoke on Windows at all.
-
-This catches renamed or deleted files, not stale prose: no linter can tell
-that a sentence describes behaviour that no longer exists.
 
 ## Adding a New Section
 

@@ -124,8 +124,6 @@ xodium.org/
 │   ├── style.css         # Tailwind + DaisyUI styles
 │   ├── favicon.svg       # Site icon
 │   └── _headers          # Cloudflare Pages response headers
-├── scripts/
-│   └── check-md-paths.sh # Verifies repo paths named in Markdown exist
 ├── index.html            # HTML template
 ├── justfile              # Task runner (lint, test, doc, build, validate)
 ├── Trunk.toml            # Trunk configuration
@@ -176,14 +174,6 @@ The release profile is already optimized for size:
 - `strip = true` — remove debug symbols
 
 If size is still an issue, check for large dependencies in `Cargo.toml`.
-
-### Documentation references drift
-
-Markdown files name repository paths throughout. Run `just docs-check` (also part of `just validate`) to verify that every path mentioned in a `.md` file still exists:
-
-```bash
-just docs-check
-```
 
 ---
 
