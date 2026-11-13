@@ -94,8 +94,8 @@ my-[18px]`); the class only exists so `.sheet-frame::before` can draw it:
    band stack, in reading order: `Header`, `MainProjects`, `Hero`, the
    subprojects/team slot, then `Footer`.
 3. **`Footer`** — in-flow centred band at the bottom of the sheet, carrying the
-   copyright, the subprojects/team toggle and the site links. It is not pinned
-   to the viewport.
+   XODIUM wordmark, the subprojects/team toggle and the site links. It is not
+   pinned to the viewport.
 
 ### Component Organization
 
@@ -110,7 +110,7 @@ Components are grouped by function in `src/components/`:
 | `MainProjects` | `mainprojects.rs` | Equal-width left/right main project panels                   |
 | `Hero`         | `hero.rs`         | Focal band: window mockup on a colour wash                   |
 | `Subprojects`  | `subprojects.rs`  | Equal-width three-card subproject links                      |
-| `Footer`       | `footer.rs`       | Closing band: copyright, band toggle, site links             |
+| `Footer`       | `footer.rs`       | Closing band: wordmark, band toggle, site links              |
 | `Team`         | `team.rs`         | Team band with large round avatars; swaps with `Subprojects` |
 
 #### UI Primitives (`src/components/ui/`)

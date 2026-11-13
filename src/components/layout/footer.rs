@@ -79,7 +79,6 @@ const FOOTER_ICON_LINKS: &[FooterIconLink] = &[
 #[component]
 #[must_use]
 pub fn Footer() -> impl IntoView {
-    let current_year = js_sys::Date::new_0().get_full_year();
     let lower_band = LowerBandState::use_context();
     let entrance = SheetEntrance::use_context();
 
@@ -93,7 +92,7 @@ pub fn Footer() -> impl IntoView {
             }
             aria-label="Site footer"
         >
-            <span>{format!("© {current_year} XODIUM™")}</span>
+            <span>"XODIUM™"</span>
             <span class="opacity-50 select-none" aria-hidden="true">
                 "·"
             </span>
