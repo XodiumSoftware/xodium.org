@@ -115,8 +115,6 @@ xodium.org/
 │   ├── main.rs           # WASM entry point
 │   ├── lib.rs            # Crate root
 │   ├── app.rs            # Root App component
-│   ├── github.rs         # GitHub API client
-│   ├── utils.rs          # Shared constants and helpers
 │   └── components/
 │   ├── layout/     # Main, Header, Hero, MainProjects, Subprojects, Footer, Team
 │   └── ui/         # AsciiArt, LegendBlock, LinkBadges, TitleBlock, icons/
@@ -150,12 +148,12 @@ xodium.org/
 - Try clearing browser cache (Ctrl+Shift+R)
 - Restart `trunk serve` if needed
 
-### GitHub API rate limiting
+### Team avatars not loading
 
-The site caches GitHub API responses in `localStorage` with a 5-minute TTL. If you see:
-
-- Empty team data: API rate limit may be exceeded
-- Wait a few minutes and refresh, or clear site data
+The team roster is a `const` slice in `src/components/layout/team.rs`, so the
+band itself cannot fail. Only the avatar images come over the network, from
+`avatars.githubusercontent.com`. If they are missing, the URLs in `MEMBERS` have
+probably gone stale — check them against the members' GitHub profiles.
 
 ### Deploy failed
 

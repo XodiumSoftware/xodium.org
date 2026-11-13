@@ -12,17 +12,14 @@
 
 ## APIs & Tools
 
-| Category          | Technology                    | Purpose                         |
-| ----------------- | ----------------------------- | ------------------------------- |
-| **Framework**     | Leptos (CSR)                  | Reactive web framework          |
-| **Build Tool**    | Trunk                         | WASM bundler + dev server       |
-| **Styling**       | Tailwind CSS + DaisyUI        | Utility-first CSS               |
-| **HTTP Client**   | gloo-net                      | Fetch API wrapper for WASM      |
-| **JSON**          | serde + serde_json            | Serialization                   |
-| **JS Interop**    | wasm-bindgen, js-sys, web-sys | Browser API bindings            |
-| **Timers**        | gloo-timers                   | Async timers                    |
-| **Panic Handler** | console_error_panic_hook      | Debug panic messages in console |
-| **Docs**          | rustdoc (via `cargo doc`)     | API documentation               |
+| Category          | Technology                | Purpose                         |
+| ----------------- | ------------------------- | ------------------------------- |
+| **Framework**     | Leptos (CSR)              | Reactive web framework          |
+| **Build Tool**    | Trunk                     | WASM bundler + dev server       |
+| **Styling**       | Tailwind CSS + DaisyUI    | Utility-first CSS               |
+| **JS Interop**    | wasm-bindgen, web-sys     | Browser API bindings            |
+| **Panic Handler** | console_error_panic_hook  | Debug panic messages in console |
+| **Docs**          | rustdoc (via `cargo doc`) | API documentation               |
 
 ### Leptos Resources
 
@@ -133,26 +130,19 @@ Components are grouped by function in `src/components/`:
 | ---------------- | --------- | --------------------------------------------- |
 | `BlobBackground` | `blob.rs` | Animated SVG blob wash; caller sets placement |
 
-### GitHub API (`src/github.rs`)
+### Team Roster (`src/components/layout/team.rs`)
 
-Centralized data fetching with `localStorage` caching. The only public
-entry point is `fetch_members()`:
+The team band's members are an authored `const` slice (`MEMBERS`) of `Member`
+structs, not an API response. There is no HTTP client, no cache and no async
+data path: adding or removing a member is an edit and a deploy.
 
-| Function          | Endpoints                                                                    | Cache TTL |
-| ----------------- | ---------------------------------------------------------------------------- | --------- |
-| `fetch_members()` | `/orgs/XodiumSoftware/members` and `/orgs/XodiumSoftware/members?role=admin` | 5 minutes |
-
-`fetch_members` labels each member `Owner` when their login appears in the
-admin-member response, and `Member` otherwise. If the admin request fails it
-logs a warning and labels everyone `Member` rather than failing the whole
-call.
-
-**Internal helpers:**
-
-- `fetch<T>(endpoint)` — cache-then-network with retry logic (`MAX_RETRIES + 1` attempts, exponential backoff from 1 s)
-- `fetch_all<T>(endpoint)` — paginates `fetch` with `?page=N&per_page=100` until a short page is returned
-- `LocalResource` used for async (runs on WASM thread)
-- `xodium:v{CACHE_SCHEMA_VERSION}:{endpoint}` cache key format; timestamps live in a sibling `{key}:ts` entry. Bump `CACHE_SCHEMA_VERSION` when a cached payload type changes shape.
+- `Member` carries `login`, `name`, `html_url` and `avatar_url`. There is no
+  role field; the link's accessible name is the display name alone.
+- `avatar_url` uses the `/u/{id}?v=4` form, not the login form, because the
+  numeric form survives a login rename. Look up the id with
+  `https://api.github.com/users/{login}`.
+- If the roster ever has to be live, reintroduce a client rather than loosening
+  this list. This is a deliberate simplification for an organization of two.
 
 ### Project Structure
 
@@ -161,7 +151,6 @@ src/
 ├── main.rs                    # WASM entry point
 ├── lib.rs                     # Crate root, module declarations and re-exports
 ├── app.rs                     # Root App component
-├── github.rs                  # GitHub API client
 ├── components/
 │   ├── layout/                # Sheet bands, stacked top to bottom
 │   │   ├── main.rs
@@ -196,13 +185,15 @@ Trunk.toml                     # Trunk configuration
 - `missing_docs` is enabled in `Cargo.toml` under `[lints.rust]` as `"deny"`, so a public item without a rustdoc comment fails `cargo build`, `trunk build`, and `just lint` alike. Every public module, type, function, and field must have a rustdoc comment.
 - No `unsafe` code (`unsafe_code = "deny"`).
 - `on_cleanup` requires a `Send + Sync` closure, so it cannot capture raw
-  `Closure<dyn FnMut(..)>` handles. Call `.into_js_value()` and keep the
-  resulting `js_sys::Function` instead — that type is `Send + Sync`, so no
-  extra dependency is needed for listener cleanup.
+  `Closure<dyn FnMut(..)>` handles. If a listener ever needs removing again, call
+  `.into_js_value()` and keep the resulting `js_sys::Function` — that type is
+  `Send + Sync`. No component registers an event listener today: the only one,
+  an Escape handler on the team band, was removed with its close prop.
 - **Props:** `#[derive(Clone)]` structs named `{Component}Properties` (e.g.
   `BlobBackgroundProperties`). A component that needs no configuration takes no
   props at all rather than an empty struct.
-- **Async data:** Use `LocalResource` (not `Resource`) for WASM thread execution
+- **Async data:** Use `LocalResource` (not `Resource`) for WASM thread execution.
+  No component fetches anything today; keep this rule for the next one that does.
 - **External links:** Always use `target="_blank" rel="noopener noreferrer"`
 - **Static data:** Define `const` slices at top of component files
 - **CSS:** Tailwind and DaisyUI utility classes first. `public/style.css` is for what utilities cannot express: page-frame rules, `@keyframes` plus their `--band-delay` timings, `::before` overrides of DaisyUI internals, and expressions that need the element's own `em` (the ASCII mark's fitted `font-size`). When a rule only sets layout, colour, spacing or a plain transition, use a utility instead.
@@ -219,19 +210,11 @@ pub struct BlobBackgroundProperties {
 }
 ```
 
-**Async data with LocalResource:**
+**Static data:**
 
-`Team` fetches its own members when it mounts, so a band that mounts later still
-has data without its parent passing a prop down:
-
-```rust
-let members = LocalResource::new(|| async {
-    fetch_members().await.unwrap_or_default()
-});
-```
-
-That call is usually a cache hit because `Main` prefetches the same endpoint
-shortly after load (see [Team Section](#team-section)).
+Row content is a `const` slice at the top of the component file. The team
+roster (`MEMBERS`) is authored the same way: it is not fetched, so no component
+in the app has an async data path today.
 
 ### Build Pipeline
 
@@ -367,11 +350,8 @@ project's feature cards.
 not as a modal. It is a ruled band matching `Subprojects`: a centred row of round
 avatars, each linking to a member's GitHub profile in a new tab.
 
-- The component fetches its own members via `fetch_members` when it mounts, and
-  `Main` prefetches the same endpoint shortly after load so the first open is
-  usually a cache hit. Keep that pairing if either side changes.
-- While the request is pending the band draws placeholder circles in the same
-  avatar box, so it does not swap in empty and then reflow.
+- The band reads `MEMBERS` directly, so it renders fully formed on its first
+  frame: there is no request to wait on and no skeleton state.
 - It manages its own focus: focus on mount, and restore the previously active
   element on cleanup. It has no dismiss control: the footer's band toggle is the
   only way back to the subprojects cards.
@@ -382,33 +362,25 @@ avatars, each linking to a member's GitHub profile in a new tab.
 
 ### Caching Strategy
 
-GitHub API responses cached in `localStorage`:
-
-- Key: `xodium:v1:{endpoint}`
-- Timestamp: `{key}:ts`
-- TTL: 5 minutes
-- Cache is invalidated after TTL; the next successful fetch refreshes it
-- Schema version: bump `CACHE_SCHEMA_VERSION` in `github.rs` when a cached
-  payload type changes shape, so old entries are ignored by construction
-- Poisoned entries: a payload that fails to deserialize is deleted along with
-  its timestamp, so one bad entry costs a single fetch
-- Stale-if-error: if all refresh attempts fail, an expired entry is still served (with a console warning) instead of showing an error
+There is none. The roster is a `const` slice, so the site makes no GitHub API
+requests; the only cross-origin traffic is the avatars themselves. If a live
+roster is ever reintroduced, add a cache with it rather than letting `Team`
+fetch on every mount.
 
 ## Testing
 
-- **Browser-based WASM tests** (`wasm-bindgen-test`, `run_in_browser`) live
-  alongside the code in `src/github.rs`
-- Run them with `wasm-pack test --headless --firefox` (or `just test`); the
-  `justfile` and CI `test` job use Firefox
+- Browser WASM tests (`wasm-bindgen-test`, `run_in_browser`) ran against the
+  GitHub client that used to live in `src/github.rs`; they went with it. Add
+  them back alongside any future client.
+- `just test` expects `wasm-pack test --headless --firefox`; with no test targets
+  left it compiles nothing, so the lint/build gates carry the verification.
 - Also verify manually with `trunk serve`; check the console for WASM panics
   (in debug builds)
 
 ## Important Notes
 
 - **CSR only** — no SSR, all rendering happens client-side
-- **Browser APIs** accessed via `web-sys` and `js-sys`
-- **GitHub API** has rate limits (60 req/hour unauthenticated)
-- **Cache invalidation** — manual refresh or wait for 5-min TTL
+- **Browser APIs** accessed via `web-sys`
 - **WASM size** optimized heavily for fast page loads
 - **`prefers-reduced-motion`** — handled entirely in `public/style.css` via
   the `@media (prefers-reduced-motion: reduce)` block, which zeroes out the

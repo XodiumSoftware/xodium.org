@@ -9,13 +9,8 @@ use crate::components::layout::hero::Hero;
 use crate::components::layout::mainprojects::{MainProjects, SelectedProject};
 use crate::components::layout::subprojects::Subprojects;
 use crate::components::layout::team::Team;
-use crate::github::fetch_members;
 use leptos::prelude::*;
 use std::time::Duration;
-
-/// How long after load the team prefetch fires. Long enough that the load-in
-/// entrance and first paint are not competing with it for the network.
-const PREFETCH_DELAY_MS: u64 = 1_500;
 
 /// Tracks whether the sheet's load-in entrance should still play, and whether
 /// the lower-band swap has actually happened yet.
@@ -178,41 +173,16 @@ impl LowerBandState {
 
 /// The central content area of the page.
 ///
-/// The drawing sheet owns the page width and centring, so this only supplies
-/// the inner gutter and stacks the bands from header to footer. It also owns
-/// the selected-project state shared by the main projects marks and the hero,
-/// and the [`LowerBandState`] that swaps the band below the hero.
-///
 /// The drawing sheet owns the page width and centring, so the frame rules come
 /// from the sheet wrapper's utilities rather than from this element: `main` only
 /// stacks the bands inside the sheet's gutter and provides the stacking context
 /// above the fixed page surface.
-///
-/// Member data is prefetched here, shortly after load. [`Team`] only exists
-/// once the band is opened, so without this the first open pays the full GitHub
-/// round trip before any avatar can render. Firing the same call early lands it
-/// in the `localStorage` cache that `fetch_members` checks first, turning most
-/// first opens into cache hits. The delay keeps the prefetch off the critical
-/// path, and a failure is only logged: [`Team`] retries on mount anyway.
 #[component]
 #[must_use]
 pub fn Main() -> impl IntoView {
     let _ = SelectedProject::provide();
     let lower_band = LowerBandState::provide();
     let _ = SheetEntrance::provide();
-
-    Effect::new(move |_| {
-        let _ = set_timeout(
-            move || {
-                leptos::task::spawn_local(async move {
-                    if let Err(error) = fetch_members().await {
-                        web_sys::console::warn_1(&format!("Team prefetch failed: {error}").into());
-                    }
-                });
-            },
-            Duration::from_millis(PREFETCH_DELAY_MS),
-        );
-    });
 
     view! {
         <main id="main-content" tabindex="-1" class="flex flex-1 flex-col">

@@ -72,8 +72,5 @@ pub mod components {
     pub use ui::ascii_art::{AsciiArt, XODIUM_ASCII_ART};
 }
 
-pub mod github;
-
 pub use app::*;
 pub use components::*;
-pub use github::*;

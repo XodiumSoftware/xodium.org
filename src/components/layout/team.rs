@@ -1,31 +1,53 @@
 //! Team member section.
 //!
-//! Shows the Xodium GitHub members as a `DaisyUI` avatar group with a counter,
-//! each visible avatar linking to the member's GitHub profile. Mounted in the
-//! band below the hero, replacing the subprojects cards while it is selected.
+//! Shows the Xodium GitHub members as a `DaisyUI` avatar group, each visible
+//! avatar linking to the member's GitHub profile. Mounted in the band below the
+//! hero, replacing the subprojects cards while it is selected.
+//!
+//! The member list is authored here rather than fetched. The organization is
+//! small enough that the roster is a `const` slice, matching `MAIN_PROJECTS`,
+//! `SUBPROJECT_ITEMS` and `BLOBS`, and there is no API client, cache or request
+//! to go wrong. Adding a member is an edit and a deploy; if the roster ever
+//! needs to be live, reintroduce the client rather than loosening this list.
 
 use crate::components::layout::main::SheetEntrance;
-use crate::github::{Member, fetch_members};
 use leptos::prelude::*;
 use leptos::wasm_bindgen::JsCast as _;
 
-/// How many member avatars the band shows before collapsing the rest into a
-/// `+N` counter. Keeps the group a single line inside the band height.
-const VISIBLE_AVATARS: usize = 3;
+/// A single member of the Xodium organization shown in the team band.
+#[derive(Clone, Copy, Debug)]
+pub struct Member {
+    /// GitHub login, used for the avatar's `alt` text.
+    pub login: &'static str,
+    /// Display name, used as the accessible name of the profile link.
+    pub name: &'static str,
+    /// Public GitHub profile URL.
+    pub html_url: &'static str,
+    /// Avatar image URL.
+    ///
+    /// These are the `/u/{id}?v=4` form rather than `/u/{id}` or the login
+    /// form, because the numeric form survives a login rename.
+    pub avatar_url: &'static str,
+}
+
+/// Team members, in the order the band shows them.
+const MEMBERS: &[Member] = &[
+    Member {
+        login: "gaia-03",
+        name: "Gaia",
+        html_url: "https://github.com/gaia-03",
+        avatar_url: "https://avatars.githubusercontent.com/u/118364724?v=4",
+    },
+    Member {
+        login: "illyrius666",
+        name: "Illyrius",
+        html_url: "https://github.com/illyrius666",
+        avatar_url: "https://avatars.githubusercontent.com/u/28700752?v=4",
+    },
+];
 
 /// A single member avatar, linking to that member's GitHub profile.
-fn member_avatar(member: Member) -> impl IntoView {
-    let Member {
-        login,
-        html_url,
-        avatar_url,
-        role,
-    } = member;
-    let label = format!(
-        "{login} — {role}",
-        role = role.as_deref().unwrap_or("Member"),
-    );
-
+fn member_avatar(member: &'static Member) -> impl IntoView {
     view! {
         <div
             class="avatar rounded-full border-2 border-base-content transition-colors has-[a:hover]:border-primary"
@@ -33,15 +55,15 @@ fn member_avatar(member: Member) -> impl IntoView {
         >
             <a
                 class="team-band-avatar rounded-full bg-base-100 hover:brightness-110"
-                href=html_url
+                href=member.html_url
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label=label
+                aria-label=member.name
             >
                 <img
                     class="h-full w-full object-cover"
-                    src=avatar_url
-                    alt=login
+                    src=member.avatar_url
+                    alt=member.login
                     loading="lazy"
                 />
             </a>
@@ -49,55 +71,13 @@ fn member_avatar(member: Member) -> impl IntoView {
     }
 }
 
-/// The trailing `+N` chip standing in for the members that are not shown.
-fn overflow_counter(overflow: usize) -> impl IntoView {
-    view! {
-        <div
-            class="avatar avatar-placeholder rounded-full border-2 border-base-content"
-            role="listitem"
-            aria-label=format!("{overflow} more team members")
-        >
-            <div class="team-band-avatar rounded-full bg-neutral text-neutral-content text-[0.7rem] tracking-[0.04em]">
-                <span aria-hidden="true">{format!("+{overflow}")}</span>
-            </div>
-        </div>
-    }
-}
-
-/// Placeholder avatars shown while the member request is still in flight.
+/// Team band: a `DaisyUI` avatar group.
 ///
-/// They reserve the row's shape so the band does not look empty after the swap,
-/// and are hidden from assistive tech because the live region announces the
-/// arrival of the real members. The skeleton border is transparent so the
-/// shimmer reads as a reserved circle rather than an outlined one.
-fn loading_avatars(count: usize) -> impl IntoView {
-    view! {
-        <div class="avatar-group -space-x-4" aria-hidden="true">
-            {(0..count)
-                .map(|_| {
-                    view! {
-                        <div class="avatar rounded-full border-2 border-transparent">
-                            <div class="team-band-avatar rounded-full skeleton"></div>
-                        </div>
-                    }
-                })
-                .collect_view()}
-        </div>
-    }
-}
-
-/// Team band: a `DaisyUI` avatar group with a counter.
-///
-/// Members are fetched when the band mounts, so the request is made only once
-/// the band is actually opened and cached responses are reused on later
-/// visits. The footer's band toggle is the only way back to the subprojects
-/// cards; the band has no dismiss control of its own.
-///
-/// Only the first `VISIBLE_AVATARS` members get an avatar; the remainder are
-/// counted in the trailing `+N` chip, which is inert because it has no single
-/// destination. The counter is omitted when every member is already shown.
-/// The whole group is labelled so the collapsed count is available to
-/// assistive tech without reading each avatar individually.
+/// Every entry in `MEMBERS` gets an avatar, in order. The list is authored, so
+/// the band renders fully formed on its first frame: there is no request to wait
+/// on and therefore no skeleton state to swap out. The footer's band toggle is
+/// the only way back to the subprojects cards; the band has no dismiss control
+/// of its own.
 ///
 /// The band crossfades in through [`SheetEntrance`]'s swap class. It never
 /// takes the load-in entrance: it can only be reached through the lower-band
@@ -125,12 +105,6 @@ fn loading_avatars(count: usize) -> impl IntoView {
 #[must_use]
 pub fn Team() -> impl IntoView {
     let entrance = SheetEntrance::use_context();
-    let members = LocalResource::new(|| async {
-        fetch_members().await.unwrap_or_else(|error| {
-            web_sys::console::warn_1(&format!("Failed to fetch team members: {error}").into());
-            Vec::new()
-        })
-    });
 
     let section = NodeRef::<leptos::html::Section>::new();
 
@@ -167,30 +141,13 @@ pub fn Team() -> impl IntoView {
             tabindex="-1"
             aria-label="Team members"
         >
-            {move || match members.get() {
-                None => loading_avatars(VISIBLE_AVATARS).into_any(),
-                Some(loaded) => {
-                    let overflow = loaded.len().saturating_sub(VISIBLE_AVATARS);
-                    let shown = loaded
-                        .into_iter()
-                        .take(VISIBLE_AVATARS)
-                        .map(member_avatar)
-                        .collect_view();
-                    let counter = (overflow > 0).then(|| overflow_counter(overflow));
-
-                    view! {
-                        <div
-                            class="avatar-group -space-x-4"
-                            role="list"
-                            aria-label="Xodium team members"
-                        >
-                            {shown}
-                            {counter}
-                        </div>
-                    }
-                        .into_any()
-                }
-            }}
+            <div
+                class="avatar-group -space-x-4"
+                role="list"
+                aria-label="Xodium team members"
+            >
+                {MEMBERS.iter().map(member_avatar).collect_view()}
+            </div>
         </section>
     }
 }
