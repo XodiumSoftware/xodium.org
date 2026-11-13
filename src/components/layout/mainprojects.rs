@@ -83,7 +83,7 @@ const CADIOTHEKA_CARDS: &[HeroCard] = &[
     HeroCard {
         span: "",
         title: "Open source",
-        body: "Read every line, or run your own instance.",
+        body: "Read every line, and be part of it by contributing.",
     },
     HeroCard {
         span: "",
@@ -98,7 +98,7 @@ const CADIOTHEKA_CARDS: &[HeroCard] = &[
     HeroCard {
         span: "",
         title: "Fast by design",
-        body: "Compiled to WASM, no install.",
+        body: "Compiled to WASM, no install, just a browser.",
     },
     HeroCard {
         span: "",
