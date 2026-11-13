@@ -185,9 +185,9 @@ impl LowerBandState {
 /// and the [`LowerBandState`] that swaps the band below the hero.
 ///
 /// The drawing sheet owns the page width and centring, so the frame rules come
-/// from `.blueprint-sheet` rather than from this element: `main` only stacks the
-/// bands inside the sheet's gutter and provides the stacking context above the
-/// fixed page surface.
+/// from the sheet wrapper's utilities rather than from this element: `main` only
+/// stacks the bands inside the sheet's gutter and provides the stacking context
+/// above the fixed page surface.
 ///
 /// Member data is prefetched here, shortly after load. [`Team`] only exists
 /// once the band is opened, so without this the first open pays the full GitHub

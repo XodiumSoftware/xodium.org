@@ -3,14 +3,15 @@
 //! `App` assembles the skip link and main content section into one
 //! blueprint-styled page.
 //!
-//! The page frame (`.blueprint-frame`, `.blueprint-sheet` and the rules painted
-//! by `body::before` and `.blueprint-sheet::before`) lives in
-//! `public/style.css`, because it needs `::before` rules and a viewport-relative
-//! minimum height that utilities cannot express. Its intent:
+//! The page shell is utilities: `.blueprint-frame` became
+//! `relative flex min-h-dvh flex-col` here and `.blueprint-sheet` became
+//! `relative flex flex-1 flex-col w-[calc(100%-36px)] max-w-5xl mx-auto
+//! my-[18px]` below. What remains in `public/style.css` is only what utilities
+//! cannot express:
 //!
 //! - `body::before` paints the page surface as a fixed layer, faded in by
 //!   `grid-in`, so the sheet scrolls over a still background instead of moving
-//!   a painted colour with the document.
+//!   a painted colour with the document. It has no element to hang utilities on.
 //!
 //! - `.blueprint-sheet::before` draws only the left and right rules, inset by
 //!   8px. The bands close the sheet horizontally on their own, so a full frame
@@ -18,6 +19,7 @@
 //!   page read as a plate. The rule is `base-content` at 40%, the same colour as
 //!   the `border-base-content/40` band dividers, and `frame-in` scales it up from
 //!   1.005 rather than fading it, so the plate draws before the bands arrive.
+//!   A pseudo-element has no class slot, so the rule stays keyed to the sheet.
 //!
 //! - The focus ring is global: `:focus-visible` draws it and
 //!   `:focus:not(:focus-visible)` removes the pointer-focus outline. `DaisyUI`
@@ -41,7 +43,7 @@ use leptos::prelude::*;
 #[must_use]
 pub fn App() -> impl IntoView {
     view! {
-        <div class="blueprint-frame">
+        <div class="relative flex min-h-dvh flex-col">
             <a
                 href="#main-content"
                 class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-primary-content focus:rounded"
@@ -49,7 +51,7 @@ pub fn App() -> impl IntoView {
                 "Skip to main content"
             </a>
 
-            <div class="blueprint-sheet">
+            <div class="sheet-frame relative flex flex-1 flex-col w-[calc(100%-36px)] max-w-5xl mx-auto my-[18px]">
                 <Main />
             </div>
         </div>

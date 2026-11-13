@@ -10,10 +10,12 @@
 //! the same way `Subprojects` and `MainProjects` keep their rows in `const`
 //! slices. The component only paints; the host element positions and sizes it.
 //!
-//! The circles animate from `public/style.css` (`.blob-circle`,
-//! `@keyframes blob-breathe`), not from the markup. Two details there are load
-//! bearing rather than stylistic: the animation is confined to `transform`, which
-//! the compositor applies without re-evaluating the turbulence filter, and
+//! The circles carry their static face as utilities on the markup
+//! (`[transform-box:fill-box] origin-center opacity-50`); only the animation
+//! stays in `public/style.css` as `.blob-circle`, because it reads the per-blob
+//! `--blob-delay` this component sets inline. Two details there are load bearing
+//! rather than stylistic: the animation is confined to `transform`, which the
+//! compositor applies without re-evaluating the turbulence filter, and
 //! `transform-box: fill-box` makes each circle scale about its own centre rather
 //! than the SVG's origin, so the cluster drifts instead of sliding as one piece.
 
@@ -126,7 +128,7 @@ pub fn BlobBackground(
         .map(|blob| {
             view! {
                 <circle
-                    class="blob-circle"
+                    class="blob-circle [transform-box:fill-box] origin-center opacity-50"
                     cx=blob.cx.to_string()
                     cy=blob.cy.to_string()
                     r=blob.r.to_string()

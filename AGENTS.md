@@ -85,8 +85,9 @@ platform-neutral variables at the top of the file.
 The single-page application is a blueprint-style drawing with a fixed corner
 stack of metadata and controls:
 
-All of this is wrapped in a single `<div class="blueprint-frame">` in
-`app.rs`:
+All of this is wrapped in a `.sheet-frame` wrapper in `app.rs`, whose layout is
+utilities (`relative flex flex-1 flex-col w-[calc(100%-36px)] max-w-5xl mx-auto
+my-[18px]`); the class only exists so `.sheet-frame::before` can draw it:
 
 1. **Skip Link** — accessibility anchor to `#main-content`
 2. **`Main`** (`<main id="main-content">`) — accessible page heading and the
@@ -297,7 +298,7 @@ Every band is a `<section class="sheet-band ...">` stacked inside `Main`, and
 the conventions below apply to all of them:
 
 - Separated by `border-b border-base-content/40`, the same rule colour as the
-  sheet frame. The side rules come from `.blueprint-sheet::before`, so bands do
+  sheet frame. The side rules come from `.sheet-frame::before`, so bands do
   not draw their own left and right borders.
 - Row-based content sits in `const` slices at the top of the component file, so
   the order and copy are edited in one place.

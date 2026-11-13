@@ -48,10 +48,10 @@ use leptos::prelude::*;
 ///
 /// Three rules in `public/style.css` back this band:
 ///
-/// - `.sheet-band-hero` is `position: relative` with `isolation: isolate`. The
-///   wash is a `z-index: -1` layer, and the isolation is what keeps it behind
-///   the window but still inside the band, instead of dropping through the sheet
-///   to the page surface.
+/// - `.sheet-band-hero` only carries its `--band-delay`. The stacking context
+///   that keeps the wash behind the window is utilities (`relative isolate`):
+///   the wash is a `-z-1` layer, and without the isolation it would drop
+///   through the sheet to the page surface.
 ///
 /// - `.sheet-band-hero .mockup-window::before` draws the traffic lights. DaisyUI
 ///   stamps all three dots from one `::before` with a `box-shadow`, so the rule
@@ -59,7 +59,8 @@ use leptos::prelude::*;
 ///   colours and restores `opacity: 1` to undo the 30% veil DaisyUI applies.
 ///   Changing the dot count means editing those stops, not the markup.
 ///
-/// - `.hero-wash` is the wash's placement; it is passed in as
+/// - The wash's placement is utilities on the `<svg>` itself
+///   (`absolute inset-0 -z-1 w-full h-full pointer-events-none`), passed in as
 ///   [`BlobBackgroundProperties::class`](crate::components::effects::blob::BlobBackgroundProperties::class)
 ///   so [`BlobBackground`] stays position-agnostic.
 #[component]
@@ -72,14 +73,14 @@ pub fn Hero() -> impl IntoView {
         <section
             class=move || {
                 format!(
-                    "sheet-band sheet-band-hero {} p-6 grow-0 basis-auto sm:grow sm:basis-80 min-h-0 border-x border-b border-base-content/40",
+                    "sheet-band sheet-band-hero {} relative isolate p-6 grow-0 basis-auto sm:grow sm:basis-80 min-h-0 border-x border-b border-base-content/40",
                     entrance.band_class(),
                 )
             }
             aria-label="Featured project"
         >
             <BlobBackground props=BlobBackgroundProperties {
-                class: "hero-wash",
+                class: "absolute inset-0 -z-1 w-full h-full pointer-events-none",
             } />
             {move || {
                 let project = project_at(selected.0.get());
