@@ -21,9 +21,9 @@ pub struct SubprojectItem {
 /// Cards rendered by [`Subprojects`], in reading order.
 const SUBPROJECT_ITEMS: &[SubprojectItem] = &[
     SubprojectItem {
-        title: "zed-kotlin-ext",
-        desc: "Zed IDE Kotlin support.",
-        href: "https://github.com/XodiumSoftware/zed-kotlin-ext",
+        title: "mine-in-abyss",
+        desc: "The recreation of 'Made In Abyss' into Minecraft.",
+        href: "https://github.com/XodiumSoftware/mine-in-abyss",
     },
     SubprojectItem {
         title: "msi-coolerboost",
