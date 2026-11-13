@@ -67,7 +67,7 @@ pub mod components {
     pub use layout::main::{LowerBand, LowerBandState, Main};
     pub use layout::mainprojects::{MainProject, MainProjects, SelectedProject};
     pub use layout::subprojects::Subprojects;
-    pub use layout::team::{Team, TeamProperties};
+    pub use layout::team::Team;
 
     pub use ui::ascii_art::{AsciiArt, XODIUM_ASCII_ART};
 }

@@ -8,21 +8,10 @@ use crate::components::layout::main::SheetEntrance;
 use crate::github::{Member, fetch_members};
 use leptos::prelude::*;
 use leptos::wasm_bindgen::JsCast as _;
-use leptos::wasm_bindgen::closure::Closure;
-use std::rc::Rc;
 
 /// How many member avatars the band shows before collapsing the rest into a
 /// `+N` counter. Keeps the group a single line inside the band height.
 const VISIBLE_AVATARS: usize = 3;
-
-/// Props for the [`Team`] section.
-#[derive(Clone)]
-#[must_use]
-pub struct TeamProperties {
-    /// Callback invoked when the section should be dismissed, so the band can
-    /// switch back to the subprojects cards.
-    pub on_close: Rc<dyn Fn() + 'static>,
-}
 
 /// A single member avatar, linking to that member's GitHub profile.
 fn member_avatar(member: Member) -> impl IntoView {
@@ -101,19 +90,18 @@ fn loading_avatars(count: usize) -> impl IntoView {
 ///
 /// Members are fetched when the band mounts, so the request is made only once
 /// the band is actually opened and cached responses are reused on later
-/// visits. Escape dismisses the band through `on_close`, matching the footer
-/// entry that opened it.
+/// visits. The footer's band toggle is the only way back to the subprojects
+/// cards; the band has no dismiss control of its own.
 ///
-/// Only the first [`VISIBLE_AVATARS`] members get an avatar; the remainder are
+/// Only the first `VISIBLE_AVATARS` members get an avatar; the remainder are
 /// counted in the trailing `+N` chip, which is inert because it has no single
 /// destination. The counter is omitted when every member is already shown.
 /// The whole group is labelled so the collapsed count is available to
 /// assistive tech without reading each avatar individually.
 ///
-/// The band crossfades in through [`SheetEntrance`](crate::components::layout::main::SheetEntrance)'s
-/// swap class. It never takes the load-in entrance: it can only be reached
-/// through the lower-band swap, so `.sheet-band-team` carries no
-/// `--band-delay`.
+/// The band crossfades in through [`SheetEntrance`]'s swap class. It never
+/// takes the load-in entrance: it can only be reached through the lower-band
+/// swap, so `.sheet-band-team` carries no `--band-delay`.
 ///
 /// Sizing and the avatar ring live in `public/style.css`:
 ///
@@ -135,11 +123,7 @@ fn loading_avatars(count: usize) -> impl IntoView {
 ///   away.
 #[component]
 #[must_use]
-pub fn Team(
-    /// Configuration: close callback.
-    props: TeamProperties,
-) -> impl IntoView {
-    let TeamProperties { on_close } = props;
+pub fn Team() -> impl IntoView {
     let entrance = SheetEntrance::use_context();
     let members = LocalResource::new(|| async {
         fetch_members().await.unwrap_or_else(|error| {
@@ -159,36 +143,11 @@ pub fn Team(
             return;
         };
 
-        let close_on_escape = {
-            let on_close = Rc::clone(&on_close);
-            move |event: web_sys::KeyboardEvent| {
-                if event.key() == "Escape" {
-                    event.prevent_default();
-                    on_close();
-                }
-            }
-        };
-
-        let listener =
-            Closure::<dyn FnMut(web_sys::KeyboardEvent)>::new(close_on_escape).into_js_value();
-        let listener: js_sys::Function = listener.unchecked_into();
-
-        if let Err(error) = document.add_event_listener_with_callback("keydown", &listener) {
-            web_sys::console::warn_1(
-                &format!("Failed to register Escape listener on team band: {error:?}").into(),
-            );
-        }
-
-        let cleanup_listener = listener.clone();
         let previous_focus = document
             .active_element()
             .and_then(|element| element.dyn_into::<web_sys::HtmlElement>().ok());
         let _ = section.focus();
         on_cleanup(move || {
-            if let Some(document) = web_sys::window().and_then(|window| window.document()) {
-                let _ = document.remove_event_listener_with_callback("keydown", &cleanup_listener);
-            }
-
             if let Some(element) = previous_focus.clone() {
                 let _ = element.focus();
             }

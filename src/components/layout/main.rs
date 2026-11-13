@@ -8,10 +8,9 @@ use crate::components::layout::header::Header;
 use crate::components::layout::hero::Hero;
 use crate::components::layout::mainprojects::{MainProjects, SelectedProject};
 use crate::components::layout::subprojects::Subprojects;
-use crate::components::layout::team::{Team, TeamProperties};
+use crate::components::layout::team::Team;
 use crate::github::fetch_members;
 use leptos::prelude::*;
-use std::rc::Rc;
 use std::time::Duration;
 
 /// How long after load the team prefetch fires. Long enough that the load-in
@@ -224,16 +223,7 @@ pub fn Main() -> impl IntoView {
             <Hero />
             {move || match lower_band.get() {
                 LowerBand::Subprojects => view! { <Subprojects /> }.into_any(),
-                LowerBand::Team => {
-                    view! {
-                        <Team props=TeamProperties {
-                            on_close: Rc::new(move || {
-                                lower_band.set(LowerBand::Subprojects);
-                            }),
-                        } />
-                    }
-                        .into_any()
-                }
+                LowerBand::Team => view! { <Team /> }.into_any(),
             }}
             <Footer />
         </main>

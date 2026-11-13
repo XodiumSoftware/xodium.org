@@ -199,7 +199,9 @@ Trunk.toml                     # Trunk configuration
   `Closure<dyn FnMut(..)>` handles. Call `.into_js_value()` and keep the
   resulting `js_sys::Function` instead — that type is `Send + Sync`, so no
   extra dependency is needed for listener cleanup.
-- **Props:** `#[derive(Clone)]` structs named `{Component}Properties` (e.g. `TeamProperties`)
+- **Props:** `#[derive(Clone)]` structs named `{Component}Properties` (e.g.
+  `BlobBackgroundProperties`). A component that needs no configuration takes no
+  props at all rather than an empty struct.
 - **Async data:** Use `LocalResource` (not `Resource`) for WASM thread execution
 - **External links:** Always use `target="_blank" rel="noopener noreferrer"`
 - **Static data:** Define `const` slices at top of component files
@@ -211,9 +213,9 @@ Trunk.toml                     # Trunk configuration
 **Props struct:**
 
 ```rust
-#[derive(Clone)]
-pub struct TeamProperties {
-    pub on_close: Rc<dyn Fn() + 'static>,
+#[derive(Clone, Copy)]
+pub struct BlobBackgroundProperties {
+    pub class: &'static str,
 }
 ```
 
@@ -370,8 +372,9 @@ avatars, each linking to a member's GitHub profile in a new tab.
   usually a cache hit. Keep that pairing if either side changes.
 - While the request is pending the band draws placeholder circles in the same
   avatar box, so it does not swap in empty and then reflow.
-- It manages its own focus: focus on mount, close on Escape through a
-  document-level listener, and restore the previously active element on cleanup.
+- It manages its own focus: focus on mount, and restore the previously active
+  element on cleanup. It has no dismiss control: the footer's band toggle is the
+  only way back to the subprojects cards.
 - Avatar rings are drawn with `border-*` utilities on the `.avatar` wrapper, not
   on the inner element: `avatar-group` clips the wrapper, so an inner border is
   cut away. Our unlayered utilities beat DaisyUI's layered group border, which is
