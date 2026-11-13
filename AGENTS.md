@@ -163,7 +163,6 @@ src/
 ├── main.rs                    # WASM entry point
 ├── lib.rs                     # Crate root, module declarations and re-exports
 ├── app.rs                     # Root App component
-├── breakpoint.rs              # Viewport breakpoint signals
 ├── github.rs                  # GitHub API client
 ├── components/
 │   ├── layout/                # Sheet bands, stacked top to bottom
@@ -323,18 +322,19 @@ visible`) and turns the dividers horizontal. The release is load-bearing: a
 
 ### Main Projects Tabs
 
-The main project marks are tabs that select which project the hero frames, but
-only where the hero exists:
+The main project marks are tabs that select which project the hero shows. The
+relationship holds at every breakpoint, with no branch on viewport width:
 
-- From `sm` up each mark is a `<button role="tab">` with a `tabpanel` beside it.
-- Below `sm` the hero is hidden, so there is nothing to select and both panels
-  are fully visible. The mark renders as a plain `<div>` instead, and the panel
-  drops its `role="tabpanel"` and `aria-labelledby`. Leaving the tab semantics in
-  place would describe a relationship to a region that is not on the page, and
-  would mark the unselected panel `aria-selected="false"` while it is on screen.
-- `is_at_least_sm()` in `src/breakpoint.rs` reports the breakpoint as a signal,
-  so the markup and the hero's `max-sm:hidden` agree on where the boundary is.
-  It reads `matchMedia` synchronously, so the first render is already correct.
+- Each mark is a `<button role="tab">` with a `tabpanel` beside it, at every
+  width. Since the hero is on the page at every width, the tab always controls
+  something visible and the unselected panel may be announced
+  `aria-selected="false"` honestly.
+- This was previously split at `sm`, when the hero was `max-sm:hidden` and a tab
+  would have named a `tabpanel` that was not on the page. Removing the hero's
+  breakpoint removed the reason for the split, so the `<div>` fallback, the
+  conditional `role`/`aria-labelledby`, and the `breakpoint` module that reported
+  the width all went with it. Do not reintroduce a width branch here unless the
+  hero is hidden again.
 
 ### Hero Band
 
@@ -351,10 +351,9 @@ the hero has no cross-origin dependency and needs no `frame-src` allowance.
 - The plate reuses `MainProject::icon`, the same renderer as the mark square, so
   a project's face is defined once. A project with no icon ([`no_icon`]) keeps
   an empty mark box rather than shifting the text when selection changes.
-- The whole band is `max-sm:hidden`: a phone-sized window would crop the plate's
-  content rather than show a readable preview. Hiding it costs only the band's
-  `border-b`; the sheet's side rules come from `.blueprint-sheet::before`, so the
-  frame still closes.
+- The band is visible at every breakpoint. The plate is an icon and text, so it
+  reflows into a narrow column on a phone instead of overflowing, and the
+  selecting marks and the plate are always on the same page.
 - Every project fills the same box, disabled or not, so switching marks never
   changes the band's height. The unreleased project shows its `established`
   placeholder text where a released one shows its description.
