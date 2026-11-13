@@ -2,6 +2,32 @@
 //!
 //! `App` assembles the skip link and main content section into one
 //! blueprint-styled page.
+//!
+//! The page frame (`.blueprint-frame`, `.blueprint-sheet` and the rules painted
+//! by `body::before` and `.blueprint-sheet::before`) lives in
+//! `public/style.css`, because it needs `::before` rules and a viewport-relative
+//! minimum height that utilities cannot express. Its intent:
+//!
+//! - `body::before` paints the page surface as a fixed layer, faded in by
+//!   `grid-in`, so the sheet scrolls over a still background instead of moving
+//!   a painted colour with the document.
+//!
+//! - `.blueprint-sheet::before` draws only the left and right rules, inset by
+//!   8px. The bands close the sheet horizontally on their own, so a full frame
+//!   would double their rules; the crop at the top and bottom is what makes the
+//!   page read as a plate. The rule is `base-content` at 40%, the same colour as
+//!   the `border-base-content/40` band dividers, and `frame-in` scales it up from
+//!   1.005 rather than fading it, so the plate draws before the bands arrive.
+//!
+//! - The focus ring is global: `:focus-visible` draws it and
+//!   `:focus:not(:focus-visible)` removes the pointer-focus outline. `DaisyUI`
+//!   does not set one, so removing those rules drops keyboard focus styling
+//!   site-wide.
+//!
+//! The square `--radius-*` and `--depth` overrides on `[data-theme="halloween"]`
+//! are applied unlayered rather than through a second `daisyui/theme` block, so
+//! the built-in palette is untouched while they still win over the theme's
+//! `@layer base` declarations.
 
 use crate::components::layout::main::Main;
 use leptos::prelude::*;

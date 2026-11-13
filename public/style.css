@@ -7,21 +7,11 @@
     themes: halloween --default;
 }
 
-/*
- * Square edges, matching the drafting-sheet look. DaisyUI's halloween theme
- * ships rounded radius tokens; overriding them unlayered rather than through a
- * second `daisyui/theme` block keeps the built-in palette untouched and wins
- * over the theme's `@layer base` declarations.
- */
 [data-theme="halloween"] {
     --radius-selector: 0rem;
     --radius-field: 0rem;
     --radius-box: 0rem;
     --depth: 0;
-}
-
-:root {
-    --shadow-drop: oklch(0% 0 0);
 }
 
 html {
@@ -104,14 +94,6 @@ body::before {
     margin: 18px auto;
 }
 
-/*
- * Sheet frame. A rule down each side of the drawing sheet, inset by 8px, so
- * the page reads as a drafting plate cropped at the top and bottom. Only the
- * left and right edges are drawn: the band rules already close the sheet
- * horizontally, and a full frame would double them. The rule is the band
- * colour at 40%, matching the `border-base-content/40` band dividers rather
- * than the full-strength content colour.
- */
 .blueprint-sheet::before {
     content: "";
     position: absolute;
@@ -129,18 +111,6 @@ body::before {
     z-index: 1;
 }
 
-/*
- * Bands that fade up as the sheet is drawn. Each band sets its own
- * `--band-delay` so the stack reveals top to bottom after the borders and the
- * glyph mark have settled.
- *
- * This class is applied by `SheetEntrance` in `main.rs`, not written into the
- * band markup: the flag is only set while the page is loading in, so the bands
- * animate once on first paint and are drawn fully formed whenever the
- * lower-band slot swaps between subprojects and team. That matters most for
- * `Subprojects`, which is both a first-paint band and one of the two swapped
- * ones.
- */
 .sheet-band-enter {
     animation: slide-up 400ms ease-out var(--band-delay, 500ms) both;
 }
@@ -149,35 +119,14 @@ body::before {
     --band-delay: 500ms;
 }
 
-.sheet-band-mainprojects {
-    --band-delay: 500ms;
-}
-
 .sheet-band-subprojects {
     --band-delay: 700ms;
 }
 
-/*
- * The footer closes the sheet, so it enters after every band above it has
- * arrived. It takes `sheet-band-enter` from `SheetEntrance` in `footer.rs` like
- * the other bands; it is never swapped, so it ignores the swap class.
- */
 .sheet-band-footer {
     --band-delay: 900ms;
 }
 
-/*
- * Colour wash behind the hero window.
- *
- * The blobs are drawn in `components/effects/blob.rs` as `<circle>`s sharing one
- * `feTurbulence` filter, which roughens their edges into organic outlines. This
- * block only positions that SVG and animates the circles.
- *
- * Animation is confined to `transform` on the circles, which the compositor
- * handles without re-evaluating the filter, and every blob carries its own
- * `--blob-delay` so the cluster never pulses in unison. The band isolates its
- * stacking context so `z-index: -1` cannot drop the wash behind the sheet.
- */
 .sheet-band-hero {
     --band-delay: 600ms;
 
@@ -211,18 +160,6 @@ body::before {
     }
 }
 
-/*
- * The lower slot's two bands share one pinned height so swapping them never
- * resizes the sheet, whatever their content happens to be. `border-box` keeps
- * the 1px band rule inside that figure rather than adding to it, and the card
- * padding is included in the height too, so the inner rows only ever centre.
- *
- * Subprojects draws its separators with `divide-x`, which puts a border on the
- * card boxes themselves. Those boxes are grid items that stretch to the row, so
- * their dividers ran into the bottom rule. Clipping the band keeps every
- * separator inside the content box and lets the bottom rule read as the only
- * full-width line.
- */
 .sheet-band-subprojects,
 .sheet-band-team {
     box-sizing: border-box;
@@ -233,18 +170,6 @@ body::before {
     overflow: hidden;
 }
 
-/*
- * Stacked cards on phones. Below `md` the three cards share a single grid
- * column, so the shared band height would clip all but the first and the
- * vertical dividers have nothing to separate. The band is released to its
- * content instead — never pinned, so a card whose description wraps can never
- * be cut off — and the separators turn horizontal. The stack still reads 1, 2,
- * 3 down the sheet.
- *
- * The one trade here is the fixed height: below `md` the sheet grows to fit
- * three cards, so `Team` swapping into this slot changes the document height.
- * That is only true on phones; the row keeps the pinned height from `md` up.
- */
 @media (max-width: 767px) {
     .sheet-band-subprojects {
         height: auto;
@@ -261,21 +186,6 @@ body::before {
     }
 }
 
-/*
- * Swap animation for the two bands that trade places below the hero. It is
- * deliberately a plain opacity crossfade: the load-in entrance slides and
- * fades, but a swap should not move the sheet's band rules.
- *
- * The fade is applied to the band's children rather than the band itself, so
- * the band's box — and with it the bottom border — keeps its full opacity for
- * the whole swap. Both the rule under the band and the hero's rule above it
- * therefore stay put while only the contents crossfade. Only the load-in
- * entrance moves the rules.
- *
- * `SheetEntrance::swap_class` only applies this once the load-in entrance is
- * over, so a band is never running both animations at once and first paint
- * keeps its `slide-up` reveal.
- */
 @keyframes band-swap-in {
     from {
         opacity: 0;
@@ -289,39 +199,16 @@ body::before {
     animation: band-swap-in 220ms ease-out both;
 }
 
-/*
- * Height shared by the two bands that take turns below the hero.
- *
- * The bands are sized by different things — subprojects is a grid of text
- * cards, team is a flex row of avatars — so letting either stay content-sized
- * lets them drift apart whenever copy or type scale changes. Both are pinned to
- * this value instead, with their inner rows centred in it. 6rem covers the
- * tallest content either carries: a card title row, a description line and the
- * band padding, with the 1px border inside the box.
- */
 :root {
     --lower-band-height: 6rem;
     --lower-band-padding-y: 1rem;
 }
 
-/*
- * Cadiotheka project mark. A glassy primary-coloured gradient replaces the flat
- * fill so the brand tile reads as a polished highlight, overlaid with a concrete
- * grid hatch.
- */
 .mark-cadiotheka {
     --tile-cell: 10px;
     background-image:
-        linear-gradient(
-            to right,
-            oklch(95% 0 0 / 0.35) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            to bottom,
-            oklch(95% 0 0 / 0.35) 1px,
-            transparent 1px
-        ),
+        linear-gradient(to right, oklch(95% 0 0 / 0.35) 1px, transparent 1px),
+        linear-gradient(to bottom, oklch(95% 0 0 / 0.35) 1px, transparent 1px),
         linear-gradient(
             145deg,
             #ff7a18 0%,
@@ -335,11 +222,6 @@ body::before {
         100% 100%;
 }
 
-/*
- * Hatch fill for a project mark with no colour of its own. Repeating diagonal
- * lines over the page surface, so an unannounced project reads as a reserved,
- * unfilled cell rather than a coloured tile.
- */
 .hatch {
     background-color: transparent;
     background-image: repeating-linear-gradient(
@@ -349,41 +231,12 @@ body::before {
     );
 }
 
-/*
- * The glyph mark's type scale. This is the one part of the mark that cannot be
- * a utility: the fitted size must divide by the element's own `em`, so the
- * expression lives here and the rest of the block's styling is in the markup.
- *
- * `--ascii-font-size` is set here rather than on the element so the value stays
- * a plain length the formula below can divide by.
- *
- * The block is 72 monospace columns wide and each glyph is 0.6em, so the full
- * mark spans 43.2em. Sizing it in `em` makes the whole block scale with this
- * one value, so on a phone the mark narrows instead of pushing past the sheet.
- * The cap is the original size, which it still takes from `sm` up, where the
- * note sits beside it rather than under it.
- *
- * `cqi` needs a size container above this element; the header wrapper in
- * `header.rs` is the one that declares it. Without such an ancestor the unit
- * measures nothing useful, so the mark kept its full width and overflowed the
- * sheet rule.
- *
- * The reveal and its reduced-motion opt-out live in the markup as utilities.
- */
 .ascii-art {
     --ascii-font-size: 0.585rem;
     font-family: var(--font-mono, ui-monospace, monospace);
     font-size: min(var(--ascii-font-size), 100cqi / 43.2);
 }
 
-/*
- * Hero window traffic lights. `mockup-window` paints its three title-bar dots
- * from a single `::before` stamped three times with a `box-shadow`, so the
- * colours come from three shadow stops rather than three elements. They use the
- * theme's error/warning/success tokens so the dots follow the palette instead
- * of fixed hex values, and skip the 30% opacity DaisyUI applies so the colours
- * read true.
- */
 .sheet-band-hero .mockup-window::before {
     opacity: 1;
     box-shadow:
@@ -392,29 +245,12 @@ body::before {
         4.2em 0 var(--color-success);
 }
 
-/*
- * Team band. Occupies the same slot as the subprojects row, so it keeps the
- * same border, padding and reveal rhythm rather than floating above the sheet.
- *
- * The band is pinned to `--lower-band-height`, which is measured from the
- * subprojects row, so swapping the slot does not resize the sheet. The avatar
- * size is the band height less the vertical padding and less the 2px ring's
- * 4px of border (the ring sits on the `.avatar` wrapper, which is `border-box`),
- * and `DaisyUI`'s `avatar-group` overlaps them within that single line.
- */
 .sheet-band-team {
-    --band-delay: 700ms;
     --team-avatar-size: calc(
         var(--lower-band-height) - (2 * var(--lower-band-padding-y)) - 4px
     );
 }
 
-/*
- * Avatar box. `DaisyUI`'s `avatar` supplies the circle, the overflow clip and
- * the cover-fitting image, so this only sizes the box. The ring is a utility on
- * the `.avatar` wrapper rather than here: the wrapper is what `avatar-group`
- * clips, so a border on this inner element would be cut away.
- */
 .team-band-avatar {
     width: var(--team-avatar-size);
     height: var(--team-avatar-size);

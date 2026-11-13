@@ -9,6 +9,13 @@
 //! Layout lives in `BLOBS` so the count and placement are tuned in one place,
 //! the same way `Subprojects` and `MainProjects` keep their rows in `const`
 //! slices. The component only paints; the host element positions and sizes it.
+//!
+//! The circles animate from `public/style.css` (`.blob-circle`,
+//! `@keyframes blob-breathe`), not from the markup. Two details there are load
+//! bearing rather than stylistic: the animation is confined to `transform`, which
+//! the compositor applies without re-evaluating the turbulence filter, and
+//! `transform-box: fill-box` makes each circle scale about its own centre rather
+//! than the SVG's origin, so the cluster drifts instead of sliding as one piece.
 
 use leptos::prelude::*;
 

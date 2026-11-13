@@ -112,7 +112,27 @@ fn loading_avatars(count: usize) -> impl IntoView {
 ///
 /// The band crossfades in through [`SheetEntrance`](crate::components::layout::main::SheetEntrance)'s
 /// swap class. It never takes the load-in entrance: it can only be reached
-/// through the lower-band swap.
+/// through the lower-band swap, so `.sheet-band-team` carries no
+/// `--band-delay`.
+///
+/// Sizing and the avatar ring live in `public/style.css`:
+///
+/// - `.sheet-band-team` shares the pinned `--lower-band-height` with the
+///   subprojects row (with `border-box`, so the 1px rule sits inside the figure
+///   and the vertical padding is included before the rows centre in it). The two
+///   bands are sized by different things — a text grid and a flex row of avatars
+///   — so leaving either content-sized would let them drift apart whenever copy
+///   or type scale changes, and each swap would resize the sheet. That pin is
+///   only relaxed on phones, in the subprojects media query.
+///
+/// - `--team-avatar-size` is that height less the vertical padding and less the
+///   4px of border the 2px ring contributes, so a full stack of avatars fits the
+///   band without clipping.
+///
+/// - `.team-band-avatar` only sizes the box: `DaisyUI`'s `avatar` supplies the
+///   circle and clip. The ring stays a utility on the outer `.avatar` wrapper,
+///   because `avatar-group` clips the wrapper and an inner border would be cut
+///   away.
 #[component]
 #[must_use]
 pub fn Team(

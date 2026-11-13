@@ -31,6 +31,15 @@ pub struct HeroCard {
 #[must_use]
 pub struct MainProject {
     /// Tailwind utility painting the project mark.
+    ///
+    /// Two paints live in `public/style.css` rather than as utilities, because
+    /// each is a stacked `background-image` list. `.mark-cadiotheka` layers a
+    /// concrete grid hatch (`--tile-cell` squares) over an orange diagonal
+    /// gradient, so the brand tile reads as a polished highlight instead of a
+    /// flat fill. `.hatch` is the unannounced project's reserved cell: diagonal
+    /// `base-content` rules on a transparent ground, so it reads as an unfilled
+    /// drafting cell rather than a coloured tile. Neither has an icon — see
+    /// [`MainProject::icon`].
     pub mark: &'static str,
     /// `DaisyUI` button colour for the primary action.
     pub button: &'static str,

@@ -45,6 +45,23 @@ use leptos::prelude::*;
 /// remaining box on both axes, so it frames the hero instead of floating in the
 /// middle of it. `min-h-0` lets it shrink inside the flex-column band rather
 /// than forcing the band taller than its share of the sheet.
+///
+/// Three rules in `public/style.css` back this band:
+///
+/// - `.sheet-band-hero` is `position: relative` with `isolation: isolate`. The
+///   wash is a `z-index: -1` layer, and the isolation is what keeps it behind
+///   the window but still inside the band, instead of dropping through the sheet
+///   to the page surface.
+///
+/// - `.sheet-band-hero .mockup-window::before` draws the traffic lights. DaisyUI
+///   stamps all three dots from one `::before` with a `box-shadow`, so the rule
+///   replaces the shadow stops with the theme's error, warning and success
+///   colours and restores `opacity: 1` to undo the 30% veil DaisyUI applies.
+///   Changing the dot count means editing those stops, not the markup.
+///
+/// - `.hero-wash` is the wash's placement; it is passed in as
+///   [`BlobBackgroundProperties::class`](crate::components::effects::blob::BlobBackgroundProperties::class)
+///   so [`BlobBackground`] stays position-agnostic.
 #[component]
 #[must_use]
 pub fn Hero() -> impl IntoView {

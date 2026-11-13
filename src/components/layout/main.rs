@@ -32,6 +32,18 @@ const PREFETCH_DELAY_MS: u64 = 1_500;
 /// screen would start a second animation on its cards the moment the entrance
 /// finished, which reads as a flicker. The swap class is therefore withheld
 /// until a swap has actually been requested.
+///
+/// The swap fades the band's children rather than the band itself so the band
+/// box, and with it the bottom rule, keeps full opacity throughout: the rules
+/// under the lower band and above it stay put while only the contents
+/// crossfade. Only the load-in entrance moves a rule.
+///
+/// The entrance stagger is carried by a per-band `--band-delay` in
+/// `public/style.css`, read here through `sheet-band-enter`'s
+/// `var(--band-delay, 500ms)`. A band that is never handed `band_class`
+/// therefore has no delay to consume: [`MainProjects`] sits above the hero and
+/// [`Team`] is only reachable through the swap, so only the header, hero,
+/// subprojects and footer carry one.
 #[derive(Clone, Copy)]
 #[must_use]
 pub struct SheetEntrance {
@@ -171,6 +183,11 @@ impl LowerBandState {
 /// the inner gutter and stacks the bands from header to footer. It also owns
 /// the selected-project state shared by the main projects marks and the hero,
 /// and the [`LowerBandState`] that swaps the band below the hero.
+///
+/// The drawing sheet owns the page width and centring, so the frame rules come
+/// from `.blueprint-sheet` rather than from this element: `main` only stacks the
+/// bands inside the sheet's gutter and provides the stacking context above the
+/// fixed page surface.
 ///
 /// Member data is prefetched here, shortly after load. [`Team`] only exists
 /// once the band is opened, so without this the first open pays the full GitHub
