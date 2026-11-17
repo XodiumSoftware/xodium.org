@@ -18,7 +18,7 @@
         {
             "customType": "regex",
             "description": "Update the pinned Trunk version in the CI workflow",
-            "managerFilePatterns": ["^\\.github/workflows/rust\\.yml$"],
+            "managerFilePatterns": ["^\\.github/workflows/general\\.yml$"],
             "matchStrings": [
                 "#\\s*renovate:\\s*datasource=(?<datasource>[^\\s]+)\\s+depName=(?<depName>[^\\s]+)(?:\\s+versioning=(?<versioning>[^\\s]+))?\\s*(?:\\r?\\n|\\r)\\s*TRUNK_VERSION:\\s*\"(?<currentValue>[^\"]+)\""
             ],
