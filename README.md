@@ -19,12 +19,14 @@
 [![Issues][issues_shield_url]][issues_url]
 [![Roadmap][roadmap_shield_url]][roadmap_url]
 [![Dependency Status][deps_shield_url]][deps_url]
+[![Docs][docs_shield_url]][docs_url]
 
 </div>
 
 ## Table of Contents
 
 - [Guide](GUIDE.md)
+- [API Docs][docs_url]
 - [Built With](#built-with)
 - [Code of Conduct][code_of_conduct_url]
 - [Contributing][contributing_url]
@@ -49,6 +51,8 @@
 [contributors_url]: https://github.com/XodiumSoftware/xodium.org/graphs/contributors
 [deps_shield_url]: https://deps.rs/repo/github/XodiumSoftware/xodium.org/status.svg?style=for-the-badge
 [deps_url]: https://deps.rs/repo/github/XodiumSoftware/xodium.org
+[docs_shield_url]: https://img.shields.io/badge/docs-rustdoc-blue?style=for-the-badge
+[docs_url]: https://xodiumsoftware.github.io/xodium.org/
 [issues_shield_url]: https://img.shields.io/github/issues/XodiumSoftware/xodium.org?style=for-the-badge&color=yellow
 [issues_url]: https://github.com/XodiumSoftware/xodium.org/issues
 [license_url]: https://github.com/XodiumSoftware/xodium.org?tab=AGPL-3.0-1-ov-file

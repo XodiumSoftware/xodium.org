@@ -437,8 +437,19 @@ the lint gates passing — see [Quick Commands](#quick-commands).
 
 GitHub Actions workflows in `.github/workflows/`:
 
-- **rust.yml** — Lint (clippy + fmt + rustdoc + cargo-machete), Trunk build with a 500 KB WASM size budget, deploy to Cloudflare Pages (pushes to `main`/`dev` and manual dispatches only)
+- **general.yml** — Lint (clippy + fmt + rustdoc + cargo-machete), Trunk build with a 500 KB WASM size budget, deploy to Cloudflare Pages (pushes to `main`/`dev` and manual dispatches only)
+- **docs.yml** — Builds rustdoc and deploys it to GitHub Pages on push to `main` (PRs build only)
 - **enforce_pr_title.yml** — Validates PR titles follow conventional commits
+
+GitHub Pages is deployed from a workflow, so nothing generated is committed, and
+the repository's Pages source must stay set to **GitHub Actions**. rustdoc writes
+the site to `target/wasm32-unknown-unknown/doc/xodiumweb/`, but its shared assets
+(`static.files`, `crates.js`, `search.index`, `src`, ...) sit one level up and are
+referenced as `../<asset>`. The workflow therefore assembles a `site/` root — the
+crate's pages hoisted out, the shared assets moved in beside them — rather than
+uploading `<crate>/` alone, which would 404 every asset. Serving it that way also
+keeps the landing page at <https://xodiumsoftware.github.io/xodium.org/> instead
+of the doubled `/xodium.org/xodium.org/`.
 
 ## Adding a New Section
 

@@ -1,0 +1,94 @@
+name: Docs CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main, dev]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build
+    if: |
+      !contains(github.event.head_commit.message, '[ci-skip]') &&
+      !contains(github.event.pull_request.title, '[ci-skip]')
+    runs-on: ubuntu-latest
+    steps:
+      - id: checkout
+        name: Checkout
+        uses: actions/checkout@v7.0.1
+
+      - id: setup_rust
+        name: Setup Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v2.0.1
+        with:
+          toolchain: stable
+          target: wasm32-unknown-unknown
+
+      - id: setup_pages
+        name: Setup Pages
+        if: github.event_name != 'pull_request'
+        uses: actions/configure-pages@v6.0.0
+
+      - id: cache_dependencies
+        name: Cache dependencies
+        uses: actions/cache@v6.1.0
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - id: build_docs
+        name: Build Rustdoc
+        run: |
+          RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --target wasm32-unknown-unknown
+        shell: bash
+
+      - id: flatten_docs
+        name: Flatten Docs
+        # rustdoc nests the crate's pages in <crate>/ and keeps the shared assets
+        # (static.files, crates.js, search.index, src, ...) alongside it, linked
+        # as ../<asset>. Uploading <crate>/ alone would 404 every asset, so hoist
+        # only the crate's own pages to the site root and drop the shared ones in
+        # beside them.
+        run: |
+          doc=target/wasm32-unknown-unknown/doc
+          mkdir -p site
+          mv "$doc/xodiumweb"/* site/
+          for asset in "$doc"/*; do
+            [ "$(basename "$asset")" = xodiumweb ] || mv "$asset" site/
+          done
+        shell: bash
+
+      - name: Upload Pages Artefact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v5.0.0
+        with:
+          path: site
+
+  deploy:
+    name: Deploy
+    needs: [build]
+    if: |
+      github.event_name != 'pull_request' &&
+      (github.event_name != 'push' || github.ref_name == 'main') &&
+      !contains(github.event.head_commit.message, '[ci-skip]')
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: "${{ steps.deployment.outputs.page_url }}"
+    steps:
+      - id: deployment
+        name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v5.0.1
