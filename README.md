@@ -52,7 +52,7 @@
 [deps_shield_url]: https://deps.rs/repo/github/XodiumSoftware/xodium.org/status.svg?style=for-the-badge
 [deps_url]: https://deps.rs/repo/github/XodiumSoftware/xodium.org
 [docs_shield_url]: https://img.shields.io/badge/docs-rustdoc-blue?style=for-the-badge
-[docs_url]: https://xodiumsoftware.github.io/xodium.org/
+[docs_url]: https://xodiumsoftware.github.io/xodium.org/xodiumweb/
 [issues_shield_url]: https://img.shields.io/github/issues/XodiumSoftware/xodium.org?style=for-the-badge&color=yellow
 [issues_url]: https://github.com/XodiumSoftware/xodium.org/issues
 [license_url]: https://github.com/XodiumSoftware/xodium.org?tab=AGPL-3.0-1-ov-file

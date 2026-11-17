@@ -443,13 +443,12 @@ GitHub Actions workflows in `.github/workflows/`:
 
 GitHub Pages is deployed from a workflow, so nothing generated is committed, and
 the repository's Pages source must stay set to **GitHub Actions**. rustdoc writes
-the site to `target/wasm32-unknown-unknown/doc/xodiumweb/`, but its shared assets
-(`static.files`, `crates.js`, `search.index`, `src`, ...) sit one level up and are
-referenced as `../<asset>`. The workflow therefore assembles a `site/` root — the
-crate's pages hoisted out, the shared assets moved in beside them — rather than
-uploading `<crate>/` alone, which would 404 every asset. Serving it that way also
-keeps the landing page at <https://xodiumsoftware.github.io/xodium.org/> instead
-of the doubled `/xodium.org/xodium.org/`.
+the site to `target/wasm32-unknown-unknown/doc/`, and the workflow uploads that
+directory as the artifact unchanged. Do not hoist `doc/xodiumweb/` to the
+artifact root: every page embeds `root-path="../"`, which only resolves to
+`/xodium.org/static.files/` while the crate sits one level down. Flattening it
+makes the page request `/static.files/` at the domain root, where nothing is
+served. Live at <https://xodiumsoftware.github.io/xodium.org/xodiumweb/>.
 
 ## Adding a New Section
 

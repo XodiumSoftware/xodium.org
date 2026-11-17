@@ -55,27 +55,14 @@ jobs:
           RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --target wasm32-unknown-unknown
         shell: bash
 
-      - id: flatten_docs
-        name: Flatten Docs
-        # rustdoc nests the crate's pages in <crate>/ and keeps the shared assets
-        # (static.files, crates.js, search.index, src, ...) alongside it, linked
-        # as ../<asset>. Uploading <crate>/ alone would 404 every asset, so hoist
-        # only the crate's own pages to the site root and drop the shared ones in
-        # beside them.
-        run: |
-          doc=target/wasm32-unknown-unknown/doc
-          mkdir -p site
-          mv "$doc/xodiumweb"/* site/
-          for asset in "$doc"/*; do
-            [ "$(basename "$asset")" = xodiumweb ] || mv "$asset" site/
-          done
-        shell: bash
-
       - name: Upload Pages Artefact
         if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v5.0.0
         with:
-          path: site
+          # Upload doc/ rather than hoisting <crate>/ to the root: rustdoc writes
+          # root-path="../" into every page, which resolves against the site root
+          # only when the crate sits one level down.
+          path: target/wasm32-unknown-unknown/doc
 
   deploy:
     name: Deploy
