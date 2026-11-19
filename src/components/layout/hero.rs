@@ -78,16 +78,33 @@ const COMING_SOON_PAINT: &str = "hatch";
 /// Shared face of a feature tile: opaque, on the page's own surface token.
 const TILE_CLASS: &str = "bg-base-100 border border-base-content/30 p-3";
 
-/// Corner rounding for the tile at `index`, in reading order.
-///
-/// Each tile rounds two opposite corners, stepping one corner around the card per
-/// tile, so the grid reads as a run of cut plates rather than a stack of boxes.
-/// Every tile keeps a pair, first and last included, so the set has no plain
-/// outlier. The cycle is six long, matching the tile count, and wraps for any
-/// longer list.
-///
-/// Below `md` the tiles stack in one column, where a right-hand rounding has
-/// nothing opposite it; the rounding is therefore `md:`-scoped.
+/// Face of a tile that stands in for a project that has not shipped: unfilled, so it
+/// cannot be mistaken for content. Same padding and corners as [`TILE_CLASS`].
+const RESERVED_TILE_CLASS: &str = "border border-dashed border-base-content/30 p-3";
+
+/// Filler inside a reserved tile: blurred, `aria-hidden`, and lorem ipsum so it
+/// never reads as a withheld feature.
+const RESERVED_PLACEHOLDER: (&str, &str) = (
+    "Lorem ipsum dolor",
+    "Sit amet consectetur adipiscing elit sed do eiusmod tempor.",
+);
+
+/// What a half shows where its tiles go.
+#[derive(Clone, Copy)]
+enum TileKind {
+    /// Each feature rendered as its own tile.
+    Features,
+    /// Blank tiles at a fixed count, on the reserved face.
+    Reserved(usize),
+}
+
+/// Tiles reserved in the Coming Soon half, so it matches the height of a filled
+/// half without naming features that do not exist yet.
+const RESERVED_TILE_COUNT: usize = 3;
+
+/// Corner rounding for the tile at `index`, in reading order: two opposite corners,
+/// stepping one corner per tile and wrapping every six. `md:`-scoped, because
+/// stacked tiles have no opposite corner to balance against.
 #[must_use]
 fn tile_shape(index: usize) -> &'static str {
     const SHAPES: [&str; 6] = [
@@ -104,12 +121,9 @@ fn tile_shape(index: usize) -> &'static str {
 
 /// Hero band.
 ///
-/// The band grows into the sheet's leftover height (`flex-1`) with a floor
-/// (`min-h-[40rem]`); keep the pair, since the floor is what stops the band
-/// collapsing when the halves are short.
-///
-/// A row of two equal halves from `md` up, stacked below it, so a phone reads one
-/// project after the other.
+/// Grows into the sheet's leftover height (`flex-1`) with a `min-h-*` floor; the
+/// pair keeps the band from collapsing. Two equal halves in a row from `md` up,
+/// stacked below it.
 #[component]
 #[must_use]
 pub fn Hero() -> impl IntoView {
@@ -128,6 +142,7 @@ pub fn Hero() -> impl IntoView {
             <HeroHalf
                 header=CADIOTHEKA_HEADER
                 paint=CADIOTHEKA_PAINT
+                tiles=TileKind::Features
                 features=CADIOTHEKA_FEATURES
                 columns="grid-cols-2"
                 visit_href=Some("https://cadiotheka.com/")
@@ -136,6 +151,7 @@ pub fn Hero() -> impl IntoView {
             <HeroHalf
                 header=COMING_SOON_HEADER
                 paint=COMING_SOON_PAINT
+                tiles=TileKind::Reserved(RESERVED_TILE_COUNT)
                 features=&[]
                 columns="grid-cols-1"
                 visit_href=None
@@ -146,33 +162,17 @@ pub fn Hero() -> impl IntoView {
 
 /// One half of the hero band.
 ///
-/// The whole panel is one link, stretched over it by `absolute inset-0`. The
-/// content sits above the link in `z-1` and is `pointer-events-none`, so a click
-/// anywhere reaches the link; the panel is never itself an `<a>`, which leaves
-/// room for a nested control later.
-///
-/// The panel is opaque: it paints the page's surface token under any texture, so
-/// a half never shows the band behind it.
-///
-/// Hover and keyboard focus tint the panel: the border turns `primary` and the
-/// panel takes the same faint `base-content` wash the subproject cards use, so
-/// both link surfaces in the sheet acknowledge the pointer the same way.
-/// `has-[a:hover]` and `has-[a:focus-visible]` are keyed to the stretched anchor
-/// rather than to the panel itself: the content above the anchor does not receive
-/// the pointer, so a plain `hover:` on the panel would not fire everywhere it
-/// should.
-///
-/// A disabled half has no destination, so the stretched element is a `<button>`
-/// rather than an anchor: an anchor with a dead `href` still announces itself as
-/// a link and still lands in the tab order. The half is then inert — not
-/// focusable, not clickable — and dimmed to read as unavailable. Both the gate and
-/// the label are withheld, so nothing about it promises a destination.
+/// The whole panel is one stretched link (`absolute inset-0`), and the panel is
+/// the `group` its hover styling keys off. A half with no destination renders a
+/// disabled button instead of a dead anchor, and takes none of the hover styling.
 #[component]
 fn HeroHalf(
     /// The half's heading row.
     header: HalfHeader,
     /// Paint class filling the panel, or `""` for a plain surface.
     paint: &'static str,
+    /// Whether the half lists features or reserves space for them.
+    tiles: TileKind,
     /// Tiles shown in the half, in reading order.
     features: &'static [Feature],
     /// Column utilities for the tile grid from `md` up.
@@ -181,13 +181,19 @@ fn HeroHalf(
     visit_href: Option<&'static str>,
 ) -> impl IntoView {
     let panel_class = format!(
-        "relative flex w-full flex-col gap-4 border border-base-content/30 bg-base-100 p-6 transition-colors duration-200 md:w-1/2 has-[a:hover]:border-primary has-[a:hover]:bg-base-content/5 has-[a:focus-visible]:border-primary has-[a:focus-visible]:bg-base-content/5 {paint}",
+        "group relative flex w-full flex-col gap-4 border border-base-content/30 bg-base-100 p-6 transition-colors duration-200 md:w-1/2 has-[a:hover]:border-primary has-[a:hover]:bg-base-content/5 has-[a:focus-visible]:border-primary has-[a:focus-visible]:bg-base-content/5 {paint}",
     );
 
     let content_class = if visit_href.is_some() {
         "pointer-events-none relative z-1 flex flex-col gap-4"
     } else {
         "relative z-1 flex flex-col gap-4 opacity-60"
+    };
+
+    let arrow_class = if visit_href.is_some() {
+        "opacity-60 group-hover:opacity-100 group-hover:text-primary group-hover:-translate-y-0.5 transition-[transform,color,opacity]"
+    } else {
+        "opacity-60"
     };
 
     view! {
@@ -204,8 +210,24 @@ fn HeroHalf(
             }}
             <div class=content_class>
                 <header>
-                    <h2 class="text-sm font-semibold uppercase tracking-[0.08em]">
+                    <h2 class="flex items-center gap-1 text-sm font-semibold uppercase tracking-[0.08em]">
                         {header.title}
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class=arrow_class
+                            aria-hidden="true"
+                        >
+                            <path d="M7 7h10v10"></path>
+                            <path d="M7 17 17 7"></path>
+                        </svg>
                     </h2>
                     <p class="text-xs uppercase tracking-widest opacity-50">
                         {header.established}
@@ -214,47 +236,58 @@ fn HeroHalf(
                 <p class="text-xs leading-relaxed text-base-content/70">
                     {header.description}
                 </p>
-                <FeatureGrid items=features columns=columns />
+                <FeatureGrid tiles=tiles items=features columns=columns />
             </div>
         </article>
     }
 }
 
-/// The feature tiles of one half.
-///
-/// An empty slice renders nothing rather than an empty grid, so a half that has
-/// no tiles yet keeps its heading and description alone.
+/// The tile area of one half: either the real features or reserved slots, as
+/// [`TileKind`] says.
 #[component]
 fn FeatureGrid(
+    /// Whether the half lists features or reserves space for them.
+    tiles: TileKind,
     /// Tiles to render, in reading order.
     items: &'static [Feature],
     /// Column utilities for the grid from `md` up.
     columns: &'static str,
 ) -> impl IntoView {
-    if items.is_empty() {
-        return ().into_any();
-    }
-
     let grid_class = format!("grid grid-cols-1 gap-3 md:{columns}");
 
-    view! {
-        <div class=grid_class>
-            {items
-                .iter()
-                .enumerate()
-                .map(|(index, item)| {
-                    let tile_class = format!("{TILE_CLASS} {}", tile_shape(index));
-                    view! {
-                        <div class=tile_class>
-                            <h3 class="text-xs font-semibold uppercase tracking-[0.08em]">
-                                {item.title}
-                            </h3>
-                            <p class="text-xs leading-relaxed opacity-60">{item.body}</p>
-                        </div>
-                    }
-                })
-                .collect_view()}
-        </div>
-    }
-    .into_any()
+    let cells = match tiles {
+        TileKind::Features => items
+            .iter()
+            .enumerate()
+            .map(|(index, item)| {
+                let tile_class = format!("{TILE_CLASS} {}", tile_shape(index));
+                view! {
+                    <div class=tile_class>
+                        <h3 class="text-xs font-semibold uppercase tracking-[0.08em]">
+                            {item.title}
+                        </h3>
+                        <p class="text-xs leading-relaxed opacity-60">{item.body}</p>
+                    </div>
+                }
+                .into_any()
+            })
+            .collect_view(),
+        TileKind::Reserved(count) => (0..count)
+            .map(|index| {
+                let tile_class = format!("{RESERVED_TILE_CLASS} {}", tile_shape(index));
+                let (title, body) = RESERVED_PLACEHOLDER;
+                view! {
+                    <div class=tile_class aria-hidden="true">
+                        <h3 class="text-xs font-semibold uppercase tracking-[0.08em] blur-[3px]">
+                            {title}
+                        </h3>
+                        <p class="text-xs leading-relaxed opacity-60 blur-[3px]">{body}</p>
+                    </div>
+                }
+                .into_any()
+            })
+            .collect_view(),
+    };
+
+    view! { <div class=grid_class>{cells}</div> }.into_any()
 }
