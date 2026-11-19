@@ -42,8 +42,8 @@ const FOOTER_LINKS: &[FooterLink] = &[
 /// Icon-only links closing the footer, after [`FOOTER_LINKS`].
 const FOOTER_ICON_LINKS: &[FooterIconLink] = &[
     FooterIconLink {
-        href: "https://github.com/XodiumSoftware",
-        aria_label: "Xodium Software on GitHub",
+        href: "https://github.com/XodiumSoftware/xodium.org",
+        aria_label: "Xodium Website on GitHub",
         icon: || view! { <GitHubIcon /> }.into_any(),
     },
     FooterIconLink {
