@@ -1,8 +1,9 @@
 //! `CadioThekaIcon` — Cadiotheka brand glyph.
 //!
-//! Ported from Cadiotheka's `favicon.svg`: a pair of mirrored chevron brackets
-//! pointing inward, one dark and one amber, each with a dot at its vertex and a
-//! scattering of dashed ticks that give the mark a drafting feel.
+//! Ported from Cadiotheka's `favicon.svg`: mirrored chevron brackets with a dot
+//! at each vertex and dashed ticks along both edges. It is drawn at the asset's
+//! native 128 × 128 view box so the tick coordinates stay comparable with the
+//! original.
 
 use leptos::prelude::*;
 
@@ -206,18 +207,10 @@ const SILVER: &str = "url(#cadiotheka-silver)";
 /// Fill of the right-hand bracket, at full strength.
 const INK: &str = "#001728";
 
-/// Renders one tick as a rotated rect.
-///
-/// The two brackets place their ticks differently in the source asset, and the
-/// difference is load-bearing:
-///
-/// - The right bracket uses
-///   `matrix(-0.707107 0.707107 0.707107 0.707107 tx ty)` on a rect whose own
-///   `x`/`y` are zero, i.e. the matrix carries both the rotation and the
-///   translation, with the rotation applied to the local origin first.
-/// - The left bracket uses `<rect x=".." y=".." transform="rotate(45 x y)">`,
-///   which rotates the rect about its own top-left corner. Reusing the matrix
-///   there would swing every tick around the view-box origin and scatter them.
+/// The two brackets place their ticks differently, and that difference is load
+/// bearing: the right one carries rotation and translation in one matrix, while
+/// the left rotates each rect about its own corner. Reusing the matrix on the
+/// left would swing every tick around the view-box origin.
 fn tick(tick: &Tick, mirror: bool, fill: &'static str) -> impl IntoView {
     if mirror {
         view! {
@@ -250,10 +243,8 @@ fn tick(tick: &Tick, mirror: bool, fill: &'static str) -> impl IntoView {
 
 /// Renders the Cadiotheka brand glyph as an inline SVG icon.
 ///
-/// The mark is drawn at the favicon's native `128 × 128` view box, so the tick
-/// coordinates stay readable side by side with the original asset. Every amber
-/// element of the source asset is painted with a shared silver gradient, so the
-/// mark reads as brushed metal on the project's orange tile.
+/// The amber elements of the source asset are painted with a shared silver
+/// gradient, so the mark reads as brushed metal on an orange tile.
 #[component]
 pub fn CadioThekaIcon() -> AnyView {
     let light_ticks = LIGHT_TICKS

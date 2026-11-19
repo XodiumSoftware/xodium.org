@@ -108,20 +108,6 @@ body::before {
     --band-delay: 600ms;
 }
 
-.blob-circle {
-    animation: blob-breathe 18s ease-in-out infinite alternate;
-    animation-delay: var(--blob-delay, 0s);
-}
-
-@keyframes blob-breathe {
-    from {
-        transform: translate(-1.5%, -1%) scale(0.94);
-    }
-    to {
-        transform: translate(1.5%, 1%) scale(1.08);
-    }
-}
-
 .sheet-band-subprojects,
 .sheet-band-team {
     box-sizing: border-box;
@@ -170,18 +156,10 @@ body::before {
     --tile-cell: 10px;
     background-image:
         linear-gradient(to right, oklch(95% 0 0 / 0.35) 1px, transparent 1px),
-        linear-gradient(to bottom, oklch(95% 0 0 / 0.35) 1px, transparent 1px),
-        linear-gradient(
-            145deg,
-            #ff7a18 0%,
-            #ff5500 35%,
-            #ff2a00 55%,
-            #ff7a18 100%
-        );
+        linear-gradient(to bottom, oklch(95% 0 0 / 0.35) 1px, transparent 1px);
     background-size:
         var(--tile-cell) var(--tile-cell),
-        var(--tile-cell) var(--tile-cell),
-        100% 100%;
+        var(--tile-cell) var(--tile-cell);
 }
 
 .hatch {
@@ -197,14 +175,6 @@ body::before {
     --ascii-font-size: 0.585rem;
     font-family: var(--font-mono, ui-monospace, monospace);
     font-size: min(var(--ascii-font-size), 100cqi / 43.2);
-}
-
-.sheet-band-hero .mockup-window::before {
-    opacity: 1;
-    box-shadow:
-        1.4em 0 var(--color-error),
-        2.8em 0 var(--color-warning),
-        4.2em 0 var(--color-success);
 }
 
 .sheet-band-team {
@@ -225,8 +195,7 @@ body::before {
     }
 
     .sheet-band-enter,
-    .sheet-band-swap > *,
-    .blob-circle {
+    .sheet-band-swap > * {
         animation: none;
     }
 }

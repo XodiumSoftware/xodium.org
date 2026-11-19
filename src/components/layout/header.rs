@@ -2,39 +2,13 @@ use crate::components::layout::main::SheetEntrance;
 use crate::components::ui::ascii_art::AsciiArt;
 use leptos::prelude::*;
 
-/// The sheet's opening band.
+/// The sheet's opening band: the XODIUM mark with a short tagline.
 ///
-/// Holds the XODIUM glyph mark with a short prompt-style tagline. The keyboard
-/// legend, link badges and title block are unmounted while the band is settled,
-/// but they remain built and exported from the crate.
-///
-/// It takes the load-in entrance from [`SheetEntrance`], so the rule under it
-/// draws in with the stack rather than appearing fully formed before the bands
-/// below it arrive.
-///
-/// On phones the band stacks, putting the tagline under the glyph mark, because
-/// mark and note side by side leave the mark too narrow to hold its 72 columns.
-/// From `sm` up they sit on one line again, with the note trailing the mark.
-///
-/// The tagline's reveal is delayed past the mark's, so the opener reads as one
-/// line being drawn left to right: mark, then note.
-///
-/// The mark sits in its own wrapper, and that wrapper is the size container its
-/// fitted `font-size` measures against. Putting the containment on the band
-/// instead would measure the whole band: from `sm` up the band is a flex row, so
-/// the mark would size itself against the row including the tagline's share and
-/// could overlap the note.
-///
-/// The wrapper takes the row's free space (`flex-1`) and is capped at the mark's
-/// maximum width (`max-w-[calc(43.2*0.585rem)]`, the block's 43.2em at its
-/// 0.585rem cap). Capping matters: with plain `flex-1` the wrapper stretched to
-/// the whole band on a wide screen and pushed the tagline out to the far edge,
-/// instead of sitting a `gap-4` after the mark. The `cqi` the mark measures is
-/// then that resolved width, never the tagline's share.
-///
-/// Sizing the wrapper to its content instead would not work either: a container
-/// query unit resolves against the container, and a width taken from the
-/// contained mark's own overflow never converges.
+/// A column on phones and a row from `sm` up, so the tagline moves under the
+/// mark rather than beside it. The mark sits in its own wrapper because that
+/// wrapper is the size container its fitted `font-size` measures against; the
+/// wrapper is capped at the mark's maximum width so a wide band does not push
+/// the tagline to the far edge. See [`AsciiArt`] for the sizing itself.
 #[component]
 #[must_use]
 pub fn Header() -> impl IntoView {

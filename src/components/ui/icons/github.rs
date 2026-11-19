@@ -2,9 +2,8 @@ use leptos::prelude::*;
 
 /// Renders the GitHub Octocat icon.
 ///
-/// The icon uses `currentColor` so its colour follows the badge's styling. Its
-/// 1.25rem box is a utility on the element, so callers can size it with a
-/// utility of their own instead of a stylesheet rule.
+/// Painted with `currentColor` and sized by a `size-5` utility, so callers can
+/// restyle and resize it without touching this component.
 #[component]
 #[must_use]
 pub fn GitHubIcon() -> impl IntoView {

@@ -88,8 +88,8 @@ my-[18px]`); the class only exists so `.sheet-frame::before` can draw it:
 
 1. **Skip Link** — accessibility anchor to `#main-content`
 2. **`Main`** (`<main id="main-content">`) — accessible page heading and the
-   band stack, in reading order: `Header`, `MainProjects`, `Hero`, the
-   subprojects/team slot, then `Footer`.
+   band stack, in reading order: `Header`, `Hero`, the subprojects/team slot,
+   then `Footer`.
 3. **`Footer`** — in-flow centred band at the bottom of the sheet, carrying the
    XODIUM wordmark, the subprojects/team toggle and the site links. It is not
    pinned to the viewport.
@@ -100,15 +100,14 @@ Components are grouped by function in `src/components/`:
 
 #### Layout Bands (`src/components/layout/`)
 
-| Component      | File              | Purpose                                                      |
-| -------------- | ----------------- | ------------------------------------------------------------ |
-| `Main`         | `main.rs`         | Heading and the band stack, in reading order                 |
-| `Header`       | `header.rs`       | Opening band with the ASCII mark and tagline                 |
-| `MainProjects` | `mainprojects.rs` | Equal-width left/right main project panels                   |
-| `Hero`         | `hero.rs`         | Focal band: window mockup on a colour wash                   |
-| `Subprojects`  | `subprojects.rs`  | Equal-width three-card subproject links                      |
-| `Footer`       | `footer.rs`       | Closing band: wordmark, band toggle, site links              |
-| `Team`         | `team.rs`         | Team band with large round avatars; swaps with `Subprojects` |
+| Component     | File             | Purpose                                                      |
+| ------------- | ---------------- | ------------------------------------------------------------ |
+| `Main`        | `main.rs`        | Heading and the band stack, in reading order                 |
+| `Header`      | `header.rs`      | Opening band with the ASCII mark and tagline                 |
+| `Hero`        | `hero.rs`        | Focal band: both main projects, split corner to corner       |
+| `Subprojects` | `subprojects.rs` | Equal-width three-card subproject links                      |
+| `Footer`      | `footer.rs`      | Closing band: wordmark, band toggle, site links              |
+| `Team`        | `team.rs`        | Team band with large round avatars; swaps with `Subprojects` |
 
 #### UI Primitives (`src/components/ui/`)
 
@@ -123,12 +122,6 @@ Components are grouped by function in `src/components/`:
 | `BuyMeACoffeeIcon` | `buy_me_a_coffee.rs` | Buy Me a Coffee cup    |
 | `CadioThekaIcon`   | `cadiotheka.rs`      | Cadiotheka brand glyph |
 | `GitHubIcon`       | `github.rs`          | GitHub Octocat         |
-
-#### Effects (`src/components/effects/`)
-
-| Component        | File      | Purpose                                       |
-| ---------------- | --------- | --------------------------------------------- |
-| `BlobBackground` | `blob.rs` | Animated SVG blob wash; caller sets placement |
 
 ### Team Roster (`src/components/layout/team.rs`)
 
@@ -155,13 +148,10 @@ src/
 │   ├── layout/                # Sheet bands, stacked top to bottom
 │   │   ├── main.rs
 │   │   ├── header.rs
-│   │   ├── mainprojects.rs
 │   │   ├── hero.rs
 │   │   ├── subprojects.rs
 │   │   ├── footer.rs
 │   │   └── team.rs
-│   ├── effects/               # Decorative background effects
-│   │   └── blob.rs
 │   └── ui/                    # UI primitives and icons
 │       ├── ascii_art.rs
 │       └── icons/
@@ -189,15 +179,25 @@ Trunk.toml                     # Trunk configuration
   `.into_js_value()` and keep the resulting `js_sys::Function` — that type is
   `Send + Sync`. No component registers an event listener today: the only one,
   an Escape handler on the team band, was removed with its close prop.
-- **Props:** `#[derive(Clone)]` structs named `{Component}Properties` (e.g.
-  `BlobBackgroundProperties`). A component that needs no configuration takes no
-  props at all rather than an empty struct.
+- **Props:** `#[derive(Clone)]` structs named `{Component}Properties`. A component
+  that needs no configuration takes no props at all rather than an empty struct.
 - **Async data:** Use `LocalResource` (not `Resource`) for WASM thread execution.
   No component fetches anything today; keep this rule for the next one that does.
 - **External links:** Always use `target="_blank" rel="noopener noreferrer"`
 - **Static data:** Define `const` slices at top of component files
 - **CSS:** Tailwind and DaisyUI utility classes first. `public/style.css` is for what utilities cannot express: page-frame rules, `@keyframes` plus their `--band-delay` timings, `::before` overrides of DaisyUI internals, and expressions that need the element's own `em` (the ASCII mark's fitted `font-size`). When a rule only sets layout, colour, spacing or a plain transition, use a utility instead.
-- **Do not add `//` line comments.** Use `///` doc comments (or `//!` module docs) to explain intent; keep the code itself self-documenting. This applies to `view!` macro blocks too — meaningful intent in a template should live on the component's or helper's doc comment, not as a structural label inside the view.
+- **Do not add `//` line comments.** Use `///` doc comments (or `//!` module
+  docs) to explain intent; keep the code itself self-documenting. This applies to
+  `view!` macro blocks too — meaningful intent in a template should live on the
+  component's or helper's doc comment, not as a structural label inside the view.
+- **Write docs for readers, and keep them stable.** Document _why_ a decision was
+  made and what breaks if it is undone; never restate the implementation. A doc
+  that enumerates utility classes, pixel values, layer counts or the order of a
+  class string is wrong the first time someone tweaks one of them, so leave those
+  details in the code and describe the rule instead. Aim for a short paragraph on
+  the item plus, at most, one note per non-obvious constraint — not a line for
+  every field or a bullet list of everything the component does. This applies to
+  rustdoc in `src/` and to prose in `AGENTS.md` alike.
 
 ### Component Patterns
 
@@ -205,7 +205,7 @@ Trunk.toml                     # Trunk configuration
 
 ```rust
 #[derive(Clone, Copy)]
-pub struct BlobBackgroundProperties {
+pub struct {Component}Properties {
     pub class: &'static str,
 }
 ```
@@ -215,6 +215,9 @@ pub struct BlobBackgroundProperties {
 Row content is a `const` slice at the top of the component file. The team
 roster (`MEMBERS`) is authored the same way: it is not fetched, so no component
 in the app has an async data path today.
+
+- Props structs on a private component may stay private; `missing_docs` and
+  `unreachable_pub` still apply to everything public.
 
 ### Build Pipeline
 
@@ -231,8 +234,7 @@ in the app has an async data path today.
 ### Lower Band Swap
 
 The band below the hero is a single slot that shows either `Subprojects` or
-`Team`. `Main` provides the shared state as context, following the
-`SelectedProject` pattern:
+`Team`. `Main` provides the shared state as context:
 
 ```rust
 let lower_band = LowerBandState::provide();
@@ -284,7 +286,9 @@ the conventions below apply to all of them:
 
 - Separated by `border-b border-base-content/40`, the same rule colour as the
   sheet frame. The side rules come from `.sheet-frame::before`, so bands do
-  not draw their own left and right borders.
+  not draw their own left and right borders. `Hero` carries a `border-x` of the
+  same colour as well, so it closes its own box: its divider and its bottom
+  rule run into those side rules rather than stopping short of them.
 - Row-based content sits in `const` slices at the top of the component file, so
   the order and copy are edited in one place.
 - Cards and cells that read as drafted cells are separated by `divide-*` rules
@@ -295,54 +299,40 @@ the conventions below apply to all of them:
   (or is stopped from doing so), note that in the component's doc comment. These
   pairs are the easiest thing to "simplify" into a clipping bug.
 
-### Main Projects Tabs
-
-The main project marks are tabs that select which project the hero shows, and
-the relationship holds at every breakpoint. There is deliberately no branch on
-viewport width:
-
-- Each mark is a `<button role="tab">` with a `tabpanel` beside it. Since the
-  hero is on the page at every width, the tab always controls something visible
-  and the unselected panel may be announced `aria-selected="false"` honestly.
-- Do not reintroduce a width branch unless the hero is hidden at some width
-  again. That is what justified the old split, and it went with the hero's
-  breakpoint.
-- Inert action buttons on these panels are anchors gated on
-  `not-aria-disabled`, with the attribute bound as a **string**. A `bool`
-  attribute is written presence-only, so `true` produced `aria-disabled=""` and
-  the gates stopped matching.
-
 ### Hero Band
 
-`Hero` is the focal band: a `DaisyUI` `mockup-window` filling the band's padded
-box, showing the project the marks select. The window body is a mosaic of that
-project's feature cards.
+`Hero` is the focal band and carries both main projects at once: Cadiotheka in
+the upper-left half, the unannounced project in the lower-right half. Nothing
+selects between them any more.
 
-- Each `MainProject` owns its `cards: &'static [HeroCard]` slice, so the plate
-  always describes the selection. `Hero` only reads `project_at(..)`.
-- A card's `span` holds authored Tailwind utilities. Spans are hand-tuned, not
-  generated, and are `md:`-only: the grid is one column below `sm` and two up at
-  `sm`, where a span would leave a hole. A lone card is the exception and may
-  carry an `md:col-start-*` to sit centred.
-- The mosaic is `grid-flow-dense` with `auto-rows-min`, so later tiles backfill
-  the gap a span leaves and the grid never forces the band taller than its share.
-- Cards are inert: plain `<div>`s, no links and no focus targets, so the plate
-  stays the marks' `tabpanel` without adding tab stops inside it. If a card ever
-  links out, revisit whether the hero should still be a `tabpanel`.
-- Card copy must stand alone. Below `sm` the tiles stack, so no card may borrow
-  meaning from a neighbour.
-- The band grows into the sheet's leftover height from `sm` up and sizes to its
-  tiles below `sm`. Keep the two halves of that pair together: a grown band on a
-  phone hands the hero a share of the sheet rather than the height its tiles need,
-  and the window then clips them. Nothing in `public/style.css` pins this band's
-  height, so the utilities are the only place it is set.
+- The two halves are ruled cells, separated by a rule running bottom-left to
+  top-right from `md` up. The rule is a rotated square in the band's background
+  layer, not an `<svg>` line and not a gradient: a gradient's angle is fixed
+  while the corner-to-corner line's angle follows the box shape, and an `<svg>`
+  line in a `none`-scaled view box would squash its stroke. Keep it a rotated
+  square.
+- The band is `relative isolate` and the rule sits in its `-z-1` layer, so it is
+  resolved against the band rather than the page.
+- Below `md` the halves stack and the rule becomes the ordinary `divide-y`
+  separator: a diagonal across a stacked pair cuts through two paragraphs instead
+  of dividing anything.
+- The band grows into the sheet's leftover height and keeps a `min-h-*` floor.
+  Keep that pair together: the halves are `overflow-hidden` (that is what clips the
+  rule) and the floor is what stops the taller half's tiles being cut off.
+- `ProjectHalf` owns the shared structure — heading row, description, tiles,
+  actions — so the two halves cannot drift. A new half is a call site, not a new
+  component.
 - Tiles are filled with `base-100`, the token the page itself is painted with,
   and never left transparent. If a tile needs its edge read, use the border, not
   a different surface colour.
-- The unreleased project still supplies real cards with real copy rather than
-  placeholder filler. Prefer an honest "under construction" card to hidden or
-  blurred content: the plate stays readable, so nothing has to be kept from
-  assistive tech.
+- Tiles are inert: plain `<div>`s, no links and no focus targets. Only the half's
+  action row carries links.
+- The unreleased project still supplies real copy rather than placeholder
+  filler. Prefer an honest "under construction" card to hidden or blurred
+  content: the half stays readable, so nothing has to be kept from assistive
+  tech.
+- The band is static: both halves are always shown and nothing selects between
+  them.
 
 ### Team Section
 

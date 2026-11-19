@@ -116,7 +116,7 @@ xodium.org/
 │   ├── lib.rs            # Crate root
 │   ├── app.rs            # Root App component
 │   └── components/
-│   ├── layout/     # Main, Header, Hero, MainProjects, Subprojects, Footer, Team
+│   ├── layout/     # Main, Header, Hero, Subprojects, Footer, Team
 │   └── ui/         # AsciiArt, LegendBlock, LinkBadges, TitleBlock, icons/
 ├── public/
 │   ├── style.css         # Tailwind + DaisyUI styles

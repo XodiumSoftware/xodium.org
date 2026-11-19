@@ -1,12 +1,11 @@
-//! xodiumweb — a blueprint-styled static website for Xodium Software.
+//! xodiumweb — a blueprint-styled static site for Xodium Software.
 //!
-//! Built with Leptos (client-side rendering) and compiled to WebAssembly via
-//! Trunk. The crate exposes the root [`App`] component plus the public
-//! modules that make up the page layout, UI primitives, GitHub API client,
-//! and shared utilities.
+//! Leptos client-side rendering, compiled to WebAssembly by Trunk. The module
+//! tree and every re-export are declared here explicitly; there are no
+//! `mod.rs` files.
 
-// The Leptos `#[component]` macro rewrites function signatures and strips
-// `#[must_use]`, so we allow this lint crate-wide rather than fighting the macro.
+// The Leptos `#[component]` macro rewrites signatures and strips `#[must_use]`,
+// so this lint is allowed crate-wide rather than fought per component.
 #![allow(clippy::must_use_candidate)]
 
 mod app;
@@ -14,27 +13,19 @@ mod app;
 pub mod components {
     //! Page sections and reusable UI primitives.
 
-    pub mod effects {
-        //! Decorative background effects.
-        /// Animated SVG blob background.
-        pub mod blob;
-    }
-
     pub mod layout {
-        //! Sheet bands that form the blueprint page layout.
-        /// Bottom-left site footer.
+        //! Sheet bands, stacked top to bottom.
+        /// Closing band: wordmark, band toggle, site links.
         pub mod footer;
-        /// Sheet opening band.
+        /// Opening band: the ASCII mark and tagline.
         pub mod header;
-        /// Large focal band of the sheet.
+        /// Large focal band of the sheet, split into the two main projects.
         pub mod hero;
         /// Main content section.
         pub mod main;
-        /// Main projects band of the sheet.
-        pub mod mainprojects;
-        /// Subprojects band of the sheet.
+        /// Subproject cards band.
         pub mod subprojects;
-        /// Team member overview.
+        /// Team avatar band.
         pub mod team;
     }
 
@@ -42,16 +33,16 @@ pub mod components {
         //! Reusable UI primitives and icons.
 
         pub mod icons {
-            //! Inline SVG icons used by link badges and controls.
+            //! Brand icons.
             /// Buy Me a Coffee cup icon.
             pub mod buy_me_a_coffee;
-            /// Cadiotheka Sigma icon.
+            /// Cadiotheka brand glyph.
             pub mod cadiotheka;
             /// GitHub Octocat icon.
             pub mod github;
         }
 
-        /// XODIUM ASCII art header.
+        /// XODIUM ASCII mark.
         pub mod ascii_art;
 
         pub use icons::buy_me_a_coffee::BuyMeACoffeeIcon;
@@ -59,13 +50,10 @@ pub mod components {
         pub use icons::github::GitHubIcon;
     }
 
-    pub use effects::blob::{BlobBackground, BlobBackgroundProperties};
-
     pub use layout::footer::Footer;
     pub use layout::header::Header;
     pub use layout::hero::Hero;
     pub use layout::main::{LowerBand, LowerBandState, Main};
-    pub use layout::mainprojects::{MainProject, MainProjects, SelectedProject};
     pub use layout::subprojects::Subprojects;
     pub use layout::team::Team;
 

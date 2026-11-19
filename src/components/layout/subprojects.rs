@@ -37,31 +37,19 @@ const SUBPROJECT_ITEMS: &[SubprojectItem] = &[
     },
 ];
 
-/// Equal-width three-card subprojects region below the hero.
+/// Equal-width subproject cards, in the slot below the hero.
 ///
-/// Each card is a single anchor so the whole cell is clickable. From `md` up the
-/// cards sit in one ruled row, numbered left to right; below that they stack in
-/// the same reading order, separated by horizontal rules.
+/// Each card is one anchor, so the whole cell is clickable. One ruled row from
+/// `md` up, stacked with horizontal rules below it.
 ///
-/// The band's box rules live in `public/style.css` and come as a pair:
+/// From `md` up the band is pinned to `--lower-band-height` with the clip that
+/// keeps its `divide-x` borders off the bottom rule, so it matches
+/// [`Team`](crate::components::layout::team::Team) and a swap never resizes the
+/// sheet. Below `md` the height is released and the cards get a bottom rule each,
+/// because a card's copy must never be clipped. Both live in `public/style.css`.
 ///
-/// - From `md` up `.sheet-band-subprojects` is pinned to `--lower-band-height`,
-///   with `overflow: hidden`, so the row matches [`Team`](crate::components::layout::team::Team)
-///   and swapping never resizes the sheet. The clip matters because the separators
-///   are `divide-x` borders on the card boxes themselves: those boxes stretch to
-///   the row, so their dividers would run into the band's bottom rule and leave
-///   that rule unreadably doubled.
-///
-/// - Below `md` the height is released to `auto` and the clip lifted, so a card
-///   whose description wraps is never cut off. In the same query the cards get a
-///   `border-block-end` and the last one drops it, because a vertical divider has
-///   nothing to separate once the cells stack. The cost is that the sheet grows
-///   to fit three cards on a phone, so a swap to `Team` changes the document
-///   height there — the pinned height is a `md`-and-up contract.
-///
-/// This band shares the lower slot with [`Team`](crate::components::layout::team::Team), so it takes its entrance from
-/// [`SheetEntrance`] rather than a static class: it animates on first paint and
-/// crossfades in when the footer swaps back to it.
+/// Shares the slot with [`Team`](crate::components::layout::team::Team), so it
+/// takes both entrance classes.
 #[component]
 #[must_use]
 pub fn Subprojects() -> impl IntoView {

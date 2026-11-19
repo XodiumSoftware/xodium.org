@@ -1,8 +1,5 @@
-//! Site footer.
-//!
-//! A single line of monospace uppercase text closing the drawing sheet. The
-//! first entry toggles the band below the hero between the subprojects cards
-//! and the team, so the sheet never stacks a fourth band.
+//! Site footer: one line of monospace text closing the sheet, including the
+//! toggle that swaps the band below the hero.
 
 use crate::components::layout::main::{LowerBand, LowerBandState, SheetEntrance};
 use crate::ui::{BuyMeACoffeeIcon, GitHubIcon};
@@ -56,26 +53,16 @@ const FOOTER_ICON_LINKS: &[FooterIconLink] = &[
     },
 ];
 
-/// Blueprint footer — a single line of monospace uppercase text closing the
-/// drawing sheet, reading like a handwritten note in the margin rather than a
-/// framed cell. It flows with the sheet's content instead of being pinned to
-/// the viewport.
+/// Blueprint footer: one line of margin notes closing the sheet, in flow rather
+/// than pinned to the viewport.
 ///
-/// The leading entry is a button, not a link: it names the band that is *not*
-/// currently in the lower slot, and pressing it swaps the two. It carries
-/// `aria-pressed` so assistive tech treats it as a state toggle rather than a
-/// navigation link that goes nowhere.
+/// The toggle is a `<button>` with `aria-pressed`, not a link: it changes state
+/// and cannot navigate. It is labelled with the band that is *not* currently
+/// shown, so it names the destination. The icon links carry their own accessible
+/// names, since the icons are decorative.
 ///
-/// The closing entries are icon-only GitHub and Buy Me a Coffee links. Their
-/// icons are `aria-hidden`, so each anchor carries the accessible name itself.
-///
-/// Styling is utilities only. The links inherit the footer's type and colour
-/// (`font: inherit` and `text-current`) so the row reads as one line of notes,
-/// and the band toggle resets the browser's button chrome to match.
-///
-/// It takes the load-in entrance from [`SheetEntrance`] so the note closes the
-/// sheet as the last thing drawn, after the bands above it have arrived. It is
-/// never swapped, so it does not take the swap class.
+/// Takes the load-in entrance only: it is never swapped, so it carries no swap
+/// class.
 #[component]
 #[must_use]
 pub fn Footer() -> impl IntoView {

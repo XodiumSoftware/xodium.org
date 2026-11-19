@@ -13,30 +13,18 @@ pub const XODIUM_ASCII_ART: &str = r"
  `--`-'  `--`    `--`--''   `-.`.____.' `--`-` `--`..---'  `--`./  `--`
 ";
 
-/// The XODIUM lettering rendered as an ASCII glyph block, styled as the sheet
-///'s title mark — the "logo" you would see on an engineering drawing where
-/// the drawing header sits above the title block.
+/// The XODIUM lettering as an ASCII block, drawn as the sheet's title mark.
 ///
-/// The block is 72 monospace columns wide, so its size is capped against the
-/// band's inline width rather than fixed: `.ascii-art` in `public/style.css`
-/// takes the whole mark down to fit a phone screen. Everything else about the
-/// block is a utility.
+/// The block is 72 monospace columns wide, so its size is fitted to the band's
+/// inline width by `.ascii-art` in `public/style.css`: `min(0.585rem, 100cqi /
+/// 43.2)`. That rule cannot be a utility, because the divisor is the element's
+/// own `em`.
 ///
-/// That rule cannot be a utility, because the fitted size has to divide by the
-/// element's own `em`: the block spans `43.2em` (72 columns × 0.6em of monospace
-/// advance), so the size is `min(0.585rem, 100cqi / 43.2)`. Two consequences:
-///
-/// - The `0.585rem` cap is the mark's original size and the value the header's
-///   `max-w-[calc(43.2*0.585rem)]` must agree with; changing one without the
-///   other either shrinks the mark or lets the wrapper outgrow it.
-///
-/// - The `43.2` divisor is the column count times the glyph advance. If the art
-///   above changes width, this divisor must change with it, or the mark clips
-///   its last columns on narrow screens.
-///
-/// `cqi` resolves against the nearest size container, which is the wrapper in
-/// `header.rs` (`[container-type:inline-size]`). Without that ancestor the
-/// measure is meaningless and the mark overflows the sheet rule.
+/// Two constants must agree with the art above: the `43.2` divisor (columns ×
+/// 0.6em glyph advance) and the `0.585rem` cap, which is also the value the
+/// header's wrapper width is computed from. Changing the art's width without
+/// changing the divisor clips its last columns. The `cqi` resolves against the
+/// header's `inline-size` container; without that ancestor the mark overflows.
 #[component]
 #[must_use]
 pub fn AsciiArt() -> impl IntoView {

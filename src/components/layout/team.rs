@@ -1,14 +1,8 @@
 //! Team member section.
 //!
-//! Shows the Xodium GitHub members as a `DaisyUI` avatar group, each visible
-//! avatar linking to the member's GitHub profile. Mounted in the band below the
-//! hero, replacing the subprojects cards while it is selected.
-//!
-//! The member list is authored here rather than fetched. The organization is
-//! small enough that the roster is a `const` slice, matching `MAIN_PROJECTS`,
-//! `SUBPROJECT_ITEMS` and `BLOBS`, and there is no API client, cache or request
-//! to go wrong. Adding a member is an edit and a deploy; if the roster ever
-//! needs to be live, reintroduce the client rather than loosening this list.
+//! A `DaisyUI` avatar group in the slot below the hero, replacing the subprojects
+//! cards while it is selected. The roster is an authored `const` slice: there is
+//! no client, cache or request, so the band renders fully formed.
 
 use crate::components::layout::main::SheetEntrance;
 use leptos::prelude::*;
@@ -24,8 +18,8 @@ pub struct Member {
     pub html_url: &'static str,
     /// Avatar image URL.
     ///
-    /// These are the `/u/{id}?v=4` form rather than `/u/{id}` or the login
-    /// form, because the numeric form survives a login rename.
+    /// The `/u/{id}?v=4` form, not the login form: the numeric id survives a
+    /// rename. Look the id up with `https://api.github.com/users/{login}`.
     pub avatar_url: &'static str,
 }
 
@@ -46,6 +40,9 @@ const MEMBERS: &[Member] = &[
 ];
 
 /// A single member avatar, linking to that member's GitHub profile.
+///
+/// The ring is a `border-*` utility on the `.avatar` wrapper, never on the inner
+/// element: `avatar-group` clips the wrapper, so an inner border is cut away.
 fn member_avatar(member: &'static Member) -> impl IntoView {
     view! {
         <div
@@ -72,41 +69,14 @@ fn member_avatar(member: &'static Member) -> impl IntoView {
 
 /// Team band: a `DaisyUI` avatar group.
 ///
-/// Every entry in `MEMBERS` gets an avatar, in order. The list is authored, so
-/// the band renders fully formed on its first frame: there is no request to wait
-/// on and therefore no skeleton state to swap out. The footer's band toggle is
-/// the only way back to the subprojects cards; the band has no dismiss control
-/// of its own.
+/// Focus is handled by markup, not the DOM: `autofocus` moves focus into the band
+/// as it mounts and the browser returns it to the footer toggle on unmount, so
+/// the crate needs no `web-sys`. `tabindex="-1"` keeps it out of the Tab order.
 ///
-/// Focus follows the swap without any DOM access: `autofocus` on the section
-/// moves focus in as the band is inserted, so a keyboard user lands on the
-/// labelled region rather than being dropped at the top of the page, and focus
-/// returns to the footer toggle when the band goes away. `tabindex="-1"` makes
-/// the section focusable without adding it to the Tab order. This is why the
-/// crate needs no `web-sys`: there is no `NodeRef`, no `active_element` capture
-/// and no `on_cleanup` restore to run against the DOM.
-/// The band crossfades in through [`SheetEntrance`]'s swap class. It never
-/// takes the load-in entrance: it can only be reached through the lower-band
-/// swap, so `.sheet-band-team` carries no `--band-delay`.
-///
-/// Sizing and the avatar ring live in `public/style.css`:
-///
-/// - `.sheet-band-team` shares the pinned `--lower-band-height` with the
-///   subprojects row (with `border-box`, so the 1px rule sits inside the figure
-///   and the vertical padding is included before the rows centre in it). The two
-///   bands are sized by different things — a text grid and a flex row of avatars
-///   — so leaving either content-sized would let them drift apart whenever copy
-///   or type scale changes, and each swap would resize the sheet. That pin is
-///   only relaxed on phones, in the subprojects media query.
-///
-/// - `--team-avatar-size` is that height less the vertical padding and less the
-///   4px of border the 2px ring contributes, so a full stack of avatars fits the
-///   band without clipping.
-///
-/// - `.team-band-avatar` only sizes the box: `DaisyUI`'s `avatar` supplies the
-///   circle and clip. The ring stays a utility on the outer `.avatar` wrapper,
-///   because `avatar-group` clips the wrapper and an inner border would be cut
-///   away.
+/// It crossfades through [`SheetEntrance`]'s swap class and never takes the
+/// load-in entrance, so it carries no `--band-delay`. Its pinned height and the
+/// avatar size are paired in `public/style.css`: shrinking one without the other
+/// clips the avatars.
 #[component]
 #[must_use]
 pub fn Team() -> impl IntoView {
