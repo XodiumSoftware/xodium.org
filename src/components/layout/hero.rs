@@ -5,6 +5,13 @@
 //! half links to its own project.
 
 use crate::components::layout::main::SheetEntrance;
+use crate::components::ui::icons::branch::BranchIcon;
+use crate::components::ui::icons::creators::CreatorsIcon;
+use crate::components::ui::icons::ghost::GhostIcon;
+use crate::components::ui::icons::history::HistoryIcon;
+use crate::components::ui::icons::hub::HubIcon;
+use crate::components::ui::icons::inspect::InspectIcon;
+use crate::components::ui::icons::speed::SpeedIcon;
 use leptos::prelude::*;
 
 /// A feature tile inside a project half.
@@ -14,6 +21,8 @@ struct Feature {
     title: &'static str,
     /// Short supporting text.
     body: &'static str,
+    /// Glyph drawn before the heading.
+    icon: fn() -> AnyView,
 }
 
 /// A half's heading row.
@@ -32,26 +41,32 @@ const CADIOTHEKA_FEATURES: &[Feature] = &[
     Feature {
         title: "One hub, every tool",
         body: "Browse, publish and track CAD models without leaving the browser.",
+        icon: || view! { <HubIcon /> }.into_any(),
     },
     Feature {
         title: "Open source",
         body: "Read every line, and be part of it by contributing.",
+        icon: || view! { <BranchIcon /> }.into_any(),
     },
     Feature {
         title: "Versioned parts",
         body: "Every revision kept.",
+        icon: || view! { <HistoryIcon /> }.into_any(),
     },
     Feature {
         title: "Built for creators",
-        body: "Licensing, attribution and download counts come with the upload.",
+        body: "Attribution, downloads and collaborators come with the upload.",
+        icon: || view! { <CreatorsIcon /> }.into_any(),
     },
     Feature {
         title: "Fast by design",
         body: "Compiled to WASM, no install, just a browser.",
+        icon: || view! { <SpeedIcon /> }.into_any(),
     },
     Feature {
-        title: "Yours to extend",
-        body: "A documented API from day one.",
+        title: "Inspect before you download",
+        body: "Every model opens in a built-in 3D viewer, no CAD software needed.",
+        icon: || view! { <InspectIcon /> }.into_any(),
     },
 ];
 
@@ -263,7 +278,8 @@ fn FeatureGrid(
                 let tile_class = format!("{TILE_CLASS} {}", tile_shape(index));
                 view! {
                     <div class=tile_class>
-                        <h3 class="text-xs font-semibold uppercase tracking-[0.08em]">
+                        <h3 class="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.08em]">
+                            {(item.icon)()}
                             {item.title}
                         </h3>
                         <p class="text-xs leading-relaxed opacity-60">{item.body}</p>
@@ -278,7 +294,8 @@ fn FeatureGrid(
                 let (title, body) = RESERVED_PLACEHOLDER;
                 view! {
                     <div class=tile_class aria-hidden="true">
-                        <h3 class="text-xs font-semibold uppercase tracking-[0.08em] blur-[3px]">
+                        <h3 class="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.08em] blur-[3px]">
+                            <GhostIcon />
                             {title}
                         </h3>
                         <p class="text-xs leading-relaxed opacity-60 blur-[3px]">{body}</p>
