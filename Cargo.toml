@@ -5,11 +5,7 @@ publish = false
 
 [dependencies]
 leptos = { version = "0.9.0-rc1", features = ["csr"] }
-wasm-bindgen = "0.2.130"
 console_error_panic_hook = "0.1.7"
-
-[package.metadata.cargo-machete]
-ignored = ["wasm-bindgen"]
 
 [lints.rust]
 missing_docs = "deny"
