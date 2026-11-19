@@ -78,6 +78,30 @@ const COMING_SOON_PAINT: &str = "hatch";
 /// Shared face of a feature tile: opaque, on the page's own surface token.
 const TILE_CLASS: &str = "bg-base-100 border border-base-content/30 p-3";
 
+/// Corner rounding for the tile at `index`, in reading order.
+///
+/// Each tile rounds two opposite corners, stepping one corner around the card per
+/// tile, so the grid reads as a run of cut plates rather than a stack of boxes.
+/// Every tile keeps a pair, first and last included, so the set has no plain
+/// outlier. The cycle is six long, matching the tile count, and wraps for any
+/// longer list.
+///
+/// Below `md` the tiles stack in one column, where a right-hand rounding has
+/// nothing opposite it; the rounding is therefore `md:`-scoped.
+#[must_use]
+fn tile_shape(index: usize) -> &'static str {
+    const SHAPES: [&str; 6] = [
+        "md:rounded-tr-2xl md:rounded-bl-2xl",
+        "md:rounded-br-2xl md:rounded-tl-2xl",
+        "md:rounded-bl-2xl md:rounded-tr-2xl",
+        "md:rounded-tl-2xl md:rounded-br-2xl",
+        "md:rounded-tr-2xl md:rounded-bl-2xl",
+        "md:rounded-tl-2xl md:rounded-br-2xl",
+    ];
+
+    SHAPES[index % SHAPES.len()]
+}
+
 /// Hero band.
 ///
 /// The band grows into the sheet's leftover height (`flex-1`) with a floor
@@ -217,9 +241,11 @@ fn FeatureGrid(
         <div class=grid_class>
             {items
                 .iter()
-                .map(|item| {
+                .enumerate()
+                .map(|(index, item)| {
+                    let tile_class = format!("{TILE_CLASS} {}", tile_shape(index));
                     view! {
-                        <div class=TILE_CLASS>
+                        <div class=tile_class>
                             <h3 class="text-xs font-semibold uppercase tracking-[0.08em]">
                                 {item.title}
                             </h3>
