@@ -1,7 +1,6 @@
-//! Site footer: one line of monospace text closing the sheet, including the
-//! toggle that swaps the band below the hero.
+//! Site footer: one line of monospace text closing the sheet.
 
-use crate::components::layout::main::{LowerBand, LowerBandState, SheetEntrance};
+use crate::components::layout::main::SheetEntrance;
 use crate::ui::{BuyMeACoffeeIcon, GitHubIcon};
 use leptos::prelude::*;
 
@@ -23,7 +22,7 @@ struct FooterIconLink {
     icon: fn() -> AnyView,
 }
 
-/// Footer links shown after the band toggle, in reading order.
+/// Footer links, in reading order.
 const FOOTER_LINKS: &[FooterLink] = &[
     FooterLink {
         href: "https://github.com/XodiumSoftware",
@@ -36,6 +35,10 @@ const FOOTER_LINKS: &[FooterLink] = &[
     FooterLink {
         href: "mailto:info@xodium.org",
         label: "CONTACT",
+    },
+    FooterLink {
+        href: "https://github.com/XodiumSoftware/people",
+        label: "TEAM",
     },
 ];
 
@@ -56,17 +59,11 @@ const FOOTER_ICON_LINKS: &[FooterIconLink] = &[
 /// Blueprint footer: one line of margin notes closing the sheet, in flow rather
 /// than pinned to the viewport.
 ///
-/// The toggle is a `<button>` with `aria-pressed`, not a link: it changes state
-/// and cannot navigate. It is labelled with the band that is *not* currently
-/// shown, so it names the destination. The icon links carry their own accessible
-/// names, since the icons are decorative.
-///
-/// Takes the load-in entrance only: it is never swapped, so it carries no swap
-/// class.
+/// Each entry carries its own accessible name: the text links through their
+/// label, the icon links through `aria_label`, since the icons are decorative.
 #[component]
 #[must_use]
 pub fn Footer() -> impl IntoView {
-    let lower_band = LowerBandState::use_context();
     let entrance = SheetEntrance::use_context();
 
     view! {
@@ -83,17 +80,6 @@ pub fn Footer() -> impl IntoView {
             <span class="opacity-50 select-none" aria-hidden="true">
                 "·"
             </span>
-            <button
-                type="button"
-                class="cursor-pointer border-0 bg-none p-0 font-[inherit] tracking-[inherit] text-current uppercase underline underline-offset-[3px] transition-colors select-none hover:text-primary"
-                aria-pressed=move || (lower_band.get() == LowerBand::Team).to_string()
-                on:click=move |_| lower_band.toggle()
-            >
-                {move || match lower_band.get() {
-                    LowerBand::Subprojects => "TEAM",
-                    LowerBand::Team => "SUBPROJECTS",
-                }}
-            </button>
             {FOOTER_LINKS
                 .iter()
                 .map(|link| {

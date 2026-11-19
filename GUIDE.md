@@ -116,7 +116,7 @@ xodium.org/
 │   ├── lib.rs            # Crate root
 │   ├── app.rs            # Root App component
 │   └── components/
-│   ├── layout/     # Main, Header, Hero, Subprojects, Footer, Team
+│   ├── layout/     # Main, Header, Hero, Subprojects, Footer
 │   └── ui/         # AsciiArt, LegendBlock, LinkBadges, TitleBlock, icons/
 ├── public/
 │   ├── style.css         # Tailwind + DaisyUI styles
@@ -147,13 +147,6 @@ xodium.org/
 - Trunk watches `style.css` automatically
 - Try clearing browser cache (Ctrl+Shift+R)
 - Restart `trunk serve` if needed
-
-### Team avatars not loading
-
-The team roster is a `const` slice in `src/components/layout/team.rs`, so the
-band itself cannot fail. Only the avatar images come over the network, from
-`avatars.githubusercontent.com`. If they are missing, the URLs in `MEMBERS` have
-probably gone stale — check them against the members' GitHub profiles.
 
 ### Deploy failed
 

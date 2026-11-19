@@ -43,13 +43,9 @@ const SUBPROJECT_ITEMS: &[SubprojectItem] = &[
 /// `md` up, stacked with horizontal rules below it.
 ///
 /// From `md` up the band is pinned to `--lower-band-height` with the clip that
-/// keeps its `divide-x` borders off the bottom rule, so it matches
-/// [`Team`](crate::components::layout::team::Team) and a swap never resizes the
-/// sheet. Below `md` the height is released and the cards get a bottom rule each,
-/// because a card's copy must never be clipped. Both live in `public/style.css`.
-///
-/// Shares the slot with [`Team`](crate::components::layout::team::Team), so it
-/// takes both entrance classes.
+/// keeps its `divide-x` borders off the bottom rule. Below `md` the height is
+/// released and the cards get a bottom rule each, because a card's copy must
+/// never be clipped. Both live in `public/style.css`.
 #[component]
 #[must_use]
 pub fn Subprojects() -> impl IntoView {
@@ -59,9 +55,8 @@ pub fn Subprojects() -> impl IntoView {
         <section
             class=move || {
                 format!(
-                    "sheet-band sheet-band-subprojects {} {} grid grid-cols-1 md:grid-cols-3 md:divide-x md:divide-base-content/40 border-b border-base-content/40",
+                    "sheet-band sheet-band-subprojects {} grid grid-cols-1 md:grid-cols-3 md:divide-x md:divide-base-content/40 border-b border-base-content/40",
                     entrance.band_class(),
-                    entrance.swap_class(),
                 )
             }
             aria-label="Subprojects"

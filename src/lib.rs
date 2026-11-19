@@ -15,7 +15,7 @@ pub mod components {
 
     pub mod layout {
         //! Sheet bands, stacked top to bottom.
-        /// Closing band: wordmark, band toggle, site links.
+        /// Closing band: wordmark and site links.
         pub mod footer;
         /// Opening band: the ASCII mark and tagline.
         pub mod header;
@@ -25,8 +25,6 @@ pub mod components {
         pub mod main;
         /// Subproject cards band.
         pub mod subprojects;
-        /// Team avatar band.
-        pub mod team;
     }
 
     pub mod ui {
@@ -76,9 +74,8 @@ pub mod components {
     pub use layout::footer::Footer;
     pub use layout::header::Header;
     pub use layout::hero::Hero;
-    pub use layout::main::{LowerBand, LowerBandState, Main};
+    pub use layout::main::{Main, SheetEntrance};
     pub use layout::subprojects::Subprojects;
-    pub use layout::team::Team;
 
     pub use ui::ascii_art::{AsciiArt, XODIUM_ASCII_ART};
 }

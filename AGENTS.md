@@ -88,11 +88,9 @@ my-[18px]`); the class only exists so `.sheet-frame::before` can draw it:
 
 1. **Skip Link** — accessibility anchor to `#main-content`
 2. **`Main`** (`<main id="main-content">`) — accessible page heading and the
-   band stack, in reading order: `Header`, `Hero`, the subprojects/team slot,
-   then `Footer`.
+   band stack, in reading order: `Header`, `Hero`, `Subprojects`, then `Footer`.
 3. **`Footer`** — in-flow centred band at the bottom of the sheet, carrying the
-   XODIUM wordmark, the subprojects/team toggle and the site links. It is not
-   pinned to the viewport.
+   XODIUM wordmark and the site links. It is not pinned to the viewport.
 
 ### Component Organization
 
@@ -100,14 +98,13 @@ Components are grouped by function in `src/components/`:
 
 #### Layout Bands (`src/components/layout/`)
 
-| Component     | File             | Purpose                                                      |
-| ------------- | ---------------- | ------------------------------------------------------------ |
-| `Main`        | `main.rs`        | Heading and the band stack, in reading order                 |
-| `Header`      | `header.rs`      | Opening band with the ASCII mark and tagline                 |
-| `Hero`        | `hero.rs`        | Focal band: both main projects, split corner to corner       |
-| `Subprojects` | `subprojects.rs` | Equal-width three-card subproject links                      |
-| `Footer`      | `footer.rs`      | Closing band: wordmark, band toggle, site links              |
-| `Team`        | `team.rs`        | Team band with large round avatars; swaps with `Subprojects` |
+| Component     | File             | Purpose                                                |
+| ------------- | ---------------- | ------------------------------------------------------ |
+| `Main`        | `main.rs`        | Heading and the band stack, in reading order           |
+| `Header`      | `header.rs`      | Opening band with the ASCII mark and tagline           |
+| `Hero`        | `hero.rs`        | Focal band: both main projects, split corner to corner |
+| `Subprojects` | `subprojects.rs` | Equal-width three-card subproject links                |
+| `Footer`      | `footer.rs`      | Closing band: wordmark and site links                  |
 
 #### UI Primitives (`src/components/ui/`)
 
@@ -122,20 +119,6 @@ Components are grouped by function in `src/components/`:
 | `BuyMeACoffeeIcon` | `buy_me_a_coffee.rs` | Buy Me a Coffee cup |
 | `GitHubIcon`       | `github.rs`          | GitHub Octocat      |
 
-### Team Roster (`src/components/layout/team.rs`)
-
-The team band's members are an authored `const` slice (`MEMBERS`) of `Member`
-structs, not an API response. There is no HTTP client, no cache and no async
-data path: adding or removing a member is an edit and a deploy.
-
-- `Member` carries `login`, `name`, `html_url` and `avatar_url`. There is no
-  role field; the link's accessible name is the display name alone.
-- `avatar_url` uses the `/u/{id}?v=4` form, not the login form, because the
-  numeric form survives a login rename. Look up the id with
-  `https://api.github.com/users/{login}`.
-- If the roster ever has to be live, reintroduce a client rather than loosening
-  this list. This is a deliberate simplification for an organization of two.
-
 ### Project Structure
 
 ```
@@ -149,8 +132,7 @@ src/
 │   │   ├── header.rs
 │   │   ├── hero.rs
 │   │   ├── subprojects.rs
-│   │   ├── footer.rs
-│   │   └── team.rs
+│   │   └── footer.rs
 │   └── ui/                    # UI primitives and icons
 │       ├── ascii_art.rs
 │       └── icons/
@@ -176,8 +158,7 @@ Trunk.toml                     # Trunk configuration
 - `on_cleanup` requires a `Send + Sync` closure, so it cannot capture raw
   `Closure<dyn FnMut(..)>` handles. If a listener ever needs removing again, call
   `.into_js_value()` and keep the resulting `js_sys::Function` — that type is
-  `Send + Sync`. No component registers an event listener today: the only one,
-  an Escape handler on the team band, was removed with its close prop.
+  `Send + Sync`. No component registers an event listener today.
 - **Props:** `#[derive(Clone)]` structs named `{Component}Properties`. A component
   that needs no configuration takes no props at all rather than an empty struct.
 - **Async data:** Use `LocalResource` (not `Resource`) for WASM thread execution.
@@ -211,8 +192,7 @@ pub struct {Component}Properties {
 
 **Static data:**
 
-Row content is a `const` slice at the top of the component file. The team
-roster (`MEMBERS`) is authored the same way: it is not fetched, so no component
+Row content is a `const` slice at the top of the component file, so no component
 in the app has an async data path today.
 
 - Props structs on a private component may stay private; `missing_docs` and
@@ -230,25 +210,6 @@ in the app has an async data path today.
     - `panic = "abort"` (no unwinding)
     - `strip = true` (remove symbols)
 
-### Lower Band Swap
-
-The band below the hero is a single slot that shows either `Subprojects` or
-`Team`. `Main` provides the shared state as context:
-
-```rust
-let lower_band = LowerBandState::provide();
-```
-
-- `LowerBandState` wraps the shared `RwSignal` and exposes `get`, `set` and
-  `toggle`. Consumers read it via `LowerBandState::use_context()`.
-- The control that changes the slot is a `<button>` with `aria-pressed`, never a
-  link: a link cannot change state. Label it with the band that is _not_
-  currently shown, so it names the destination.
-- `Main::view` picks the band with a `match`, rendering each arm through
-  `.into_any()` because the branches are different view types.
-- The slot's bands share a pinned height from `md` up, so swapping never resizes
-  the sheet. Keep any new band mounted in that slot to the same contract.
-
 ### Header Band
 
 `Header` draws the XODIUM ASCII mark with the tagline. It is a column on narrow
@@ -260,20 +221,15 @@ The divisor there is the glyph block's column count times 0.6 (the advance of on
 monospace glyph), so the mark shrinks to the band's inline width instead of
 overflowing. If the art's column count changes, the divisor must change with it.
 
-### Load Entrance and Swap Animations
+### Load Entrance Animation
 
-`SheetEntrance` (in `main.rs`) owns both animations, and the two are mutually
-exclusive per element:
+`SheetEntrance` (in `main.rs`) owns the load-in entrance: `band_class()` returns
+`sheet-band-enter` while the page is loading in, which plays `slide-up` on the
+band itself. The flag is a single one, because nothing on the sheet swaps once
+it is up. If a swappable band is ever reintroduced, give the swap its own flag
+rather than reusing this one: re-animating a band's children the moment the
+entrance ended reads as a flicker.
 
-- `band_class()` returns `sheet-band-enter` while the page is loading in, which
-  plays `slide-up` on the band itself.
-- `swap_class()` returns `sheet-band-swap` only once a swap has been requested,
-  which fades the band's **children**.
-- These animate _different elements_, so they do not override each other. Do not
-  collapse them into one flag: the swap class would then re-animate a band's
-  children the moment the entrance ended, which reads as a flicker.
-- A band that is only reachable through the swap does not take `band_class`:
-  animating its bottom rule on mount would look like a redraw.
 - Entering bands stagger top to bottom through per-band `--band-delay` values in
   `public/style.css`. A newly added band needs its own delay if it should arrive
   in sequence.
@@ -332,31 +288,6 @@ selects between them any more.
   tech.
 - The band is static: both halves are always shown and nothing selects between
   them.
-
-### Team Section
-
-`Team` is mounted in the lower band slot (see [Lower Band Swap](#lower-band-swap)),
-not as a modal. It is a ruled band matching `Subprojects`: a centred row of round
-avatars, each linking to a member's GitHub profile in a new tab.
-
-- The band reads `MEMBERS` directly, so it renders fully formed on its first
-  frame: there is no request to wait on and no skeleton state.
-- It takes focus through markup, not the DOM: `autofocus` on the section moves
-  focus in as the band is inserted, and focus returns to the footer toggle when
-  it unmounts. That keeps the crate free of `web-sys`. Do not replace it with a
-  `NodeRef` + `on_cleanup` pair unless something needs to restore a _specific_
-  element.
-- Avatar rings are drawn with `border-*` utilities on the `.avatar` wrapper, not
-  on the inner element: `avatar-group` clips the wrapper, so an inner border is
-  cut away. Our unlayered utilities beat DaisyUI's layered group border, which is
-  what keeps the ring visible.
-
-### Caching Strategy
-
-There is none. The roster is a `const` slice, so the site makes no GitHub API
-requests; the only cross-origin traffic is the avatars themselves. If a live
-roster is ever reintroduced, add a cache with it rather than letting `Team`
-fetch on every mount.
 
 ## Testing
 

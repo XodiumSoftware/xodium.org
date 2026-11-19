@@ -104,21 +104,17 @@ body::before {
     --band-delay: 700ms;
 }
 
-.sheet-band-footer {
-    --band-delay: 900ms;
-}
-
 .sheet-band-hero {
     --band-delay: 600ms;
 }
 
-.sheet-band-subprojects,
-.sheet-band-team {
-    box-sizing: border-box;
-    height: var(--lower-band-height);
+.sheet-band-footer {
+    --band-delay: 900ms;
 }
 
 .sheet-band-subprojects {
+    box-sizing: border-box;
+    height: var(--lower-band-height);
     overflow: hidden;
 }
 
@@ -188,17 +184,6 @@ body::before {
     --ascii-font-size: 0.585rem;
     font-family: var(--font-mono, ui-monospace, monospace);
     font-size: min(var(--ascii-font-size), 100cqi / 43.2);
-}
-
-.sheet-band-team {
-    --team-avatar-size: calc(
-        var(--lower-band-height) - (2 * var(--lower-band-padding-y)) - 4px
-    );
-}
-
-.team-band-avatar {
-    width: var(--team-avatar-size);
-    height: var(--team-avatar-size);
 }
 
 @media (prefers-reduced-motion: reduce) {
