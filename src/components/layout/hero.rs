@@ -4,16 +4,23 @@
 //! and the unannounced project on the right. Nothing selects between them; each
 //! half links to its own project.
 
+use std::fmt::Write;
+
 use crate::components::layout::main::SheetEntrance;
 use leptos::prelude::*;
 
-/// A feature tile inside a project half.
+/// A feature blob inside a project half.
+///
+/// The blob's position and size are in the cluster's `100 × 100` view box, so the
+/// whole set scales with the half rather than with any one card's text.
 #[derive(Clone, Copy)]
 struct Feature {
     /// Tile heading, rendered as an `h3`.
     title: &'static str,
     /// Short supporting text.
     body: &'static str,
+    /// Blob centre and radii in view-box units: `(cx, cy, rx, ry)`.
+    placement: (f32, f32, f32, f32),
 }
 
 /// A half's heading row.
@@ -27,31 +34,42 @@ struct HalfHeader {
     description: &'static str,
 }
 
-/// Cadiotheka's tiles, in reading order.
+/// Cadiotheka's blobs, in reading order.
+///
+/// Reading order runs down the left column and then down the right, so the
+/// connector between consecutive blobs zigzags through the cluster instead of
+/// crossing it. Placements are authored: the fluid look depends on the blobs
+/// being evenly spread, which a generator would not reliably give.
 const CADIOTHEKA_FEATURES: &[Feature] = &[
     Feature {
         title: "One hub, every tool",
         body: "Browse, publish and track CAD models without leaving the browser.",
+        placement: (25.0, 17.0, 22.0, 15.0),
     },
     Feature {
         title: "Open source",
         body: "Read every line, and be part of it by contributing.",
+        placement: (23.0, 46.0, 20.0, 14.0),
     },
     Feature {
         title: "Versioned parts",
         body: "Every revision kept.",
+        placement: (26.0, 76.0, 21.0, 15.0),
     },
     Feature {
         title: "Built for creators",
         body: "Licensing, attribution and download counts come with the upload.",
+        placement: (75.0, 18.0, 22.0, 15.0),
     },
     Feature {
         title: "Fast by design",
         body: "Compiled to WASM, no install, just a browser.",
+        placement: (76.0, 47.0, 20.0, 14.0),
     },
     Feature {
         title: "Yours to extend",
         body: "A documented API from day one.",
+        placement: (74.0, 77.0, 21.0, 15.0),
     },
 ];
 
@@ -74,9 +92,6 @@ const COMING_SOON_HEADER: HalfHeader = HalfHeader {
 
 /// The unannounced half's paint: the drafting hatch in `public/style.css`.
 const COMING_SOON_PAINT: &str = "hatch";
-
-/// Shared face of a feature tile: opaque, on the page's own surface token.
-const TILE_CLASS: &str = "bg-base-100 border border-base-content/30 p-3";
 
 /// Hero band.
 ///
@@ -105,7 +120,6 @@ pub fn Hero() -> impl IntoView {
                 header=CADIOTHEKA_HEADER
                 paint=CADIOTHEKA_PAINT
                 features=CADIOTHEKA_FEATURES
-                columns="grid-cols-2"
                 visit_href=Some("https://cadiotheka.com/")
             />
 
@@ -113,7 +127,6 @@ pub fn Hero() -> impl IntoView {
                 header=COMING_SOON_HEADER
                 paint=COMING_SOON_PAINT
                 features=&[]
-                columns="grid-cols-1"
                 visit_href=None
             />
         </section>
@@ -151,8 +164,6 @@ fn HeroHalf(
     paint: &'static str,
     /// Tiles shown in the half, in reading order.
     features: &'static [Feature],
-    /// Column utilities for the tile grid from `md` up.
-    columns: &'static str,
     /// Destination the whole half links to; `None` makes the half inert.
     visit_href: Option<&'static str>,
 ) -> impl IntoView {
@@ -161,9 +172,9 @@ fn HeroHalf(
     );
 
     let content_class = if visit_href.is_some() {
-        "pointer-events-none relative z-1 flex flex-col gap-4"
+        "pointer-events-none relative z-1 flex flex-1 flex-col gap-4"
     } else {
-        "relative z-1 flex flex-col gap-4 opacity-60"
+        "relative z-1 flex flex-1 flex-col gap-4 opacity-60"
     };
 
     view! {
@@ -190,45 +201,140 @@ fn HeroHalf(
                 <p class="text-xs leading-relaxed text-base-content/70">
                     {header.description}
                 </p>
-                <FeatureGrid items=features columns=columns />
+                <FluidCluster items=features />
             </div>
         </article>
     }
 }
 
-/// The feature tiles of one half.
+/// The feature blobs of one half, joined in reading order.
 ///
-/// An empty slice renders nothing rather than an empty grid, so a half that has
-/// no tiles yet keeps its heading and description alone.
+/// Each blob is drawn twice: once in the `goo` layer, where a blur plus a
+/// high-contrast colour matrix makes overlapping shapes fuse into one fluid mass,
+/// and once in the text layer on top, which is not part of the filter. Only the
+/// backdrop participates in the goo, so the copy stays crisp while the shapes
+/// below it melt together.
+///
+/// The filter input is the cluster's own rendering, which means the fill of every
+/// blob must be the layer's paint, not a token per blob: `feColorMatrix` keeps
+/// only the alpha channel, so all colour is thrown away and replaced.
+///
+/// Blobs are placed in a `100 × 100` view box with `preserveAspectRatio="none"`,
+/// so the cluster stretches to the panel rather than letterboxing, and the
+/// connector is drawn first at a low opacity so it reads as the trail between
+/// consecutive blobs instead of as a fifth shape.
+///
+/// An empty slice renders nothing, so a half with no blobs keeps its heading and
+/// description alone.
 #[component]
-fn FeatureGrid(
-    /// Tiles to render, in reading order.
+fn FluidCluster(
+    /// Blobs to render, in reading order.
     items: &'static [Feature],
-    /// Column utilities for the grid from `md` up.
-    columns: &'static str,
 ) -> impl IntoView {
     if items.is_empty() {
         return ().into_any();
     }
 
-    let grid_class = format!("grid grid-cols-1 gap-3 md:{columns}");
+    let blobs = items
+        .iter()
+        .map(|item| {
+            let (cx, cy, rx, ry) = item.placement;
+            view! {
+                <ellipse
+                    class="blob"
+                    cx=cx.to_string()
+                    cy=cy.to_string()
+                    rx=rx.to_string()
+                    ry=ry.to_string()
+                />
+            }
+        })
+        .collect_view();
+
+    let path = connector_path(items);
+
+    let labels = items
+        .iter()
+        .map(|item| {
+            let (cx, cy, rx, ry) = item.placement;
+            let label_width = rx * 1.6;
+            view! {
+                <foreignObject
+                    x=(cx - label_width / 2.0).to_string()
+                    y=(cy - ry).to_string()
+                    width=label_width.to_string()
+                    height=(ry * 2.0).to_string()
+                >
+                    <div class="flex h-full w-full flex-col justify-center gap-1 text-center">
+                        <h3 class="text-xs font-semibold uppercase tracking-[0.08em] text-base-content">
+                            {item.title}
+                        </h3>
+                        <p class="text-[0.625rem] leading-snug text-base-content/60">
+                            {item.body}
+                        </p>
+                    </div>
+                </foreignObject>
+            }
+        })
+        .collect_view();
 
     view! {
-        <div class=grid_class>
-            {items
-                .iter()
-                .map(|item| {
-                    view! {
-                        <div class=TILE_CLASS>
-                            <h3 class="text-xs font-semibold uppercase tracking-[0.08em]">
-                                {item.title}
-                            </h3>
-                            <p class="text-xs leading-relaxed opacity-60">{item.body}</p>
-                        </div>
-                    }
-                })
-                .collect_view()}
+        <div class="relative min-h-56 flex-1">
+            <svg
+                class="absolute inset-0 h-full w-full"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+            >
+                <defs>
+                    <filter id="hero-goo" x="-20%" y="-20%" width="140%" height="140%">
+                        <feGaussianBlur in="SourceGraphic" stdDeviation="1.6" result="blur" />
+                        <feColorMatrix
+                            in="blur"
+                            type="matrix"
+                            values="1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 20 -9"
+                        />
+                    </filter>
+                </defs>
+                <g filter="url(#hero-goo)" fill="currentColor" class="text-base-content/15">
+                    {blobs}
+                </g>
+                <path
+                    d=path
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="0.6"
+                    stroke-dasharray="2 2"
+                    class="text-base-content/25"
+                    vector-effect="non-scaling-stroke"
+                />
+            </svg>
+            <svg
+                class="absolute inset-0 h-full w-full"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+            >
+                {labels}
+            </svg>
         </div>
     }
     .into_any()
+}
+
+/// Builds the reading-order trail through the blobs.
+///
+/// It joins blob centres in order, so it crosses the cluster once per row rather
+/// than hugging the gap between the columns. It is drawn faint and dashed, which
+/// keeps it reading as a trace between cards instead of as another blob.
+fn connector_path(items: &'static [Feature]) -> String {
+    let mut path = String::new();
+
+    for (index, item) in items.iter().enumerate() {
+        let (cx, cy, _, _) = item.placement;
+        let op = if index == 0 { 'M' } else { 'L' };
+        let _ = write!(path, "{op}{cx} {cy} ");
+    }
+
+    path
 }
