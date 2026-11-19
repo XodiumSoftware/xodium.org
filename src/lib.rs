@@ -40,8 +40,7 @@ pub mod components {
             pub mod branch;
             /// Buy Me a Coffee cup icon.
             pub mod buy_me_a_coffee;
-            /// Cadiotheka brand glyph.
-            pub mod cadiotheka;
+
             /// Users glyph for the creators feature.
             pub mod creators;
             /// Ghost, for the blurred placeholder cards.
@@ -64,7 +63,7 @@ pub mod components {
         pub use icons::arrow_right::ArrowRightIcon;
         pub use icons::branch::BranchIcon;
         pub use icons::buy_me_a_coffee::BuyMeACoffeeIcon;
-        pub use icons::cadiotheka::CadioThekaIcon;
+
         pub use icons::creators::CreatorsIcon;
         pub use icons::ghost::GhostIcon;
         pub use icons::github::GitHubIcon;

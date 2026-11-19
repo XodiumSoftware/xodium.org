@@ -117,11 +117,10 @@ Components are grouped by function in `src/components/`:
 
 #### UI Icons (`src/components/ui/icons/`)
 
-| Component          | File                 | Purpose                |
-| ------------------ | -------------------- | ---------------------- |
-| `BuyMeACoffeeIcon` | `buy_me_a_coffee.rs` | Buy Me a Coffee cup    |
-| `CadioThekaIcon`   | `cadiotheka.rs`      | Cadiotheka brand glyph |
-| `GitHubIcon`       | `github.rs`          | GitHub Octocat         |
+| Component          | File                 | Purpose             |
+| ------------------ | -------------------- | ------------------- |
+| `BuyMeACoffeeIcon` | `buy_me_a_coffee.rs` | Buy Me a Coffee cup |
+| `GitHubIcon`       | `github.rs`          | GitHub Octocat      |
 
 ### Team Roster (`src/components/layout/team.rs`)
 
