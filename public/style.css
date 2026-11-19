@@ -171,6 +171,15 @@ body::before {
     );
 }
 
+.dots {
+    --dot-cell: 8px;
+    background-image: radial-gradient(
+        oklch(from var(--color-base-content) l c h / 0.25) 1px,
+        transparent 1px
+    );
+    background-size: var(--dot-cell) var(--dot-cell);
+}
+
 .ascii-art {
     --ascii-font-size: 0.585rem;
     font-family: var(--font-mono, ui-monospace, monospace);
