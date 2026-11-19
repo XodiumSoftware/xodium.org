@@ -34,6 +34,8 @@ pub mod components {
 
         pub mod icons {
             //! Inline SVG icons.
+            /// Right arrow, for the call-to-action card.
+            pub mod arrow_right;
             /// Branch glyph for the open-source feature.
             pub mod branch;
             /// Buy Me a Coffee cup icon.
@@ -59,6 +61,7 @@ pub mod components {
         /// XODIUM ASCII mark.
         pub mod ascii_art;
 
+        pub use icons::arrow_right::ArrowRightIcon;
         pub use icons::branch::BranchIcon;
         pub use icons::buy_me_a_coffee::BuyMeACoffeeIcon;
         pub use icons::cadiotheka::CadioThekaIcon;

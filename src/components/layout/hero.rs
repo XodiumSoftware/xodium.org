@@ -5,6 +5,7 @@
 //! half links to its own project.
 
 use crate::components::layout::main::SheetEntrance;
+use crate::components::ui::icons::arrow_right::ArrowRightIcon;
 use crate::components::ui::icons::branch::BranchIcon;
 use crate::components::ui::icons::creators::CreatorsIcon;
 use crate::components::ui::icons::ghost::GhostIcon;
@@ -68,6 +69,11 @@ const CADIOTHEKA_FEATURES: &[Feature] = &[
         body: "Every model opens in a built-in 3D viewer, no CAD software needed.",
         icon: || view! { <InspectIcon /> }.into_any(),
     },
+    Feature {
+        title: "Stop reading. Start building",
+        body: "The whole hub is a click away.",
+        icon: || view! { <ArrowRightIcon /> }.into_any(),
+    },
 ];
 
 /// Cadiotheka's heading row.
@@ -92,6 +98,19 @@ const COMING_SOON_PAINT: &str = "hatch";
 
 /// Shared face of a feature tile: opaque, on the page's own surface token.
 const TILE_CLASS: &str = "bg-base-100 border border-base-content/30 p-3";
+
+/// Entrance animation for a tile, staggered by its index.
+///
+/// The delay is an inline custom property rather than a utility: Tailwind only
+/// emits classes it can see in the source, and a per-index class is built at
+/// runtime, so a `[--tile-delay:…]` utility would silently do nothing.
+#[must_use]
+fn tile_enter(index: usize) -> (&'static str, String) {
+    (
+        "tile-enter",
+        format!("--tile-delay: {}ms;", 700 + index * 90),
+    )
+}
 
 /// Face of a tile that stands in for a project that has not shipped: unfilled, so it
 /// cannot be mistaken for content. Same padding and corners as [`TILE_CLASS`].
@@ -118,17 +137,18 @@ enum TileKind {
 const RESERVED_TILE_COUNT: usize = 3;
 
 /// Corner rounding for the tile at `index`, in reading order: two opposite corners,
-/// stepping one corner per tile and wrapping every six. `md:`-scoped, because
-/// stacked tiles have no opposite corner to balance against.
+/// stepping one corner per tile. `md:`-scoped, because stacked tiles have no
+/// opposite corner to balance against.
 #[must_use]
 fn tile_shape(index: usize) -> &'static str {
-    const SHAPES: [&str; 6] = [
+    const SHAPES: [&str; 7] = [
         "md:rounded-tr-2xl md:rounded-bl-2xl",
         "md:rounded-br-2xl md:rounded-tl-2xl",
         "md:rounded-bl-2xl md:rounded-tr-2xl",
         "md:rounded-tl-2xl md:rounded-br-2xl",
         "md:rounded-tr-2xl md:rounded-bl-2xl",
         "md:rounded-tl-2xl md:rounded-br-2xl",
+        "md:rounded-tr-2xl md:rounded-bl-2xl",
     ];
 
     SHAPES[index % SHAPES.len()]
@@ -161,6 +181,7 @@ pub fn Hero() -> impl IntoView {
                 features=CADIOTHEKA_FEATURES
                 columns="grid-cols-2"
                 visit_href=Some("https://cadiotheka.com/")
+                full_width_last=true
             />
 
             <HeroHalf
@@ -170,6 +191,7 @@ pub fn Hero() -> impl IntoView {
                 features=&[]
                 columns="grid-cols-1"
                 visit_href=None
+                full_width_last=false
             />
         </section>
     }
@@ -194,6 +216,9 @@ fn HeroHalf(
     columns: &'static str,
     /// Destination the whole half links to; `None` makes the half inert.
     visit_href: Option<&'static str>,
+    /// Stretch the final tile across the row, for a tile count that does not fill
+    /// the grid. Without it an odd count leaves a hole beside the last card.
+    full_width_last: bool,
 ) -> impl IntoView {
     let panel_class = format!(
         "group relative flex w-full flex-col gap-4 border border-base-content/30 bg-base-100 p-6 transition-colors duration-200 md:w-1/2 has-[a:hover]:border-primary has-[a:hover]:bg-base-content/5 has-[a:focus-visible]:border-primary has-[a:focus-visible]:bg-base-content/5 {paint}",
@@ -251,7 +276,12 @@ fn HeroHalf(
                 <p class="text-xs leading-relaxed text-base-content/70">
                     {header.description}
                 </p>
-                <FeatureGrid tiles=tiles items=features columns=columns />
+                <FeatureGrid
+                    tiles=tiles
+                    items=features
+                    columns=columns
+                    full_width_last=full_width_last
+                />
             </div>
         </article>
     }
@@ -267,17 +297,31 @@ fn FeatureGrid(
     items: &'static [Feature],
     /// Column utilities for the grid from `md` up.
     columns: &'static str,
+    /// Whether the last tile spans the full row.
+    full_width_last: bool,
 ) -> impl IntoView {
     let grid_class = format!("grid grid-cols-1 gap-3 md:{columns}");
+
+    let last = items.len().saturating_sub(1);
+    let span = if full_width_last {
+        "md:col-span-full"
+    } else {
+        ""
+    };
 
     let cells = match tiles {
         TileKind::Features => items
             .iter()
             .enumerate()
             .map(|(index, item)| {
-                let tile_class = format!("{TILE_CLASS} {}", tile_shape(index));
+                let (enter_class, enter_style) = tile_enter(index);
+                let tile_class = format!(
+                    "{TILE_CLASS} {} {} {enter_class}",
+                    tile_shape(index),
+                    if index == last { span } else { "" },
+                );
                 view! {
-                    <div class=tile_class>
+                    <div class=tile_class style=enter_style>
                         <h3 class="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.08em]">
                             {(item.icon)()}
                             {item.title}
@@ -290,10 +334,14 @@ fn FeatureGrid(
             .collect_view(),
         TileKind::Reserved(count) => (0..count)
             .map(|index| {
-                let tile_class = format!("{RESERVED_TILE_CLASS} {}", tile_shape(index));
+                let (enter_class, enter_style) = tile_enter(index);
+                let tile_class = format!(
+                    "{RESERVED_TILE_CLASS} {} {enter_class}",
+                    tile_shape(index),
+                );
                 let (title, body) = RESERVED_PLACEHOLDER;
                 view! {
-                    <div class=tile_class aria-hidden="true">
+                    <div class=tile_class style=enter_style aria-hidden="true">
                         <h3 class="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.08em] blur-[3px]">
                             <GhostIcon />
                             {title}

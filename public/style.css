@@ -92,6 +92,10 @@ body::before {
     animation: slide-up 400ms ease-out var(--band-delay, 500ms) both;
 }
 
+.tile-enter {
+    animation: slide-up 400ms ease-out var(--tile-delay, 700ms) both;
+}
+
 .sheet-band-header {
     --band-delay: 500ms;
 }
@@ -204,7 +208,8 @@ body::before {
     }
 
     .sheet-band-enter,
-    .sheet-band-swap > * {
+    .sheet-band-swap > *,
+    .tile-enter {
         animation: none;
     }
 }
