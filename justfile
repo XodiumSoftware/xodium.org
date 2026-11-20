@@ -25,7 +25,7 @@ build:
     trunk build --release
 
 serve:
-    trunk serve
+    trunk serve --open
 
 clean:
     trunk clean
