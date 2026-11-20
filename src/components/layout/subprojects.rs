@@ -1,6 +1,5 @@
 //! Subprojects band below the hero.
 
-use crate::components::layout::main::SheetEntrance;
 use leptos::prelude::*;
 
 /// A single card in the [`Subprojects`] band.
@@ -38,16 +37,9 @@ const SUBPROJECT_ITEMS: &[SubprojectItem] = &[
 #[component]
 #[must_use]
 pub fn Subprojects() -> impl IntoView {
-    let entrance = SheetEntrance::use_context();
-
     view! {
         <section
-            class=move || {
-                format!(
-                    "sheet-band sheet-band-subprojects {} grid grid-cols-1 md:grid-cols-3",
-                    entrance.band_class(),
-                )
-            }
+            class="grid h-24 grid-cols-1 overflow-hidden max-md:h-auto max-md:overflow-visible md:grid-cols-3"
             aria-label="Subprojects"
         >
             {SUBPROJECT_ITEMS
@@ -55,7 +47,7 @@ pub fn Subprojects() -> impl IntoView {
                 .map(|item| {
                     view! {
                         <a
-                            class="group flex flex-col justify-center gap-2 px-6 py-(--lower-band-padding-y) transition-colors hover:bg-base-content/5"
+                            class="group flex flex-col justify-center gap-2 border border-base-content/40 px-6 py-4 hover:bg-base-content/5"
                             href=item.href
                             target="_blank"
                             rel="noopener noreferrer"
@@ -72,7 +64,7 @@ pub fn Subprojects() -> impl IntoView {
                                     stroke-width="2"
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
-                                    class="opacity-60 group-hover:opacity-100 group-hover:text-primary group-hover:-translate-y-0.5 transition-[transform,color,opacity]"
+                                    class="opacity-60 group-hover:opacity-100 group-hover:text-primary"
                                     aria-hidden="true"
                                 >
                                     <path d="M7 7h10v10"></path>

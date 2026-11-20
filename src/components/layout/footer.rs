@@ -1,6 +1,5 @@
 //! Site footer: the closing band of the sheet.
 
-use crate::components::layout::main::SheetEntrance;
 use crate::ui::{BuyMeACoffeeIcon, GitHubIcon};
 use leptos::prelude::*;
 
@@ -60,16 +59,9 @@ const FOOTER_ICON_LINKS: &[FooterIconLink] = &[
 #[component]
 #[must_use]
 pub fn Footer() -> impl IntoView {
-    let entrance = SheetEntrance::use_context();
-
     view! {
         <footer
-            class=move || {
-                format!(
-                    "sheet-band-footer {} flex flex-wrap items-baseline justify-center gap-2 py-6 font-mono text-[0.65rem] uppercase tracking-[0.08em] text-base-content opacity-75 max-sm:text-[0.55rem] max-[700px]:gap-1.5 max-[700px]:text-[0.5rem]",
-                    entrance.band_class(),
-                )
-            }
+            class="flex flex-wrap items-baseline justify-center gap-2 py-6 font-mono text-[0.65rem] uppercase tracking-[0.08em] text-base-content opacity-75 max-sm:text-[0.55rem] max-[700px]:gap-1.5 max-[700px]:text-[0.5rem] border-t border-base-content/40"
             aria-label="Site footer"
         >
             <span>"XODIUM™"</span>
@@ -81,7 +73,7 @@ pub fn Footer() -> impl IntoView {
                             "·"
                         </span>
                         <a
-                            class="font-[inherit] tracking-[inherit] text-current uppercase underline underline-offset-[3px] transition-colors select-none hover:text-primary"
+                            class="font-[inherit] tracking-[inherit] text-current uppercase underline underline-offset-[3px] select-none hover:text-primary"
                             href=link.href
                             target="_blank"
                             rel="noopener noreferrer"
@@ -99,7 +91,7 @@ pub fn Footer() -> impl IntoView {
                             "·"
                         </span>
                         <a
-                            class="inline-flex items-center self-center text-current no-underline transition-colors select-none hover:text-primary [&>svg]:h-[0.8rem] [&>svg]:w-auto"
+                            class="inline-flex items-center self-center text-current no-underline select-none hover:text-primary [&>svg]:h-[0.8rem] [&>svg]:w-auto"
                             href=link.href
                             target="_blank"
                             rel="noopener noreferrer"

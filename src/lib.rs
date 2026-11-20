@@ -72,7 +72,7 @@ pub mod components {
     pub use layout::footer::Footer;
     pub use layout::header::Header;
     pub use layout::hero::Hero;
-    pub use layout::main::{Main, SheetEntrance};
+    pub use layout::main::Main;
     pub use layout::subprojects::Subprojects;
 
     pub use ui::ascii_art::{AsciiArt, XODIUM_ASCII_ART};

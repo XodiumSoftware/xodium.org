@@ -19,7 +19,7 @@ pub const XODIUM_ASCII_ART: &str = r"
 pub fn AsciiArt() -> impl IntoView {
     view! {
         <pre
-            class="ascii-art self-stretch text-center leading-[1.15] tracking-normal text-base-content whitespace-pre select-none pointer-events-none animate-[fade-in_400ms_ease-out_400ms_both] motion-reduce:animate-none"
+            class="font-mono text-[min(0.585rem,100cqi/43.2)] self-stretch text-center leading-[1.15] tracking-normal text-base-content whitespace-pre select-none pointer-events-none"
             aria-label="XODIUM"
         >
             {XODIUM_ASCII_ART}

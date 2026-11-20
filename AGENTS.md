@@ -81,8 +81,7 @@ platform-neutral variables at the top of the file.
 
 The single-page application is a blueprint-style drawing whose bands are
 stacked in one sheet, wrapped in a `.sheet-frame` wrapper in `app.rs`. The sheet's
-left and right rules are the `body` border in `public/style.css`; the
-`.sheet-frame::before` layer carries only the frame's entrance animation:
+left and right rules are the `body` border in `public/style.css`:
 
 1. **Skip Link** — accessibility anchor to `#main-content`
 2. **`Main`** (`<main id="main-content">`) — accessible page heading and the
@@ -230,28 +229,24 @@ in the app has an async data path today.
 screens and a row from `sm` up, so the tagline moves under the mark rather than
 beside it.
 
-The mark is scaled by a container-relative `font-size` in `public/style.css`.
-The divisor there is the glyph block's column count times 0.6 (the advance of one
-monospace glyph), so the mark shrinks to the band's inline width instead of
-overflowing. If the art's column count changes, the divisor must change with it.
+The mark is scaled by a container-relative `font-size` on the `<pre>` in
+`ascii_art.rs`. The divisor there is the glyph block's column count times 0.6
+(the advance of one monospace glyph), so the mark shrinks to the band's inline
+width instead of overflowing. If the art's column count changes, the divisor must
+change with it.
 
-### Load Entrance Animation
+### Animation
 
-`SheetEntrance` (in `main.rs`) owns the load-in entrance: `band_class()` returns
-`sheet-band-enter` while the page is loading in, which plays `slide-up` on the
-band itself. The flag is a single one, because nothing on the sheet swaps once
-it is up. If a swappable band is ever reintroduced, give the swap its own flag
-rather than reusing this one: re-animating a band's children the moment the
-entrance ended reads as a flicker.
-
-- Entering bands stagger top to bottom through per-band `--band-delay` values in
-  `public/style.css`. A newly added band needs its own delay if it should arrive
-  in sequence.
+The hero's tiles carry the site's only animation: `tile-enter` (in
+`public/style.css`) plays `slide-up` per tile, staggered by the inline
+`--tile-delay` that `tile_enter` in `hero.rs` assigns. Every other band and
+control switches state instantly, so do not add transitions or `animate-*`
+utilities elsewhere.
 
 ### Bands in General
 
-Every band is a `<section class="sheet-band ...">` stacked inside `Main`, and
-the conventions below apply to all of them:
+Every band is a block-level element stacked inside `Main`, and the conventions
+below apply to all of them:
 
 - Unruled: no band draws a border between itself and the next, and `Hero` draws
   none at all. What separates neighbouring bands is their own fill, so a band
@@ -260,11 +255,11 @@ the conventions below apply to all of them:
   the order and copy are edited in one place.
 - Cards and cells that read as drafted cells are separated by `divide-*` rules
   rather than by gaps, and share equal width.
-- Anything that must keep two bands the same size is pinned to a shared CSS
-  variable in `public/style.css` rather than expressed per band.
 - Where a layout only works because a band is allowed to grow with its content
   (or is stopped from doing so), note that in the component's doc comment. These
-  pairs are the easiest thing to "simplify" into a clipping bug.
+  pairs are the easiest thing to "simplify" into a clipping bug. `Subprojects`
+  is the current example: it is pinned to a fixed height and clipped so the
+  cards cannot stretch it.
 
 ### Hero Band
 
@@ -322,7 +317,7 @@ selects between them any more.
 - **WASM size** optimized heavily for fast page loads
 - **`prefers-reduced-motion`** — handled entirely in `public/style.css` via
   the `@media (prefers-reduced-motion: reduce)` block, which zeroes out the
-  page and band entry animations. No Rust code toggles a class for this.
+  hero tile animation. No Rust code toggles a class for this.
 
 ## Claude Code Workflow
 

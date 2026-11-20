@@ -1,6 +1,5 @@
 //! Hero band: the focal region of the sheet.
 
-use crate::components::layout::main::SheetEntrance;
 use crate::components::ui::icons::arrow_right::ArrowRightIcon;
 use crate::components::ui::icons::branch::BranchIcon;
 use crate::components::ui::icons::creators::CreatorsIcon;
@@ -80,7 +79,7 @@ const CADIOTHEKA_HEADER: HalfHeader = HalfHeader {
 };
 
 /// Cadiotheka's paint class.
-const CADIOTHEKA_PAINT: &str = "dots";
+const CADIOTHEKA_PAINT: &str = "bg-[radial-gradient(oklch(from_var(--color-base-content)_l_c_h_/_0.25)_1px,transparent_1px)] bg-[size:8px_8px]";
 
 /// The unannounced project's heading row.
 const COMING_SOON_HEADER: HalfHeader = HalfHeader {
@@ -90,7 +89,7 @@ const COMING_SOON_HEADER: HalfHeader = HalfHeader {
 };
 
 /// The unannounced half's paint class.
-const COMING_SOON_PAINT: &str = "hatch";
+const COMING_SOON_PAINT: &str = "bg-transparent bg-[repeating-linear-gradient(45deg,oklch(from_var(--color-base-content)_l_c_h_/_0.25)_0_1px,transparent_1px_8px)]";
 
 /// Shared face of a feature tile.
 const TILE_CLASS: &str = "bg-base-100 border border-base-content/30 p-3";
@@ -145,16 +144,9 @@ fn tile_shape(index: usize) -> &'static str {
 #[component]
 #[must_use]
 pub fn Hero() -> impl IntoView {
-    let entrance = SheetEntrance::use_context();
-
     view! {
         <section
-            class=move || {
-                format!(
-                    "sheet-band sheet-band-hero {} relative isolate flex min-h-[40rem] flex-1 flex-col md:flex-row",
-                    entrance.band_class(),
-                )
-            }
+            class="relative isolate flex min-h-[40rem] flex-1 flex-col md:flex-row"
             aria-label="Main projects"
         >
             <HeroHalf
@@ -199,7 +191,7 @@ fn HeroHalf(
     full_width_last: bool,
 ) -> impl IntoView {
     let panel_class = format!(
-        "group relative flex w-full flex-col gap-4 bg-base-100 p-6 transition-colors duration-200 md:w-1/2 has-[a:hover]:bg-base-content/5 has-[a:focus-visible]:bg-base-content/5 {paint}",
+        "group relative flex w-full flex-col gap-4 bg-base-100 p-6 md:w-1/2 has-[a:hover]:bg-base-content/5 has-[a:focus-visible]:bg-base-content/5 has-[a:hover]:border-primary has-[a:focus-visible]:border-primary {paint} border border-base-content/40",
     );
 
     let content_class = if visit_href.is_some() {
@@ -209,7 +201,7 @@ fn HeroHalf(
     };
 
     let arrow_class = if visit_href.is_some() {
-        "opacity-60 group-hover:opacity-100 group-hover:text-primary group-hover:-translate-y-0.5 transition-[transform,color,opacity]"
+        "opacity-60 group-hover:opacity-100 group-hover:text-primary"
     } else {
         "opacity-60"
     };

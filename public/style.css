@@ -14,10 +14,6 @@
     --depth: 0;
 }
 
-html {
-    scroll-behavior: smooth;
-}
-
 :focus-visible {
     outline: 2px solid oklch(var(--color-primary));
     outline-offset: 2px;
@@ -25,17 +21,6 @@ html {
 
 :focus:not(:focus-visible) {
     outline: none;
-}
-
-@keyframes frame-in {
-    from {
-        opacity: 0;
-        transform: scale(1.005);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
 }
 
 @keyframes slide-up {
@@ -49,120 +34,11 @@ html {
     }
 }
 
-@keyframes fade-in {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 0.75;
-    }
-}
-
-.sheet-frame::before {
-    content: "";
-    position: absolute;
-    pointer-events: none;
-    z-index: 40;
-    inset: -8px 0;
-    animation: frame-in 400ms ease-out both;
-}
-
-.sheet-band-enter {
-    animation: slide-up 400ms ease-out var(--band-delay, 500ms) both;
-}
-
 .tile-enter {
     animation: slide-up 400ms ease-out var(--tile-delay, 700ms) both;
 }
 
-.sheet-band-header {
-    --band-delay: 500ms;
-}
-
-.sheet-band-subprojects {
-    --band-delay: 700ms;
-}
-
-.sheet-band-hero {
-    --band-delay: 600ms;
-}
-
-.sheet-band-footer {
-    --band-delay: 900ms;
-}
-
-.sheet-band-subprojects {
-    box-sizing: border-box;
-    height: var(--lower-band-height);
-    overflow: hidden;
-}
-
-@media (max-width: 767px) {
-    .sheet-band-subprojects {
-        height: auto;
-        overflow: visible;
-    }
-}
-
-@keyframes band-swap-in {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-.sheet-band-swap > * {
-    animation: band-swap-in 220ms ease-out both;
-}
-
-:root {
-    --lower-band-height: 6rem;
-    --lower-band-padding-y: 1rem;
-}
-
-.mark-cadiotheka {
-    --tile-cell: 10px;
-    background-image:
-        linear-gradient(to right, oklch(95% 0 0 / 0.35) 1px, transparent 1px),
-        linear-gradient(to bottom, oklch(95% 0 0 / 0.35) 1px, transparent 1px);
-    background-size:
-        var(--tile-cell) var(--tile-cell),
-        var(--tile-cell) var(--tile-cell);
-}
-
-.hatch {
-    background-color: transparent;
-    background-image: repeating-linear-gradient(
-        45deg,
-        oklch(from var(--color-base-content) l c h / 0.25) 0 1px,
-        transparent 1px 8px
-    );
-}
-
-.dots {
-    --dot-cell: 8px;
-    background-image: radial-gradient(
-        oklch(from var(--color-base-content) l c h / 0.25) 1px,
-        transparent 1px
-    );
-    background-size: var(--dot-cell) var(--dot-cell);
-}
-
-.ascii-art {
-    --ascii-font-size: 0.585rem;
-    font-family: var(--font-mono, ui-monospace, monospace);
-    font-size: min(var(--ascii-font-size), 100cqi / 43.2);
-}
-
 @media (prefers-reduced-motion: reduce) {
-    .sheet-frame::before {
-        animation: none;
-    }
-
-    .sheet-band-enter,
-    .sheet-band-swap > *,
     .tile-enter {
         animation: none;
     }
