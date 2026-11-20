@@ -1,6 +1,9 @@
 //! Root application component.
 
-use crate::components::layout::main::Main;
+use crate::components::layout::footer::Footer;
+use crate::components::layout::header::Header;
+use crate::components::layout::hero::Hero;
+use crate::components::layout::subprojects::Subprojects;
 use leptos::prelude::*;
 
 /// The full single-page drawing.
@@ -16,9 +19,18 @@ pub fn App() -> impl IntoView {
                 "Skip to main content"
             </a>
 
-            <div class="sheet-frame relative flex flex-1 flex-col w-[calc(100%-36px)] max-w-5xl mx-auto border-x border-base-content/40">
-                <Main />
-            </div>
+            <main
+                id="main-content"
+                tabindex="-1"
+                class="sheet-frame relative flex flex-1 flex-col w-[calc(100%-36px)] max-w-5xl mx-auto border-x border-base-content/40"
+            >
+                <h1 class="sr-only">"Xodium Software — open-source CAD software"</h1>
+
+                <Header />
+                <Hero />
+                <Subprojects />
+                <Footer />
+            </main>
         </div>
     }
 }

@@ -19,8 +19,6 @@ pub mod components {
         pub mod header;
         /// Focal band: the main projects.
         pub mod hero;
-        /// Main content section.
-        pub mod main;
         /// Subproject cards band.
         pub mod subprojects;
     }
@@ -72,7 +70,6 @@ pub mod components {
     pub use layout::footer::Footer;
     pub use layout::header::Header;
     pub use layout::hero::Hero;
-    pub use layout::main::Main;
     pub use layout::subprojects::Subprojects;
 
     pub use ui::ascii_art::{AsciiArt, XODIUM_ASCII_ART};

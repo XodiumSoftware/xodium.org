@@ -22,9 +22,10 @@ the block in `src/lib.rs`:
 | Icon                                           | `src/components/ui/icons/{name}.rs` |
 | Background effect                              | `src/components/effects/{name}.rs`  |
 
-A page band is a `<section class="sheet-band ...">` stacked inside `Main`; add it
-to the band tables and the page-layout reading order in `AGENTS.md` as well. A
-component that never joins the page layout needs no `AGENTS.md` edit.
+A page band is a `<section class="sheet-band ...">` stacked inside the sheet in
+`src/app.rs`; add it to the band tables and the page-layout reading order in
+`AGENTS.md` as well. A component that never joins the page layout needs no
+`AGENTS.md` edit.
 
 File names are lowercase snake_case (`feature_card.rs`); component names are
 PascalCase matching the file (`FeatureCard`).

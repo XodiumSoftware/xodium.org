@@ -84,7 +84,7 @@ stacked in one sheet, wrapped in a `.sheet-frame` wrapper in `app.rs`. The sheet
 left and right rules are the `body` border in `public/style.css`:
 
 1. **Skip Link** — accessibility anchor to `#main-content`
-2. **`Main`** (`<main id="main-content">`) — accessible page heading and the
+2. **Sheet** (`<main id="main-content">`) — accessible page heading and the
    band stack, in reading order: `Header`, `Hero`, `Subprojects`, then `Footer`.
 3. **`Footer`** — in-flow centred band at the bottom of the sheet, carrying the
    XODIUM wordmark and the site links. It is not pinned to the viewport.
@@ -97,7 +97,6 @@ Components are grouped by function in `src/components/`:
 
 | Component     | File             | Purpose                                                |
 | ------------- | ---------------- | ------------------------------------------------------ |
-| `Main`        | `main.rs`        | Heading and the band stack, in reading order           |
 | `Header`      | `header.rs`      | Opening band with the ASCII mark and tagline           |
 | `Hero`        | `hero.rs`        | Focal band: both main projects, split corner to corner |
 | `Subprojects` | `subprojects.rs` | Equal-width three-card subproject links                |
@@ -136,7 +135,6 @@ src/
 ├── app.rs                     # Root App component
 ├── components/
 │   ├── layout/                # Sheet bands, stacked top to bottom
-│   │   ├── main.rs
 │   │   ├── header.rs
 │   │   ├── hero.rs
 │   │   ├── subprojects.rs
@@ -245,8 +243,8 @@ utilities elsewhere.
 
 ### Bands in General
 
-Every band is a block-level element stacked inside `Main`, and the conventions
-below apply to all of them:
+Every band is a block-level element stacked inside the sheet in `app.rs`, and
+the conventions below apply to all of them:
 
 - Unruled: no band draws a border between itself and the next, and `Hero` draws
   none at all. What separates neighbouring bands is their own fill, so a band
