@@ -216,7 +216,8 @@ in the app has an async data path today.
 ### Build Pipeline
 
 1. **Trunk** bundles WASM, processes Tailwind CSS, copies the `public/` assets declared via `data-trunk` links in `index.html` → `dist/`
-    - `build.create_nonce` in `Trunk.toml` must stay on: Trunk injects its loader as an inline `<script type="module">`, which no hash can cover, and `public/_headers` only permits it by nonce. Turning it off blanks the page. Cloudflare Pages substitutes the `{nonce}` placeholder there.
+    - `build.create_nonce` in `Trunk.toml` must stay on: Trunk injects its loader as an inline `<script type="module">`, which no hash can cover, and `public/_headers` only permits it by nonce. Turning it off blanks the page.
+    - The placeholder in `_headers` has to be Trunk's own (`{{__TRUNK NONCE__}}`, see `nonce_placeholder` in `Trunk.toml`). It is written verbatim into the emitted HTML and `<link>` elements, so a different token there leaves the CSP allowing a nonce no element carries. Nothing substitutes it in the response: Cloudflare Pages only expands its own `{placeholder}` syntax in `_headers`, not in the HTML body.
     - `Trunk.toml` pins the `tailwindcss` tool version. This is the version of Trunk’s bundled Tailwind distribution (`dobicinaitis/tailwind-cli-extra`), not the upstream Tailwind CSS version. The bundle includes the latest Tailwind CSS + DaisyUI; the actual Tailwind CSS version resolved at build time is shown in the build log (e.g. `tailwindcss v4.2.2`).
     - Renovate manages this version via a custom regex manager in `.github/renovate.json`; the TOML line is annotated with `# renovate: datasource=github-releases depName=dobicinaitis/tailwind-cli-extra`.
 2. **Cargo release profile** optimizations:
