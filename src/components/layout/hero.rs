@@ -159,6 +159,9 @@ fn tile_shape(index: usize) -> &'static str {
 /// Grows into the sheet's leftover height (`flex-1`) with a `min-h-*` floor; the
 /// pair keeps the band from collapsing. Two equal halves in a row from `md` up,
 /// stacked below it.
+///
+/// The band draws no rules at all: the halves' paint alone divides them, so there
+/// is no divider between them and no bottom rule closing the band.
 #[component]
 #[must_use]
 pub fn Hero() -> impl IntoView {
@@ -168,7 +171,7 @@ pub fn Hero() -> impl IntoView {
         <section
             class=move || {
                 format!(
-                    "sheet-band sheet-band-hero {} relative isolate flex min-h-[40rem] flex-1 flex-col divide-y divide-base-content/40 border-x border-b border-base-content/40 md:flex-row md:divide-x md:divide-y-0",
+                    "sheet-band sheet-band-hero {} relative isolate flex min-h-[40rem] flex-1 flex-col md:flex-row",
                     entrance.band_class(),
                 )
             }
@@ -202,6 +205,9 @@ pub fn Hero() -> impl IntoView {
 /// The whole panel is one stretched link (`absolute inset-0`), and the panel is
 /// the `group` its hover styling keys off. A half with no destination renders a
 /// disabled button instead of a dead anchor, and takes none of the hover styling.
+///
+/// The panel draws no rules at all: the halves' paint is the only separation, so
+/// the hero is one unruled block on the sheet.
 #[component]
 fn HeroHalf(
     /// The half's heading row.
@@ -221,7 +227,7 @@ fn HeroHalf(
     full_width_last: bool,
 ) -> impl IntoView {
     let panel_class = format!(
-        "group relative flex w-full flex-col gap-4 border border-base-content/30 bg-base-100 p-6 transition-colors duration-200 md:w-1/2 has-[a:hover]:border-primary has-[a:hover]:bg-base-content/5 has-[a:focus-visible]:border-primary has-[a:focus-visible]:bg-base-content/5 {paint}",
+        "group relative flex w-full flex-col gap-4 bg-base-100 p-6 transition-colors duration-200 md:w-1/2 has-[a:hover]:bg-base-content/5 has-[a:focus-visible]:bg-base-content/5 {paint}",
     );
 
     let content_class = if visit_href.is_some() {

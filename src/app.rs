@@ -6,8 +6,8 @@
 //! - `body::before` paints the page surface as a fixed layer, so the sheet scrolls
 //!   over a still background. A pseudo-element has no class slot.
 //!
-//! - `.sheet-frame::before` draws the sheet's left and right rules. Bands close
-//!   the sheet horizontally themselves, so a full frame would double their rules.
+//! - `.sheet-frame::before` is the sheet's entrance layer. It no longer draws the
+//!   sheet's side rules; those come from the `body` border in `public/style.css`.
 //!
 //! - The global `:focus-visible` ring, which `DaisyUI` does not provide.
 //!

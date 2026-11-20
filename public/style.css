@@ -18,6 +18,11 @@ html {
     scroll-behavior: smooth;
 }
 
+body {
+    box-sizing: border-box;
+    border-inline: 1px solid oklch(from var(--color-base-content) l c h / 0.4);
+}
+
 body::before {
     content: "";
     position: fixed;
@@ -82,9 +87,7 @@ body::before {
     position: absolute;
     pointer-events: none;
     z-index: 40;
-    inset: -8px;
-    border-left: 1px solid oklch(from var(--color-base-content) l c h / 0.4);
-    border-right: 1px solid oklch(from var(--color-base-content) l c h / 0.4);
+    inset: -8px 0;
     animation: frame-in 400ms ease-out both;
 }
 
@@ -122,15 +125,6 @@ body::before {
     .sheet-band-subprojects {
         height: auto;
         overflow: visible;
-    }
-
-    .sheet-band-subprojects > a {
-        border-block-end: 1px solid
-            oklch(from var(--color-base-content) l c h / 0.4);
-    }
-
-    .sheet-band-subprojects > a:last-child {
-        border-block-end: 0;
     }
 }
 

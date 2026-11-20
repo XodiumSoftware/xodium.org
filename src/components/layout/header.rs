@@ -18,7 +18,7 @@ pub fn Header() -> impl IntoView {
         <header
             class=move || {
                 format!(
-                    "sheet-band sheet-band-header {} flex flex-col gap-2 pb-6 border-b border-base-content/40 sm:flex-row sm:items-center sm:gap-4",
+                    "sheet-band sheet-band-header {} flex flex-col gap-2 pb-6 sm:flex-row sm:items-center sm:gap-4",
                     entrance.band_class(),
                 )
             }

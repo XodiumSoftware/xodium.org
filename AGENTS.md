@@ -80,8 +80,9 @@ platform-neutral variables at the top of the file.
 ### Page Layout (`App` component)
 
 The single-page application is a blueprint-style drawing whose bands are
-stacked in one sheet, wrapped in a `.sheet-frame` wrapper in `app.rs`. The class
-only exists so `.sheet-frame::before` can draw the frame around it:
+stacked in one sheet, wrapped in a `.sheet-frame` wrapper in `app.rs`. The sheet's
+left and right rules are the `body` border in `public/style.css`; the
+`.sheet-frame::before` layer carries only the frame's entrance animation:
 
 1. **Skip Link** — accessibility anchor to `#main-content`
 2. **`Main`** (`<main id="main-content">`) — accessible page heading and the
@@ -256,11 +257,9 @@ entrance ended reads as a flicker.
 Every band is a `<section class="sheet-band ...">` stacked inside `Main`, and
 the conventions below apply to all of them:
 
-- Separated by `border-b border-base-content/40`, the same rule colour as the
-  sheet frame. The side rules come from `.sheet-frame::before`, so bands do
-  not draw their own left and right borders. `Hero` carries a `border-x` of the
-  same colour as well, so it closes its own box: its divider and its bottom
-  rule run into those side rules rather than stopping short of them.
+- Unruled: no band draws a border between itself and the next, and `Hero` draws
+  none at all. What separates neighbouring bands is their own fill, so a band
+  that needs a visible edge must supply one.
 - Row-based content sits in `const` slices at the top of the component file, so
   the order and copy are edited in one place.
 - Cards and cells that read as drafted cells are separated by `divide-*` rules
@@ -285,9 +284,7 @@ selects between them any more.
   square.
 - The band is `relative isolate` and the rule sits in its `-z-1` layer, so it is
   resolved against the band rather than the page.
-- Below `md` the halves stack and the rule becomes the ordinary `divide-y`
-  separator: a diagonal across a stacked pair cuts through two paragraphs instead
-  of dividing anything.
+- Below `md` the halves stack, and the halves' paint is what divides them.
 - The band grows into the sheet's leftover height and keeps a `min-h-*` floor.
   Keep that pair together: the halves are `overflow-hidden` (that is what clips the
   rule) and the floor is what stops the taller half's tiles being cut off.
