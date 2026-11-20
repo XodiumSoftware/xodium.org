@@ -1,7 +1,4 @@
 //! Subprojects band below the hero.
-//!
-//! The cards share equal width and are separated by vertical rules so the row
-//! reads as three drafted cells rather than flowing text.
 
 use crate::components::layout::main::SheetEntrance;
 use leptos::prelude::*;
@@ -37,14 +34,7 @@ const SUBPROJECT_ITEMS: &[SubprojectItem] = &[
     },
 ];
 
-/// Equal-width subproject cards, in the slot below the hero.
-///
-/// Each card is one anchor, so the whole cell is clickable. One row from `md` up,
-/// stacked below it, with no rules between the cells.
-///
-/// From `md` up the band is pinned to `--lower-band-height`, which `public/style.css`
-/// applies along with the clip that keeps a card's copy from spilling out of that
-/// height. Below `md` the height is released so nothing is ever clipped.
+/// Equal-width subproject cards, below the hero.
 #[component]
 #[must_use]
 pub fn Subprojects() -> impl IntoView {

@@ -1,26 +1,9 @@
-//! Root application component and the single-page layout.
-//!
-//! The page shell is utilities; `public/style.css` keeps only what utilities
-//! cannot express:
-//!
-//! - `body::before` paints the page surface as a fixed layer, so the sheet scrolls
-//!   over a still background. A pseudo-element has no class slot.
-//!
-//! - `.sheet-frame::before` is the sheet's entrance layer. It no longer draws the
-//!   sheet's side rules; those come from the `body` border in `public/style.css`.
-//!
-//! - The global `:focus-visible` ring, which `DaisyUI` does not provide.
-//!
-//! - The square `--radius-*` and `--depth` overrides: unlayered so they win over
-//!   the theme's `@layer base` without replacing the palette.
+//! Root application component.
 
 use crate::components::layout::main::Main;
 use leptos::prelude::*;
 
 /// The full single-page drawing.
-///
-/// `Main` owns the sheet's contents, so this supplies only the frame, the sheet
-/// wrapper and the skip link.
 #[component]
 #[must_use]
 pub fn App() -> impl IntoView {

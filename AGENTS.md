@@ -183,17 +183,13 @@ Trunk.toml                     # Trunk configuration
 - **Static data:** Define `const` slices at top of component files
 - **CSS:** Tailwind and DaisyUI utility classes first. `public/style.css` is for what utilities cannot express: page-frame rules, `@keyframes` plus their `--band-delay` timings, `::before` overrides of DaisyUI internals, and expressions that need the element's own `em` (the ASCII mark's fitted `font-size`). When a rule only sets layout, colour, spacing or a plain transition, use a utility instead.
 - **Do not add `//` line comments.** Use `///` doc comments (or `//!` module
-  docs) to explain intent; keep the code itself self-documenting. This applies to
-  `view!` macro blocks too — meaningful intent in a template should live on the
-  component's or helper's doc comment, not as a structural label inside the view.
-- **Write docs for readers, and keep them stable.** Document _why_ a decision was
-  made and what breaks if it is undone; never restate the implementation. A doc
-  that enumerates utility classes, pixel values, layer counts or the order of a
-  class string is wrong the first time someone tweaks one of them, so leave those
-  details in the code and describe the rule instead. Aim for a short paragraph on
-  the item plus, at most, one note per non-obvious constraint — not a line for
-  every field or a bullet list of everything the component does. This applies to
-  rustdoc in `src/` and to prose in `AGENTS.md` alike.
+  docs) instead, and keep the code itself self-documenting. This applies to
+  `view!` blocks too.
+- **Docs stay generic and quiet.** One short line per item — a module, component,
+  constant or field says what it _is_, not how it works. Do not narrate class
+  names, CSS rules, pixel maths, breakpoint choices or the history of a fix; a
+  doc should never need editing because a layout value moved. That applies to
+  rustdoc in `src/` and to prose here alike.
 
 ### Component Patterns
 
@@ -346,10 +342,11 @@ selects between them any more.
 
 ### After Making Edits
 
-**rustdoc is the primary documentation.** Intent belongs on the item it
-describes: component doc comments explain why a layout is pinned, why a
-breakpoint exists, and what breaks if it is removed. Update them whenever you add
-public API, change a component's interface, or make a non-obvious choice.
+**rustdoc stays generic.** Every public item carries a doc comment, kept to one
+short line: what the item is, not how it works. Do not add notes about utility
+strings, CSS rules, sizing maths, breakpoint choices, or the reasoning behind a
+past change — that belongs in the commit message or nowhere. Never expand a doc
+comment to justify an edit.
 
 **`AGENTS.md` is for what outlives individual edits.** Update it only when one of
 these genuinely changes:
@@ -360,9 +357,14 @@ these genuinely changes:
   (a pinned height, a two-flag animation split, an authored span scheme)
 
 Do **not** update it for: copy changes, card contents, colours, spacing, tile
-spans, component-internal structure, or a fixed bug. Those belong in the code and
-in the commit message. If a sentence would need editing the next time someone
-tweaks a value, it is in the wrong file.
+spans, component-internal structure, or a fixed bug. Those belong in the commit
+message. If a sentence would need editing the next time someone tweaks a value,
+it is in the wrong file.
+
+**Do not add documentation noise.** An edit to code is not a reason to add or
+expand doc comments. Only touch a doc comment when the item it describes now does
+something else than it says — and then shorten it to match, rather than
+explaining the change.
 
 **Verification:** run `trunk build` (or `just validate`) after edits, and keep
 the lint gates passing — see [Quick Commands](#quick-commands).

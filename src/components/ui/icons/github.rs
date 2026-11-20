@@ -1,9 +1,6 @@
 use leptos::prelude::*;
 
-/// Renders the GitHub Octocat icon.
-///
-/// Painted with `currentColor` and sized by a `size-5` utility, so callers can
-/// restyle and resize it without touching this component.
+/// GitHub Octocat icon.
 #[component]
 #[must_use]
 pub fn GitHubIcon() -> impl IntoView {

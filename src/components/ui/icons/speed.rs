@@ -1,8 +1,6 @@
 use leptos::prelude::*;
 
-/// Renders the bolt glyph used for the "fast by design" feature.
-///
-/// Outline only, so it inherits `currentColor` and the caller's size utility.
+/// Bolt glyph, for the fast-by-design feature.
 #[component]
 #[must_use]
 pub fn SpeedIcon() -> impl IntoView {

@@ -1,11 +1,9 @@
-//! xodiumweb — a blueprint-styled static site for Xodium Software.
+//! xodiumweb — the xodium.org site.
 //!
-//! Leptos client-side rendering, compiled to WebAssembly by Trunk. The module
-//! tree and every re-export are declared here explicitly; there are no
-//! `mod.rs` files.
+//! Leptos client-side rendering, compiled to WebAssembly by Trunk. Modules and
+//! re-exports are declared explicitly; there are no `mod.rs` files.
 
-// The Leptos `#[component]` macro rewrites signatures and strips `#[must_use]`,
-// so this lint is allowed crate-wide rather than fought per component.
+// The Leptos `#[component]` macro strips `#[must_use]` from component functions.
 #![allow(clippy::must_use_candidate)]
 
 mod app;
@@ -14,12 +12,12 @@ pub mod components {
     //! Page sections and reusable UI primitives.
 
     pub mod layout {
-        //! Sheet bands, stacked top to bottom.
+        //! Page bands, in reading order.
         /// Closing band: wordmark and site links.
         pub mod footer;
         /// Opening band: the ASCII mark and tagline.
         pub mod header;
-        /// Large focal band of the sheet, split into the two main projects.
+        /// Focal band: the main projects.
         pub mod hero;
         /// Main content section.
         pub mod main;
@@ -28,30 +26,30 @@ pub mod components {
     }
 
     pub mod ui {
-        //! Reusable UI primitives and icons.
+        //! UI primitives and icons.
 
         pub mod icons {
             //! Inline SVG icons.
-            /// Right arrow, for the call-to-action card.
+            /// Rightward arrow.
             pub mod arrow_right;
-            /// Branch glyph for the open-source feature.
+            /// Branch glyph.
             pub mod branch;
-            /// Buy Me a Coffee cup icon.
+            /// Buy Me a Coffee cup.
             pub mod buy_me_a_coffee;
 
-            /// Users glyph for the creators feature.
+            /// Users glyph.
             pub mod creators;
-            /// Ghost, for the blurred placeholder cards.
+            /// Ghost glyph.
             pub mod ghost;
-            /// GitHub Octocat icon.
+            /// GitHub Octocat.
             pub mod github;
-            /// History glyph for the versioned-parts feature.
+            /// History glyph.
             pub mod history;
-            /// Grid glyph for the hub feature.
+            /// Grid glyph.
             pub mod hub;
-            /// Package glyph for the inspect-before-download feature.
+            /// Package glyph.
             pub mod inspect;
-            /// Bolt glyph for the fast-by-design feature.
+            /// Bolt glyph.
             pub mod speed;
         }
 

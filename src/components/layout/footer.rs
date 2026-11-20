@@ -1,10 +1,10 @@
-//! Site footer: one line of monospace text closing the sheet.
+//! Site footer: the closing band of the sheet.
 
 use crate::components::layout::main::SheetEntrance;
 use crate::ui::{BuyMeACoffeeIcon, GitHubIcon};
 use leptos::prelude::*;
 
-/// A single link rendered in the blueprint footer.
+/// A single text link in the footer.
 struct FooterLink {
     /// Destination URL or mailto/path.
     href: &'static str,
@@ -16,7 +16,7 @@ struct FooterLink {
 struct FooterIconLink {
     /// Destination URL opened in a new tab.
     href: &'static str,
-    /// Accessible name, since the icon itself is decorative.
+    /// Accessible name for the icon-only link.
     aria_label: &'static str,
     /// Renders the link's icon.
     icon: fn() -> AnyView,
@@ -56,11 +56,7 @@ const FOOTER_ICON_LINKS: &[FooterIconLink] = &[
     },
 ];
 
-/// Blueprint footer: one line of margin notes closing the sheet, in flow rather
-/// than pinned to the viewport.
-///
-/// Each entry carries its own accessible name: the text links through their
-/// label, the icon links through `aria_label`, since the icons are decorative.
+/// Blueprint footer: the site's closing line of links.
 #[component]
 #[must_use]
 pub fn Footer() -> impl IntoView {

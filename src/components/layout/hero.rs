@@ -1,8 +1,4 @@
-//! Hero band: the whole focal region of the sheet.
-//!
-//! Two halves, one per main project, split horizontally: Cadiotheka on the left
-//! and the unannounced project on the right. Nothing selects between them; each
-//! half links to its own project.
+//! Hero band: the focal region of the sheet.
 
 use crate::components::layout::main::SheetEntrance;
 use crate::components::ui::icons::arrow_right::ArrowRightIcon;
@@ -83,7 +79,7 @@ const CADIOTHEKA_HEADER: HalfHeader = HalfHeader {
     description: "The open hub for CAD creators.",
 };
 
-/// Cadiotheka's half paint: the dotted hatch in `public/style.css`.
+/// Cadiotheka's paint class.
 const CADIOTHEKA_PAINT: &str = "dots";
 
 /// The unannounced project's heading row.
@@ -93,17 +89,13 @@ const COMING_SOON_HEADER: HalfHeader = HalfHeader {
     description: "Secret project in the making.",
 };
 
-/// The unannounced half's paint: the drafting hatch in `public/style.css`.
+/// The unannounced half's paint class.
 const COMING_SOON_PAINT: &str = "hatch";
 
-/// Shared face of a feature tile: opaque, on the page's own surface token.
+/// Shared face of a feature tile.
 const TILE_CLASS: &str = "bg-base-100 border border-base-content/30 p-3";
 
-/// Entrance animation for a tile, staggered by its index.
-///
-/// The delay is an inline custom property rather than a utility: Tailwind only
-/// emits classes it can see in the source, and a per-index class is built at
-/// runtime, so a `[--tile-delay:…]` utility would silently do nothing.
+/// The entrance class and delay style for a tile at `index`.
 #[must_use]
 fn tile_enter(index: usize) -> (&'static str, String) {
     (
@@ -112,12 +104,10 @@ fn tile_enter(index: usize) -> (&'static str, String) {
     )
 }
 
-/// Face of a tile that stands in for a project that has not shipped: unfilled, so it
-/// cannot be mistaken for content. Same padding and corners as [`TILE_CLASS`].
+/// Face of a reserved tile.
 const RESERVED_TILE_CLASS: &str = "border border-dashed border-base-content/30 p-3";
 
-/// Filler inside a reserved tile: blurred, `aria-hidden`, and lorem ipsum so it
-/// never reads as a withheld feature.
+/// The title of the first reserved tile.
 const RESERVED_PLACEHOLDER: (&str, &str) = (
     "Lorem ipsum dolor",
     "Sit amet consectetur adipiscing elit sed do eiusmod tempor.",
@@ -126,19 +116,16 @@ const RESERVED_PLACEHOLDER: (&str, &str) = (
 /// What a half shows where its tiles go.
 #[derive(Clone, Copy)]
 enum TileKind {
-    /// Each feature rendered as its own tile.
+    /// One tile per feature.
     Features,
-    /// Blank tiles at a fixed count, on the reserved face.
+    /// Empty tiles at a fixed count.
     Reserved(usize),
 }
 
-/// Tiles reserved in the Coming Soon half, so it matches the height of a filled
-/// half without naming features that do not exist yet.
+/// Tiles reserved in the Coming Soon half.
 const RESERVED_TILE_COUNT: usize = 3;
 
-/// Corner rounding for the tile at `index`, in reading order: two opposite corners,
-/// stepping one corner per tile. `md:`-scoped, because stacked tiles have no
-/// opposite corner to balance against.
+/// Corner rounding classes for the tile at `index`.
 #[must_use]
 fn tile_shape(index: usize) -> &'static str {
     const SHAPES: [&str; 7] = [
@@ -155,13 +142,6 @@ fn tile_shape(index: usize) -> &'static str {
 }
 
 /// Hero band.
-///
-/// Grows into the sheet's leftover height (`flex-1`) with a `min-h-*` floor; the
-/// pair keeps the band from collapsing. Two equal halves in a row from `md` up,
-/// stacked below it.
-///
-/// The band draws no rules at all: the halves' paint alone divides them, so there
-/// is no divider between them and no bottom rule closing the band.
 #[component]
 #[must_use]
 pub fn Hero() -> impl IntoView {
@@ -201,20 +181,13 @@ pub fn Hero() -> impl IntoView {
 }
 
 /// One half of the hero band.
-///
-/// The whole panel is one stretched link (`absolute inset-0`), and the panel is
-/// the `group` its hover styling keys off. A half with no destination renders a
-/// disabled button instead of a dead anchor, and takes none of the hover styling.
-///
-/// The panel draws no rules at all: the halves' paint is the only separation, so
-/// the hero is one unruled block on the sheet.
 #[component]
 fn HeroHalf(
     /// The half's heading row.
     header: HalfHeader,
     /// Paint class filling the panel, or `""` for a plain surface.
     paint: &'static str,
-    /// Whether the half lists features or reserves space for them.
+    /// What the half shows where its tiles go.
     tiles: TileKind,
     /// Tiles shown in the half, in reading order.
     features: &'static [Feature],
@@ -222,8 +195,7 @@ fn HeroHalf(
     columns: &'static str,
     /// Destination the whole half links to; `None` makes the half inert.
     visit_href: Option<&'static str>,
-    /// Stretch the final tile across the row, for a tile count that does not fill
-    /// the grid. Without it an odd count leaves a hole beside the last card.
+    /// Stretch the final tile across the row of the grid.
     full_width_last: bool,
 ) -> impl IntoView {
     let panel_class = format!(
@@ -293,17 +265,16 @@ fn HeroHalf(
     }
 }
 
-/// The tile area of one half: either the real features or reserved slots, as
-/// [`TileKind`] says.
+/// The tile area of one half.
 #[component]
 fn FeatureGrid(
-    /// Whether the half lists features or reserves space for them.
+    /// What the tile area shows.
     tiles: TileKind,
     /// Tiles to render, in reading order.
     items: &'static [Feature],
     /// Column utilities for the grid from `md` up.
     columns: &'static str,
-    /// Whether the last tile spans the full row.
+    /// Whether the last tile spans the full row of the grid.
     full_width_last: bool,
 ) -> impl IntoView {
     let grid_class = format!("grid grid-cols-1 gap-3 md:{columns}");

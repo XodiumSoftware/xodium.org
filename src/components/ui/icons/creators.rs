@@ -1,8 +1,6 @@
 use leptos::prelude::*;
 
-/// Renders the users glyph used for the "built for creators" feature.
-///
-/// Outline only, so it inherits `currentColor` and the caller's size utility.
+/// Users glyph, for the creators feature.
 #[component]
 #[must_use]
 pub fn CreatorsIcon() -> impl IntoView {

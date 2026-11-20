@@ -1,8 +1,6 @@
 use leptos::prelude::*;
 
-/// Renders the branch glyph used for the "open source" feature.
-///
-/// Outline only, so it inherits `currentColor` and the caller's size utility.
+/// Branch glyph, for the open-source feature.
 #[component]
 #[must_use]
 pub fn BranchIcon() -> impl IntoView {

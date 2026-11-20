@@ -1,10 +1,6 @@
 use leptos::prelude::*;
 
-/// Renders a small cartoon ghost, for the blurred placeholder cards.
-///
-/// Filled rather than outlined, unlike the feature glyphs: on a card that is
-/// already blurred, a hairline outline reads as noise. The eyes are punched out
-/// in the page's surface token so the face stays legible against the fill.
+/// Ghost, for the placeholder cards.
 #[component]
 #[must_use]
 pub fn GhostIcon() -> impl IntoView {

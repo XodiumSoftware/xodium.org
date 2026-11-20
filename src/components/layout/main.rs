@@ -1,6 +1,4 @@
 //! Main content section.
-//!
-//! Hosts the page heading and stacks the sheet's bands in reading order.
 
 use crate::components::layout::footer::Footer;
 use crate::components::layout::header::Header;
@@ -9,10 +7,7 @@ use crate::components::layout::subprojects::Subprojects;
 use leptos::prelude::*;
 use std::time::Duration;
 
-/// The sheet's load-in entrance.
-///
-/// The flag animates the bands themselves; nothing swaps once the page is up, so
-/// there is no second flag to keep separate from this one.
+/// The sheet's load-in entrance state.
 #[derive(Clone, Copy)]
 #[must_use]
 pub struct SheetEntrance {
@@ -40,7 +35,7 @@ impl SheetEntrance {
     ///
     /// # Panics
     ///
-    /// Panics when [`SheetEntrance::provide`] has not run.
+    /// Panics when the flag was never provided.
     pub fn use_context() -> Self {
         expect_context::<Self>()
     }
@@ -54,15 +49,11 @@ impl SheetEntrance {
         }
     }
 
-    /// The longest `--band-delay` plus the band animation, so the flag never
-    /// flips mid-animation.
+    /// How long the entrance flag stays set.
     const DURATION_MS: u64 = 1_100;
 }
 
 /// The central content area of the page.
-///
-/// The sheet wrapper owns width and centring, so `main` only stacks the bands
-/// and provides the shared state they read.
 #[component]
 #[must_use]
 pub fn Main() -> impl IntoView {

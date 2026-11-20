@@ -1,8 +1,6 @@
 use leptos::prelude::*;
 
-/// Renders the package glyph used for the "inspect before you download" feature.
-///
-/// Outline only, so it inherits `currentColor` and the caller's size utility.
+/// Package glyph, for the inspect-before-download feature.
 #[component]
 #[must_use]
 pub fn InspectIcon() -> impl IntoView {

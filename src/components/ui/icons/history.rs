@@ -1,8 +1,6 @@
 use leptos::prelude::*;
 
-/// Renders the history glyph used for the "versioned parts" feature.
-///
-/// Outline only, so it inherits `currentColor` and the caller's size utility.
+/// History glyph, for the versioned-parts feature.
 #[component]
 #[must_use]
 pub fn HistoryIcon() -> impl IntoView {

@@ -1,8 +1,6 @@
 use leptos::prelude::*;
 
-/// Renders the grid glyph used for the "one hub" feature.
-///
-/// Outline only, so it inherits `currentColor` and the caller's size utility.
+/// Grid glyph, for the hub feature.
 #[component]
 #[must_use]
 pub fn HubIcon() -> impl IntoView {

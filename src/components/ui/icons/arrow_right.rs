@@ -1,8 +1,6 @@
 use leptos::prelude::*;
 
-/// Renders a rightward arrow, for the call-to-action card.
-///
-/// Outline only, so it inherits `currentColor` and the caller's size utility.
+/// Rightward arrow, for the call-to-action card.
 #[component]
 #[must_use]
 pub fn ArrowRightIcon() -> impl IntoView {

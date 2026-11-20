@@ -2,13 +2,7 @@ use crate::components::layout::main::SheetEntrance;
 use crate::components::ui::ascii_art::AsciiArt;
 use leptos::prelude::*;
 
-/// The sheet's opening band: the XODIUM mark with a short tagline.
-///
-/// A column on phones and a row from `sm` up, so the tagline moves under the
-/// mark rather than beside it. The mark sits in its own wrapper because that
-/// wrapper is the size container its fitted `font-size` measures against; the
-/// wrapper is capped at the mark's maximum width so a wide band does not push
-/// the tagline to the far edge. See [`AsciiArt`] for the sizing itself.
+/// The page's opening band: the XODIUM mark and tagline.
 #[component]
 #[must_use]
 pub fn Header() -> impl IntoView {

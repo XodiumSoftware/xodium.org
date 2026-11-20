@@ -1,9 +1,6 @@
 use leptos::prelude::*;
 
-/// Renders the Buy Me a Coffee cup icon.
-///
-/// The outline follows `currentColor`; the cup body keeps its brand yellow.
-/// Bounded by height (`h-5`) with `w-auto`, since the mark is taller than wide.
+/// Buy Me a Coffee cup icon.
 #[component]
 #[must_use]
 pub fn BuyMeACoffeeIcon() -> impl IntoView {
