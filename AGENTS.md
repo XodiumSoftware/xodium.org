@@ -79,12 +79,9 @@ platform-neutral variables at the top of the file.
 
 ### Page Layout (`App` component)
 
-The single-page application is a blueprint-style drawing with a fixed corner
-stack of metadata and controls:
-
-All of this is wrapped in a `.sheet-frame` wrapper in `app.rs`, whose layout is
-utilities (`relative flex flex-1 flex-col w-[calc(100%-36px)] max-w-5xl mx-auto
-my-[18px]`); the class only exists so `.sheet-frame::before` can draw it:
+The single-page application is a blueprint-style drawing whose bands are
+stacked in one sheet, wrapped in a `.sheet-frame` wrapper in `app.rs`. The class
+only exists so `.sheet-frame::before` can draw the frame around it:
 
 1. **Skip Link** — accessibility anchor to `#main-content`
 2. **`Main`** (`<main id="main-content">`) — accessible page heading and the
@@ -114,10 +111,21 @@ Components are grouped by function in `src/components/`:
 
 #### UI Icons (`src/components/ui/icons/`)
 
-| Component          | File                 | Purpose             |
-| ------------------ | -------------------- | ------------------- |
-| `BuyMeACoffeeIcon` | `buy_me_a_coffee.rs` | Buy Me a Coffee cup |
-| `GitHubIcon`       | `github.rs`          | GitHub Octocat      |
+These render inline SVG; the outline set inherits `currentColor` and the
+caller's size utility.
+
+| Component          | File                 | Purpose                                     |
+| ------------------ | -------------------- | ------------------------------------------- |
+| `ArrowRightIcon`   | `arrow_right.rs`     | Right arrow for the call-to-action card     |
+| `BranchIcon`       | `branch.rs`          | "Open source" feature glyph                 |
+| `BuyMeACoffeeIcon` | `buy_me_a_coffee.rs` | Buy Me a Coffee cup                         |
+| `CreatorsIcon`     | `creators.rs`        | "Built for creators" feature glyph          |
+| `GhostIcon`        | `ghost.rs`           | Ghost for the blurred placeholder cards     |
+| `GitHubIcon`       | `github.rs`          | GitHub Octocat                              |
+| `HistoryIcon`      | `history.rs`         | "Versioned parts" feature glyph             |
+| `HubIcon`          | `hub.rs`             | "One hub" feature glyph                     |
+| `InspectIcon`      | `inspect.rs`         | "Inspect before you download" feature glyph |
+| `SpeedIcon`        | `speed.rs`           | "Fast by design" feature glyph              |
 
 ### Project Structure
 
@@ -135,10 +143,17 @@ src/
 │   │   └── footer.rs
 │   └── ui/                    # UI primitives and icons
 │       ├── ascii_art.rs
-│       └── icons/
+│       └── icons/             # One inline SVG component per file
+│           ├── arrow_right.rs
+│           ├── branch.rs
 │           ├── buy_me_a_coffee.rs
-│           ├── cadiotheka.rs
-│           └── github.rs
+│           ├── creators.rs
+│           ├── ghost.rs
+│           ├── github.rs
+│           ├── history.rs
+│           ├── hub.rs
+│           ├── inspect.rs
+│           └── speed.rs
 
 public/
 ├── style.css                  # Tailwind + DaisyUI (halloween theme)
@@ -201,6 +216,7 @@ in the app has an async data path today.
 ### Build Pipeline
 
 1. **Trunk** bundles WASM, processes Tailwind CSS, copies the `public/` assets declared via `data-trunk` links in `index.html` → `dist/`
+    - `build.create_nonce` in `Trunk.toml` must stay on: Trunk injects its loader as an inline `<script type="module">`, which no hash can cover, and `public/_headers` only permits it by nonce. Turning it off blanks the page. Cloudflare Pages substitutes the `{nonce}` placeholder there.
     - `Trunk.toml` pins the `tailwindcss` tool version. This is the version of Trunk’s bundled Tailwind distribution (`dobicinaitis/tailwind-cli-extra`), not the upstream Tailwind CSS version. The bundle includes the latest Tailwind CSS + DaisyUI; the actual Tailwind CSS version resolved at build time is shown in the build log (e.g. `tailwindcss v4.2.2`).
     - Renovate manages this version via a custom regex manager in `.github/renovate.json`; the TOML line is annotated with `# renovate: datasource=github-releases depName=dobicinaitis/tailwind-cli-extra`.
 2. **Cargo release profile** optimizations:
@@ -320,7 +336,7 @@ selects between them any more.
 
 **When creating tasks:**
 
-- Number tasks in the name (e.g., "1. Add new shortcut", "2. Update TeamAvatars styling")
+- Number tasks in the name (e.g., "1. Add new shortcut", "2. Update Hero tile styling")
 
 **After completing each task:**
 

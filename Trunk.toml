@@ -2,5 +2,8 @@
 # renovate: datasource=github-releases depName=dobicinaitis/tailwind-cli-extra
 tailwindcss = "2.10.35"
 
+[build]
+create_nonce = true
+
 [build.wasm-opt]
 level = "z"
