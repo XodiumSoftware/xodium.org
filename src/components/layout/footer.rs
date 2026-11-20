@@ -61,7 +61,7 @@ const FOOTER_ICON_LINKS: &[FooterIconLink] = &[
 pub fn Footer() -> impl IntoView {
     view! {
         <footer
-            class="flex flex-wrap items-baseline justify-center gap-2 py-6 font-mono text-[0.65rem] uppercase tracking-[0.08em] text-base-content opacity-75 max-sm:text-[0.55rem] max-[700px]:gap-1.5 max-[700px]:text-[0.5rem] border-t border-base-content/40"
+            class="flex flex-wrap items-baseline justify-center gap-2 py-6 font-mono text-[0.65rem] uppercase tracking-[0.08em] text-base-content opacity-75 max-sm:text-[0.55rem] max-[700px]:gap-1.5 max-[700px]:text-[0.5rem] border-x border-t border-base-content/40"
             aria-label="Site footer"
         >
             <span>"XODIUM™"</span>

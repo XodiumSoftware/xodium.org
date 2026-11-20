@@ -7,7 +7,7 @@ use leptos::prelude::*;
 pub fn Header() -> impl IntoView {
     view! {
         <header
-            class="flex flex-col gap-2 pb-6 sm:flex-row sm:items-center sm:gap-4 border-b border-base-content/40"
+            class="flex flex-col gap-2 pb-6 sm:flex-row sm:items-center sm:gap-4 border-b border-x border-base-content/40"
             aria-label="Site header"
         >
             <div class="min-w-0 flex-1 max-w-[calc(43.2*0.585rem)] [container-type:inline-size]">

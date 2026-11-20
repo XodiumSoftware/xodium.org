@@ -39,7 +39,7 @@ const SUBPROJECT_ITEMS: &[SubprojectItem] = &[
 pub fn Subprojects() -> impl IntoView {
     view! {
         <section
-            class="grid h-24 grid-cols-1 overflow-hidden max-md:h-auto max-md:overflow-visible md:grid-cols-3"
+            class="grid h-24 grid-cols-1 overflow-hidden max-md:h-auto max-md:overflow-visible md:grid-cols-3 border-b border-base-content/40"
             aria-label="Subprojects"
         >
             {SUBPROJECT_ITEMS
