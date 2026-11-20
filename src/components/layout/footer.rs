@@ -77,9 +77,6 @@ pub fn Footer() -> impl IntoView {
             aria-label="Site footer"
         >
             <span>"XODIUM™"</span>
-            <span class="opacity-50 select-none" aria-hidden="true">
-                "·"
-            </span>
             {FOOTER_LINKS
                 .iter()
                 .map(|link| {
