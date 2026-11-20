@@ -16,7 +16,7 @@ pub fn App() -> impl IntoView {
                 "Skip to main content"
             </a>
 
-            <div class="sheet-frame relative flex flex-1 flex-col w-[calc(100%-36px)] max-w-5xl mx-auto my-[18px]">
+            <div class="sheet-frame relative flex flex-1 flex-col w-[calc(100%-36px)] max-w-5xl mx-auto border-x border-base-content/40">
                 <Main />
             </div>
         </div>

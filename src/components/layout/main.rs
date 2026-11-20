@@ -17,7 +17,7 @@ pub struct SheetEntrance {
 
 impl SheetEntrance {
     /// Provide the flag to the page and start the entrance timer.
-    pub fn provide() -> Self {
+    pub fn provide() {
         let entrance = Self {
             loading: RwSignal::new(true),
         };
@@ -28,7 +28,6 @@ impl SheetEntrance {
             move || loading.set(false),
             Duration::from_millis(SheetEntrance::DURATION_MS),
         );
-        entrance
     }
 
     /// Read the flag out of context.
@@ -57,7 +56,7 @@ impl SheetEntrance {
 #[component]
 #[must_use]
 pub fn Main() -> impl IntoView {
-    let _ = SheetEntrance::provide();
+    SheetEntrance::provide();
 
     view! {
         <main id="main-content" tabindex="-1" class="flex flex-1 flex-col">
