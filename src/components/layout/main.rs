@@ -24,10 +24,10 @@ impl SheetEntrance {
         provide_context(entrance);
 
         let loading = entrance.loading;
-        let _ = set_timeout(
+        drop(set_timeout(
             move || loading.set(false),
             Duration::from_millis(SheetEntrance::DURATION_MS),
-        );
+        ));
     }
 
     /// Read the flag out of context.
