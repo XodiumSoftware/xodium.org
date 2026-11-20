@@ -10,7 +10,7 @@ pub fn Header() -> impl IntoView {
             class="flex flex-col gap-2 pb-6 sm:flex-row sm:items-center sm:gap-4 border-b border-x border-base-content/40"
             aria-label="Site header"
         >
-            <div class="min-w-0 flex-1 max-w-[calc(43.2*0.585rem)] [container-type:inline-size]">
+            <div class="min-w-0 flex-1 max-w-[calc(43.2*0.585rem)] pl-6 [container-type:inline-size]">
                 <AsciiArt />
             </div>
             <span class="shrink-0 text-xs uppercase tracking-[0.08em]">
