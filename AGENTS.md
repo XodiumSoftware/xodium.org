@@ -237,17 +237,24 @@ change with it.
 
 ### Animation
 
-The hero's tiles carry the site's only entrance animation: `tile-enter` (in
-`public/style.css`) plays `slide-up` per tile, staggered by the inline
-`--tile-delay` that `tile_enter` in `hero.rs` assigns. Every other band and
-control switches state instantly, so do not add transitions or `animate-*`
-utilities elsewhere.
+Entrance animation belongs to two classes in `public/style.css`: `tagline-enter`
+slides the header tagline in, and `tile-enter` plays `slide-up` per hero tile,
+staggered by the inline `--tile-delay` that `tile_enter` in `hero.rs` assigns. The
+`prefers-reduced-motion` block zeroes out both.
+
+Hover state is not animated per control. One rule eases `color`,
+`background-color`, `border-color` and `opacity` over 220ms for `a`, `button`,
+`.spotlight-surface` and `.spotlight-surface svg`, so a control that changes colour
+while hovered is ramped without being marked up. Do not add hover transitions or
+`animate-*` utilities to individual components.
 
 Hovered controls are lit by a spotlight: `SPOTLIGHT_SURFACE` on the control and a
 `<Spotlight />` child put the glow above the control's own fill, and
 `public/spotlight.js` (loaded through `index.html`) feeds it the pointer position.
 The class, the component and the script are coupled — renaming the class leaves
-the glow parked at its default corner.
+the glow parked at its default corner. The glow is drawn in `base-content`, and
+siblings stacked above it are the ones that follow `.spotlight` in the control's
+markup, so a full-bleed link has to precede it.
 
 ### Bands in General
 

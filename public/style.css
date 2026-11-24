@@ -53,16 +53,21 @@
     animation: slide-up 400ms ease-out var(--tile-delay, 700ms) both;
 }
 
+a,
+button,
+.spotlight-surface,
+.spotlight-surface svg {
+    transition:
+        color 220ms ease-out,
+        background-color 220ms ease-out,
+        border-color 220ms ease-out,
+        opacity 220ms ease-out;
+}
+
 :where(.spotlight-surface) {
     position: relative;
     isolation: isolate;
     overflow: hidden;
-}
-
-:where(.spotlight-surface-hero) {
-    transition:
-        background-color 220ms ease-out,
-        border-color 220ms ease-out;
 }
 
 :where(.spotlight-surface) > .spotlight ~ :not(.spotlight) {
@@ -82,7 +87,7 @@
         oklch(from var(--color-base-content) l c h / 0.14),
         transparent
     );
-    transition: opacity 200ms ease-out;
+    transition: opacity 220ms ease-out;
 }
 
 .spotlight-surface:is(:hover, :focus-visible) > .spotlight {
@@ -90,6 +95,13 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+    a,
+    button,
+    .spotlight-surface,
+    .spotlight-surface svg {
+        transition: none;
+    }
+
     .tile-enter {
         animation: none;
     }
