@@ -3,13 +3,16 @@ use leptos::prelude::*;
 /// Ghost, for the placeholder cards.
 #[component]
 #[must_use]
-pub fn GhostIcon() -> impl IntoView {
+pub fn GhostIcon(
+    /// Size utilities for the glyph.
+    class: &'static str,
+) -> impl IntoView {
     view! {
         <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
-            class="size-3.5"
+            class=class
             aria-hidden="true"
         >
             <path d="M20 21.5 18 20l-2 1.5L14 20l-2 1.5L10 20 8 21.5 6 20l-2 1.5V10a8 8 0 0 1 16 0Z" />

@@ -88,7 +88,7 @@ const CADIOTHEKA_PAINT: &str = "bg-[radial-gradient(oklch(from_var(--color-base-
 
 /// The unannounced project's heading row.
 const COMING_SOON_HEADER: HalfHeader = HalfHeader {
-    mark: None,
+    mark: Some(|| view! { <GhostIcon class="size-10 blur-[3px]" /> }.into_any()),
     title: "Coming Soon",
     established: "Est XXXX",
     description: "Secret project in the making.",
@@ -324,7 +324,7 @@ fn FeatureGrid(
                 view! {
                     <div class=tile_class style=enter_style aria-hidden="true">
                         <h3 class="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.08em] blur-[3px]">
-                            <GhostIcon />
+                            <GhostIcon class="size-3.5" />
                             {title}
                         </h3>
                         <p class="text-xs leading-relaxed opacity-60 blur-[3px]">{body}</p>
