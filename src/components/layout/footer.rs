@@ -36,7 +36,7 @@ const FOOTER_LINKS: &[FooterLink] = &[
         label: "CONTACT",
     },
     FooterLink {
-        href: "https://github.com/XodiumSoftware/people",
+        href: "https://github.com/orgs/XodiumSoftware/people",
         label: "TEAM",
     },
 ];
