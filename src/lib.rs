@@ -34,6 +34,8 @@ pub mod components {
             pub mod branch;
             /// Buy Me a Coffee cup.
             pub mod buy_me_a_coffee;
+            /// Cadiotheka mark.
+            pub mod cadiotheka;
 
             /// Users glyph.
             pub mod creators;
@@ -57,6 +59,7 @@ pub mod components {
         pub use icons::arrow_right::ArrowRightIcon;
         pub use icons::branch::BranchIcon;
         pub use icons::buy_me_a_coffee::BuyMeACoffeeIcon;
+        pub use icons::cadiotheka::CadiothekaIcon;
 
         pub use icons::creators::CreatorsIcon;
         pub use icons::ghost::GhostIcon;

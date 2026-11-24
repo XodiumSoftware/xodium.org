@@ -2,6 +2,7 @@
 
 use crate::components::ui::icons::arrow_right::ArrowRightIcon;
 use crate::components::ui::icons::branch::BranchIcon;
+use crate::components::ui::icons::cadiotheka::CadiothekaIcon;
 use crate::components::ui::icons::creators::CreatorsIcon;
 use crate::components::ui::icons::ghost::GhostIcon;
 use crate::components::ui::icons::history::HistoryIcon;
@@ -24,6 +25,8 @@ struct Feature {
 /// A half's heading row.
 #[derive(Clone, Copy)]
 struct HalfHeader {
+    /// Project mark drawn beside the name, spanning both text rows.
+    mark: Option<fn() -> AnyView>,
     /// Project name, rendered as an `h2`.
     title: &'static str,
     /// Year the project was established.
@@ -73,6 +76,7 @@ const CADIOTHEKA_FEATURES: &[Feature] = &[
 
 /// Cadiotheka's heading row.
 const CADIOTHEKA_HEADER: HalfHeader = HalfHeader {
+    mark: Some(|| view! { <CadiothekaIcon class="size-10" /> }.into_any()),
     title: "Cadiotheka",
     established: "Est 2026",
     description: "The open hub for CAD creators.",
@@ -83,6 +87,7 @@ const CADIOTHEKA_PAINT: &str = "bg-[radial-gradient(oklch(from_var(--color-base-
 
 /// The unannounced project's heading row.
 const COMING_SOON_HEADER: HalfHeader = HalfHeader {
+    mark: None,
     title: "Coming Soon",
     established: "Est XXXX",
     description: "Secret project in the making.",
@@ -220,28 +225,33 @@ fn HeroHalf(
             }}
             <div class=content_class>
                 <header>
-                    <h2 class="flex items-center gap-1 text-sm font-semibold uppercase tracking-[0.08em]">
-                        {header.title}
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="14"
-                            height="14"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class=arrow_class
-                            aria-hidden="true"
-                        >
-                            <path d="M7 7h10v10"></path>
-                            <path d="M7 17 17 7"></path>
-                        </svg>
-                    </h2>
-                    <p class="text-xs uppercase tracking-widest opacity-50">
-                        {header.established}
-                    </p>
+                    <div class="grid grid-cols-[auto_1fr] items-center gap-x-3">
+                        <div class="row-span-2 flex items-center self-stretch">
+                            {header.mark.map(|mark| (mark)())}
+                        </div>
+                        <h2 class="flex items-center gap-1 text-sm font-semibold uppercase tracking-[0.08em] [grid-column:2]">
+                            {header.title}
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="14"
+                                height="14"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class=arrow_class
+                                aria-hidden="true"
+                            >
+                                <path d="M7 7h10v10"></path>
+                                <path d="M7 17 17 7"></path>
+                            </svg>
+                        </h2>
+                        <p class="text-xs uppercase tracking-widest opacity-50 [grid-column:2]">
+                            {header.established}
+                        </p>
+                    </div>
                 </header>
                 <p class="text-xs leading-relaxed text-base-content/70">
                     {header.description}
