@@ -9,6 +9,7 @@ use crate::components::ui::icons::history::HistoryIcon;
 use crate::components::ui::icons::hub::HubIcon;
 use crate::components::ui::icons::inspect::InspectIcon;
 use crate::components::ui::icons::speed::SpeedIcon;
+use crate::components::ui::spotlight::{SPOTLIGHT_SURFACE, Spotlight};
 use leptos::prelude::*;
 
 /// A feature tile inside a project half.
@@ -196,7 +197,7 @@ fn HeroHalf(
     full_width_last: bool,
 ) -> impl IntoView {
     let panel_class = format!(
-        "group relative flex w-full flex-col gap-4 bg-base-100 p-6 md:w-1/2 has-[a:hover]:bg-base-content/5 has-[a:focus-visible]:bg-base-content/5 has-[a:hover]:border-primary has-[a:focus-visible]:border-primary {paint} border border-base-content/40",
+        "group {SPOTLIGHT_SURFACE} spotlight-surface-hero flex w-full flex-col gap-4 bg-base-100 p-6 md:w-1/2 has-[a:hover]:bg-base-content/5 has-[a:focus-visible]:bg-base-content/5 has-[a:hover]:border-primary has-[a:focus-visible]:border-primary {paint} border border-base-content/40",
     );
 
     let content_class = if visit_href.is_some() {
@@ -223,6 +224,7 @@ fn HeroHalf(
                 }
                     .into_any(),
             }}
+            <Spotlight />
             <div class=content_class>
                 <header>
                     <div class="grid grid-cols-[auto_1fr] items-center gap-x-3">

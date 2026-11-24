@@ -104,9 +104,10 @@ Components are grouped by function in `src/components/`:
 
 #### UI Primitives (`src/components/ui/`)
 
-| Component  | File           | Purpose                 |
-| ---------- | -------------- | ----------------------- |
-| `AsciiArt` | `ascii_art.rs` | XODIUM ASCII glyph mark |
+| Component   | File           | Purpose                      |
+| ----------- | -------------- | ---------------------------- |
+| `AsciiArt`  | `ascii_art.rs` | XODIUM ASCII glyph mark      |
+| `Spotlight` | `spotlight.rs` | Glow that follows the cursor |
 
 #### UI Icons (`src/components/ui/icons/`)
 
@@ -141,6 +142,7 @@ src/
 │   │   └── footer.rs
 │   └── ui/                    # UI primitives and icons
 │       ├── ascii_art.rs
+│       ├── spotlight.rs
 │       └── icons/             # One inline SVG component per file
 │           ├── arrow_right.rs
 │           ├── branch.rs
@@ -235,11 +237,17 @@ change with it.
 
 ### Animation
 
-The hero's tiles carry the site's only animation: `tile-enter` (in
+The hero's tiles carry the site's only entrance animation: `tile-enter` (in
 `public/style.css`) plays `slide-up` per tile, staggered by the inline
 `--tile-delay` that `tile_enter` in `hero.rs` assigns. Every other band and
 control switches state instantly, so do not add transitions or `animate-*`
 utilities elsewhere.
+
+Hovered controls are lit by a spotlight: `SPOTLIGHT_SURFACE` on the control and a
+`<Spotlight />` child put the glow above the control's own fill, and
+`public/spotlight.js` (loaded through `index.html`) feeds it the pointer position.
+The class, the component and the script are coupled — renaming the class leaves
+the glow parked at its default corner.
 
 ### Bands in General
 
@@ -310,8 +318,9 @@ selects between them any more.
 ## Important Notes
 
 - **CSR only** — no SSR, all rendering happens client-side
-- **Browser APIs** — no component touches the DOM directly any more; focus is
-  handled by `autofocus` in the markup, so there is no `web-sys` dependency
+- **Browser APIs** — no component touches the DOM directly; focus is handled by
+  `autofocus` in the markup and the pointer by `public/spotlight.js`, so there
+  is no `web-sys` dependency
 - **WASM size** optimized heavily for fast page loads
 - **`prefers-reduced-motion`** — handled entirely in `public/style.css` via
   the `@media (prefers-reduced-motion: reduce)` block, which zeroes out the

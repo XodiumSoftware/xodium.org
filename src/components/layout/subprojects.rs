@@ -1,5 +1,6 @@
 //! Subprojects band below the hero.
 
+use crate::components::ui::spotlight::{SPOTLIGHT_SURFACE, Spotlight};
 use leptos::prelude::*;
 
 /// A single card in the [`Subprojects`] band.
@@ -47,11 +48,14 @@ pub fn Subprojects() -> impl IntoView {
                 .map(|item| {
                     view! {
                         <a
-                            class="group flex flex-col justify-center gap-2 border border-base-content/40 px-6 py-4 hover:bg-base-content/5"
+                            class=format!(
+                                "group {SPOTLIGHT_SURFACE} flex flex-col justify-center gap-2 border border-base-content/40 px-6 py-4 hover:bg-base-content/5",
+                            )
                             href=item.href
                             target="_blank"
                             rel="noopener noreferrer"
                         >
+                            <Spotlight />
                             <h2 class="flex items-center gap-1 text-sm font-semibold uppercase tracking-[0.08em]">
                                 {item.title}
                                 <svg

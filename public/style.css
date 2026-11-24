@@ -38,8 +38,48 @@
     animation: slide-up 400ms ease-out var(--tile-delay, 700ms) both;
 }
 
+:where(.spotlight-surface) {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+}
+
+:where(.spotlight-surface-hero) {
+    transition:
+        background-color 220ms ease-out,
+        border-color 220ms ease-out;
+}
+
+:where(.spotlight-surface) > .spotlight ~ :not(.spotlight) {
+    position: relative;
+    z-index: 1;
+}
+
+.spotlight {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(
+        circle var(--spotlight-size, 10rem) at var(--spotlight-x, 50%)
+            var(--spotlight-y, 50%),
+        oklch(from var(--color-base-content) l c h / 0.14),
+        transparent
+    );
+    transition: opacity 200ms ease-out;
+}
+
+.spotlight-surface:is(:hover, :focus-visible) > .spotlight {
+    opacity: 1;
+}
+
 @media (prefers-reduced-motion: reduce) {
     .tile-enter {
         animation: none;
+    }
+
+    .spotlight {
+        display: none;
     }
 }

@@ -53,8 +53,13 @@ pub mod components {
             pub mod speed;
         }
 
+        /// Cursor-following light inside hovered controls.
+        pub mod spotlight;
+
         /// XODIUM ASCII mark.
         pub mod ascii_art;
+
+        pub use spotlight::{SPOTLIGHT_SURFACE, Spotlight};
 
         pub use icons::arrow_right::ArrowRightIcon;
         pub use icons::branch::BranchIcon;
