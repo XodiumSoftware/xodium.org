@@ -234,7 +234,7 @@ fn HeroHalf(
             <div class=content_class>
                 <header>
                     <div class="grid grid-cols-[auto_1fr] items-center gap-x-3">
-                        <div class="row-span-2 flex items-center self-stretch">
+                        <div class="row-span-2 flex items-center self-stretch [&_svg]:transition-[color,opacity] [&_svg]:duration-220 group-has-[a:hover]:[&_svg]:text-primary group-has-[a:focus-visible]:[&_svg]:text-primary">
                             {header.mark.map(|mark| (mark)())}
                         </div>
                         <h2 class="flex items-center gap-1 text-sm font-semibold uppercase tracking-[0.08em] [grid-column:2]">
