@@ -4,12 +4,15 @@ use crate::components::layout::footer::Footer;
 use crate::components::layout::header::Header;
 use crate::components::layout::hero::Hero;
 use crate::components::layout::subprojects::Subprojects;
+use crate::components::ui::spotlight::track_spotlights;
 use leptos::prelude::*;
 
 /// The full single-page drawing.
 #[component]
 #[must_use]
 pub fn App() -> impl IntoView {
+    track_spotlights();
+
     view! {
         <div class="relative flex min-h-dvh flex-col">
             <a

@@ -59,7 +59,7 @@ pub mod components {
         /// XODIUM ASCII mark.
         pub mod ascii_art;
 
-        pub use spotlight::{SPOTLIGHT_SURFACE, Spotlight};
+        pub use spotlight::{SPOTLIGHT_SURFACE, Spotlight, track_spotlights};
 
         pub use icons::arrow_right::ArrowRightIcon;
         pub use icons::branch::BranchIcon;

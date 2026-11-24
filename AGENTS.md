@@ -173,7 +173,8 @@ Trunk.toml                     # Trunk configuration
 - `on_cleanup` requires a `Send + Sync` closure, so it cannot capture raw
   `Closure<dyn FnMut(..)>` handles. If a listener ever needs removing again, call
   `.into_js_value()` and keep the resulting `js_sys::Function` — that type is
-  `Send + Sync`. No component registers an event listener today.
+  `Send + Sync`. The spotlight's document listeners are registered once from `App`
+  and never removed.
 - **Props:** `#[derive(Clone)]` structs named `{Component}Properties`. A component
   that needs no configuration takes no props at all rather than an empty struct.
 - **Async data:** Use `LocalResource` (not `Resource`) for WASM thread execution.
@@ -250,11 +251,11 @@ while hovered is ramped without being marked up. Do not add hover transitions or
 
 Hovered controls are lit by a spotlight: `SPOTLIGHT_SURFACE` on the control and a
 `<Spotlight />` child put the glow above the control's own fill, and
-`public/spotlight.js` (loaded through `index.html`) feeds it the pointer position.
-The class, the component and the script are coupled — renaming the class leaves
-the glow parked at its default corner. The glow is drawn in `base-content`, and
-siblings stacked above it are the ones that follow `.spotlight` in the control's
-markup, so a full-bleed link has to precede it.
+`spotlight::track_spotlights` (called once from `App`) feeds it the pointer
+position. The class, the component and the tracker are coupled — renaming the
+class leaves the glow parked at its default corner. The glow is drawn in
+`base-content`, and siblings stacked above it are the ones that follow
+`.spotlight` in the control's markup, so a full-bleed link has to precede it.
 
 ### Bands in General
 
@@ -325,9 +326,9 @@ selects between them any more.
 ## Important Notes
 
 - **CSR only** — no SSR, all rendering happens client-side
-- **Browser APIs** — no component touches the DOM directly; focus is handled by
-  `autofocus` in the markup and the pointer by `public/spotlight.js`, so there
-  is no `web-sys` dependency
+- **Browser APIs** — focus is handled by `autofocus` in the markup, and the
+  spotlight tracker is the only place that touches the DOM: it is driven by a
+  document listener registered in `App`
 - **WASM size** optimized heavily for fast page loads
 - **`prefers-reduced-motion`** — handled entirely in `public/style.css` via
   the `@media (prefers-reduced-motion: reduce)` block, which zeroes out the
