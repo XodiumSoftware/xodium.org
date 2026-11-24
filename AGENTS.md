@@ -80,8 +80,8 @@ platform-neutral variables at the top of the file.
 ### Page Layout (`App` component)
 
 The single-page application is a blueprint-style drawing whose bands are
-stacked in one sheet, wrapped in a `.sheet-frame` wrapper in `app.rs`. The sheet's
-left and right rules are the `body` border in `public/style.css`:
+stacked in one sheet, the `<main>` carrying `.sheet-frame` in `app.rs`. The sheet
+owns the left and right rules, drawn by `.sheet-frame` in `public/style.css`:
 
 1. **Skip Link** — accessibility anchor to `#main-content`
 2. **Sheet** (`<main id="main-content">`) — accessible page heading and the
@@ -262,9 +262,13 @@ class leaves the glow parked at its default corner. The glow is drawn in
 Every band is a block-level element stacked inside the sheet in `app.rs`, and
 the conventions below apply to all of them:
 
-- Unruled: no band draws a border between itself and the next, and `Hero` draws
-  none at all. What separates neighbouring bands is their own fill, so a band
-  that needs a visible edge must supply one.
+- Every band root carries `sheet-band`. The sheet frames itself and rules itself:
+  `.sheet-frame` draws the left and right rules once, and `.sheet-band + .sheet-band`
+  draws the rule between neighbouring bands. A band therefore draws no outer
+  border of its own — only the separators between its own children.
+- Hero's halves are boxes rather than sheet rules, so their edges are an overlay
+  (`outline`, not `border`): a border on the half would take part in the flex
+  layout and change the half's size on hover.
 - Row-based content sits in `const` slices at the top of the component file, so
   the order and copy are edited in one place.
 - Cards and cells that read as drafted cells are separated by `divide-*` rules

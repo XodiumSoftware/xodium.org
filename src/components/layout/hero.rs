@@ -152,7 +152,7 @@ fn tile_shape(index: usize) -> &'static str {
 pub fn Hero() -> impl IntoView {
     view! {
         <section
-            class="relative isolate flex min-h-[40rem] flex-1 flex-col md:flex-row"
+            class="sheet-band relative isolate flex min-h-[40rem] flex-1 flex-col md:flex-row before:pointer-events-none before:absolute before:inset-y-0 before:left-1/2 before:hidden before:w-px before:-translate-x-1/2 before:bg-base-content/40 md:before:block"
             aria-label="Main projects"
         >
             <HeroHalf
@@ -196,8 +196,14 @@ fn HeroHalf(
     /// Stretch the final tile across the row of the grid.
     full_width_last: bool,
 ) -> impl IntoView {
+    let outline_class = if visit_href.is_some() {
+        "has-[a:hover]:outline has-[a:focus-visible]:outline has-[a:hover]:outline-primary has-[a:focus-visible]:outline-primary"
+    } else {
+        ""
+    };
+
     let panel_class = format!(
-        "group {SPOTLIGHT_SURFACE} flex w-full flex-col gap-4 bg-base-100 p-6 md:w-1/2 has-[a:hover]:bg-base-content/5 has-[a:focus-visible]:bg-base-content/5 has-[a:hover]:border-primary has-[a:focus-visible]:border-primary {paint} border border-base-content/40",
+        "group {SPOTLIGHT_SURFACE} flex w-full flex-col gap-4 bg-base-100 p-6 md:w-1/2 has-[a:hover]:bg-base-content/5 has-[a:focus-visible]:bg-base-content/5 {paint} {outline_class}",
     );
 
     let content_class = if visit_href.is_some() {

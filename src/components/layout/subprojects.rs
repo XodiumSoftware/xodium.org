@@ -40,7 +40,7 @@ const SUBPROJECT_ITEMS: &[SubprojectItem] = &[
 pub fn Subprojects() -> impl IntoView {
     view! {
         <section
-            class="grid h-24 grid-cols-1 overflow-hidden max-md:h-auto max-md:overflow-visible md:grid-cols-3 border-b border-base-content/40"
+            class="sheet-band grid h-24 grid-cols-1 overflow-hidden max-md:h-auto max-md:overflow-visible md:grid-cols-3 md:divide-x md:divide-base-content/40"
             aria-label="Subprojects"
         >
             {SUBPROJECT_ITEMS
@@ -49,7 +49,7 @@ pub fn Subprojects() -> impl IntoView {
                     view! {
                         <a
                             class=format!(
-                                "group {SPOTLIGHT_SURFACE} flex flex-col justify-center gap-2 border border-base-content/40 px-6 py-4 hover:bg-base-content/5",
+                                "group {SPOTLIGHT_SURFACE} flex flex-col justify-center gap-2 px-6 py-4 hover:bg-base-content/5",
                             )
                             href=item.href
                             target="_blank"

@@ -25,7 +25,7 @@ pub fn App() -> impl IntoView {
             <main
                 id="main-content"
                 tabindex="-1"
-                class="sheet-frame relative flex flex-1 flex-col w-[calc(100%-36px)] max-w-5xl mx-auto border-x border-base-content/40"
+                class="sheet-frame relative flex flex-1 flex-col w-[calc(100%-36px)] max-w-5xl mx-auto"
             >
                 <h1 class="sr-only">"Xodium Software — open-source CAD software"</h1>
 

@@ -23,6 +23,19 @@
     outline: none;
 }
 
+.sheet-frame {
+    border-inline: 1px solid color-mix(in oklab, var(--color-base-content) 40%, transparent);
+}
+
+.sheet-band {
+    position: relative;
+}
+
+.sheet-band + .sheet-band {
+    border-block-start: 1px solid
+        color-mix(in oklab, var(--color-base-content) 40%, transparent);
+}
+
 @keyframes slide-up {
     from {
         opacity: 0;
