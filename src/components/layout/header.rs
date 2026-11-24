@@ -13,7 +13,7 @@ pub fn Header() -> impl IntoView {
             <div class="min-w-0 flex-1 max-w-[calc(43.2*0.585rem)] pl-6 [container-type:inline-size]">
                 <AsciiArt />
             </div>
-            <span class="shrink-0 text-xs uppercase tracking-[0.08em]">
+            <span class="tagline-enter shrink-0 text-xs uppercase tracking-[0.08em]">
                 <span class="opacity-50" aria-hidden="true">"> "</span>
                 "Because we can."
             </span>
